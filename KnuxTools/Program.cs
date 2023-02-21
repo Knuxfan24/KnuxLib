@@ -27,6 +27,9 @@ namespace KnuxTools
                             // CarZ Engine Formats
                             case ".mat": KnuxLib.Engines.CarZ.MaterialLibrary carZmat = new(arg, true); break;
                             case ".sco": KnuxLib.Engines.CarZ.SCO carZsco = new(arg, true); break;
+
+                            // ProjectM Engine Formats
+                            case ".dat": KnuxLib.Engines.ProjectM.MessageTable projectMmessage = new(arg, true); break;
                         }
                     }
                 }
