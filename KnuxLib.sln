@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnuxLib", "KnuxLib\KnuxLib.csproj", "{798D2744-50DF-45B9-9011-953576D3E68A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnuxTest", "KnuxTest\KnuxTest.csproj", "{38F615DD-C6F6-4B7D-8B10-0E99F09B19CC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnuxTools", "KnuxTools\KnuxTools.csproj", "{34DB94CD-7BFF-41BB-B69A-3BF4C41F5A75}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{798D2744-50DF-45B9-9011-953576D3E68A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{798D2744-50DF-45B9-9011-953576D3E68A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{798D2744-50DF-45B9-9011-953576D3E68A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{798D2744-50DF-45B9-9011-953576D3E68A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38F615DD-C6F6-4B7D-8B10-0E99F09B19CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38F615DD-C6F6-4B7D-8B10-0E99F09B19CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38F615DD-C6F6-4B7D-8B10-0E99F09B19CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38F615DD-C6F6-4B7D-8B10-0E99F09B19CC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{34DB94CD-7BFF-41BB-B69A-3BF4C41F5A75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{34DB94CD-7BFF-41BB-B69A-3BF4C41F5A75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{34DB94CD-7BFF-41BB-B69A-3BF4C41F5A75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{34DB94CD-7BFF-41BB-B69A-3BF4C41F5A75}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29A4BE21-EB00-4E48-8D49-D806A208FE33}
+	EndGlobalSection
+EndGlobal
