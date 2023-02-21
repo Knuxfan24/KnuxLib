@@ -359,9 +359,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 
-# My test project
-KnuxTest/Program.cs
-
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
-KnuxTest/Program.cs
