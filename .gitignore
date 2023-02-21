@@ -360,7 +360,7 @@ MigrationBackup/
 .ionide/
 
 # My test project
-/KnuxTest/Program.cs
+KnuxTest/Program.cs
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
