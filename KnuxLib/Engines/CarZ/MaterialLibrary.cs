@@ -1,4 +1,7 @@
-﻿namespace KnuxLib.Engines.CarZ
+﻿using Assimp.Configs;
+using Assimp;
+
+namespace KnuxLib.Engines.CarZ
 {
     public class MaterialLibrary : FileBase
     {
@@ -29,7 +32,7 @@
             /// <summary>
             /// The opacity of this material.
             /// </summary>
-            public byte Opacity { get; set; }
+            public byte Opacity { get; set; } = 255;
 
             /// <summary>
             /// The diffuse texture this material should use, if any.
@@ -59,7 +62,7 @@
             /// <summary>
             /// The RGB colour values on this material.
             /// </summary>
-            public byte[] Colours { get; set; } = new byte[3];
+            public byte[] Colours { get; set; } = new byte[3] { 255, 255, 255 };
 
             public override string ToString() => Name;
         }
@@ -222,13 +225,57 @@
 
 
         /// <summary>
-        /// Imports an OBJ compatible MTL file and converts it to a material library.
-        /// TODO: Implement.
+        /// Imports material data from an Assimp compatible model and converts it to a material library.
         /// </summary>
-        /// <param name="filepath">The filepath of the MTL to import.</param>
-        public void ImportMTL(string filepath)
+        /// <param name="filepath">The filepath of the model to import.</param>
+        public void ImportAssimp(string filepath)
         {
-            throw new NotImplementedException();
+            // Setup AssimpNet Scene.
+            AssimpContext assimpImporter = new();
+            KeepSceneHierarchyConfig config = new(true);
+            assimpImporter.SetConfig(config);
+            Scene assimpModel = assimpImporter.ImportFile(filepath, PostProcessSteps.PreTransformVertices);
+
+            // Loop through each material in this model.
+            foreach (Assimp.Material? assimpMaterial in assimpModel.Materials)
+            {
+                // Create a new material.
+                Material material = new();
+
+                // Set this material's name.
+                material.Name = assimpMaterial.Name;
+
+                // Set this material's flag.
+                // TODO: Potentially unhardcode?
+                material.Flags = "texture_gouraud_";
+
+                // Set this material's RGB values.
+                material.Colours[0] = (byte)(assimpMaterial.ColorDiffuse.R * 255);
+                material.Colours[1] = (byte)(assimpMaterial.ColorDiffuse.G * 255);
+                material.Colours[2] = (byte)(assimpMaterial.ColorDiffuse.B * 255);
+
+                // Set this material's opactity.
+                material.Opacity = (byte)(assimpMaterial.Opacity * 255);
+
+                // Set this material's diffuse texture (with the extension replaced with .bmp), if it has one.
+                if (assimpMaterial.TextureDiffuse.FilePath != null)
+                    material.Diffuse = $"{Path.GetFileNameWithoutExtension(assimpMaterial.TextureDiffuse.FilePath)}.bmp";
+
+                // Set this material's alpha mask texture (with the extension replaced with .bmp), if it has one.
+                if (assimpMaterial.TextureOpacity.FilePath != null)
+                    material.AlphaMask = $"{Path.GetFileNameWithoutExtension(assimpMaterial.TextureOpacity.FilePath)}.bmp";
+
+                // Set this material's normal map texture (with the extension replaced with .bmp), if it has one.
+                if (assimpMaterial.TextureNormal.FilePath != null)
+                    material.NormalMap = $"{Path.GetFileNameWithoutExtension(assimpMaterial.TextureNormal.FilePath)}.bmp";
+
+                // Set this material's environment map texture (with the extension replaced with .bmp), if it has one.
+                if (assimpMaterial.TextureSpecular.FilePath != null)
+                    material.EnvironmentMap = $"{Path.GetFileNameWithoutExtension(assimpMaterial.TextureSpecular.FilePath)}.bmp";
+
+                // Save this material.
+                Data.Add(material);
+            }
         }
     }
 }

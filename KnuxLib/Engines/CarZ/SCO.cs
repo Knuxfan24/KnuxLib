@@ -1,4 +1,7 @@
-﻿namespace KnuxLib.Engines.CarZ
+﻿using Assimp.Configs;
+using Assimp;
+
+namespace KnuxLib.Engines.CarZ
 {
     // TODO: What does SCO mean?
     public class SCO : FileBase
@@ -231,12 +234,86 @@
 
         /// <summary>
         /// Imports an Assimp compatible model and converts it to an SCO model.
-        /// TODO: Implement.
+        /// TODO: Seems to get texture coordinates wrong.
         /// </summary>
         /// <param name="filepath">The filepath of the model to import.</param>
         public void ImportAssimp(string filepath)
         {
-            throw new NotImplementedException();
+            // Setup AssimpNet Scene.
+            AssimpContext assimpImporter = new();
+            KeepSceneHierarchyConfig config = new(true);
+            assimpImporter.SetConfig(config);
+            Scene assimpModel = assimpImporter.ImportFile(filepath, PostProcessSteps.PreTransformVertices);
+
+            // Set the model name based on the file we're importing.
+            Data.Name = Path.GetFileNameWithoutExtension(filepath);
+
+            // Set up a count of the amount of vertices we've handled so that faces line up correctly.
+            int vertCount = 0;
+
+            // Loop through all meshes in the imported file.
+            for (int i = 0; i < assimpModel.Meshes.Count; i++)
+            {
+                // Add all the vertices for this mesh.
+                foreach (var vertex in assimpModel.Meshes[i].Vertices)
+                    Data.Vertices.Add(new(vertex.X, vertex.Y, vertex.Z));
+
+                // Set up a count of the texture coordinates so we can keep track of which to use.
+                int textureCoordinate = 0;
+
+                // Loop through each face in this mesh.
+                foreach (var assimpFace in assimpModel.Meshes[i].Faces)
+                {
+                    // Create a new face.
+                    Face face = new();
+
+                    // Set material name for this face.
+                    face.MaterialName = assimpModel.Materials[i].Name;
+
+                    // Set the vertex indices on this face.
+                    face.VertexIndices[0] = (short)(assimpFace.Indices[0] + vertCount);
+                    face.VertexIndices[1] = (short)(assimpFace.Indices[1] + vertCount);
+                    face.VertexIndices[2] = (short)(assimpFace.Indices[2] + vertCount);
+
+                    // Set the texture coordinates for this face.
+                    face.TextureCoordinates[0] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate].X;
+                    face.TextureCoordinates[1] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate].Y;
+                    face.TextureCoordinates[2] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate + 1].X;
+                    face.TextureCoordinates[3] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate + 1].Y;
+                    face.TextureCoordinates[4] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate + 2].X;
+                    face.TextureCoordinates[5] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate + 2].Y;
+
+                    // Save this face.
+                    Data.Faces.Add(face);
+
+                    // Increment texture coordinates by 3.
+                    textureCoordinate += 3;
+                }
+
+                // Add this mesh's vertex count to the vertCount int.
+                vertCount += assimpModel.Meshes[i].Vertices.Count;
+            }
+            
+            // Set up list for the X, Y and Z coordinates for every vertex.
+            List<float> xValues = new();
+            List<float> yValues = new();
+            List<float> zValues = new();
+
+            // Get every vertex's X, Y and Z coordinate.
+            foreach (var vertex in Data.Vertices)
+            {
+                xValues.Add(vertex.X);
+                yValues.Add(vertex.Y);
+                zValues.Add(vertex.Z);
+            }
+
+            // Sort the list of coordinates.
+            xValues.Sort();
+            yValues.Sort();
+            zValues.Sort();
+
+            // Calculate the model's central point.
+            Data.CentralPoint = new((xValues[0] + xValues[^1]) / 2, (yValues[0] + yValues[^1]) / 2, (zValues[0] + zValues[^1]) / 2);
         }
     }
 }
