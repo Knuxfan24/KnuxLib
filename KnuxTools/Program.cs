@@ -25,11 +25,11 @@ namespace KnuxTools
                         switch (Path.GetExtension(arg))
                         {
                             // CarZ Engine Formats
-                            case ".mat": using (KnuxLib.Engines.CarZ.MaterialLibrary mat = new(arg, true)) { } break;
-                            case ".sco": using (KnuxLib.Engines.CarZ.SCO sco = new(arg, true)) { } break;
+                            case ".mat": using (KnuxLib.Engines.CarZ.MaterialLibrary mat = new(arg, true)) break;
+                            case ".sco": using (KnuxLib.Engines.CarZ.SCO sco = new(arg, true)) break;
 
                             // ProjectM Engine Formats
-                            case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) { } break;
+                            case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;
                         }
                     }
                 }
