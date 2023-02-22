@@ -38,6 +38,41 @@ Notes:
 
 - Definitely used by other Data Design Interactive games, but I have yet to obtain and look at them myself.
 
+## Hedgehog Engine
+
+Known games:
+
+- Sonic Unleashed
+
+- Sonic Colours
+
+- Sonic Generations
+
+- Sonic Lost World
+
+- Sonic Colours Ultimate
+
+> **Note**
+> Sonic Colours Ultimate also uses Godot components
+
+- Mario & Sonic at the Rio 2016 Olympic Games
+
+- Sonic Forces
+
+- Olympic Games Tokyo 2020
+
+- Mario & Sonic at the Tokyo 2020 Olympic Games
+
+- Sakura Wars
+
+- Puyo Puyo Tetris 2
+
+- Sonic Frontiers
+
+Supported formats:
+
+- [Archive Info](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+
 ## Project M Engine
 
 Known games:

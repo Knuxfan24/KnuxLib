@@ -80,17 +80,25 @@ namespace KnuxTools
 
                             // Seralised Data
                             case ".json":
-                                // Ask the user what to convert this json to.
+                                // Ask the user what to convert this JSON to.
                                 Console.WriteLine
                                 (
                                     "This file is a generic seralised type, please specify what format it is;\n" +
-                                    "1. Project M Message Table"
+                                    "1. Hegehog Engine Archive Info\n" +
+                                    "2. Project M Message Table"
                                 );
 
                                 // Deseralise the JSON to the selected format.
                                 switch (Console.ReadKey().KeyChar)
                                 {
                                     case '1':
+                                        using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new())
+                                        {
+                                            archiveInfo.Data = archiveInfo.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.ArchiveInfo.ArchiveEntry>>(arg);
+                                            archiveInfo.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.arcinfo");
+                                        }
+                                        break;
+                                    case '2':
                                         using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
                                         {
                                             messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
@@ -121,6 +129,9 @@ namespace KnuxTools
                                     case '2': using (KnuxLib.Engines.Gods.WAD wad = new(arg, KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii, true)) break;
                                 }
                                 break;
+
+                            // Hedgehog Engine Formats
+                            case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
 
                             // ProjectM Engine Formats
                             case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;

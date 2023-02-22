@@ -130,10 +130,10 @@
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public override void Save(Stream filepath)
+        public void Save(string filepath)
         {
             // Set up Marathon's BinaryWriter.
-            BinaryWriterEx writer = new(filepath, System.Text.Encoding.UTF8, true);
+            BinaryWriterEx writer = new(File.Create(filepath), System.Text.Encoding.UTF8, true);
 
             // Write this file's signature.
             writer.Write("tdpack");
@@ -208,6 +208,9 @@
             // Fill in the file size.
             writer.BaseStream.Position = sizePos;
             writer.Write((uint)writer.BaseStream.Length);
+
+            // Close Marathon's BinaryWriter.
+            writer.Close();
         }
 
         /// <summary>
