@@ -18,12 +18,25 @@ namespace KnuxTools
                     // Directory based checks.
                     if (Directory.Exists(arg))
                     {
-                        // Ask the user what to pack this folder as (currently disabled as the only archive format I support is the Gods Engine WADs and I haven't written import stuff yet).
-                        //Console.WriteLine
-                        //(
-                        //    "Please specify the archive type to pack this directory into;\n" +
-                        //    "1. Gods Engine WAD File"
-                        //);
+                        // Print the directory name.
+                        Console.WriteLine($"Directory: {arg}\n");
+
+                        // Ask the user what to pack this folder as.
+                        Console.WriteLine
+                        (
+                            "Please specify the archive type to pack this directory into;\n" +
+                            "1. Gods Engine WAD File"
+                        );
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1':
+                                using (KnuxLib.Engines.Gods.WAD wad = new())
+                                {
+                                    wad.Import(arg);
+                                    wad.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.wad");
+                                }
+                                break;
+                        }
                         break;
                     }
 
@@ -40,17 +53,17 @@ namespace KnuxTools
                             case ".fbx":
                             case ".dae":
                             case ".obj":
-                                // Ask the user what to convert this model to (currently disabled as only the CarZ SCO format has this).
-                                //Console.WriteLine
-                                //(
-                                //    "This file is a generic seralised type, please specify what format it is;\n" +
-                                //    "1. CarZ Engine Model"
-                                //);
+                                // Ask the user what to convert this model to.
+                                Console.WriteLine
+                                (
+                                    "This file is a generic seralised type, please specify what format it is;\n" +
+                                    "1. CarZ Engine Model"
+                                );
 
                                 // Convert the model to the selected format.
-                                //switch (Console.ReadKey().KeyChar)
-                                //{
-                                //    case '1':
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
                                         using (KnuxLib.Engines.CarZ.SCO sco = new())
                                         {
                                             sco.ImportAssimp(arg);
@@ -61,30 +74,30 @@ namespace KnuxTools
                                             mat.ImportAssimp(arg);
                                             mat.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.mat");
                                         }
-                                //        break;
-                                //}
+                                        break;
+                                }
                                 break;
 
                             // Seralised Data
                             case ".json":
-                                // Ask the user what to convert this json to (currently disabled as only the Project M Message Table format has this).
-                                //Console.WriteLine
-                                //(
-                                //    "This file is a generic seralised type, please specify what format it is;\n" +
-                                //    "1. CarZ Engine Model"
-                                //);
+                                // Ask the user what to convert this json to.
+                                Console.WriteLine
+                                (
+                                    "This file is a generic seralised type, please specify what format it is;\n" +
+                                    "1. Project M Message Table"
+                                );
 
-                                // Convert the model to the selected format.
-                                //switch (Console.ReadKey().KeyChar)
-                                //{
-                                //    case '1':
-                                using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
+                                // Deseralise the JSON to the selected format.
+                                switch (Console.ReadKey().KeyChar)
                                 {
-                                    messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
-                                    messageTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.dat");
+                                    case '1':
+                                        using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
+                                        {
+                                            messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
+                                            messageTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.dat");
+                                        }
+                                        break;
                                 }
-                                //        break;
-                                //}
                                 break;
 
                             // CarZ Engine Formats
