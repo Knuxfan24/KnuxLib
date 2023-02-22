@@ -22,6 +22,8 @@ Notes:
 
 - The meaning of the SCO extension is unknown. Something Something Object?
 
+- Definitely used by other Stellar Stone games, but I have yet to obtain and look at them myself.
+
 ## Gods Engine
 
 Known games:
@@ -31,6 +33,10 @@ Known games:
 Supported formats:
 
 - [WAD Archive](KnuxLib/Engines/Gods/WAD.cs) reading and data extraction.
+
+Notes:
+
+- Definitely used by other Data Design Interactive games, but I have yet to obtain and look at them myself.
 
 ## Project M Engine
 
