@@ -40,10 +40,10 @@
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        public override void Load(Stream filepath)
+        public override void Load(string filepath)
         {
             // Set up Marathon's BinaryReader.
-            BinaryReaderEx reader = new(filepath, System.Text.Encoding.UTF8, true);
+            BinaryReaderEx reader = new(File.OpenRead(filepath), System.Text.Encoding.UTF8, true);
 
             // Read this file's signature.
             reader.ReadSignature(6, "tdpack");
@@ -90,38 +90,40 @@
 
             reader.JumpAhead(0x10); // Skip 0x10 bytes of nulls that are likely padding.
 
-            // Read all the languages.
-            // Japanese
+            // Read the Japanese messages.
             reader.JumpTo(jpnOffset);
             Data.Japanese = reader.ReadNullTerminatedString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-            // English
+            // Read the English messages.
             reader.JumpTo(enOffset);
             Data.English = reader.ReadNullTerminatedString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-            // Dutch
+            // Read the Dutch messages.
             reader.JumpTo(deOffset);
             Data.German = reader.ReadNullTerminatedString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-            // French
+            // Read the French messages.
             reader.JumpTo(frOffset);
             Data.French = reader.ReadNullTerminatedString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-            // Spanish
+            // Read the Spanish messages.
             reader.JumpTo(esOffset);
             Data.Spanish = reader.ReadNullTerminatedString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-            // Italian
+            // Read the Italian messages.
             reader.JumpTo(itOffset);
             Data.Italian = reader.ReadNullTerminatedString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-            // American French
+            // Read the American French messages.
             reader.JumpTo(usfrOffset);
             Data.AmericanFrench = reader.ReadNullTerminatedString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
 
-            // American Spanish
+            // Read the American Spanish messages.
             reader.JumpTo(usesOffset);
             Data.AmericanSpanish = reader.ReadNullTerminatedString().Split(new string[] { "\r\n" }, StringSplitOptions.None);
+
+            // Close Marathon's BinaryReader.
+            reader.Close();
         }
 
         /// <summary>
