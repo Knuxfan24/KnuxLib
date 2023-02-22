@@ -55,6 +55,9 @@ Known games:
 > **Note**
 > Sonic Colours Ultimate also uses Godot components
 
+> **Note**
+> The following games all use the updated Hedgehog Engine 2.
+
 - Mario & Sonic at the Rio 2016 Olympic Games
 
 - Sonic Forces
