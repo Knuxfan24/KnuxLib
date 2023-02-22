@@ -188,7 +188,7 @@
 
         /// <summary>
         /// Saves this format's file.
-        /// TODO: Implement
+        /// TODO: Implement.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
         /// <param name="version">The WAD version to save with.</param>
