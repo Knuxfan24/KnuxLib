@@ -46,7 +46,7 @@ Known games:
 
 Supported formats:
 
-- [Message Table](KnuxLib/Engines/ProjectM/MessageTable.cs) reading, writing and JSON seralisiation. JSON deseralisiation possible in code, but not through KnuxTools yet.
+- [Message Table](KnuxLib/Engines/ProjectM/MessageTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
 
 Notes:
 

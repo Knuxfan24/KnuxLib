@@ -40,7 +40,7 @@ namespace KnuxTools
                             case ".fbx":
                             case ".dae":
                             case ".obj":
-                                // Ask the user what to convert this model to (currently disabled as only the CarZ SCO format has this.
+                                // Ask the user what to convert this model to (currently disabled as only the CarZ SCO format has this).
                                 //Console.WriteLine
                                 //(
                                 //    "This file is a generic seralised type, please specify what format it is;\n" +
@@ -61,6 +61,28 @@ namespace KnuxTools
                                             mat.ImportAssimp(arg);
                                             mat.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.mat");
                                         }
+                                //        break;
+                                //}
+                                break;
+
+                            // Seralised Data
+                            case ".json":
+                                // Ask the user what to convert this json to (currently disabled as only the Project M Message Table format has this).
+                                //Console.WriteLine
+                                //(
+                                //    "This file is a generic seralised type, please specify what format it is;\n" +
+                                //    "1. CarZ Engine Model"
+                                //);
+
+                                // Convert the model to the selected format.
+                                //switch (Console.ReadKey().KeyChar)
+                                //{
+                                //    case '1':
+                                using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
+                                {
+                                    messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
+                                    messageTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.dat");
+                                }
                                 //        break;
                                 //}
                                 break;
