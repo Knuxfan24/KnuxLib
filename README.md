@@ -42,15 +42,15 @@ Notes:
 
 Known games:
 
-- Sonic Unleashed
+- Sonic Unleashed (X360, PS3)
 
-- Sonic Colours
+- Sonic Colours (Wii)
 
-- Sonic Generations
+- Sonic Generations (X360, PS3, PC)
 
-- Sonic Lost World
+- Sonic Lost World (Wii U, PC)
 
-- Sonic Colours Ultimate
+- Sonic Colours Ultimate (XB1, PS4, NSW, PC)
 
 > **Note**
 > Sonic Colours Ultimate also uses Godot components
@@ -58,19 +58,19 @@ Known games:
 > **Note**
 > The following games all use the updated Hedgehog Engine 2.
 
-- Mario & Sonic at the Rio 2016 Olympic Games
+- Mario & Sonic at the Rio 2016 Olympic Games (Wii U)
 
-- Sonic Forces
+- Sonic Forces (XB1, PS4, NSW, PC)
 
-- Olympic Games Tokyo 2020
+- Olympic Games Tokyo 2020 (XB1, PS4, NSW, PC)
 
-- Mario & Sonic at the Tokyo 2020 Olympic Games
+- Mario & Sonic at the Tokyo 2020 Olympic Games (NSW)
 
-- Sakura Wars
+- Sakura Wars (PS4)
 
-- Puyo Puyo Tetris 2
+- Puyo Puyo Tetris 2 (XB1, PS4, NSW, PC)
 
-- Sonic Frontiers
+- Sonic Frontiers (XB1, PS4, NSW, PC)
 
 Supported formats:
 
@@ -85,6 +85,20 @@ Known games:
 Supported formats:
 
 - [Message Table](KnuxLib/Engines/ProjectM/MessageTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+
+Notes:
+
+- Uncertain if this is the engine's name.
+
+## Rockman X7 Engine
+
+Known games:
+
+- Megaman X7 (PC, PS2)
+
+Supported formats:
+
+- [Stage Entity Table](KnuxLib/Engines/RockmanX7/StageEntityTable.cs) basic reading, writing, JSON seralisiation and JSON deseralisiation.
 
 Notes:
 

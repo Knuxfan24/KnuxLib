@@ -85,7 +85,8 @@ namespace KnuxTools
                                 (
                                     "This file is a generic seralised type, please specify what format it is;\n" +
                                     "1. Hegehog Engine Archive Info\n" +
-                                    "2. Project M Message Table"
+                                    "2. Project M Message Table\n" +
+                                    "3. Rockman X7 Stage Entity Table"
                                 );
 
                                 // Deseralise the JSON to the selected format.
@@ -103,6 +104,13 @@ namespace KnuxTools
                                         {
                                             messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
                                             messageTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.dat");
+                                        }
+                                        break;
+                                    case '3':
+                                        using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
+                                        {
+                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
+                                            stageEntityTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.328F438B");
                                         }
                                         break;
                                 }
@@ -135,6 +143,9 @@ namespace KnuxTools
 
                             // ProjectM Engine Formats
                             case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;
+
+                            // Rockman X7 Engine Formats
+                            case ".328f438b": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
                         }
                     }
                 }
