@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text;
 
 namespace KnuxTools
 {
@@ -8,6 +9,9 @@ namespace KnuxTools
         {
             // Force culture info 'en-GB' to prevent errors with values altered by culture-specific differences.
             CultureInfo.DefaultThreadCurrentCulture = CultureInfo.DefaultThreadCurrentUICulture = new CultureInfo("en-GB");
+
+            // Enable shift-jis for HedgeLib# stuff.
+            Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             // Check for arguments.
             if (args.Length > 0)

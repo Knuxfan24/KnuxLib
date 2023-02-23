@@ -10,4 +10,8 @@
     <PackageReference Include="BE32.Marathon" Version="1.0.68" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\HedgeLib\HedgeLib\HedgeLib.csproj" />
+  </ItemGroup>
+
 </Project>
