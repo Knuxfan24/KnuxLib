@@ -1,0 +1,4 @@
+[submodule "HedgeLib"]
+	path = HedgeLib
+	url = https://github.com/Radfordhound/HedgeLib
+	branch = master
