@@ -76,6 +76,8 @@ Supported formats:
 
 - [Archive Info](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
 
+- [Bullet Instance](KnuxLib/Engines/Hedgehog/BulletInstance.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+
 ## Project M Engine
 
 Known games:
