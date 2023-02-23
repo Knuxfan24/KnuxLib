@@ -107,11 +107,29 @@ namespace KnuxTools
                                         }
                                         break;
                                     case '3':
-                                        using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
+                                        Console.WriteLine
+                                        (
+                                            "This file has multiple file extension options, please specifiy the extension to save with;\n" +
+                                            "1. .OSD (PlayStation 2/PC)\n" +
+                                            "2. .328F438B (Legacy Collection)"
+                                        );
+                                        switch (Console.ReadKey().KeyChar)
                                         {
-                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
-                                            stageEntityTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.328F438B");
-                                        }
+                                            case '1':
+                                                using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
+                                                {
+                                                    stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
+                                                    stageEntityTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.OSD");
+                                                }
+                                                break;
+                                            case '2':
+                                                using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
+                                                {
+                                                    stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
+                                                    stageEntityTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.328F438B");
+                                                }
+                                                break;
+                                            }
                                         break;
                                 }
                                 break;

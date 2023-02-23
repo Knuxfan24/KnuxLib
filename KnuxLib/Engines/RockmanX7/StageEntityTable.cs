@@ -1,7 +1,6 @@
 ﻿namespace KnuxLib.Engines.RockmanX7
 {
     // TODO: This is basically all unknown, mess around and find out what the values are.
-    // TODO: Check the Korean PC release and the original PS2 version for differences.
     public class StageEntityTable : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
