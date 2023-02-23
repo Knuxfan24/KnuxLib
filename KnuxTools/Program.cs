@@ -109,7 +109,7 @@ namespace KnuxTools
                                     case '3':
                                         Console.WriteLine
                                         (
-                                            "This file has multiple file extension options, please specifiy the extension to save with;\n" +
+                                            "\n\nThis file has multiple file extension options, please specifiy the extension to save with;\n" +
                                             "1. .OSD (PlayStation 2/PC)\n" +
                                             "2. .328F438B (Legacy Collection)"
                                         );
@@ -163,7 +163,7 @@ namespace KnuxTools
                             case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;
 
                             // Rockman X7 Engine Formats
-                            case ".328f438b": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
+                            case ".328f438b": case ".osd": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
                         }
                     }
                 }
