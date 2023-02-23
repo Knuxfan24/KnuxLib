@@ -217,6 +217,9 @@
                 // Save this object.
                 Data.Add(obj);
             }
+
+            // Close Marathon's BinaryReader.
+            reader.Close();
         }
 
         /// <summary>
