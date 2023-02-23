@@ -1,8 +1,7 @@
 {
   "profiles": {
     "KnuxTools": {
-      "commandName": "Project",
-      "commandLineArgs": "\"D:\\Standalone Games\\Big Rigs\\Data\\Cars\\AM\\AM_Body.sco\""
+      "commandName": "Project"
     }
   }
 }

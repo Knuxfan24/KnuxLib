@@ -150,9 +150,14 @@ namespace KnuxTools
                     }
                 }
             }
+
+            // If there are no arguments, then inform the user.
             else
             {
-                // TODO: Do something if there isn't any files passed.
+                Console.WriteLine("No file or directory provided to process.\n" +
+                                  "Please provide one of the supported file types listed on the GitHub README at \nhttps://github.com/Knuxfan24/KnuxLib#supported\n\n" +
+                                  "Press any key to close.");
+                Console.ReadKey();
             }
         }
     }
