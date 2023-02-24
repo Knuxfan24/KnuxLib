@@ -251,9 +251,25 @@ namespace KnuxTools
             // If there are no arguments, then inform the user.
             else
             {
-                Console.WriteLine("No file or directory provided to process.\n" +
-                                  "Please provide one of the supported file types listed on the GitHub README at \nhttps://github.com/Knuxfan24/KnuxLib#supported\n\n" +
-                                  "Press any key to close.");
+                Console.WriteLine("Command line tool used to convert the following supported file types to various other formats.\n\n" +
+                                  "CarZ Engine:\n" +
+                                  "Material Library (.mat) - Exports to the MTL material library standard and imports from an Assimp compatible model.\n" +
+                                  "3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model.\n\n" +
+                                  "Gods Engine:\n" +
+                                  "WAD Archive (.wad) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n\n" +
+                                  "Hedgehog Engine:\n" +
+                                  "Archive Info (.arcinfo) - Converts to and from a JSON file.\n" +
+                                  "Bullet Instance (.pccol/.pcmodel) - Converts to and from a JSON file.\n\n" +
+                                  "Nu2 Engine:\n" +
+                                  "Wumpa Fruit Table (.wmp) - Converts to and from a JSON file.\n\n" +
+                                  "Project M Engine:\n" +
+                                  "Message Table (.dat) - Converts to and from a JSON file.\n\n" +
+                                  "Rockman X7 Engine:\n" +
+                                  "Stage Entity Table (.328f438b/.osd) - Converts to and from a JSON file.\n\n" +
+                                  "Usage:\n" +
+                                  "KnuxTools.exe \"path\\to\\supported\\file\"\n" +
+                                  "Alternatively, simply drag a supported file onto this application in Windows Explorer.\n\n" +
+                                  "Press any key to continue.");
                 Console.ReadKey();
             }
         }
