@@ -1,6 +1,5 @@
 ﻿namespace KnuxLib.Engines.Nu2
 {
-    // TODO: Check which endianness the PS2 version uses.
     public class WumpaTable : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -17,7 +16,7 @@
         public enum FormatVersion
         {
             GameCube = 0,
-            Xbox = 1
+            PlayStation2Xbox = 1
         }
 
         // Actual data presented to the end user.
@@ -28,7 +27,7 @@
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
         /// <param name="version">The system version to read this file as.</param>
-        public void Load(string filepath, FormatVersion version = FormatVersion.Xbox)
+        public void Load(string filepath, FormatVersion version = FormatVersion.GameCube)
         {
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath));

@@ -138,7 +138,7 @@ namespace KnuxTools
                                         (
                                             "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
                                             "1. GameCube\n" +
-                                            "2. Xbox"
+                                            "2. PlayStation2/Xbox"
                                         );
                                         switch (Console.ReadKey().KeyChar)
                                         {
@@ -153,7 +153,7 @@ namespace KnuxTools
                                                 using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
                                                 {
                                                     wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
-                                                    wumpaTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.Xbox);
+                                                    wumpaTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox);
                                                 }
                                                 break;
                                         }
@@ -227,14 +227,14 @@ namespace KnuxTools
                                         (
                                             "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
                                             "1. GameCube\n" +
-                                            "2. Xbox"
+                                            "2. PlayStation 2/Xbox"
                                         );
 
                                 // Seralise the wmp file according to the selected version.
                                 switch (Console.ReadKey().KeyChar)
                                 {
                                     case '1': using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube, true)) break;
-                                    case '2': using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.Xbox, true)) break;
+                                    case '2': using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox, true)) break;
                                 }
                                 break;
 
