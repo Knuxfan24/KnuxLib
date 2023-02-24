@@ -78,6 +78,22 @@ Supported formats:
 
 - [Bullet Instance](KnuxLib/Engines/Hedgehog/BulletInstance.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
 
+## Nu2 Engine
+
+Known games:
+
+- Crash Bandicoot: The Wrath of Cortex (PS2, GCN, Xbox)
+
+Supported formats:
+
+- [Wumpa Fruit Table](KnuxLib/Engines/Nu2/WumpaTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+
+Notes:
+
+- Uncertain if this is the engine's name.
+
+- Definitely used by other Travellers Tales games, but I have yet to obtain and look at them myself.
+
 ## Project M Engine
 
 Known games:

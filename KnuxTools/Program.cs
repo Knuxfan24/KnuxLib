@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Numerics;
 using System.Text;
 
 namespace KnuxTools
@@ -90,8 +91,9 @@ namespace KnuxTools
                                     "This file is a generic seralised type, please specify what format it is;\n" +
                                     "1. Hedgehog Engine Archive Info\n" +
                                     "2. Hedgehog Engine Bullet Instance\n" +
-                                    "3. Project M Message Table\n" +
-                                    "4. Rockman X7 Stage Entity Table"
+                                    "3. Nu2 Engine Wumpa Fruit Table\n" +
+                                    "4. Project M Message Table\n" +
+                                    "5. Rockman X7 Stage Entity Table"
                                 );
 
                                 // Deseralise the JSON to the selected format.
@@ -105,6 +107,7 @@ namespace KnuxTools
                                         }
                                         break;
                                     case '2':
+                                        // Ask the user for the extension to save with.
                                         Console.WriteLine
                                         (
                                             "\n\nThis file has multiple file extension options, please specifiy the extension to save with;\n" +
@@ -130,13 +133,40 @@ namespace KnuxTools
                                         }
                                         break;
                                     case '3':
+                                        // Ask the user for the version to save with.
+                                        Console.WriteLine
+                                        (
+                                            "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
+                                            "1. GameCube\n" +
+                                            "2. Xbox"
+                                        );
+                                        switch (Console.ReadKey().KeyChar)
+                                        {
+                                            case '1':
+                                                using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
+                                                {
+                                                    wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
+                                                    wumpaTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube);
+                                                }
+                                                break;
+                                            case '2':
+                                                using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
+                                                {
+                                                    wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
+                                                    wumpaTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.Xbox);
+                                                }
+                                                break;
+                                        }
+                                        break;
+                                    case '4':
                                         using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
                                         {
                                             messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
                                             messageTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.dat");
                                         }
                                         break;
-                                    case '4':
+                                    case '5':
+                                        // Ask the user for the extension to save with.
                                         Console.WriteLine
                                         (
                                             "\n\nThis file has multiple file extension options, please specifiy the extension to save with;\n" +
@@ -189,6 +219,24 @@ namespace KnuxTools
                             // Hedgehog Engine Formats
                             case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
                             case ".pcmodel": case ".pccol": using (KnuxLib.Engines.Hedgehog.BulletInstance bulletInstance = new(arg, true)) break;
+
+                            // Nu2 Engine Formats
+                            case ".wmp":
+                                // Ask the user for the wmp version.
+                                Console.WriteLine
+                                        (
+                                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                                            "1. GameCube\n" +
+                                            "2. Xbox"
+                                        );
+
+                                // Seralise the wmp file according to the selected version.
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1': using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube, true)) break;
+                                    case '2': using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.Xbox, true)) break;
+                                }
+                                break;
 
                             // ProjectM Engine Formats
                             case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;
