@@ -1,6 +1,9 @@
 ﻿namespace KnuxLib.Engines.Alchemy
 {
     // Based on https://wiki.xentax.com/index.php/Vicarious_Visions_GOB_GFC#GOB.2C_GFC
+    // TODO: Format saving.
+    // TODO: Format importing.
+    // TODO: Check the endianness of these formats on the Xbox version.
     public class AssetsContainer : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.

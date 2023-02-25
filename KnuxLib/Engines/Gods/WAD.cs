@@ -2,6 +2,8 @@
 {
     // TODO: Get samples of the WAD files from other Data Design Interactive games that run on their GODS engine. Add new FormatVersions as approriate.
     // TODO: The folder structure of this is ugly, but I don't see how else to do it.
+    // TODO: Format saving.
+    // TODO: Format importing.
     public class WAD : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
