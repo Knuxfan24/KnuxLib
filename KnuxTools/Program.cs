@@ -292,24 +292,32 @@ namespace KnuxTools
             else
             {
                 Console.WriteLine("Command line tool used to convert the following supported file types to various other formats.\n" +
-                                  "Each format converts to and from a JSON file unless otherwise specified.\n\n" +
-                                  "Alchemy Engine:\n" +
-                                  "Assets Container Archive Pair (.gfc/gob) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n\n" +
-                                  "CarZ Engine:\n" +
+                                  "Each format converts to and from a JSON file unless otherwise specified.\n");
+
+                Console.WriteLine("Alchemy Engine:\n" +
+                                  "Assets Container Archive Pair (.gfc/gob) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+
+                Console.WriteLine("CarZ Engine:\n" +
                                   "Material Library (.mat) - Exports to the MTL material library standard and imports from an Assimp compatible model.\n" +
-                                  "3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model.\n\n" +
-                                  "Gods Engine:\n" +
-                                  "WAD Archive (.wad) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n\n" +
-                                  "Hedgehog Engine:\n" +
+                                  "3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model.\n");
+
+                Console.WriteLine("Gods Engine:\n" +
+                                  "WAD Archive (.wad) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+
+                Console.WriteLine("Hedgehog Engine:\n" +
                                   "Archive Info (.arcinfo)\n" +
-                                  "Bullet Instance (.pccol/.pcmodel)\n\n" +
-                                  "Nu2 Engine:\n" +
-                                  "Wumpa Fruit Table (.wmp)\n\n" +
-                                  "Project M Engine:\n" +
-                                  "Message Table (.dat)\n\n" +
-                                  "Rockman X7 Engine:\n" +
-                                  "Stage Entity Table (.328f438b/.osd)\n\n" +
-                                  "Usage:\n" +
+                                  "Bullet Instance (.pccol/.pcmodel)\n");
+
+                Console.WriteLine("Nu2 Engine:\n" +
+                                  "Wumpa Fruit Table (.wmp)\n");
+
+                Console.WriteLine("Project M Engine:\n" +
+                                  "Message Table (.dat)\n");
+
+                Console.WriteLine("Rockman X7 Engine:\n" +
+                                  "Stage Entity Table (.328f438b/.osd)\n");
+
+                Console.WriteLine("Usage:\n" +
                                   "KnuxTools.exe \"path\\to\\supported\\file\"\n" +
                                   "Alternatively, simply drag a supported file onto this application in Windows Explorer.\n\n" +
                                   "Press any key to continue.");
