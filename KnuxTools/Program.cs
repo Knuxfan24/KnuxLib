@@ -30,15 +30,42 @@ namespace KnuxTools
                         Console.WriteLine
                         (
                             "Please specify the archive type to pack this directory into;\n" +
-                            "1. Gods Engine WAD File"
+                            "1. Alchemy Engine GFC/GOB File Pair\n" +
+                            "2. Gods Engine WAD File"
                         );
                         switch (Console.ReadKey().KeyChar)
                         {
                             case '1':
-                                using (KnuxLib.Engines.Gods.WAD wad = new())
+                                using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new())
                                 {
-                                    wad.Import(arg);
-                                    wad.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.wad");
+                                    assetsContainer.Import(arg);
+                                    assetsContainer.Save($@"{Path.GetDirectoryName(arg)}");
+                                }
+                                break;
+                            case '2':
+                                // Ask the user for the WAD version to save as.
+                                Console.WriteLine
+                                (
+                                    "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
+                                    "1. Ninjabread Man PC/PS2\n" +
+                                    "2. Ninjabread Man Wii"
+                                );
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
+                                        using (KnuxLib.Engines.Gods.WAD wad = new())
+                                        {
+                                            wad.Import(arg);
+                                            wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_PCPS2);
+                                        }
+                                        break;
+                                    case '2':
+                                        using (KnuxLib.Engines.Gods.WAD wad = new())
+                                        {
+                                            wad.Import(arg);
+                                            wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii);
+                                        }
+                                        break;
                                 }
                                 break;
                         }
@@ -54,7 +81,7 @@ namespace KnuxTools
                         // Treat this file differently depending on type.
                         switch (Path.GetExtension(arg).ToLower())
                         {
-                            // Seralised Models
+                            #region Seralised Models
                             case ".fbx":
                             case ".dae":
                             case ".obj":
@@ -82,8 +109,9 @@ namespace KnuxTools
                                         break;
                                 }
                                 break;
+                            #endregion
 
-                            // Seralised Data
+                            #region Seralised Data
                             case ".json":
                                 // Ask the user what to convert this JSON to.
                                 Console.WriteLine
@@ -193,12 +221,19 @@ namespace KnuxTools
                                         break;
                                 }
                                 break;
+                            #endregion
 
-                            // CarZ Engine Formats
+                            #region Alchemy Engine Formats
+                            case ".gfc": using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new(arg, true)) break;
+                            case ".gob": using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.gfc", true)) break;
+                            #endregion
+
+                            #region CarZ Engine Formats
                             case ".mat": using (KnuxLib.Engines.CarZ.MaterialLibrary mat = new(arg, true)) break;
                             case ".sco": using (KnuxLib.Engines.CarZ.SCO sco = new(arg, true)) break;
+                            #endregion
 
-                            // Gods Engine Formats
+                            #region Gods Engine Formats
                             case ".wad":
                                 // Ask the user for the WAD version.
                                 Console.WriteLine
@@ -215,12 +250,14 @@ namespace KnuxTools
                                     case '2': using (KnuxLib.Engines.Gods.WAD wad = new(arg, KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii, true)) break;
                                 }
                                 break;
+                            #endregion
 
-                            // Hedgehog Engine Formats
+                            #region Hedgehog Engine Formats
                             case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
                             case ".pcmodel": case ".pccol": using (KnuxLib.Engines.Hedgehog.BulletInstance bulletInstance = new(arg, true)) break;
+                            #endregion
 
-                            // Nu2 Engine Formats
+                            #region Nu2 Engine Formats
                             case ".wmp":
                                 // Ask the user for the wmp version.
                                 Console.WriteLine
@@ -237,12 +274,15 @@ namespace KnuxTools
                                     case '2': using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox, true)) break;
                                 }
                                 break;
+                            #endregion
 
-                            // ProjectM Engine Formats
+                            #region ProjectM Engine Formats
                             case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;
+                            #endregion
 
-                            // Rockman X7 Engine Formats
+                            #region
                             case ".328f438b": case ".osd": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
+                            #endregion
                         }
                     }
                 }
@@ -253,6 +293,8 @@ namespace KnuxTools
             {
                 Console.WriteLine("Command line tool used to convert the following supported file types to various other formats.\n" +
                                   "Each format converts to and from a JSON file unless otherwise specified.\n\n" +
+                                  "Alchemy Engine:\n" +
+                                  "Assets Container Archive Pair (.gfc/gob) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n\n" +
                                   "CarZ Engine:\n" +
                                   "Material Library (.mat) - Exports to the MTL material library standard and imports from an Assimp compatible model.\n" +
                                   "3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model.\n\n" +

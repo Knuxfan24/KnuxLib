@@ -4,6 +4,20 @@ A repository for me to push various bits of code for random file formats in rand
 
 # Supported:
 
+## Alchemy Engine
+
+Known games:
+
+- Crash Nitro Kart (PS2, GCN, Xbox)
+
+Supported formats:
+
+- [Assets Container](KnuxLib/Engines/Alchemy/AssetsContainer.cs) reading and data extraction.
+
+Notes:
+
+- Definitely used by other Vicarious Visions games, but I have yet to obtain and look at them myself.
+
 ## CarZ Engine
 
 Known games:

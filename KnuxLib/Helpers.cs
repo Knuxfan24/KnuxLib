@@ -97,5 +97,24 @@ namespace KnuxLib
             writer.Write(value.Y);
             writer.Write(value.Z);
         }
+
+        /// <summary>
+        /// Combines multiple byte arrays into one.
+        /// Taken from https://www.techiedelight.com/concatenate-byte-arrays-csharp/
+        /// </summary>
+        /// <param name="arrays">The array of arrays to combine.</param>
+        public static byte[] CombineByteArrays(byte[][] arrays)
+        {
+            byte[] bytes = new byte[arrays.Sum(a => a.Length)];
+            int offset = 0;
+
+            foreach (byte[] array in arrays)
+            {
+                Buffer.BlockCopy(array, 0, bytes, offset, array.Length);
+                offset += array.Length;
+            }
+
+            return bytes;
+        }
     }
 }
