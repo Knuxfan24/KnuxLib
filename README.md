@@ -1,6 +1,8 @@
 # KnuxLib
 
-A repository for me to push various bits of code for random file formats in random games I'm tinkering with, alongside basic command line tools for format conversion where applicable.
+A repository for me to push various bits of C# code for random file formats in random games I'm tinkering with, alongside basic command line tools for format conversion where applicable.
+
+This repository consists of three projects. The KnuxLib project is the main library, the KnuxTest project is an empty command line application I use to test things while reverse engineering and the KnuxTools project is the command line application intended for use by end users.
 
 # Supported:
 
