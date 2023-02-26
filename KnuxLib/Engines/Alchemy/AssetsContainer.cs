@@ -29,9 +29,9 @@
             public uint DataOffset { get; set; }
 
             /// <summary>
-            /// The block that should follow this one, as blocks can only be 0x00010000 bytes long.
+            /// The block that should follow this one, as decompressed blocks can only be 0x00010000 bytes long.
             /// </summary>
-            public uint NextBlock { get; set; } = 0x00010000;
+            public uint NextBlock { get; set; } = 0x00007FFF;
 
             /// <summary>
             /// The hash of this block.
@@ -174,7 +174,7 @@
                 // Read this block's data compression byte.
                 byte Compression = reader.ReadByte();
 
-                // If the byte is 0x7A (a lowercase z), the decompress the ZLib data, ignoring the STBL header and ENBL footer.
+                // If the byte is 0x7A (a lowercase z), then decompress the ZLib data, ignoring the STBL header and ENBL footer.
                 if (Compression == 0x7A)
                     Blocks[i].Data = ZlibStream.Decompress(reader.ReadBytes((int)Blocks[i].CompressedFileSize - 0x9));
 
@@ -218,6 +218,9 @@
                 // Save this node.
                 Data.Add(node);
             }
+
+            // Close Marathon's BinaryReader for the GOB file.
+            reader.Close();
         }
 
         /// <summary>
@@ -255,13 +258,20 @@
         }
 
         /// <summary>
-        /// Imports a directory as a Alchemy Engine GFC/GOB pair.
-        /// TODO: Implement.
+        /// Imports files from a directory into an Alchemy node.
         /// </summary>
         /// <param name="directory">The directory to import, including sub directories.</param>
         public void Import(string directory)
         {
-            throw new NotImplementedException();
+            foreach (string file in Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories))
+            {
+                Node node = new()
+                {
+                    Name = file.Replace(directory, ".\\"),
+                    Data = File.ReadAllBytes(file)
+                };
+                Data.Add(node);
+            }
         }
     }
 }
