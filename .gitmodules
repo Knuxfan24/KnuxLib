@@ -4,4 +4,4 @@
 	branch = master
 [submodule "prs.net"]
 	path = prs.net
-	url = https://github.com/FraGag/prs.net
+	url = https://github.com/FraGag/prs.net.git
