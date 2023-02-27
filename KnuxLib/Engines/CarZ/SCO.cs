@@ -132,14 +132,14 @@ namespace KnuxLib.Engines.CarZ
             sco.WriteLine($"Name= {Data.Name}");
 
             // Write this model's central point.
-            sco.WriteLine($"CentralPoint= {Data.CentralPoint.X:n4} {Data.CentralPoint.Y:n4} {Data.CentralPoint.Z:n4}");
+            sco.WriteLine($"CentralPoint= {Data.CentralPoint.X.ToString("n4").Replace(",", "")} {Data.CentralPoint.Y.ToString("n4").Replace(",", "")} {Data.CentralPoint.Z.ToString("n4").Replace(",", "")}");
 
             // Write this model's vertex count.
             sco.WriteLine($"Verts= {Data.Vertices.Count}");
 
             // Write this model's vertices.
             foreach (Vector3 vertex in Data.Vertices)
-                sco.WriteLine($"{vertex.X:n4} {vertex.Y:n4} {vertex.Z:n4}");
+                sco.WriteLine($"{vertex.X.ToString("n4").Replace(",", "")} {vertex.Y.ToString("n4").Replace(",", "")} {vertex.Z.ToString("n4").Replace(",", "")}");
 
             // Write this model's face count.
             sco.WriteLine($"Faces= {Data.Faces.Count}");
@@ -196,6 +196,7 @@ namespace KnuxLib.Engines.CarZ
                 obj.WriteLine($"v {vertex.X} {vertex.Y} {vertex.Z}");
 
             // Write the texture coordinates for this model, inverting both values.
+            // Some models might not need the X value inverting?
             for (int i = 0; i < Data.Faces.Count; i++)
             {
                 obj.WriteLine($"vt {-Data.Faces[i].TextureCoordinates[0]} {-Data.Faces[i].TextureCoordinates[1]}");
