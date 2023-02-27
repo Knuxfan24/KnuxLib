@@ -31,7 +31,8 @@ namespace KnuxTools
                         (
                             "Please specify the archive type to pack this directory into;\n" +
                             "1. Alchemy Engine GFC/GOB File Pair\n" +
-                            "2. Gods Engine WAD File"
+                            "2. Gods Engine WAD File\n" +
+                            "3. Sonic Storybook Engine ONE File"
                         );
                         switch (Console.ReadKey().KeyChar)
                         {
@@ -39,7 +40,7 @@ namespace KnuxTools
                                 using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new())
                                 {
                                     assetsContainer.Import(arg);
-                                    assetsContainer.Save($@"{Path.GetDirectoryName(arg)}");
+                                    assetsContainer.Save($@"{arg}");
                                 }
                                 break;
                             case '2':
@@ -66,6 +67,14 @@ namespace KnuxTools
                                             wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii);
                                         }
                                         break;
+                                }
+                                break;
+                            case '3':
+                                using (KnuxLib.Engines.Storybook.ONE ONE = new())
+                                {
+                                    Console.WriteLine("\n");
+                                    ONE.Import(arg);
+                                    ONE.Save($@"{arg}.one");
                                 }
                                 break;
                         }
@@ -280,8 +289,12 @@ namespace KnuxTools
                             case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;
                             #endregion
 
-                            #region
+                            #region Rockman X7 Engine Formats
                             case ".328f438b": case ".osd": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
+                            #endregion
+
+                            #region Sonic Storybook Engine Formats
+                            case ".one": using (KnuxLib.Engines.Storybook.ONE one = new(arg, true)) break;
                             #endregion
                         }
                     }
@@ -316,6 +329,9 @@ namespace KnuxTools
 
                 Console.WriteLine("Rockman X7 Engine:\n" +
                                   "Stage Entity Table (.328f438b/.osd)\n");
+
+                Console.WriteLine("Sonic Storybook Engine:\n" +
+                                  "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Usage:\n" +
                                   "KnuxTools.exe \"path\\to\\supported\\file\"\n" +

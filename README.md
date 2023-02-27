@@ -137,3 +137,19 @@ Supported formats:
 Notes:
 
 - Uncertain if this is the engine's name.
+
+## Sonic Storybook Engine
+
+Known games:
+
+- Sonic and the Secret Rings (Wii)
+
+- Sonic and the Black Knight (Wii)
+
+Supported formats:
+
+- [ONE Archive](KnuxLib/Engines/RockmanX7/StageEntityTable.cs)  reading, writing, data extraction and data importing.
+
+Notes:
+
+- Uncertain if this is the engine's name.
