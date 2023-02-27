@@ -130,7 +130,7 @@
                 if (version == FormatVersion.NinjabreadMan_Wii) node.UnknownWiiInt32_2 = reader.ReadInt32();
 
                 // Read this node's unknown boolean value.
-                node.UnknownBoolean_1 = reader.ReadBoolean(0x4);
+                node.UnknownBoolean_1 = reader.ReadBoolean(0x04);
                 
                 // Read this node's last root node index.
                 node.LastRootNodeIndex = reader.ReadInt32();
@@ -148,7 +148,7 @@
                     node.Data = reader.ReadBytes(DataSize);
                 }
 
-                // Store ths entry.
+                // Save this node.
                 Data.Add(node);
 
                 // Jump back for the next node.

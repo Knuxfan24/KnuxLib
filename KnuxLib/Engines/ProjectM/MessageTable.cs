@@ -47,20 +47,20 @@
 
             // Read this file's signature.
             reader.ReadSignature(6, "tdpack");
-            reader.FixPadding(0x4);
+            reader.FixPadding(0x04);
 
             // Ignore two unknown values.
-            reader.JumpAhead(0x4); // Value of FF 00 01 00
-            reader.JumpAhead(0x4); // Value of 0x30, might be where the data starts, assuming all this is a header.
+            reader.JumpAhead(0x04); // Value of FF 00 01 00
+            reader.JumpAhead(0x04); // Value of 0x30, might be where the data starts, assuming all this is a header.
 
             // Read the rest of the header(?)
             uint FileSize = reader.ReadUInt32();
             uint LanguageCount = reader.ReadUInt32();
-            reader.JumpAhead(0x4); // Duplicate of LanguageCount.
-            reader.JumpAhead(0x4); // Value of 0, likely padding of some sort.
+            reader.JumpAhead(0x04); // Duplicate of LanguageCount.
+            reader.JumpAhead(0x04); // Value of 0, likely padding of some sort.
             uint LanguageOffsetTableOffset = reader.ReadUInt32();
             uint LanguageSizeTableOffset = reader.ReadUInt32();
-            reader.JumpAhead(0x8); // Value of 0, likely padding of some sort.
+            reader.JumpAhead(0x08); // Value of 0, likely padding of some sort.
 
             // Jump to the Offset Table, should already be at this location but just to be safe.
             reader.JumpTo(LanguageOffsetTableOffset);
@@ -137,7 +137,7 @@
 
             // Write this file's signature.
             writer.Write("tdpack");
-            writer.FixPadding(0x4);
+            writer.FixPadding(0x04);
 
             // Write two unknown hardcoded values.
             writer.Write(0xFF000100);
@@ -147,15 +147,15 @@
             long sizePos = writer.BaseStream.Position;
             writer.Write("SIZE");
 
-            // Write the language counts, hardcoded to 0x8.
-            writer.Write(0x8);
-            writer.Write(0x8);
-            writer.WriteNulls(0x4);
+            // Write the language counts, hardcoded to 0x08.
+            writer.Write(0x08);
+            writer.Write(0x08);
+            writer.WriteNulls(0x04);
 
             // Write the table offsets, just hardcode to 0x30 and 0x50.
             writer.Write(0x30);
             writer.Write(0x50);
-            writer.WriteNulls(0x8);
+            writer.WriteNulls(0x08);
 
             // Add the offsets for each language.
             writer.AddOffset("jpnOffset");

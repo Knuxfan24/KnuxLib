@@ -43,8 +43,8 @@
             // Read the size of this file.
             uint fileSize = reader.ReadUInt32();
 
-            // Skip an unknown value of 0x1.
-            reader.JumpAhead(0x4);
+            // Skip an unknown value of 0x01.
+            reader.JumpAhead(0x04);
 
             // Read the offset to the end of the string table.
             uint stringTableEnd = reader.ReadUInt32();
@@ -56,16 +56,16 @@
             reader.Offset = offsetSize;
 
             // Skip an unknown value that seems to be the same as stringTableEnd but with offsetSize added to it.
-            reader.JumpAhead(0x4);
+            reader.JumpAhead(0x04);
 
             // Skip an unknown (potentially padding) value of 0x0.
-            reader.JumpAhead(0x4);
+            reader.JumpAhead(0x04);
 
             // Read the amount of archives in this file.
             uint archiveCount = reader.ReadUInt32();
 
-            // Skip an unknown value of 0xC.
-            reader.JumpAhead(0x4);
+            // Skip an unknown value of 0x0C.
+            reader.JumpAhead(0x04);
 
             // Read the offset to the table of unknown bytes.
             uint archiveByteOffset = reader.ReadUInt32();
@@ -113,8 +113,8 @@
             // Write a placeholder for this file's size.
             writer.Write("SIZE");
 
-            // Write an unknown value of 0x1.
-            writer.Write(0x1);
+            // Write an unknown value of 0x01.
+            writer.Write(0x01);
 
             // Write a placeholder for this file's stringTableEnd value.
             writer.Write("SEND");
@@ -125,14 +125,14 @@
             // Write a placeholder for this file's stringTableEnd value with the offset size applied..
             writer.Write("SEND");
 
-            // Write an unknown (potentially padding) value of 0x0.
-            writer.Write(0x0);
+            // Write an unknown (potentially padding) value of 0x00.
+            writer.Write(0x00);
 
             // Write this file's archive count.
             writer.Write(Data.Count);
 
-            // Write an unknown value of 0xC.
-            writer.Write(0xC);
+            // Write an unknown value of 0x0C.
+            writer.Write(0x0C);
 
             // Add an offset for this file's byte table.
             writer.AddOffset("ByteTable");
@@ -148,8 +148,8 @@
             for (int i = 0; i < Data.Count; i++)
                 writer.Write(Data[i].UnknownByte_1);
 
-            // Align to 0x4.
-            writer.FixPadding(0x4);
+            // Align to 0x04.
+            writer.FixPadding(0x04);
 
             // Fill in the archive names.
             for (int i = 0; i < Data.Count; i++)
@@ -158,25 +158,25 @@
                 writer.WriteNullTerminatedString(Data[i].Archive);
             }
 
-            // Align to 0x4.
-            writer.FixPadding(0x4);
+            // Align to 0x04.
+            writer.FixPadding(0x04);
 
             // Save the position to the end offset table.
             uint offsetTablePosition = (uint)writer.BaseStream.Position;
 
             // Write this weird offset table's count.
-            writer.Write(Data.Count + 0x2);
+            writer.Write(Data.Count + 0x02);
 
             // Write this weird offset table.
-            for (int i = 0; i < Data.Count + 0x2; i++)
-                writer.Write(0x4 * (i + 1));
+            for (int i = 0; i < Data.Count + 0x02; i++)
+                writer.Write(0x04 * (i + 1));
 
             // Write the file size.
-            writer.BaseStream.Position = 0x0;
+            writer.BaseStream.Position = 0x00;
             writer.Write((uint)writer.BaseStream.Length);
 
             // Write the offset table position values.
-            writer.BaseStream.Position = 0x8;
+            writer.BaseStream.Position = 0x08;
             writer.Write(offsetTablePosition - 0x18);
             writer.BaseStream.Position = 0x10;
             writer.Write(offsetTablePosition);

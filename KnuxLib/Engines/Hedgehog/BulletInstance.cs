@@ -109,10 +109,10 @@ namespace KnuxLib.Engines.Hedgehog
                 };
 
                 // Skip four bytes that are always 0.
-                reader.JumpAhead(0x4);
+                reader.JumpAhead(0x04);
 
                 // Realign for the next instance.
-                reader.FixPadding(0x8);
+                reader.FixPadding(0x08);
 
                 // Save this instance.
                 Data.Add(inst);
@@ -170,7 +170,7 @@ namespace KnuxLib.Engines.Hedgehog
 
                 // All Data but the last one appear to be aligned, so if this isn't the last instance, align it.
                 if (i != Data.Count - 1)
-                    writer.FixPadding(0x8);
+                    writer.FixPadding(0x08);
             }
 
             // Finish writing the BINA information.
