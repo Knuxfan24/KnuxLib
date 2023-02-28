@@ -138,9 +138,10 @@ namespace KnuxTools
                                     "1. Hedgehog Engine Archive Info\n" +
                                     "2. Hedgehog Engine Bullet Instance\n" +
                                     "3. Nu2 Engine Wumpa Fruit Table\n" +
-                                    "4. Project M Message Table\n" +
-                                    "5. Rockman X7 Stage Entity Table\n" +
-                                    "6. Sonic Storybook Engine Stage Entity Table Object Table"
+                                    "4. Nu2 Engine AI Entity Table\n" +
+                                    "5. Project M Message Table\n" +
+                                    "6. Rockman X7 Stage Entity Table\n" +
+                                    "7. Sonic Storybook Engine Stage Entity Table Object Table"
                                 );
 
                                 // Deseralise the JSON to the selected format.
@@ -206,13 +207,39 @@ namespace KnuxTools
                                         }
                                         break;
                                     case '4':
+                                        // Ask the user for the version to save with.
+                                        Console.WriteLine
+                                        (
+                                            "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
+                                            "1. GameCube\n" +
+                                            "2. PlayStation2/Xbox"
+                                        );
+                                        switch (Console.ReadKey().KeyChar)
+                                        {
+                                            case '1':
+                                                using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
+                                                {
+                                                    aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
+                                                    aiEntityTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.GameCube);
+                                                }
+                                                break;
+                                            case '2':
+                                                using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
+                                                {
+                                                    aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
+                                                    aiEntityTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.PlayStation2Xbox);
+                                                }
+                                                break;
+                                        }
+                                        break;
+                                    case '5':
                                         using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
                                         {
                                             messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
                                             messageTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.dat");
                                         }
                                         break;
-                                    case '5':
+                                    case '6':
                                         // Ask the user for the extension to save with.
                                         Console.WriteLine
                                         (
@@ -238,7 +265,7 @@ namespace KnuxTools
                                                 break;
                                             }
                                         break;
-                                    case '6':
+                                    case '7':
                                         // Ask the user for the version to save with.
                                         Console.WriteLine
                                         (
@@ -360,6 +387,22 @@ namespace KnuxTools
                             #endregion
 
                             #region Nu2 Engine Formats
+                            case ".ai":
+                                // Ask the user for the ai version.
+                                Console.WriteLine
+                                        (
+                                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                                            "1. GameCube\n" +
+                                            "2. PlayStation 2/Xbox"
+                                        );
+
+                                // Seralise the ai file according to the selected version.
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1': using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.GameCube, true)) break;
+                                    case '2': using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.PlayStation2Xbox, true)) break;
+                                }
+                                break;
                             case ".wmp":
                                 // Ask the user for the wmp version.
                                 Console.WriteLine

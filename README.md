@@ -112,6 +112,8 @@ Known games:
 
 Supported formats:
 
+- [AI Entity Table](KnuxLib/Engines/Nu2/AIEntityTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+
 - [Wumpa Fruit Table](KnuxLib/Engines/Nu2/WumpaTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
 
 Notes:
