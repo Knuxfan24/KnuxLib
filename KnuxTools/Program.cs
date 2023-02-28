@@ -32,8 +32,9 @@ namespace KnuxTools
                             "Please specify the archive type to pack this directory into;\n" +
                             "1. Alchemy Engine GFC/GOB File Pair\n" +
                             "2. Gods Engine WAD File\n" +
-                            "3. Sonic Storybook Engine ONE File\n" +
-                            "4. Sonic World Adventure Wii ONE File."
+                            "3. Sonic The Portable AMB File\n" +
+                            "4. Sonic Storybook Engine ONE File\n" +
+                            "5. Sonic World Adventure Wii ONE File."
                         );
                         switch (Console.ReadKey().KeyChar)
                         {
@@ -71,19 +72,27 @@ namespace KnuxTools
                                 }
                                 break;
                             case '3':
-                                using (KnuxLib.Engines.Storybook.ONE ONE = new())
+                                using (KnuxLib.Engines.Portable.AMB amb = new())
                                 {
                                     Console.WriteLine("\n");
-                                    ONE.Import(arg);
-                                    ONE.Save($@"{arg}.one");
+                                    amb.Import(arg);
+                                    amb.Save($@"{arg}.amb");
                                 }
                                 break;
                             case '4':
-                                using (KnuxLib.Engines.WorldAdventureWii.ONE ONE = new())
+                                using (KnuxLib.Engines.Storybook.ONE one = new())
                                 {
                                     Console.WriteLine("\n");
-                                    ONE.Import(arg);
-                                    ONE.Save($@"{arg}.one");
+                                    one.Import(arg);
+                                    one.Save($@"{arg}.one");
+                                }
+                                break;
+                            case '5':
+                                using (KnuxLib.Engines.WorldAdventureWii.ONE one = new())
+                                {
+                                    Console.WriteLine("\n");
+                                    one.Import(arg);
+                                    one.Save($@"{arg}.one");
                                 }
                                 break;
                         }
@@ -421,7 +430,7 @@ namespace KnuxTools
                                 break;
                             #endregion
 
-                            #region ProjectM Engine Formats
+                            #region Project M Engine Formats
                             case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;
                             #endregion
 
@@ -429,7 +438,11 @@ namespace KnuxTools
                             case ".328f438b": case ".osd": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
                             #endregion
 
-                            #region World Adventure Wii Engine Formats
+                            #region Sonic The Portable Engine Formats
+                            case ".amb": using (KnuxLib.Engines.Portable.AMB amb = new(arg, true)) break;
+                            #endregion
+
+                            #region Sonic World Adventure Wii Engine Formats
                             case ".onz": using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
                             #endregion
                         }

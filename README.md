@@ -168,6 +168,22 @@ Notes:
 
 - Uncertain if this is the engine's name.
 
+## Sonic The Portable Engine
+
+Known games:
+
+- Sonic The Hedgehog 4: Episode 1 (Wii, PC, X360, PS3, iOS, Android)
+
+- Sonic The Hedgehog 4: Episode 2 (PC, X360, PS3, iOS, Android)
+
+Supported formats:
+
+- [AMB Archive](KnuxLib/Engines/Portable/AMB.cs) reading, writing, data extraction and data importing.
+
+Notes:
+
+- Uncertain if this is the engine's name.
+
 ## Sonic World Adventure Wii Engine
 
 Known games:
