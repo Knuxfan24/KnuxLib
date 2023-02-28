@@ -130,7 +130,8 @@ namespace KnuxTools
                                     "2. Hedgehog Engine Bullet Instance\n" +
                                     "3. Nu2 Engine Wumpa Fruit Table\n" +
                                     "4. Project M Message Table\n" +
-                                    "5. Rockman X7 Stage Entity Table"
+                                    "5. Rockman X7 Stage Entity Table\n" +
+                                    "6. Sonic Storybook Engine Stage Entity Table Object Table"
                                 );
 
                                 // Deseralise the JSON to the selected format.
@@ -227,6 +228,64 @@ namespace KnuxTools
                                                 }
                                                 break;
                                             }
+                                        break;
+                                    case '6':
+                                        // Ask the user for the version to save with.
+                                        Console.WriteLine
+                                        (
+                                            "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
+                                            "1. Sonic and the Secret Rings\n" +
+                                            "2. Sonic and the Black Knight"
+                                        );
+                                        switch (Console.ReadKey().KeyChar)
+                                        {
+                                            case '1':
+                                                using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
+                                                {
+                                                    setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
+                                                    setItems.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings);
+                                                }
+                                                break;
+                                            case '2':
+                                                using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
+                                                {
+                                                    setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
+                                                    setItems.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight);
+                                                }
+                                                break;
+                                            }
+                                        break;
+                                }
+                                break;
+                            #endregion
+
+                            #region Generic Extensions
+                            case ".bin":
+                                // Ask the user what to read this file as.
+                                Console.WriteLine
+                                (
+                                    "This file is a generic type, please specify what format it is;\n" +
+                                    "1. Sonic Storybook Engine Stage Entity Table Object Table"
+                                );
+
+                                // Read this file with the selected format.
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
+                                        // Ask the user for the file version.
+                                        Console.WriteLine
+                                                (
+                                                    "\n\nThis file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                                                    "1. Sonic and the Secret Rings\n" +
+                                                    "2. Sonic and the Black Knight"
+                                                );
+
+                                        // Read the file according to the selected version.
+                                        switch (Console.ReadKey().KeyChar)
+                                        {
+                                            case '1': using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings, true)) break;
+                                            case '2': using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight, true)) break;
+                                        }
                                         break;
                                 }
                                 break;
@@ -331,7 +390,8 @@ namespace KnuxTools
                                   "Stage Entity Table (.328f438b/.osd)\n");
 
                 Console.WriteLine("Sonic Storybook Engine:\n" +
-                                  "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+                                  "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n" +
+                                  "Stage Entity Table Object Table (.bin)\n");
 
                 Console.WriteLine("Usage:\n" +
                                   "KnuxTools.exe \"path\\to\\supported\\file\"\n" +

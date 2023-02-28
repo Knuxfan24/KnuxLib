@@ -116,5 +116,12 @@ namespace KnuxLib
 
             return bytes;
         }
+
+        /// <summary>
+        /// Converts a uint to a string representing each bit in binary.
+        /// Taken from https://stackoverflow.com/a/47918790
+        /// </summary>
+        /// <param name="num">The uint to convert.</param>
+        public static string ToBinaryString(uint num) => Convert.ToString(num, 2).PadLeft(32, '0');
     }
 }

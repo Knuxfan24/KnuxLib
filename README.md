@@ -148,7 +148,9 @@ Known games:
 
 Supported formats:
 
-- [ONE Archive](KnuxLib/Engines/RockmanX7/StageEntityTable.cs)  reading, writing, data extraction and data importing.
+- [ONE Archive](KnuxLib/Engines/Storybook/ONE.cs) reading, writing, data extraction and data importing.
+
+- [Stage Entity Table Object Table](KnuxLib/Engines/Storybook/StageEntityTableItems.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
 
 Notes:
 
