@@ -12,24 +12,8 @@
                 Extract($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}");
         }
 
-        // Classes for this format.
-        public class Node
-        {
-            /// <summary>
-            /// The name of this node.
-            /// </summary>
-            public string Name { get; set; } = "";
-
-            /// <summary>
-            /// The bytes that make up this node.
-            /// </summary>
-            public byte[] Data { get; set; } = Array.Empty<byte>();
-
-            public override string ToString() => Name;
-        }
-
         // Actual data presented to the end user.
-        public List<Node> Data = new();
+        public List<FileNode> Data = new();
 
         /// <summary>
         /// Loads and parses this format's file.
@@ -73,7 +57,7 @@
             for (int i = 0; i < fileCount; i++)
             {
                 // Set up a new node.
-                Node node = new();
+                FileNode node = new();
 
                 // Read this file's name.
                 node.Name = reader.ReadNullPaddedString(0x38);
@@ -156,7 +140,7 @@
             StreamWriter log = new(File.Open($@"{directory}\fileorder.log", FileMode.Create));
 
             // Loop through each node to extract.
-            foreach (Node node in Data)
+            foreach (FileNode node in Data)
             {
                 // Write this file's name to the order log.
                 log.WriteLine(node.Name);
@@ -189,7 +173,7 @@
             {
                 foreach (string file in files)
                 {
-                    Node node = new()
+                    FileNode node = new()
                     {
                         Name = Path.GetFileName(file),
                         Data = File.ReadAllBytes(file)
@@ -208,7 +192,7 @@
                     // If this file exists, then read it like normal.
                     if (File.Exists(@$"{directory}\{file}"))
                     {
-                        Node node = new()
+                        FileNode node = new()
                         {
                             Name = Path.GetFileName(@$"{directory}\{file}"),
                             Data = File.ReadAllBytes(@$"{directory}\{file}")
@@ -219,7 +203,7 @@
                     // If this file doesn't exist, check if it's the space.bin padding and create it if so.
                     else if (file == "space.bin")
                     {
-                        Node node = new()
+                        FileNode node = new()
                         {
                             Name = "space.bin",
                             Data = new byte[] { 0x73, 0x70, 0x61, 0x63, 0x65, 0x20, 0x20, 0x20 }

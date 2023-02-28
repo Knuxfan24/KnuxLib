@@ -4,6 +4,7 @@
     // TODO: The folder structure of this is ugly, but I don't see how else to do it.
     // TODO: Format saving.
     // TODO: Format importing.
+    // TODO: Convert this node setup to the FileNode in Helpers.cs
     public class WAD : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -89,7 +90,7 @@
             BinaryReaderEx reader = new(File.OpenRead(filepath));
 
             // Read this file's signature.
-            reader.ReadSignature(4, "WADH");
+            reader.ReadSignature(0x04, "WADH");
 
             // Read the offset to the data table.
             uint DataTableOffset = reader.ReadUInt32();

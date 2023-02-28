@@ -14,24 +14,8 @@ namespace KnuxLib.Engines.Storybook
                 Extract($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}");
         }
 
-        // Classes for this format.
-        public class Node
-        {
-            /// <summary>
-            /// The name of this node.
-            /// </summary>
-            public string Name { get; set; } = "";
-
-            /// <summary>
-            /// The bytes that make up this node.
-            /// </summary>
-            public byte[] Data { get; set; } = Array.Empty<byte>();
-
-            public override string ToString() => Name;
-        }
-
         // Actual data presented to the end user.
-        public List<Node> Data = new();
+        public List<FileNode> Data = new();
 
         /// <summary>
         /// Loads and parses this format's file.
@@ -52,7 +36,7 @@ namespace KnuxLib.Engines.Storybook
             for (int i = 0; i < fileCount; i++)
             {
                 // Set up a new node.
-                Node node = new();
+                FileNode node = new();
 
                 // Read this file's name.
                 node.Name = reader.ReadNullPaddedString(0x20);
@@ -168,7 +152,7 @@ namespace KnuxLib.Engines.Storybook
             Directory.CreateDirectory(directory);
 
             // Loop through each node to extract.
-            foreach (Node node in Data)
+            foreach (FileNode node in Data)
             {
                 // Print the name of the file we're extracting.
                 Console.WriteLine($"Extracting {node.Name}.");
@@ -186,7 +170,7 @@ namespace KnuxLib.Engines.Storybook
         {
             foreach (string file in Directory.GetFiles(directory, "*.*"))
             {
-                Node node = new()
+                FileNode node = new()
                 {
                     Name = Path.GetFileName(file),
                     Data = File.ReadAllBytes(file)

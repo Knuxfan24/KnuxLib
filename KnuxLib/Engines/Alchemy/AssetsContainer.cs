@@ -77,23 +77,8 @@
             public override string ToString() => Name;
         }
 
-        public class Node
-        {
-            /// <summary>
-            /// The name of this node.
-            /// </summary>
-            public string Name { get; set; } = "";
-
-            /// <summary>
-            /// The bytes that make up this node.
-            /// </summary>
-            public byte[] Data { get; set; } = Array.Empty<byte>();
-
-            public override string ToString() => Name;
-        }
-
         // Actual data presented to the end user.
-        public List<Node> Data = new();
+        public List<FileNode> Data = new();
 
         /// <summary>
         /// Loads and parses this format's file.
@@ -169,7 +154,7 @@
                 reader.JumpTo(Blocks[i].DataOffset);
 
                 // Read this block's STBL header.
-                reader.ReadSignature(4, "STBL");
+                reader.ReadSignature(0x04, "STBL");
 
                 // Read this block's data compression byte.
                 byte Compression = reader.ReadByte();
@@ -209,7 +194,7 @@
                 }
 
                 // Create a Node based on this data.
-                Node node = new()
+                FileNode node = new()
                 {
                     Name = file.Name,
                     Data = Helpers.CombineByteArrays(fileData)
@@ -243,7 +228,7 @@
             Directory.CreateDirectory(directory);
 
             // Loop through each node to extract.
-            foreach (Node node in Data)
+            foreach (FileNode node in Data)
             {
                 // Print the name of the file we're extracting.
                 Console.WriteLine($"Extracting {node.Name}.");
@@ -265,7 +250,7 @@
         {
             foreach (string file in Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories))
             {
-                Node node = new()
+                FileNode node = new()
                 {
                     Name = file.Replace(directory, ".\\"),
                     Data = File.ReadAllBytes(file)

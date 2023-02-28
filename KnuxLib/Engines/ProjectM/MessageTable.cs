@@ -46,7 +46,7 @@
             BinaryReaderEx reader = new(File.OpenRead(filepath), System.Text.Encoding.UTF8, true);
 
             // Read this file's signature.
-            reader.ReadSignature(6, "tdpack");
+            reader.ReadSignature(0x06, "tdpack");
             reader.FixPadding(0x04);
 
             // Ignore two unknown values.

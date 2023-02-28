@@ -3,6 +3,21 @@ global using System.Numerics;
 
 namespace KnuxLib
 {
+    public class FileNode
+    {
+        /// <summary>
+        /// The name of this node.
+        /// </summary>
+        public string Name { get; set; } = "";
+
+        /// <summary>
+        /// The bytes that make up this node.
+        /// </summary>
+        public byte[] Data { get; set; } = Array.Empty<byte>();
+
+        public override string ToString() => Name;
+    }
+
     internal class Helpers
     {
         /// <summary>
