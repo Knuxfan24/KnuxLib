@@ -480,7 +480,7 @@ namespace KnuxTools
                                   "Stage Entity Table (.328f438b/.osd)\n");
 
                 Console.WriteLine("Sonic The Portable Engine:\n" +
-                                  "AMB Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+                                  "AMB Archive (.amb) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Sonic Storybook Engine:\n" +
                                   "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n" +
