@@ -32,7 +32,8 @@ namespace KnuxTools
                             "Please specify the archive type to pack this directory into;\n" +
                             "1. Alchemy Engine GFC/GOB File Pair\n" +
                             "2. Gods Engine WAD File\n" +
-                            "3. Sonic Storybook Engine ONE File"
+                            "3. Sonic Storybook Engine ONE File\n" +
+                            "4. Sonic World Adventure Wii ONE File."
                         );
                         switch (Console.ReadKey().KeyChar)
                         {
@@ -71,6 +72,14 @@ namespace KnuxTools
                                 break;
                             case '3':
                                 using (KnuxLib.Engines.Storybook.ONE ONE = new())
+                                {
+                                    Console.WriteLine("\n");
+                                    ONE.Import(arg);
+                                    ONE.Save($@"{arg}.one");
+                                }
+                                break;
+                            case '4':
+                                using (KnuxLib.Engines.WorldAdventureWii.ONE ONE = new())
                                 {
                                     Console.WriteLine("\n");
                                     ONE.Import(arg);
@@ -289,6 +298,31 @@ namespace KnuxTools
                                         break;
                                 }
                                 break;
+
+                            case ".one":
+                                // Ask the user for the file version.
+                                Console.WriteLine
+                                        (
+                                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                                            "1. Sonic Storybook Engine ONE Archive\n" +
+                                            "2. Sonic World Adventure Wii Uncompressed ONE Archive\n" +
+                                            "3. Compress to Sonic World Adventure ONZ Archive."
+                                        );
+
+                                // Read the file according to the selected version.
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1': using (KnuxLib.Engines.Storybook.ONE one = new(arg, true)) break;
+                                    case '2': using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
+                                    case '3':
+                                        MemoryStream buffer = new();
+                                        PuyoTools.Core.Compression.Lz11Compression lz11 = new();
+                                        buffer = lz11.Compress(File.OpenRead(arg));
+                                        buffer.WriteTo(File.Create($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.onz"));
+                                        break;
+                                }
+                                break;
+
                             #endregion
 
                             #region Alchemy Engine Formats
@@ -352,8 +386,8 @@ namespace KnuxTools
                             case ".328f438b": case ".osd": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
                             #endregion
 
-                            #region Sonic Storybook Engine Formats
-                            case ".one": using (KnuxLib.Engines.Storybook.ONE one = new(arg, true)) break;
+                            #region World Adventure Wii Engine Formats
+                            case ".onz": using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
                             #endregion
                         }
                     }
@@ -392,6 +426,9 @@ namespace KnuxTools
                 Console.WriteLine("Sonic Storybook Engine:\n" +
                                   "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n" +
                                   "Stage Entity Table Object Table (.bin)\n");
+
+                Console.WriteLine("Sonic World Adventure Wii Engine:\n" +
+                                  "ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Usage:\n" +
                                   "KnuxTools.exe \"path\\to\\supported\\file\"\n" +

@@ -13,6 +13,7 @@
   <ItemGroup>
     <ProjectReference Include="..\HedgeLib\HedgeLib\HedgeLib.csproj" />
     <ProjectReference Include="..\prs.net\FraGag.Compression.Prs\FraGag.Compression.Prs.csproj" />
+    <ProjectReference Include="..\puyotools\src\PuyoTools.Core\PuyoTools.Core.csproj" />
   </ItemGroup>
 
 </Project>

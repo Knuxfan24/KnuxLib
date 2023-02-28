@@ -4,6 +4,16 @@ A repository for me to push various bits of C# code for random file formats in r
 
 This repository consists of three projects. The KnuxLib project is the main library, the KnuxTest project is an empty command line application I use to test things while reverse engineering and the KnuxTools project is the command line application intended for use by end users.
 
+This repository also uses various other libraries as part of it, included as either a Nuget Package or a Git Submodule. These projects are:
+
+- [Marathon](https://github.com/Big-Endian-32/Marathon) - Used for its BinaryReader and Writer.
+
+- [HedgeLib](https://github.com/Radfordhound/HedgeLib/tree/master) - Used for its BINAV2 Reader and Writer.
+
+- [prs.net](https://github.com/FraGag/prs.net) - Used for decompressing/recompressing data in Sonic Storybook Engine ONE Archives.
+
+- [PuyoTools](https://github.com/nickworonekin/puyotools) - Used for decompressing/recompressing Sonic World Adventure Wii Engine ONZ Archives.
+
 # Supported:
 
 ## Alchemy Engine
@@ -151,6 +161,20 @@ Supported formats:
 - [ONE Archive](KnuxLib/Engines/Storybook/ONE.cs) reading, writing, data extraction and data importing.
 
 - [Stage Entity Table Object Table](KnuxLib/Engines/Storybook/StageEntityTableItems.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+
+Notes:
+
+- Uncertain if this is the engine's name.
+
+## Sonic World Adventure Wii Engine
+
+Known games:
+
+- Sonic Unleashed (PS2, Wii)
+
+Supported formats:
+
+- [ONE Archive](KnuxLib/Engines/WorldAdventureWii/ONE.cs) reading, writing, data extraction and data importing.
 
 Notes:
 
