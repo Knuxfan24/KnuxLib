@@ -1,4 +1,5 @@
-﻿global using Marathon.IO;
+﻿global using HedgeLib.Headers;
+global using Marathon.IO;
 global using System.Numerics;
 
 namespace KnuxLib
@@ -56,7 +57,7 @@ namespace KnuxLib
         /// <param name="hasReaderOffset">Whether or not the jump has to respect the reader's offset.</param>
         /// <param name="extraOffset">A custom value to add to the read offset before jumping.</param>
         /// <returns>The string read from the location.</returns>
-        public static string ReadNullTerminatedStringTableEntry(HedgeLib.IO.BINAReader reader, bool is64bit = true, bool hasReaderOffset = true, uint extraOffset = 0)
+        public static string? ReadNullTerminatedStringTableEntry(HedgeLib.IO.BINAReader reader, bool is64bit = true, bool hasReaderOffset = true, uint extraOffset = 0)
         {
             // Set up a dummy position value.
             long position;
@@ -66,6 +67,10 @@ namespace KnuxLib
             {
                 // Read our offset's value.
                 long offset = reader.ReadInt64();
+
+                // If this offset is empty, then don't jump and just return a null string instead.
+                if (offset == 0)
+                    return null;
 
                 // Store our current position in the file.
                 position = reader.BaseStream.Position;
@@ -77,6 +82,10 @@ namespace KnuxLib
             {
                 // Read our offset's value.
                 uint offset = reader.ReadUInt32();
+
+                // If this offset is empty, then don't jump and just return a null string instead.
+                if (offset == 0)
+                    return null;
 
                 // Store our current position in the file.
                 position = reader.BaseStream.Position;

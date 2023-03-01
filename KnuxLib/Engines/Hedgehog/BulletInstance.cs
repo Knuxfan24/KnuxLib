@@ -1,6 +1,4 @@
-﻿using HedgeLib.Headers;
-
-namespace KnuxLib.Engines.Hedgehog
+﻿namespace KnuxLib.Engines.Hedgehog
 {
     public class BulletInstance : FileBase
     {

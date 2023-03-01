@@ -146,11 +146,12 @@ namespace KnuxTools
                                     "This file is a generic seralised type, please specify what format it is;\n" +
                                     "1. Hedgehog Engine Archive Info\n" +
                                     "2. Hedgehog Engine Bullet Instance\n" +
-                                    "3. Nu2 Engine Wumpa Fruit Table\n" +
-                                    "4. Nu2 Engine AI Entity Table\n" +
-                                    "5. Project M Message Table\n" +
-                                    "6. Rockman X7 Stage Entity Table\n" +
-                                    "7. Sonic Storybook Engine Stage Entity Table Object Table"
+                                    "3. Hedgehog Engine Gismo V3\n" +
+                                    "4. Nu2 Engine Wumpa Fruit Table\n" +
+                                    "5. Nu2 Engine AI Entity Table\n" +
+                                    "6. Project M Message Table\n" +
+                                    "7. Rockman X7 Stage Entity Table\n" +
+                                    "8. Sonic Storybook Engine Stage Entity Table Object Table"
                                 );
 
                                 // Deseralise the JSON to the selected format.
@@ -190,6 +191,13 @@ namespace KnuxTools
                                         }
                                         break;
                                     case '3':
+                                        using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new())
+                                        {
+                                            gismo.Data = gismo.JsonDeserialise<KnuxLib.Engines.Hedgehog.GismoV3.FormatData>(arg);
+                                            gismo.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.gismod");
+                                        }
+                                        break;
+                                    case '4':
                                         // Ask the user for the version to save with.
                                         Console.WriteLine
                                         (
@@ -215,7 +223,7 @@ namespace KnuxTools
                                                 break;
                                         }
                                         break;
-                                    case '4':
+                                    case '5':
                                         // Ask the user for the version to save with.
                                         Console.WriteLine
                                         (
@@ -241,14 +249,14 @@ namespace KnuxTools
                                                 break;
                                         }
                                         break;
-                                    case '5':
+                                    case '6':
                                         using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
                                         {
                                             messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
                                             messageTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.dat");
                                         }
                                         break;
-                                    case '6':
+                                    case '7':
                                         // Ask the user for the extension to save with.
                                         Console.WriteLine
                                         (
@@ -274,7 +282,7 @@ namespace KnuxTools
                                                 break;
                                             }
                                         break;
-                                    case '7':
+                                    case '8':
                                         // Ask the user for the version to save with.
                                         Console.WriteLine
                                         (
@@ -392,6 +400,8 @@ namespace KnuxTools
 
                             #region Hedgehog Engine Formats
                             case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
+                            case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new(arg, true)) break;
+                            case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
                             case ".pcmodel": case ".pccol": using (KnuxLib.Engines.Hedgehog.BulletInstance bulletInstance = new(arg, true)) break;
                             #endregion
 
@@ -468,7 +478,8 @@ namespace KnuxTools
 
                 Console.WriteLine("Hedgehog Engine:\n" +
                                   "Archive Info (.arcinfo)\n" +
-                                  "Bullet Instance (.pccol/.pcmodel)\n");
+                                  "Bullet Instance (.pccol/.pcmodel)\n" +
+                                  "Gismo V3 (.gismod/.gismop)");
 
                 Console.WriteLine("Nu2 Engine:\n" +
                                   "Wumpa Fruit Table (.wmp)\n");

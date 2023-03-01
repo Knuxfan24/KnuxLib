@@ -104,6 +104,8 @@ Supported formats:
 
 - [Bullet Instance](KnuxLib/Engines/Hedgehog/BulletInstance.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
 
+- [Gismo V3](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+
 ## Nu2 Engine
 
 Known games:
