@@ -872,6 +872,12 @@ namespace KnuxLib.Engines.Hedgehog
             writer.Close();
         }
 
+        /// <summary>
+        /// Writes a Design Gismo's Reaction Data struct to a file.
+        /// </summary>
+        /// <param name="writer">The HedgeLib# BINAWrite to use.</param>
+        /// <param name="data">The Reaction Data struct we're writing the data of.</param>
+        /// <param name="reactionIndex">The index of the Reaction Data we're filling in (used for String Offset adding).</param>
         private static void WriteReactionData(HedgeLib.IO.BINAWriter writer, GismoDesignReactionData data, int reactionIndex)
         {
             #region Write the GismoDesignMotionData struct
