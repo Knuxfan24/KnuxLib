@@ -199,3 +199,17 @@ Supported formats:
 Notes:
 
 - Uncertain if this is the engine's name.
+
+## Westwood Engine
+
+Known games:
+
+- Monopoly (PC)
+
+Supported formats:
+
+- [Message Table](KnuxLib/Engines/Westwood/MessageTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+
+Notes:
+
+- Did Westwood use this engine and its formats for other games?

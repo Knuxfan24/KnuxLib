@@ -151,7 +151,8 @@ namespace KnuxTools
                                     "5. Nu2 Engine AI Entity Table\n" +
                                     "6. Project M Message Table\n" +
                                     "7. Rockman X7 Stage Entity Table\n" +
-                                    "8. Sonic Storybook Engine Stage Entity Table Object Table"
+                                    "8. Sonic Storybook Engine Stage Entity Table Object Table\n" +
+                                    "9. Westwood Engine Message Table"
                                 );
 
                                 // Deseralise the JSON to the selected format.
@@ -308,6 +309,13 @@ namespace KnuxTools
                                                 break;
                                             }
                                         break;
+                                    case '9':
+                                        using (KnuxLib.Engines.Westwood.MessageTable messageTable = new())
+                                        {
+                                            messageTable.Data = messageTable.JsonDeserialise<List<string>>(arg);
+                                            messageTable.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.tru");
+                                        }
+                                        break;
                                 }
                                 break;
                             #endregion
@@ -455,6 +463,10 @@ namespace KnuxTools
                             #region Sonic World Adventure Wii Engine Formats
                             case ".onz": using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
                             #endregion
+
+                            #region Westwood Engine Formats
+                            case ".tru": using (KnuxLib.Engines.Westwood.MessageTable messageTable = new(arg, true)) break;
+                            #endregion
                         }
                     }
                 }
@@ -499,6 +511,9 @@ namespace KnuxTools
 
                 Console.WriteLine("Sonic World Adventure Wii Engine:\n" +
                                   "ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+
+                Console.WriteLine("Westwood Engine:\n" +
+                                  "Message Table (.tru)\n");
 
                 Console.WriteLine("Usage:\n" +
                                   "KnuxTools.exe \"path\\to\\supported\\file\"\n" +
