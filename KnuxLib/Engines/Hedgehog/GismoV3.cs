@@ -179,6 +179,8 @@ namespace KnuxLib.Engines.Hedgehog
             /// TODO: What does this do?
             /// </summary>
             public bool NoInstance { get; set; }
+
+            public override string ToString() => ModelName;
         }
 
         public class GismoDesignCollision
@@ -212,6 +214,8 @@ namespace KnuxLib.Engines.Hedgehog
             /// TODO: What does this do?
             /// </summary>
             public float ShapeSizeOffset { get; set; }
+
+            public override string ToString() => Mesh;
         }
 
         public class GismoDesignRigidBody

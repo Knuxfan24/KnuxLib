@@ -24,6 +24,8 @@
             public string Type { get; set; } = "";
 
             public List<Vector3> Positions { get; set; } = new();
+
+            public override string ToString() => Type;
         }
 
         // Actual data presented to the end user.

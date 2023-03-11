@@ -46,6 +46,8 @@
             /// This instance's scale in 3D space.
             /// </summary>
             public Vector3 Scale { get; set; }
+
+            public override string ToString() => Name1;
         }
 
         // Actual data presented to the end user.

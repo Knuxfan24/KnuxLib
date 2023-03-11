@@ -26,6 +26,8 @@
             /// TODO: What is this?
             /// </summary>
             public byte UnknownByte_1 { get; set; }
+
+            public override string ToString() => Archive;
         }
 
         // Actual data presented to the end user.
