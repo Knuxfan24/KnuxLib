@@ -5,6 +5,8 @@ namespace KnuxLib.Engines.Alchemy
     // TODO: What does HKE mean?
     // TODO: Tidy all of this up and document how it works.
     // TODO: Figure out all of the unknown values.
+    // TODO: Check the values in the Subspace chunk we're skipping on the PS2 and Xbox.
+    // TODO: Figure out how the Subspace Data pieces the models together, one arena looked right with the value that I assume is position, another didn't.
     public class Collision : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.

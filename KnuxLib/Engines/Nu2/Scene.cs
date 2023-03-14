@@ -6,6 +6,7 @@ namespace KnuxLib.Engines.Nu2
     // TODO: Write a way to save this format.
     // TODO: Write a way to import models to this format.
     // TODO: Write a way to export models from this format.
+    // TODO: Implement a way to decompress/recompress the PS2 version's RnC compression (https://segaretro.org/Rob_Northen_compression).
     public class Scene : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
