@@ -213,3 +213,9 @@ Supported formats:
 Notes:
 
 - Did Westwood use this engine and its formats for other games?
+
+# Experimental Formats
+
+The following formats are only partially supported and have no implementation in the KnuxTools project, either due to missing functionality or just being unfinished.
+
+- [Nu2 Engine Scenes](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save, Export or Import function.
