@@ -224,6 +224,36 @@ namespace KnuxLib
         public static string ToBinaryString(uint num) => Convert.ToString(num, 2).PadLeft(32, '0');
 
         /// <summary>
+        /// Checks a value in a binary file against an expected value.
+        /// </summary>
+        /// <param name="reader">The Marathon BinaryReader to use.</param>
+        /// <param name="expectedValue">The value we expect this data to be.</param>
+        public static void TestValueUInt(BinaryReaderEx reader, uint expectedValue)
+        {
+            // Read the value.
+            uint actualValue = reader.ReadUInt32();
+
+            // Check it against our expected value and throw an exception if it's wrong.
+            if (actualValue != expectedValue)
+                throw new Exception($"Value at '0x{(reader.BaseStream.Position - 0x04).ToString("X").PadLeft(8, '0')}' is '0x{actualValue.ToString("X").PadLeft(8, '0')}', expected '0x{expectedValue.ToString("X").PadLeft(8, '0')}'");
+        }
+
+        /// <summary>
+        /// Checks a value in a binary file against an expected value.
+        /// </summary>
+        /// <param name="reader">The Marathon BinaryReader to use.</param>
+        /// <param name="expectedValue">The value we expect this data to be.</param>
+        public static void TestValueUShort(BinaryReaderEx reader, ushort expectedValue)
+        {
+            // Read the value.
+            ushort actualValue = reader.ReadUInt16();
+
+            // Check it against our expected value and throw an exception if it's wrong.
+            if (actualValue != expectedValue)
+                throw new Exception($"Value at '0x{(reader.BaseStream.Position - 0x04).ToString("X").PadLeft(8, '0')}' is '0x{actualValue.ToString("X").PadLeft(8, '0')}', expected '0x{expectedValue.ToString("X").PadLeft(8, '0')}'");
+        }
+
+        /// <summary>
         /// Finds a string in an Nu2 Engine scene file based on an offset.
         /// </summary>
         /// <param name="reader">The Marathon BinaryReader to use.</param>

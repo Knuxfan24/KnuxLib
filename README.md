@@ -218,4 +218,6 @@ Notes:
 
 The following formats are only partially supported and have no implementation in the KnuxTools project, either due to missing functionality or just being unfinished.
 
+- [Alchemy Engine Map Collision](KnuxLib/Engines/Alchemy/Collision.cs). Very messy code that can read and dump the data from a HKE file to various OBJ files. There is currently a lot of unknown data in this format that would need to be reverse engineered properly for true support of the format. This format also currently lacks any form of Save, Export or Import function.
+
 - [Nu2 Engine Scenes](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save, Export or Import function.
