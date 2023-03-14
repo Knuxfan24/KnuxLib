@@ -145,7 +145,7 @@ namespace KnuxTools
                                 (
                                     "This file is a generic seralised type, please specify what format it is;\n" +
                                     "1. Hedgehog Engine Archive Info\n" +
-                                    "2. Hedgehog Engine Bullet Instance\n" +
+                                    "2. Hedgehog Engine Point Cloud\n" +
                                     "3. Hedgehog Engine Gismo V3\n" +
                                     "4. Nu2 Engine Wumpa Fruit Table\n" +
                                     "5. Nu2 Engine AI Entity Table\n" +
@@ -176,17 +176,17 @@ namespace KnuxTools
                                         switch (Console.ReadKey().KeyChar)
                                         {
                                             case '1':
-                                                using (KnuxLib.Engines.Hedgehog.BulletInstance bulletInstance = new())
+                                                using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
                                                 {
-                                                    bulletInstance.Data = bulletInstance.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.BulletInstance.Instance>>(arg);
-                                                    bulletInstance.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.pccol");
+                                                    pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
+                                                    pointCloud.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.pccol");
                                                 }
                                                 break;
                                             case '2':
-                                                using (KnuxLib.Engines.Hedgehog.BulletInstance bulletInstance = new())
+                                                using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
                                                 {
-                                                    bulletInstance.Data = bulletInstance.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.BulletInstance.Instance>>(arg);
-                                                    bulletInstance.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.pcmodel");
+                                                    pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
+                                                    pointCloud.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.pcmodel");
                                                 }
                                                 break;
                                         }
@@ -410,7 +410,7 @@ namespace KnuxTools
                             case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
                             case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new(arg, true)) break;
                             case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
-                            case ".pcmodel": case ".pccol": using (KnuxLib.Engines.Hedgehog.BulletInstance bulletInstance = new(arg, true)) break;
+                            case ".pcmodel": case ".pccol": using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new(arg, true)) break;
                             #endregion
 
                             #region Nu2 Engine Formats
@@ -490,7 +490,7 @@ namespace KnuxTools
 
                 Console.WriteLine("Hedgehog Engine:\n" +
                                   "Archive Info (.arcinfo)\n" +
-                                  "Bullet Instance (.pccol/.pcmodel)\n" +
+                                  "Point Cloud (.pccol/.pcmodel)\n" +
                                   "Gismo V3 (.gismod/.gismop)");
 
                 Console.WriteLine("Nu2 Engine:\n" +

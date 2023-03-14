@@ -102,7 +102,7 @@ Supported formats:
 
 - [Archive Info](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
 
-- [Bullet Instance](KnuxLib/Engines/Hedgehog/BulletInstance.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+- [Point Cloud](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
 
 - [Gismo V3](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
 

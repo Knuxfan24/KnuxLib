@@ -1,10 +1,10 @@
 ﻿namespace KnuxLib.Engines.Hedgehog
 {
-    public class BulletInstance : FileBase
+    public class PointCloud : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
-        public BulletInstance() { }
-        public BulletInstance(string filepath, bool export = false)
+        public PointCloud() { }
+        public PointCloud(string filepath, bool export = false)
         {
             Load(filepath);
 
@@ -16,15 +16,14 @@
         public class Instance
         {
             /// <summary>
-            /// The first name value of this instance.
+            /// The name of this instance.
             /// </summary>
-            public string Name1 { get; set; } = "";
+            public string InstanceName { get; set; } = "";
 
             /// <summary>
-            /// The second name value of this instance.
-            /// TODO: Investigate what this does, it's usually the same as Name1 but not always.
+            /// The name of the model used by this instance.
             /// </summary>
-            public string Name2 { get; set; } = "";
+            public string ModelName { get; set; } = "";
 
             /// <summary>
             /// This instance's position in 3D space.
@@ -47,7 +46,7 @@
             /// </summary>
             public Vector3 Scale { get; set; }
 
-            public override string ToString() => Name1;
+            public override string ToString() => InstanceName;
         }
 
         // Actual data presented to the end user.
@@ -92,8 +91,8 @@
                 Instance inst = new()
                 {
                     // Read the two name values for this instance, while they are usually the same, they can be different.
-                    Name1 = Helpers.ReadNullTerminatedStringTableEntry(reader),
-                    Name2 = Helpers.ReadNullTerminatedStringTableEntry(reader),
+                    InstanceName = Helpers.ReadNullTerminatedStringTableEntry(reader),
+                    ModelName = Helpers.ReadNullTerminatedStringTableEntry(reader),
 
                     // Read this instance's position.
                     Position = Helpers.ReadHedgeLibVector3(reader),
@@ -150,8 +149,8 @@
             for (int i = 0; i < Data.Count; i++)
             {
                 // Add the two strings to the BINA String Table and write their offsets.
-                writer.AddString($"instance{i}name1", Data[i].Name1, 8);
-                writer.AddString($"instance{i}name2", Data[i].Name2, 8);
+                writer.AddString($"instance{i}name1", Data[i].InstanceName, 8);
+                writer.AddString($"instance{i}name2", Data[i].ModelName, 8);
 
                 // Write this instance's position.
                 Helpers.WriteHedgeLibVector3(writer, Data[i].Position);
