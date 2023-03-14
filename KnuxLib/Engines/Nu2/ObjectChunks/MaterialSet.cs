@@ -1,7 +1,7 @@
 ﻿namespace KnuxLib.Engines.Nu2.ObjectChunks
 {
     // TODO: Most of the data in the materials are unknowns, figure them out.
-    // TODO: This data is different in the PlayStation 2 version.
+    // TODO: This data is different in the PlayStation 2 version, figure out how that version is structured.
     public class MaterialSet
     {
         // Classes for this NuObject chunk.

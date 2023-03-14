@@ -4,7 +4,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
 {
     // TODO: What does SPEC stand for? Special?
     // TODO: What does the data in this chunk actually do?
-    // TODO: This data is different in the PlayStation 2 version, figure out what's different.
+    // TODO: This data is different in the PlayStation 2 version, figure out how that version is structured.
     public class SPECSet
     {
         public class SPECData
