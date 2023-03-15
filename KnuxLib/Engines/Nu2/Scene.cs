@@ -16,7 +16,7 @@ namespace KnuxLib.Engines.Nu2
             Load(filepath, version);
 
             if (extract)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.json", Data);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.nu2.scene.json", Data);
         }
 
         // Classes for this format.

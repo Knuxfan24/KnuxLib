@@ -9,7 +9,7 @@
             Load(filepath, version);
 
             if (extract)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.json", Data);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.nu2.wumpatable.json", Data);
         }
 
         // Classes for this format.

@@ -94,7 +94,7 @@ namespace KnuxLib
         }
     }
 
-    internal class Helpers
+    public class Helpers
     {
         /// <summary>
         /// Reads and jumps to an offset to get a string from later in a file.
@@ -302,6 +302,30 @@ namespace KnuxLib
 
             // Return the name we read.
             return name;
+        }
+
+        /// <summary>
+        /// Gets a file's full extension, rather than just the last extension.
+        /// Taken from http://zuga.net/articles/cs-get-extension-of-a-file-that-has-multiple-periods/
+        /// </summary>
+        /// <param name="path">The file path to get the extension of.</param>
+        /// <param name="returnWithout">Return the path without the extension instead of the extension itself.</param>
+        public static string GetExtension(string path, bool returnWithout = false)
+        {
+            var ret = "";
+            for (; ; )
+            {
+                var ext = Path.GetExtension(path);
+                if (string.IsNullOrEmpty(ext))
+                    break;
+                path = path[..^ext.Length];
+                ret = ext + ret;
+            }
+
+            if (returnWithout)
+                return path.Replace(ret, "");
+
+            return ret;
         }
     }
 }

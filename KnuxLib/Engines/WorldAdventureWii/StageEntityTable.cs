@@ -13,7 +13,7 @@ namespace KnuxLib.Engines.WorldAdventureWii
             Load(filepath, version);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.json", Data);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.worldadventurewii.stageentitytable.json", Data);
         }
 
         // Classes for this format.

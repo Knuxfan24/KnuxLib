@@ -16,7 +16,7 @@ namespace KnuxLib.Engines.Alchemy
             Load(filepath);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.json", Data);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.alchemy.collision.json", Data);
         }
 
         public class FormatData
