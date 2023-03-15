@@ -100,11 +100,11 @@ Known games:
 
 Supported formats:
 
-- [Archive Info](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+- [Archive Info](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Point Cloud](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+- [Point Cloud](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Gismo V3](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+- [Gismo V3](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 ## Nu2 Engine
 
@@ -114,9 +114,9 @@ Known games:
 
 Supported formats:
 
-- [AI Entity Table](KnuxLib/Engines/Nu2/AIEntityTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+- [AI Entity Table](KnuxLib/Engines/Nu2/AIEntityTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Wumpa Fruit Table](KnuxLib/Engines/Nu2/WumpaTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+- [Wumpa Fruit Table](KnuxLib/Engines/Nu2/WumpaTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
@@ -132,7 +132,7 @@ Known games:
 
 Supported formats:
 
-- [Message Table](KnuxLib/Engines/ProjectM/MessageTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+- [Message Table](KnuxLib/Engines/ProjectM/MessageTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
@@ -146,7 +146,7 @@ Known games:
 
 Supported formats:
 
-- [Stage Entity Table](KnuxLib/Engines/RockmanX7/StageEntityTable.cs) basic reading, writing, JSON seralisiation and JSON deseralisiation.
+- [Stage Entity Table](KnuxLib/Engines/RockmanX7/StageEntityTable.cs) basic reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
@@ -164,7 +164,7 @@ Supported formats:
 
 - [ONE Archive](KnuxLib/Engines/Storybook/ONE.cs) reading, writing, data extraction and data importing.
 
-- [Stage Entity Table Object Table](KnuxLib/Engines/Storybook/StageEntityTableItems.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+- [Stage Entity Table Object Table](KnuxLib/Engines/Storybook/StageEntityTableItems.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
@@ -208,7 +208,7 @@ Known games:
 
 Supported formats:
 
-- [Message Table](KnuxLib/Engines/Westwood/MessageTable.cs) reading, writing, JSON seralisiation and JSON deseralisiation.
+- [Message Table](KnuxLib/Engines/Westwood/MessageTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
