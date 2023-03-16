@@ -2,7 +2,7 @@
 using Newtonsoft.Json.Converters;
 
 namespace KnuxLib.Engines.WorldAdventureWii
-{    
+{
     // TODO: Figure out object parameters.
     public class StageEntityTable : FileBase
     {
@@ -198,6 +198,8 @@ namespace KnuxLib.Engines.WorldAdventureWii
             /// TODO: Find a way to read the parameters as the correct types.
             /// </summary>
             public List<SetParameter> Parameters { get; set; } = new();
+
+            public override string ToString() => Type.ToString();
         }
 
         public class SetParameter
