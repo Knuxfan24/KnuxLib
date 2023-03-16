@@ -222,6 +222,6 @@ The following formats are only partially supported and have no implementation in
 
 - [Nu2 Engine Scenes](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save, Export or Import function.
 
-- [Storybook Engine Stage Entity Table](KnuxLib/Engines/Storybook/StageEntityTable.cs). Currently only loads (saving is easy to implement though), lacks proper parameters (each byte in the parameter table is read as a seperate parameter with no context) and has a lot of unknown values.
+- [Storybook Engine Stage Entity Table](KnuxLib/Engines/Storybook/StageEntityTable.cs). Lacks proper object parameters (each byte in the parameter table is read as a seperate parameter with no context) and has a lot of unknown values.
 
-- [World Adventure Wii Engine Stage Entity Table](KnuxLib/Engines/WorldAdventureWii/StageEntityTable.cs). Entirely functional besides a lack of proper parameters (each byte in the parameter table is read as a seperate parameter with no context).
+- [World Adventure Wii Engine Stage Entity Table](KnuxLib/Engines/WorldAdventureWii/StageEntityTable.cs). Entirely functional besides a lack of proper object parameters (each byte in the parameter table is read as a seperate parameter with no context).

@@ -296,5 +296,142 @@
             // Close Marathon's BinaryReader.
             reader.Close();
         }
+
+        /// <summary>
+        /// Saves this format's file.
+        /// </summary>
+        /// <param name="filepath">The path to save to.</param>
+        public void Save(string filepath)
+        {
+            // Set up Marathon's BinaryWriter.
+            BinaryWriterEx writer = new(File.Create(filepath));
+
+            // Write this SET's signature.
+            writer.Write(Data.Signature);
+
+            // Write the amount of objects in this SET.
+            writer.Write(Data.Objects.Count);
+
+            // Calculate how many objects have parameters in this SET.
+            uint parametersCount = 0;
+            foreach (SetObject obj in Data.Objects)
+                if (obj.Parameters != null)
+                        parametersCount++;
+
+            // Write this SET's parameter count.
+            writer.Write(parametersCount);
+
+            // Write a placeholder for this file's parameter data table length.
+            writer.Write("SIZE");
+
+            // Set up the parameter index value.
+            uint parameterIndex = 0;
+
+            // Loop through each object.
+            for (int i = 0; i < Data.Objects.Count; i++)
+            {
+                // Write this object's position.
+                writer.Write(Data.Objects[i].Position);
+
+                // Write this object's first unknown integer value.
+                writer.Write(Data.Objects[i].UnknownUInt32_1);
+
+                // Write this object's second unknown integer value.
+                writer.Write(Data.Objects[i].UnknownUInt32_2);
+
+                // Write this object's third unknown integer value.
+                writer.Write(Data.Objects[i].UnknownUInt32_3);
+
+                // Write this object's first unknown byte value.
+                writer.Write(Data.Objects[i].UnknownByte_1);
+
+                // Write this object's second unknown byte value.
+                writer.Write(Data.Objects[i].UnknownByte_2);
+
+                // Write this object's third unknown byte value.
+                writer.Write(Data.Objects[i].UnknownByte_3);
+
+                // Write this object's fourth unknown byte value.
+                writer.Write(Data.Objects[i].UnknownByte_4);
+
+                // Write this object's fifth unknown byte value.
+                writer.Write(Data.Objects[i].UnknownByte_5);
+
+                // Write this object's draw distance.
+                writer.Write(Data.Objects[i].DrawDistance);
+
+                // Write this object's ID in the item table.
+                writer.Write(Data.Objects[i].ObjectID);
+
+                // Write this object's table in the item table.
+                writer.Write(Data.Objects[i].TableID);
+
+                // Write this object's fourth unknown integer value.
+                writer.Write(Data.Objects[i].UnknownUInt32_4);
+
+                // Write an unknown value of 0x00.
+                writer.Write(0x00);
+
+                // Write this object's fifth unknown integer value.
+                writer.Write(Data.Objects[i].UnknownUInt32_5);
+
+                // If this object has parameters, then write the value of parameterIndex and increment it.
+                if (Data.Objects[i].Parameters != null)
+                {
+                    writer.Write(parameterIndex);
+                    parameterIndex++;
+                }
+                
+                // If not, then just write 0x00.
+                else
+                {
+                    writer.Write(0x00);
+                }
+            }
+
+            // Fill in the parameter table.
+            for (int i = 0; i < Data.Objects.Count; i++)
+            {
+                // Only write stuff here if this object actually has parameters.
+                if (Data.Objects[i].Parameters != null)
+                {
+                    // Write an unknown value of 0x01.
+                    writer.Write((byte)0x01);
+
+                    // Write an unknown value of 0x00.
+                    writer.Write((byte)0x00);
+
+                    // Write this object's parameter count.
+                    // TODO: Unhardcode this when parameter types are figured out.
+                    writer.Write((byte)Data.Objects[i].Parameters.Count);
+
+                    // Write five null bytes.
+                    writer.WriteNulls(0x05);
+                }
+            }
+
+            // Set up the calculation for the parameter data table's length.
+            long parameterDataTableLength = writer.BaseStream.Position;
+
+            // Write each object's parameters, assuming it has any.
+            // TODO: Unhardcode this when parameter types are figured out.
+            for (int i = 0; i < Data.Objects.Count; i++)
+                if (Data.Objects[i].Parameters != null)
+                    for (int p = 0; p < Data.Objects[i].Parameters.Count; p++)
+                        writer.Write((byte)Data.Objects[i].Parameters[p].Data);
+
+            // Calculate the parameter data table's length.
+            parameterDataTableLength = writer.BaseStream.Length - parameterDataTableLength;
+
+            // Pad the file to 0x20.
+            writer.FixPadding(0x20);
+
+            // Write the parameter data table's length.
+            writer.BaseStream.Position = 0x0C;
+            writer.Write((uint)parameterDataTableLength);
+
+            // Close Marathon's BinaryWriter.
+            writer.Close();
+        }
     }
 }
