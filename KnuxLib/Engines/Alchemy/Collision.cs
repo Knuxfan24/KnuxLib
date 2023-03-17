@@ -1,12 +1,12 @@
-﻿using System.Diagnostics;
-
-namespace KnuxLib.Engines.Alchemy
+﻿namespace KnuxLib.Engines.Alchemy
 {
     // TODO: What does HKE mean?
     // TODO: Tidy all of this up and document how it works.
     // TODO: Figure out all of the unknown values.
-    // TODO: Check the values in the Subspace chunk we're skipping on the PS2 and Xbox.
     // TODO: Figure out how the Subspace Data pieces the models together, one arena looked right with the value that I assume is position, another didn't.
+    // TODO: Make a proper exporter for this.
+    // TODO: Make an importer for this.
+    // TODO: Make a save function for this.
     public class Collision : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -179,27 +179,29 @@ namespace KnuxLib.Engines.Alchemy
 
             // Instance data?
             string subspaceName = reader.ReadNullTerminatedString(); // Always default_subspace.
-            reader.JumpAhead(0x04); // Always D9 AE 66 0C.
-            reader.JumpAhead(0x08); // Always 0x00.
+            Helpers.TestValueUInt(reader, 0x0C66AED9); // Always D9 AE 66 0C.
+            Helpers.TestValueUInt(reader, 0x00000000); // Always 0x00.
+            Helpers.TestValueUInt(reader, 0x00000000); // Always 0x00.
             Data.Subspace.UnknownFloat_1 = reader.ReadSingle();
-            reader.JumpAhead(0x04); // Always 35 1B A6 00.
-            reader.JumpAhead(0x04); // Always CD CC CC 3D.
-            reader.JumpAhead(0x04); // Always A2 B2 D2 01.
-            reader.JumpAhead(0x04); // Always 01 A9 5C C3.
-            reader.JumpAhead(0x04); // Always 00 00 00 A0.
-            reader.JumpAhead(0x04); // Always 40 D9 B3 AB.
+            Helpers.TestValueUInt(reader, 0x00A61B35); // Always 35 1B A6 00.
+            Helpers.TestValueUInt(reader, 0x3DCCCCCD); // Always CD CC CC 3D.
+            Helpers.TestValueUInt(reader, 0x01D2B2A2); // Always A2 B2 D2 01.
+            Helpers.TestValueUInt(reader, 0xC35CA901); // Always 01 A9 5C C3.
+            Helpers.TestValueUInt(reader, 0xA0000000); // Always 00 00 00 A0.
+            Helpers.TestValueUInt(reader, 0xABB3D940); // Always 40 D9 B3 AB.
             Data.Subspace.UnknownFloat_2 = reader.ReadSingle();
             Data.Subspace.UnknownUInt32_1 = reader.ReadUInt32();
-            reader.JumpAhead(0x04); // Always 0A EE 2A 88.
-            reader.JumpAhead(0x04); // Always 0C FE A7 DF.
-            reader.JumpAhead(0x04); // Always 0E 6E 0A DC.
-            reader.JumpAhead(0x01); // Always 0x07.
+            Helpers.TestValueUInt(reader, 0x882AEE0A); // Always 0A EE 2A 88.
+            Helpers.TestValueUInt(reader, 0xDFA7FE0C); // Always 0C FE A7 DF.
+            Helpers.TestValueUInt(reader, 0xDC0A6E0E); // Always 0E 6E 0A DC.
+            if (reader.ReadByte() != 0x07)
+                throw new Exception();
             Data.Subspace.CollectionName = reader.ReadNullTerminatedString();
-            reader.JumpAhead(0x04); // Always 12 22 87 04.
-            reader.JumpAhead(0x04); // Always C2 C2 4C 00.
-            reader.JumpAhead(0x04); // Always 25 D0 CD 02.
-            reader.JumpAhead(0x04); // Always CD CC CC 3D.
-            reader.JumpAhead(0x04); // Always 99 77 E3 03.
+            Helpers.TestValueUInt(reader, 0x04872212); // Always 12 22 87 04.
+            Helpers.TestValueUInt(reader, 0x004CC2C2); // Always C2 C2 4C 00.
+            Helpers.TestValueUInt(reader, 0x02CDD025); // Always 25 D0 CD 02.
+            Helpers.TestValueUInt(reader, 0x3DCCCCCD); // Always CD CC CC 3D.
+            Helpers.TestValueUInt(reader, 0x03E37799); // Always 99 77 E3 03.
 
             while (reader.BaseStream.Position < reader.BaseStream.Length)
             {
@@ -232,8 +234,6 @@ namespace KnuxLib.Engines.Alchemy
                 Helpers.TestValueUInt(reader, 0x548507FA); // Always FA 07 85 54.
                 Helpers.TestValueUShort(reader, 0x0173); // Always 73 01
                 string instanceName2 = reader.ReadNullTerminatedString(); // Always the same as instanceName.
-                if (instanceName2 != instance.Name)
-                    Debugger.Break();
                 Helpers.TestValueUInt(reader, 0x00051683); // Always 83 16 05 00.
                 instance.UnknownUInt32_6 = reader.ReadUInt32(); // Always 0x00 in final.
                 Helpers.TestValueUInt(reader, 0x0486894E); // Always 4E 89 86 04.
@@ -247,8 +247,6 @@ namespace KnuxLib.Engines.Alchemy
                 Helpers.TestValueUInt(reader, 0x00000000); // Always 0x00.
                 Helpers.TestValueUInt(reader, 0x0A41ADC9); // Always C9 AD 41 0A.
                 string instanceName3 = reader.ReadNullTerminatedString(); // Always the same as instanceName.
-                if (instanceName3 != instance.Name)
-                    Debugger.Break();
                 Helpers.TestValueUInt(reader, 0x04843AA8); // Always A8 3A 84 04.
                 instance.UnknownUInt32_7 = reader.ReadUInt32();
                 Helpers.TestValueUInt(reader, 0xCDEF0008); // Always 08 00 EF CD.
@@ -287,11 +285,6 @@ namespace KnuxLib.Engines.Alchemy
                 {
                     if (Data.Subspace.Instances[i].Name == model.Name)
                         instanceIndex = i;
-                }
-
-                if (instanceIndex == null)
-                {
-                    Debugger.Break();
                 }
 
                 StreamWriter mat = new($@"{directory}\{model.Name}.obj");
