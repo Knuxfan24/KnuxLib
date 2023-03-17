@@ -347,13 +347,13 @@
                 // Write this object's table in the item table.
                 writer.Write(Data.Objects[i].TableID);
 
-                // Write this object's fourth unknown integer value.
+                // Write this object's first unknown integer value.
                 writer.Write(Data.Objects[i].UnknownUInt32_1);
 
                 // Write an unknown value of 0x00.
                 writer.Write(0x00);
 
-                // Write this object's fifth unknown integer value.
+                // Write this object's second unknown integer value.
                 writer.Write(Data.Objects[i].UnknownUInt32_2);
 
                 // If this object has parameters, then write the value of parameterIndex and increment it.
