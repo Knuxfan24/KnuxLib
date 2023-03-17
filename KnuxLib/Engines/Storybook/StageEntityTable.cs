@@ -31,27 +31,20 @@
         public class SetObject
         {
             /// <summary>
+            /// This object's type, as determined from the ID and Table.
+            /// This is NOT actually a thing the SET file has, and is only set by the Load function having a StageEntityTableItems object passed to it.
+            /// </summary>
+            public string? Type { get; set; }
+
+            /// <summary>
             /// This object's position in 3D space.
             /// </summary>
             public Vector3 Position { get; set; }
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this, does this work with UnknownUInt32_2 and UnknownUInt32_3 to form a BAMS rotation?
+            /// This object's rotation in 3D space, converted from the Binary Angle Measurement System.
             /// </summary>
-            public uint UnknownUInt32_1 { get; set; }
-
-            /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this, does this work with UnknownUInt32_1 and UnknownUInt32_3 to form a BAMS rotation?
-            /// </summary>
-            public uint UnknownUInt32_2 { get; set; }
-
-            /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this, does this work with UnknownUInt32_1 and UnknownUInt32_2 to form a BAMS rotation?
-            /// </summary>
-            public uint UnknownUInt32_3 { get; set; }
+            public Vector3 Rotation { get; set; }
 
             /// <summary>
             /// An unknown byte value.
@@ -102,24 +95,18 @@
             /// An unknown integer value.
             /// TODO: What is this?
             /// </summary>
-            public uint UnknownUInt32_4 { get; set; }
+            public uint UnknownUInt32_1 { get; set; }
 
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this?
+            /// TODO: What is this? Seems to only ever be 0x00, 0x02 or 0xC8.
             /// </summary>
-            public uint UnknownUInt32_5 { get; set; }
+            public uint UnknownUInt32_2 { get; set; }
 
             /// <summary>
             /// A list of this object's parameters.
             /// </summary>
             public List<SetParameter>? Parameters { get; set; }
-
-            /// <summary>
-            /// This object's type, as determined from the ID and Table.
-            /// This is NOT actually a thing the SET file has, and is only set by the Load function having a StageEntityTableItems object passed to it.
-            /// </summary>
-            public string? Type { get; set; }
 
             public override string ToString() => Type;
         }
@@ -182,14 +169,8 @@
                 // Read this object's position.
                 obj.Position = reader.ReadVector3();
 
-                // Read this object's first unknown integer value.
-                obj.UnknownUInt32_1 = reader.ReadUInt32();
-
-                // Read this object's second unknown integer value.
-                obj.UnknownUInt32_2 = reader.ReadUInt32();
-
-                // Read this object's third unknown integer value.
-                obj.UnknownUInt32_3 = reader.ReadUInt32();
+                // Read and convert the three integer values for this object's rotation from BAMS to Euler.
+                obj.Rotation = new(Helpers.CalculateBAMsValue(reader.ReadInt32()), Helpers.CalculateBAMsValue(reader.ReadInt32()), Helpers.CalculateBAMsValue(reader.ReadInt32()));
 
                 // Read this object's first unknown byte value.
                 obj.UnknownByte_1 = reader.ReadByte();
@@ -215,14 +196,14 @@
                 // Read this object's table in the item table.
                 obj.TableID = reader.ReadByte();
 
-                // Read this object's fourth unknown integer value.
-                obj.UnknownUInt32_4 = reader.ReadUInt32();
+                // Read this object's first unknown integer value.
+                obj.UnknownUInt32_1 = reader.ReadUInt32();
 
                 // Skip an unknown value of 0x00.
                 reader.JumpAhead(0x04);
 
-                // Read this object's fifth unknown integer value.
-                obj.UnknownUInt32_5 = reader.ReadUInt32();
+                // Read this object's second unknown integer value.
+                obj.UnknownUInt32_2 = reader.ReadUInt32();
 
                 // Read the index of this object's parameters.
                 uint parameterIndex = reader.ReadUInt32();
@@ -333,14 +314,14 @@
                 // Write this object's position.
                 writer.Write(Data.Objects[i].Position);
 
-                // Write this object's first unknown integer value.
-                writer.Write(Data.Objects[i].UnknownUInt32_1);
+                // Write this object's X rotation, converted from Euler Angles to the Binary Angle Measurement System.
+                writer.Write(Helpers.CalculateBAMsValue(Data.Objects[i].Rotation.X));
 
-                // Write this object's second unknown integer value.
-                writer.Write(Data.Objects[i].UnknownUInt32_2);
+                // Write this object's Y rotation, converted from Euler Angles to the Binary Angle Measurement System.
+                writer.Write(Helpers.CalculateBAMsValue(Data.Objects[i].Rotation.Y));
 
-                // Write this object's third unknown integer value.
-                writer.Write(Data.Objects[i].UnknownUInt32_3);
+                // Write this object's Z rotation, converted from Euler Angles to the Binary Angle Measurement System.
+                writer.Write(Helpers.CalculateBAMsValue(Data.Objects[i].Rotation.Z));
 
                 // Write this object's first unknown byte value.
                 writer.Write(Data.Objects[i].UnknownByte_1);
@@ -367,13 +348,13 @@
                 writer.Write(Data.Objects[i].TableID);
 
                 // Write this object's fourth unknown integer value.
-                writer.Write(Data.Objects[i].UnknownUInt32_4);
+                writer.Write(Data.Objects[i].UnknownUInt32_1);
 
                 // Write an unknown value of 0x00.
                 writer.Write(0x00);
 
                 // Write this object's fifth unknown integer value.
-                writer.Write(Data.Objects[i].UnknownUInt32_5);
+                writer.Write(Data.Objects[i].UnknownUInt32_2);
 
                 // If this object has parameters, then write the value of parameterIndex and increment it.
                 if (Data.Objects[i].Parameters != null)
