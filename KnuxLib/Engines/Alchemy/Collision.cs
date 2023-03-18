@@ -257,7 +257,7 @@
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath));
 
-            // Skip the first 0x24 bytes of this file, as they're always the same string of bytes (42 E4 DE 0E 04 4D 41 58 5F 65 78 70 6F 72 74 65 64 5F 77 6F 72 6C 64 00 6E 7E A7 0A 50 05 00 00 05 33 1B 0A).
+            // Skip the first 0x24 bytes of this file, as they're always the same sequence of bytes (42 E4 DE 0E 04 4D 41 58 5F 65 78 70 6F 72 74 65 64 5F 77 6F 72 6C 64 00 6E 7E A7 0A 50 05 00 00 05 33 1B 0A).
             reader.JumpAhead(0x24);
 
             // Read the main data's unknown floating point value.
@@ -304,7 +304,7 @@
                 // Skip an unknown value of 0x12ABCDEF.
                 reader.JumpAhead(0x04);
 
-                // Skip an unknown value of 0x0ea30ac9.
+                // Skip an unknown value of 0x0EA30AC9.
                 reader.JumpAhead(0x04);
 
                 // Read this model's first unknown value.
@@ -474,6 +474,216 @@
                 // Save this instance.
                 Data.Subspace.Instances.Add(instance);
             }
+        }
+
+        /// <summary>
+        /// Saves this format's file.
+        /// </summary>
+        /// <param name="filepath">The path to save to.</param>
+        public void Save(string filepath)
+        {
+            // Set up Marathon's BinaryWriter.
+            BinaryWriterEx writer = new(File.Create(filepath));
+
+            // Write the first 0x24 bytes of this file that are always the same sequence of bytes.
+            writer.Write(new byte[] { 0x42, 0xE4, 0xDE, 0x0E, 0x04, 0x4D, 0x41, 0x58, 0x5F, 0x65, 0x78, 0x70, 0x6F, 0x72, 0x74, 0x65, 0x64, 0x5F, 0x77, 0x6F, 0x72, 0x6C, 0x64, 0x00, 0x6E, 0x7E, 0xA7, 0x0A, 0x50, 0x05, 0x00, 0x00, 0x05, 0x33, 0x1B, 0x0A });
+
+            // Write the main data's unknown floating point value.
+            writer.Write(Data.UnknownFloat_1);
+
+            // Write eight bytes that are always the same.
+            writer.Write(new byte[] { 0xA9, 0xEE, 0x9F, 0x01, 0x45, 0x30, 0x05, 0x05 });
+
+            // Loop through and write each model entry's data.
+            for (int i = 0; i < Data.Models.Count; i++)
+            {
+                // Write this model's name.
+                writer.WriteNullTerminatedString(Data.Models[i].Name);
+
+                // Write this model's vertex count.
+                writer.Write(Data.Models[i].Vertices.Count);
+
+                // Write each vertex in this model.
+                foreach (Vector3 vertex in Data.Models[i].Vertices)
+                    writer.Write(vertex);
+
+                // Write this model's face count.
+                writer.Write(Data.Models[i].Faces.Count);
+
+                // Write each of this model's face indices.
+                foreach (Face face in Data.Models[i].Faces)
+                {
+                    writer.Write(face.IndexA);
+                    writer.Write(face.IndexB);
+                    writer.Write(face.IndexC);
+                }
+
+                // Write an unknown value of 0x12ABCDEF.
+                writer.Write(0x12ABCDEF);
+
+                // Write an unknown value of 0x0EA30AC9.
+                writer.Write(0x0EA30AC9);
+
+                // Write this model's first unknown value.
+                writer.Write(Data.Models[i].UnknownUInt32_1);
+
+                // Write this model's second unknown value.
+                writer.Write(Data.Models[i].UnknownUInt32_2);
+            }
+            
+            // Write the single null byte that marks the end of the model table.
+            writer.WriteNull();
+
+            // Write the default_subspace string.
+            writer.WriteNullTerminatedString("default_subspace");
+
+            // Write 0x0C bytes that are always the same.
+            writer.Write(new byte[] { 0xD9, 0xAE, 0x66, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 });
+
+            // Write this subspace's first unknown floating point value.
+            writer.Write(Data.Subspace.UnknownFloat_1);
+
+            // Write 0x18 bytes that are always the same.
+            writer.Write(new byte[] { 0x35, 0x1B, 0xA6, 0x00, 0xCD, 0xCC, 0xCC, 0x3D, 0xA2, 0xB2, 0xD2, 0x01, 0x01, 0xA9, 0x5C, 0xC3, 0x00, 0x00, 0x00, 0xA0, 0x40, 0xD9, 0xB3, 0xAB });
+
+            // Write this subspace's first unknown integer value.
+            writer.Write(Data.Subspace.UnknownUInt32_1);
+
+            // Write this subspace's second unknown integer value.
+            writer.Write(Data.Subspace.UnknownUInt32_2);
+
+            // Write 0x0D bytes that are always the same.
+            writer.Write(new byte[] { 0x0A, 0xEE, 0x2A, 0x88, 0x0C, 0xFE, 0xA7, 0xDF, 0x0E, 0x6E, 0x0A, 0xDC, 0x07 });
+
+            // Write this subspace's collection name.
+            writer.WriteNullTerminatedString(Data.Subspace.CollectionName);
+
+            // Write 0x14 bytes that are always the same.
+            writer.Write(new byte[] { 0x12, 0x22, 0x87, 0x04, 0xC2, 0xC2, 0x4C, 0x00, 0x25, 0xD0, 0xCD, 0x02, 0xCD, 0xCC, 0xCC, 0x3D, 0x99, 0x77, 0xE3, 0x03 });
+
+            // Loop through and write the data for each instance in the subspace chunk.
+            for (int i = 0; i < Data.Subspace.Instances.Count; i++)
+            {
+                // Write the first occurance of this instance's name.
+                writer.WriteNullTerminatedString(Data.Subspace.Instances[i].Name);
+
+                // Write an unknown value of 0x08C76EF9.
+                writer.Write(0x08C76EF9);
+
+                // Write this instance's first unknown floating point value.
+                writer.Write(Data.Subspace.Instances[i].UnknownFloat_1);
+
+                // Write an unknown value of 0x0055670E.
+                writer.Write(0x0055670E);
+
+                // Write this instance's second unknown floating point value.
+                writer.Write(Data.Subspace.Instances[i].UnknownFloat_2);
+
+                // Write an unknown value of 0x00C1A1AE.
+                writer.Write(0x00C1A1AE);
+
+                // Write this instance's second unknown floating point value a second time.
+                writer.Write(Data.Subspace.Instances[i].UnknownFloat_2);
+
+                // Write an unknown value of 0x0486894E.
+                writer.Write(0x0486894E);
+
+                // Write this instance's third unknown floating point value.
+                writer.Write(Data.Subspace.Instances[i].UnknownFloat_3);
+
+                // Write this instance's first unknown Vector3.
+                writer.Write(Data.Subspace.Instances[i].UnknownVector3_1);
+
+                // Write an unknown value of 0x085FEC0E.
+                writer.Write(0x085FEC0E);
+
+                // Write this instance's position value.
+                writer.Write(Data.Subspace.Instances[i].Position);
+
+                // Write 0x14 bytes that are always the same.
+                writer.Write(new byte[] { 0xD9, 0x4A, 0xA5, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF9, 0x58, 0x11, 0x04 });
+
+                // Write this instance's second unknown Vector3.
+                writer.Write(Data.Subspace.Instances[i].UnknownVector3_2);
+
+                // Write eight bytes that are always the same.
+                writer.Write(new byte[] { 0x24, 0x0D, 0xF8, 0x08, 0x00, 0xA5, 0x8E, 0x58 });
+
+                // Write this instance's first unknown integer value.
+                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_1);
+
+                // Write this instance's second unknown integer value.
+                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_2);
+
+                // Write this instance's third unknown integer value.
+                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_3);
+
+                // Write this instance's fourth unknown integer value.
+                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_4);
+
+                // Write this instance's fifth unknown integer value.
+                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_5);
+
+                // Write six bytes that are always the same.
+                writer.Write(new byte[] { 0xFA, 0x07, 0x85, 0x54, 0x73, 0x01 });
+
+                // Write the second occurance of this instance's name.
+                writer.WriteNullTerminatedString(Data.Subspace.Instances[i].Name);
+
+                // Write an unknown value of 0x00051683.
+                writer.Write(0x00051683);
+
+                // Write this instance's sixth unknown integer value.
+                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_6);
+
+                // Write 0x18 bytes that are always the same.
+                writer.Write(new byte[] { 0x4E, 0x89, 0x86, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0xEC, 0x5F, 0x08 });
+
+                // Write this instance's third unknown Vector3.
+                writer.Write(Data.Subspace.Instances[i].UnknownVector3_3);
+
+                // Write 0x0C bytes that are always the same.
+                writer.Write(new byte[] { 0x1B, 0xF5, 0x34, 0x08, 0x00, 0x00, 0x00, 0x00, 0xC9, 0xAD, 0x41, 0x0A });
+
+                // Write the third occurance of this instance's name.
+                writer.WriteNullTerminatedString(Data.Subspace.Instances[i].Name);
+
+                // Write an unknown value of 0x04843AA8.
+                writer.Write(0x04843AA8);
+
+                // Write this instance's seventh unknown integer value.
+                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_7);
+
+                // Write 0x0C bytes that are always the same.
+                writer.Write(new byte[] { 0x08, 0x00, 0xEF, 0xCD, 0xAB, 0x12, 0x85, 0xCB, 0x34, 0x08, 0x89, 0x1A });
+
+                // Write this instance's eighth unknown integer value.
+                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_8);
+
+                // If this instance's eighth unknown integer value is 0x77990F47, then write two bytes that are always the same.
+                if (Data.Subspace.Instances[i].UnknownUInt32_8 == 0x77990F47)
+                    writer.Write((ushort)0x03E3);
+                
+                // If not, then continue to write some extra data.
+                else
+                {
+                    // Write six bytes that are always the same.
+                    writer.Write(new byte[] { 0xAB, 0x12, 0x8E, 0x06, 0x3B, 0x02 });
+
+                    // Write this instance's ninth unknown integer value.
+                    writer.Write((uint)Data.Subspace.Instances[i].UnknownUInt32_9);
+
+                    // Write this instance's tenth unknown integer value.
+                    writer.Write((uint)Data.Subspace.Instances[i].UnknownUInt32_10);
+                }
+            }
+
+            // If this subspace chunk is marked as having the Drag01 chunk, then write the 0x27 bytes that form it.
+            if (Data.Subspace.HasDragChunk)
+                writer.Write(new byte[] { 0x44, 0x72, 0x61, 0x67, 0x5F, 0x31, 0x00, 0xC7, 0x74, 0x33, 0x06, 0xCD, 0xCC, 0xCC, 0x3D, 0x57, 0x5C, 0x21, 0x02, 0xCD, 0xCC, 0xCC, 0x3D, 0xEF, 0xCD, 0xAB, 0x12, 0x9E, 0x30, 0x5C, 0x03, 0xF5, 0xE1, 0xDA, 0x0D, 0x24, 0x0D, 0x4C, 0x0A });
+
+            // Close Marathon's BinaryWriter.
+            writer.Close();
         }
 
         /// <summary>

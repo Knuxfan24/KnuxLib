@@ -327,5 +327,17 @@ namespace KnuxLib
 
             return ret;
         }
+
+        /// <summary>
+        /// Converts a signed integer stored in the Binary Angle Measurement System to a floating point value.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        public static float CalculateBAMsValue(int value) => value * 360f / 65536f;
+
+        /// <summary>
+        /// Converts a floating point value to a signed integer stored in the Binary Angle Measurement System.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        public static float CalculateBAMsValue(float value) => value * 65536f / 360f;
     }
 }
