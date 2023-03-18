@@ -166,6 +166,8 @@ Supported formats:
 
 - [Stage Entity Table Object Table](KnuxLib/Engines/Storybook/StageEntityTableItems.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+- [Texture Directory](KnuxLib/Engines/Storybook/TextureDirectory.cs) reading, writing, data extraction and data importing.
+
 Notes:
 
 - Uncertain if this is the engine's name.

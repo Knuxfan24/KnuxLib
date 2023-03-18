@@ -21,7 +21,7 @@ namespace KnuxLib.Engines.Storybook
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        public void Load(string filepath)
+        public override void Load(string filepath)
         {
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath), true);

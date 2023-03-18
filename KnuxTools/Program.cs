@@ -34,7 +34,8 @@ namespace KnuxTools
                             "2. Gods Engine WAD File\n" +
                             "3. Sonic The Portable AMB File\n" +
                             "4. Sonic Storybook Engine ONE File\n" +
-                            "5. Sonic World Adventure Wii ONE File."
+                            "5. Sonic Storybook Engine TXD File\n" +
+                            "6. Sonic World Adventure Wii ONE File."
                         );
                         switch (Console.ReadKey().KeyChar)
                         {
@@ -88,6 +89,14 @@ namespace KnuxTools
                                 }
                                 break;
                             case '5':
+                                using (KnuxLib.Engines.Storybook.TextureDirectory textureDirectory = new())
+                                {
+                                    Console.WriteLine("\n");
+                                    textureDirectory.Import(arg);
+                                    textureDirectory.Save($@"{arg}.txd");
+                                }
+                                break;
+                            case '6':
                                 using (KnuxLib.Engines.WorldAdventureWii.ONE one = new())
                                 {
                                     Console.WriteLine("\n");
@@ -448,6 +457,10 @@ namespace KnuxTools
                             case ".328f438b": case ".osd": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
                             #endregion
 
+                            #region Sonic Storybook Engine Formats
+                            case ".txd": using (KnuxLib.Engines.Storybook.TextureDirectory textureDirectory = new(arg, true)) break;
+                            #endregion
+
                             #region Sonic The Portable Engine Formats
                             case ".amb": using (KnuxLib.Engines.Portable.AMB amb = new(arg, true)) break;
                             #endregion
@@ -499,7 +512,8 @@ namespace KnuxTools
 
                 Console.WriteLine("Sonic Storybook Engine:\n" +
                                   "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n" +
-                                  "Stage Entity Table Object Table (.bin)\n");
+                                  "Stage Entity Table Object Table (.bin)\n" +
+                                  "Texture Directory (.txd) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Sonic World Adventure Wii Engine:\n" +
                                   "ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
