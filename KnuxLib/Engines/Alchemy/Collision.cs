@@ -5,7 +5,6 @@
     // TODO: Figure out how the Subspace Data pieces the models together, one arena looked right with the value that I assume is position, another didn't.
     // TODO: Make a proper exporter for this.
     // TODO: Make an importer for this.
-    // TODO: Make a save function for this.
     public class Collision : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
