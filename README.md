@@ -106,6 +106,11 @@ Supported formats:
 
 - [Gismo V3](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+- [Sector Visibility Collision](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> The Sector Visibility Collision format has some extra data in it that is not currently handled, but doesn't seem required?
+
 ## Nu2 Engine
 
 Known games:

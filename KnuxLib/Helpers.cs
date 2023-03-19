@@ -198,6 +198,25 @@ namespace KnuxLib
         }
 
         /// <summary>
+        /// Reads a Quaternion from a file using HedgeLib#'s BINAReader, as it uses a custom Quaternion class.
+        /// </summary>
+        /// <param name="reader">The HedgeLib# BINAReader to use.</param>
+        public static Quaternion ReadHedgeLibQuaternion(HedgeLib.IO.BINAReader reader) => new(reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle(), reader.ReadSingle());
+
+        /// <summary>
+        /// Writes a Quaternion to a file using HedgeLib#'s BINAWriter, as it uses a custom Quaternion class.
+        /// </summary>
+        /// <param name="writer">The HedgeLib# BINAWriter to use.</param>
+        /// <param name="value">The Quaternion value to write.</param>
+        public static void WriteHedgeLibQuaternion(HedgeLib.IO.BINAWriter writer, Quaternion value)
+        {
+            writer.Write(value.X);
+            writer.Write(value.Y);
+            writer.Write(value.Z);
+            writer.Write(value.W);
+        }
+
+        /// <summary>
         /// Combines multiple byte arrays into one.
         /// Taken from https://www.techiedelight.com/concatenate-byte-arrays-csharp/
         /// </summary>

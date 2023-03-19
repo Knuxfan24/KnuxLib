@@ -134,10 +134,10 @@
             writer.WriteSignature(Signature);
 
             // Write the file version.
-            writer.Write(2);
+            writer.Write(0x02);
 
             // Set up the BINA Offset Table.
-            writer.AddOffset("instanceOffset", 8);
+            writer.AddOffset("instanceOffset", 0x08);
 
             // Write how many instances are in this file.
             writer.Write((ulong)Data.Count);
@@ -149,8 +149,8 @@
             for (int i = 0; i < Data.Count; i++)
             {
                 // Add the two strings to the BINA String Table and write their offsets.
-                writer.AddString($"instance{i}name1", Data[i].InstanceName, 8);
-                writer.AddString($"instance{i}name2", Data[i].ModelName, 8);
+                writer.AddString($"instance{i}name1", Data[i].InstanceName, 0x08);
+                writer.AddString($"instance{i}name2", Data[i].ModelName, 0x08);
 
                 // Write this instance's position.
                 Helpers.WriteHedgeLibVector3(writer, Data[i].Position);

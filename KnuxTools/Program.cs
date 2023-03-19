@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using KnuxLib.Engines.Hedgehog;
+using System.Globalization;
 using System.Numerics;
 using System.Text;
 
@@ -115,7 +116,7 @@ namespace KnuxTools
                         Console.WriteLine($"File: {arg}\n");
 
                         // Treat this file differently depending on type.
-                        switch (Path.GetExtension(arg).ToLower())
+                        switch (KnuxLib.Helpers.GetExtension(arg).ToLower())
                         {
                             #region Seralised Models
                             case ".fbx":
@@ -148,175 +149,178 @@ namespace KnuxTools
                             #endregion
 
                             #region Seralised Data
-                            case ".json":
-                                switch (KnuxLib.Helpers.GetExtension(arg))
+                            case ".hedgehog.archiveinfo.json":
+                                using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new())
                                 {
-                                    case ".hedgehog.archiveinfo.json":
-                                        using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new())
-                                        {
-                                            archiveInfo.Data = archiveInfo.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.ArchiveInfo.ArchiveEntry>>(arg);
-                                            archiveInfo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.arcinfo");
-                                        }
-                                        break;
+                                    archiveInfo.Data = archiveInfo.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.ArchiveInfo.ArchiveEntry>>(arg);
+                                    archiveInfo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.arcinfo");
+                                }
+                                break;
 
-                                    case ".hedgehog.gismov3.json":
-                                        using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new())
-                                        {
-                                            gismo.Data = gismo.JsonDeserialise<KnuxLib.Engines.Hedgehog.GismoV3.FormatData>(arg);
-                                            gismo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.gismod");
-                                        }
-                                        break;
+                            case ".hedgehog.gismov3.json":
+                                using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new())
+                                {
+                                    gismo.Data = gismo.JsonDeserialise<KnuxLib.Engines.Hedgehog.GismoV3.FormatData>(arg);
+                                    gismo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.gismod");
+                                }
+                                break;
 
-                                    case ".hedgehog.pointcloud.json":
-                                        // Ask the user for the extension to save with.
-                                        Console.WriteLine
-                                        (
-                                            "This file has multiple file extension options, please specifiy the extension to save with;\n" +
-                                            "1. .pccol (Collision Instance)\n" +
-                                            "2. .pcmodel (Terrain Instance)"
-                                        );
-                                        switch (Console.ReadKey().KeyChar)
+                            case ".hedgehog.pointcloud.json":
+                                // Ask the user for the extension to save with.
+                                Console.WriteLine
+                                (
+                                    "This file has multiple file extension options, please specifiy the extension to save with;\n" +
+                                    "1. .pccol (Collision Instance)\n" +
+                                    "2. .pcmodel (Terrain Instance)"
+                                );
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
+                                        using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
                                         {
-                                            case '1':
-                                                using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
-                                                {
-                                                    pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
-                                                    pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.pccol");
-                                                }
-                                                break;
-                                            case '2':
-                                                using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
-                                                {
-                                                    pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
-                                                    pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.pcmodel");
-                                                }
-                                                break;
+                                            pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
+                                            pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.pccol");
                                         }
                                         break;
+                                    case '2':
+                                        using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
+                                        {
+                                            pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
+                                            pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.pcmodel");
+                                        }
+                                        break;
+                                }
+                                break;
 
-                                    case ".nu2.aientitytable.json":
-                                        // Ask the user for the version to save with.
-                                        Console.WriteLine
-                                        (
-                                            "This file has multiple file version options, please specifiy the version to save with;\n" +
-                                            "1. GameCube\n" +
-                                            "2. PlayStation2/Xbox"
-                                        );
-                                        switch (Console.ReadKey().KeyChar)
-                                        {
-                                            case '1':
-                                                using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
-                                                {
-                                                    aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
-                                                    aiEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.GameCube);
-                                                }
-                                                break;
-                                            case '2':
-                                                using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
-                                                {
-                                                    aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
-                                                    aiEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.PlayStation2Xbox);
-                                                }
-                                                break;
-                                        }
-                                        break;
+                            case ".hedgehog.sectorvisiblitycollision.json":
+                                using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision gismo = new())
+                                {
+                                    gismo.Data = gismo.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.SectorVisibilityCollision.SectorVisibilityShape>>(arg);
+                                    gismo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin.svcol");
+                                }
+                                break;
 
-                                    case ".nu2.wumpatable.json":
-                                        // Ask the user for the version to save with.
-                                        Console.WriteLine
-                                        (
-                                            "This file has multiple file version options, please specifiy the version to save with;\n" +
-                                            "1. GameCube\n" +
-                                            "2. PlayStation2/Xbox"
-                                        );
-                                        switch (Console.ReadKey().KeyChar)
+                            case ".nu2.aientitytable.json":
+                                // Ask the user for the version to save with.
+                                Console.WriteLine
+                                (
+                                    "This file has multiple file version options, please specifiy the version to save with;\n" +
+                                    "1. GameCube\n" +
+                                    "2. PlayStation2/Xbox"
+                                );
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
+                                        using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
                                         {
-                                            case '1':
-                                                using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
-                                                {
-                                                    wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
-                                                    wumpaTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube);
-                                                }
-                                                break;
-                                            case '2':
-                                                using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
-                                                {
-                                                    wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
-                                                    wumpaTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox);
-                                                }
-                                                break;
+                                            aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
+                                            aiEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.GameCube);
                                         }
                                         break;
+                                    case '2':
+                                        using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
+                                        {
+                                            aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
+                                            aiEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.PlayStation2Xbox);
+                                        }
+                                        break;
+                                }
+                                break;
 
-                                    case ".projectm.messagetable.json":
-                                        using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
+                            case ".nu2.wumpatable.json":
+                                // Ask the user for the version to save with.
+                                Console.WriteLine
+                                (
+                                    "This file has multiple file version options, please specifiy the version to save with;\n" +
+                                    "1. GameCube\n" +
+                                    "2. PlayStation2/Xbox"
+                                );
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
+                                        using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
                                         {
-                                            messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
-                                            messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.dat");
+                                            wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
+                                            wumpaTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube);
                                         }
                                         break;
+                                    case '2':
+                                        using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
+                                        {
+                                            wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
+                                            wumpaTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox);
+                                        }
+                                        break;
+                                }
+                                break;
 
-                                    case ".rockmanx7.stageentitytable.json":
-                                        // Ask the user for the extension to save with.
-                                        Console.WriteLine
-                                        (
-                                            "This file has multiple file extension options, please specifiy the extension to save with;\n" +
-                                            "1. .OSD (PlayStation 2/PC)\n" +
-                                            "2. .328F438B (Legacy Collection)"
-                                        );
-                                        switch (Console.ReadKey().KeyChar)
-                                        {
-                                            case '1':
-                                                using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
-                                                {
-                                                    stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
-                                                    stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.OSD");
-                                                }
-                                                break;
-                                            case '2':
-                                                using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
-                                                {
-                                                    stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
-                                                    stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.328F438B");
-                                                }
-                                                break;
-                                        }
-                                        break;
+                            case ".projectm.messagetable.json":
+                                using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
+                                {
+                                    messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
+                                    messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.dat");
+                                }
+                                break;
 
-                                    case ".storybook.stageentitytableitems.json":
-                                        // Ask the user for the version to save with.
-                                        Console.WriteLine
-                                        (
-                                            "This file has multiple file version options, please specifiy the version to save with;\n" +
-                                            "1. Sonic and the Secret Rings\n" +
-                                            "2. Sonic and the Black Knight"
-                                        );
-                                        switch (Console.ReadKey().KeyChar)
+                            case ".rockmanx7.stageentitytable.json":
+                                // Ask the user for the extension to save with.
+                                Console.WriteLine
+                                (
+                                    "This file has multiple file extension options, please specifiy the extension to save with;\n" +
+                                    "1. .OSD (PlayStation 2/PC)\n" +
+                                    "2. .328F438B (Legacy Collection)"
+                                );
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
+                                        using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
                                         {
-                                            case '1':
-                                                using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
-                                                {
-                                                    setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
-                                                    setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings);
-                                                }
-                                                break;
-                                            case '2':
-                                                using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
-                                                {
-                                                    setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
-                                                    setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight);
-                                                }
-                                                break;
+                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
+                                            stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.OSD");
                                         }
                                         break;
+                                    case '2':
+                                        using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
+                                        {
+                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
+                                            stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.328F438B");
+                                        }
+                                        break;
+                                }
+                                break;
 
-                                    case ".westwood.messagetable.json":
-                                        using (KnuxLib.Engines.Westwood.MessageTable messageTable = new())
+                            case ".storybook.stageentitytableitems.json":
+                                // Ask the user for the version to save with.
+                                Console.WriteLine
+                                (
+                                    "This file has multiple file version options, please specifiy the version to save with;\n" +
+                                    "1. Sonic and the Secret Rings\n" +
+                                    "2. Sonic and the Black Knight"
+                                );
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
+                                        using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
                                         {
-                                            messageTable.Data = messageTable.JsonDeserialise<List<string>>(arg);
-                                            messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.tru");
+                                            setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
+                                            setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings);
                                         }
                                         break;
+                                    case '2':
+                                        using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
+                                        {
+                                            setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
+                                            setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight);
+                                        }
+                                        break;
+                                }
+                                break;
+
+                            case ".westwood.messagetable.json":
+                                using (KnuxLib.Engines.Westwood.MessageTable messageTable = new())
+                                {
+                                    messageTable.Data = messageTable.JsonDeserialise<List<string>>(arg);
+                                    messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.tru");
                                 }
                                 break;
                             #endregion
@@ -412,6 +416,7 @@ namespace KnuxTools
                             case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new(arg, true)) break;
                             case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
                             case ".pcmodel": case ".pccol": using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new(arg, true)) break;
+                            case ".svcol.bin": using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new(arg, true)) break;
                             #endregion
 
                             #region Nu2 Engine Formats
@@ -496,7 +501,8 @@ namespace KnuxTools
                 Console.WriteLine("Hedgehog Engine:\n" +
                                   "Archive Info (.arcinfo)\n" +
                                   "Point Cloud (.pccol/.pcmodel)\n" +
-                                  "Gismo V3 (.gismod/.gismop)");
+                                  "Gismo V3 (.gismod/.gismop)\n" +
+                                  "Sector Visibility Collision (.bin.svcol)\n");
 
                 Console.WriteLine("Nu2 Engine:\n" +
                                   "Wumpa Fruit Table (.wmp)\n");
