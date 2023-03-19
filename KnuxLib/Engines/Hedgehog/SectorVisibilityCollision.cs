@@ -190,7 +190,7 @@
             writer.Write((ulong)Data.Count);
 
             // Add an offset to the shape table.
-            writer.AddOffset($"shapeTableOffset", 0x08);
+            writer.AddOffset("shapeTableOffset", 0x08);
 
             // Fill in the offset position.
             writer.FillInOffset("shapeTableOffset", false, false);
