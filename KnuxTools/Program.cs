@@ -1,5 +1,4 @@
-﻿using KnuxLib.Engines.Hedgehog;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Numerics;
 using System.Text;
 
