@@ -44,7 +44,7 @@
             /// <summary>
             /// This instance's scale in 3D space.
             /// </summary>
-            public Vector3 Scale { get; set; }
+            public Vector3 Scale { get; set; } = new(1f, 1f, 1f);
 
             public override string ToString() => InstanceName;
         }

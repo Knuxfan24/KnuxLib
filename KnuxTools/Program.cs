@@ -170,7 +170,8 @@ namespace KnuxTools
                                 (
                                     "This file has multiple file extension options, please specifiy the extension to save with;\n" +
                                     "1. .pccol (Collision Instance)\n" +
-                                    "2. .pcmodel (Terrain Instance)"
+                                    "2. .pcmodel (Terrain Instance)\n" +
+                                    "3. .pcrt (Lighting Instance)"
                                 );
                                 switch (Console.ReadKey().KeyChar)
                                 {
@@ -186,6 +187,13 @@ namespace KnuxTools
                                         {
                                             pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
                                             pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.pcmodel");
+                                        }
+                                        break;
+                                    case '3':
+                                        using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
+                                        {
+                                            pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
+                                            pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.pcrt");
                                         }
                                         break;
                                 }
@@ -414,7 +422,7 @@ namespace KnuxTools
                             case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
                             case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new(arg, true)) break;
                             case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
-                            case ".pcmodel": case ".pccol": using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new(arg, true)) break;
+                            case ".pcmodel": case ".pccol": case ".pcrt": using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new(arg, true)) break;
                             case ".svcol.bin": using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new(arg, true)) break;
                             #endregion
 
@@ -499,7 +507,7 @@ namespace KnuxTools
 
                 Console.WriteLine("Hedgehog Engine:\n" +
                                   "Archive Info (.arcinfo)\n" +
-                                  "Point Cloud (.pccol/.pcmodel)\n" +
+                                  "Point Cloud (.pccol/.pcmodel/.pcrt)\n" +
                                   "Gismo V3 (.gismod/.gismop)\n" +
                                   "Sector Visibility Collision (.bin.svcol)\n");
 
