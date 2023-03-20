@@ -227,6 +227,8 @@ The following formats are only partially supported and have no implementation in
 
 - [Alchemy Engine Map Collision](KnuxLib/Engines/Alchemy/Collision.cs). There is currently a lot of unknown data in this format that would need to be reverse engineered properly for true support of the format. This format also currently lacks any form of Import function and only has a temporary OBJ export solution.
 
+- [Hedgehog Engine Light Field Version 3](KnuxLib/Engines/Hedgehog/LightFieldV3.cs). Entirely functional besides the fact that every value is an unknown.
+
 - [Hedgehog Engine Scene Effect Collision](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
 
 - [Nu2 Engine Scenes](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save, Export or Import function.
