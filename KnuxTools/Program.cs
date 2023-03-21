@@ -522,6 +522,7 @@ namespace KnuxTools
                                   "Sector Visibility Collision (.bin.svcol)\n");
 
                 Console.WriteLine("Nu2 Engine:\n" +
+                                  "AI Entity Table (.ai)\n" +
                                   "Wumpa Fruit Table (.wmp)\n");
 
                 Console.WriteLine("Project M Engine:\n" +
