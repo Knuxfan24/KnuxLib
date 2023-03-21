@@ -211,7 +211,7 @@ namespace KnuxTools
                                 using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision gismo = new())
                                 {
                                     gismo.Data = gismo.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.SectorVisibilityCollision.SectorVisibilityShape>>(arg);
-                                    gismo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin.svcol");
+                                    gismo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
                                 }
                                 break;
 
