@@ -102,9 +102,11 @@ Supported formats:
 
 - [Archive Info](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Point Cloud](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
-
 - [Gismo V3](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+- [Light Field V3](KnuxLib/Engines/Hedgehog/LightFieldV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+- [Point Cloud](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Sector Visibility Collision](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
@@ -226,8 +228,6 @@ Notes:
 The following formats are only partially supported and have no implementation in the KnuxTools project, either due to missing functionality or just being unfinished.
 
 - [Alchemy Engine Map Collision](KnuxLib/Engines/Alchemy/Collision.cs). There is currently a lot of unknown data in this format that would need to be reverse engineered properly for true support of the format. This format also currently lacks any form of Import function and only has a temporary OBJ export solution.
-
-- [Hedgehog Engine Light Field Version 3](KnuxLib/Engines/Hedgehog/LightFieldV3.cs). Entirely functional besides the fact that every value is an unknown.
 
 - [Hedgehog Engine Scene Effect Collision](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
 

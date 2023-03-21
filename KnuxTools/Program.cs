@@ -157,10 +157,18 @@ namespace KnuxTools
                                 break;
 
                             case ".hedgehog.gismov3.json":
-                                using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new())
+                                using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new())
                                 {
-                                    gismo.Data = gismo.JsonDeserialise<KnuxLib.Engines.Hedgehog.GismoV3.FormatData>(arg);
-                                    gismo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.gismod");
+                                    gismoV3.Data = gismoV3.JsonDeserialise<KnuxLib.Engines.Hedgehog.GismoV3.FormatData>(arg);
+                                    gismoV3.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.gismod");
+                                }
+                                break;
+
+                            case ".hedgehog.lightfieldv3.json":
+                                using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new())
+                                {
+                                    lightfieldV3.Data = lightfieldV3.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.LightFieldV3.LightField>>(arg);
+                                    lightfieldV3.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.lf");
                                 }
                                 break;
 
@@ -420,8 +428,9 @@ namespace KnuxTools
 
                             #region Hedgehog Engine Formats
                             case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
-                            case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new(arg, true)) break;
-                            case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismo = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
+                            case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new(arg, true)) break;
+                            case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
+                            case ".lf": using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new(arg, true)) break;
                             case ".pcmodel": case ".pccol": case ".pcrt": using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new(arg, true)) break;
                             case ".svcol.bin": using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new(arg, true)) break;
                             #endregion
@@ -507,8 +516,9 @@ namespace KnuxTools
 
                 Console.WriteLine("Hedgehog Engine:\n" +
                                   "Archive Info (.arcinfo)\n" +
-                                  "Point Cloud (.pccol/.pcmodel/.pcrt)\n" +
                                   "Gismo V3 (.gismod/.gismop)\n" +
+                                  "Light Field V3 (.lf)\n" +
+                                  "Point Cloud (.pccol/.pcmodel/.pcrt)\n" +
                                   "Sector Visibility Collision (.bin.svcol)\n");
 
                 Console.WriteLine("Nu2 Engine:\n" +

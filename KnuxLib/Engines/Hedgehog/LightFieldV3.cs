@@ -23,40 +23,24 @@
             public string Name { get; set; } = "";
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
+            /// The probe counts for this light field.
             /// </summary>
-            public uint UnknownUInt32_1 { get; set; }
+            public uint[] Probes { get; set; } = new uint[3];
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
+            /// This light field volume's position in 3D space.
             /// </summary>
-            public uint UnknownUInt32_2 { get; set; }
+            public Vector3 Position { get; set; }
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
+            /// This light field volume's rotation in 3D space.
             /// </summary>
-            public uint UnknownUInt32_3 { get; set; }
+            public Vector3 Rotation { get; set; }
 
             /// <summary>
-            /// An unknown Vector3.
-            /// TODO: What is this?
+            /// This light field volume's size.
             /// </summary>
-            public Vector3 UnknownVector3_1 { get; set; }
-
-            /// <summary>
-            /// An unknown Vector3.
-            /// TODO: What is this?
-            /// </summary>
-            public Vector3 UnknownVector3_2 { get; set; }
-
-            /// <summary>
-            /// An unknown Vector3.
-            /// TODO: What is this?
-            /// </summary>
-            public Vector3 UnknownVector3_3 { get; set; }
+            public Vector3 Size { get; set; }
 
             public override string ToString() => Name;
         }
@@ -99,23 +83,18 @@
                 // Read this light field's name.
                 lightfield.Name = Helpers.ReadNullTerminatedStringTableEntry(reader);
 
-                // Read this light field's first unknown integer value.
-                lightfield.UnknownUInt32_1 = reader.ReadUInt32();
+                // Loop through and read the three values of this light field's probes.
+                for (int probe = 0; probe < 3; probe++)
+                    lightfield.Probes[probe] = reader.ReadUInt32();
 
-                // Read this light field's second unknown integer value.
-                lightfield.UnknownUInt32_2 = reader.ReadUInt32();
+                // Read this light field's position.
+                lightfield.Position = Helpers.ReadHedgeLibVector3(reader);
 
-                // Read this light field's third unknown integer value.
-                lightfield.UnknownUInt32_3 = reader.ReadUInt32();
+                // Read this light field's rotation.
+                lightfield.Rotation = Helpers.ReadHedgeLibVector3(reader);
 
-                // Read this light field's first unknown Vector3.
-                lightfield.UnknownVector3_1 = Helpers.ReadHedgeLibVector3(reader);
-
-                // Read this light field's second unknown Vector3.
-                lightfield.UnknownVector3_2 = Helpers.ReadHedgeLibVector3(reader);
-
-                // Read this light field's third unknown Vector3.
-                lightfield.UnknownVector3_3 = Helpers.ReadHedgeLibVector3(reader);
+                // Read this light field's size.
+                lightfield.Size = Helpers.ReadHedgeLibVector3(reader);
 
                 // Save this light field.
                 Data.Add(lightfield);
@@ -155,23 +134,18 @@
                 // Add an offset for this light field's name.
                 writer.AddString($"lightfield{i}name", Data[i].Name, 0x08);
 
-                // Write this light field's first unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_1);
+                // Loop through and write the three values of this light field's probes.
+                for (int probe = 0; probe < 3; probe++)
+                    writer.Write(Data[i].Probes[probe]);
 
-                // Write this light field's second unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_2);
+                // Write this light field's position.
+                Helpers.WriteHedgeLibVector3(writer, Data[i].Position);
 
-                // Write this light field's third unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_3);
+                // Write this light field's rotation.
+                Helpers.WriteHedgeLibVector3(writer, Data[i].Rotation);
 
-                // Read this light field's first unknown Vector3.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].UnknownVector3_1);
-
-                // Read this light field's second unknown Vector3.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].UnknownVector3_2);
-
-                // Read this light field's third unknown Vector3.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].UnknownVector3_3);
+                // Write this light field's size.
+                Helpers.WriteHedgeLibVector3(writer, Data[i].Size);
             }
 
             // Finish writing the BINA information.
