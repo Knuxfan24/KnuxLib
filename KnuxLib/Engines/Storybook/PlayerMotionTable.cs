@@ -1,10 +1,10 @@
 ﻿namespace KnuxLib.Engines.Storybook
 {
-    public class PlayerMotion : FileBase
+    public class PlayerMotionTable : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
-        public PlayerMotion() { }
-        public PlayerMotion(string filepath, bool extract = false)
+        public PlayerMotionTable() { }
+        public PlayerMotionTable(string filepath, bool extract = false)
         {
             Load(filepath);
 
