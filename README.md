@@ -237,6 +237,6 @@ The following formats are only partially supported and have no implementation in
 
 - [Storybook Engine Stage Entity Table](KnuxLib/Engines/Storybook/StageEntityTable.cs). Lacks proper object parameters (each byte in the parameter table is read as a seperate parameter with no context) and has a lot of unknown values.
 
-- [World Adventure Wii Engine Path Spline](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has basic reading with a lot of unknowns. Completely lacking a Save, Import or Export (other than generic JSON serialisation) function.
+- [World Adventure Wii Engine Path Spline](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has reading and writing with a lot of unknowns. Completely lacking an Import or Export (other than generic JSON serialisation) function.
 
 - [World Adventure Wii Engine Stage Entity Table](KnuxLib/Engines/WorldAdventureWii/StageEntityTable.cs). Entirely functional besides a lack of proper object parameters (each byte in the parameter table is read as a seperate parameter with no context).

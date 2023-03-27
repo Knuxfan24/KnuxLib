@@ -221,5 +221,173 @@
             // Close Marathon's BinaryReader.
             reader.Close();
         }
+
+        /// <summary>
+        /// Saves this format's file.
+        /// </summary>
+        /// <param name="filepath">The path to save to.</param>
+        public void Save(string filepath)
+        {
+            // Set up Marathon's BinaryWriter.
+            BinaryWriterEx writer = new(File.Create(filepath), true);
+
+            // Write this file's signature.
+            writer.WriteNullPaddedString("sgnt", 0x04);
+
+            // Write a placeholder for this file's size.
+            writer.Write("SIZE");
+
+            // Write this file's path count.
+            writer.Write(Data.Count);
+
+            // Add an offset for this file's path name table.
+            writer.AddOffset("PathNameTableOffset");
+
+            // Add an offset for this file's path data table.
+            writer.AddOffset("PathDataTableOffset");
+
+            // Fill in the offset for this file's path name table.
+            writer.FillOffset("PathNameTableOffset");
+
+            // Save the position of the start of the path name table.
+            long PathNameTableStartPosition = writer.BaseStream.Position;
+
+            // Write a placeholder for this file's path name table size.
+            writer.Write("SIZE");
+
+            // Write this file's path count.
+            writer.Write(Data.Count);
+
+            // Loop through each path.
+            for (ushort i = 0; i < Data.Count; i++)
+            {
+                // Write the index of this path.
+                writer.Write(i);
+
+                // Calculate this path's name length to the nearest 0x04.
+                ushort stringSize = (ushort)Data[i].Name.Length;
+                while (stringSize % 0x04 != 0)
+                    stringSize++;
+
+                // Write this path's name length.
+                writer.Write(stringSize);
+
+                // Write this path's name, padded to the previously calculated value.
+                writer.WriteNullPaddedString(Data[i].Name, stringSize);
+            }
+
+            // Save the position of the end of the path name table.
+            long PathNameTableEndPosition = writer.BaseStream.Position;
+
+            // Fill in the path name table's size.
+            writer.BaseStream.Position = PathNameTableStartPosition;
+            writer.Write((uint)(PathNameTableEndPosition - PathNameTableStartPosition));
+            writer.BaseStream.Position = PathNameTableEndPosition;
+
+            // Fill in the offset for this file's path name table.
+            writer.FillOffset("PathDataTableOffset");
+
+            // Save the position of the start of the path data table.
+            long PathDataTableStartPosition = writer.BaseStream.Position;
+
+            // Write a placeholder for this file's path data table size.
+            writer.Write("SIZE");
+
+            // Write this file's path count.
+            writer.Write(Data.Count);
+
+            for (int i = 0; i < Data.Count; i++)
+            {
+                // Save the position of the start of this path.
+                long PathStartPosition = writer.BaseStream.Position;
+
+                // Write a placeholder for this path's size.
+                writer.Write("SIZE");
+
+                // Write this path's position.
+                writer.Write(Data[i].Position);
+
+                // Write this path's rotation.
+                writer.Write(Data[i].Rotation);
+
+                // Write this path's scale.
+                writer.Write(Data[i].Scale);
+
+                // Write this path's unknown floating point value.
+                writer.Write(Data[i].UnknownFloat_1);
+
+                // Save the position of the start of this path's spline table.
+                long SplineTableStartPosition = writer.BaseStream.Position;
+
+                // Write a placeholder for this path's spline table size.
+                writer.Write("SIZE");
+
+                // Write the amount of splines in this path.
+                writer.Write(Data[i].Splines.Length);
+
+                // Loop through each spline in this path.
+                for (int s = 0; s < Data[i].Splines.Length; s++)
+                {
+                    // Save the position of the start of this spline.
+                    long SplineStartPosition = writer.BaseStream.Position;
+
+                    // Write a placeholder for this spline size.
+                    writer.Write("SIZE");
+
+                    // Write this spline's unknown integer value.
+                    writer.Write(Data[i].UnknownUInts_1[s]);
+
+                    // Write this spline's point count.
+                    writer.Write(Data[i].Splines[s].Count);
+
+                    // Loop through each point in this spline.
+                    for (int p = 0; p < Data[i].Splines[s].Count; p++)
+                    {
+                        // Write this point's unknown integer value.
+                        writer.Write(Data[i].Splines[s][p].UnknownUInt32_1);
+
+                        // Write this point's first unknown Vector3.
+                        writer.Write(Data[i].Splines[s][p].UnknownVector3_1);
+
+                        // Write this point's second unknown Vector3.
+                        writer.Write(Data[i].Splines[s][p].UnknownVector3_2);
+
+                        // Write this point's third unknown Vector3.
+                        writer.Write(Data[i].Splines[s][p].UnknownVector3_3);
+                    }
+
+                    // Save the position of the end of this spline.
+                    long SplineEndPosition = writer.BaseStream.Position;
+
+                    // Fill in this spline's size.
+                    writer.BaseStream.Position = SplineStartPosition;
+                    writer.Write((uint)(SplineEndPosition - SplineStartPosition));
+                    writer.BaseStream.Position = SplineEndPosition;
+                }
+
+                // Save the position of the end of this path.
+                long PathEndPosition = writer.BaseStream.Position;
+
+                // Fill in this path's size.
+                writer.BaseStream.Position = PathStartPosition;
+                writer.Write((uint)(PathEndPosition - PathStartPosition));
+
+                // Fill in this path's spline table's size.
+                writer.BaseStream.Position = SplineTableStartPosition;
+                writer.Write((uint)(PathEndPosition - SplineTableStartPosition));
+                writer.BaseStream.Position = PathEndPosition;
+            }
+
+            // Fill in the path data table's size.
+            writer.BaseStream.Position = PathDataTableStartPosition;
+            writer.Write((uint)(writer.BaseStream.Length - PathDataTableStartPosition));
+
+            // Fill in this file's size.
+            writer.BaseStream.Position = 0x04;
+            writer.Write((uint)(writer.BaseStream.Length));
+
+            // Close Marathon's BinaryWriter.
+            writer.Close();
+        }
     }
 }
