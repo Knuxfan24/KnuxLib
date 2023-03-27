@@ -15,18 +15,44 @@
         // Classes for this format.
         public class SplinePath
         {
+            /// <summary>
+            /// The name of this path.
+            /// </summary>
             public string Name { get; set; } = "";
 
+            /// <summary>
+            /// This path's position in 3D space.
+            /// TODO: Confirm, just assumed.
+            /// </summary>
             public Vector3 Position { get; set; }
 
+            /// <summary>
+            /// This path's rotation in 3D space.
+            /// TODO: Confirm, just assumed.
+            /// </summary>
             public Quaternion Rotation { get; set; }
 
+            /// <summary>
+            /// This path's scale.
+            /// TODO: Confirm, just assumed.
+            /// </summary>
             public Vector3 Scale { get; set; }
 
+            /// <summary>
+            /// An unknown floating point value.
+            /// TODO: What is this?
+            /// </summary>
             public float UnknownFloat_1 { get; set; }
 
+            /// <summary>
+            /// A set of unknown integer values, one for each spline set.
+            /// TODO: What is this?
+            /// </summary>
             public uint[] UnknownUInts_1 { get; set; } = Array.Empty<uint>();
 
+            /// <summary>
+            /// The points that make up each spline.
+            /// </summary>
             public List<SplinePoint>[] Splines { get; set; } = Array.Empty<List<SplinePoint>>();
 
             public override string ToString() => Name.ToString();
@@ -34,12 +60,31 @@
 
         public class SplinePoint
         {
+            /// <summary>
+            /// An unknown integer value.
+            /// TODO: What is this?
+            /// </summary>
             public uint UnknownUInt32_1 { get; set; }
 
+            /// <summary>
+            /// An unknown Vector3.
+            /// TODO: What is this?
+            /// TODO: Is this actually a Vector3?
+            /// </summary>
             public Vector3 UnknownVector3_1 { get; set; }
 
+            /// <summary>
+            /// An unknown Vector3.
+            /// TODO: What is this?
+            /// TODO: Is this actually a Vector3?
+            /// </summary>
             public Vector3 UnknownVector3_2 { get; set; }
 
+            /// <summary>
+            /// An unknown Vector3.
+            /// TODO: What is this?
+            /// TODO: Is this actually a Vector3?
+            /// </summary>
             public Vector3 UnknownVector3_3 { get; set; }
         }
 
@@ -55,67 +100,119 @@
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath), true);
 
+            // Read this file's signature.
             reader.ReadSignature(0x04, "sgnt");
 
             // Read the size of this file.
             uint fileSize = reader.ReadUInt32();
 
+            // Read this file's path count.
             uint pathCount = reader.ReadUInt32();
 
-            uint pathTableOffset = reader.ReadUInt32();
+            // Read the offset to this file's path name table.
+            uint pathNameTableOffset = reader.ReadUInt32();
 
+            // Read the offset to this file's path data table.
             uint pathDataTableOffset = reader.ReadUInt32();
 
-            reader.JumpTo(pathTableOffset);
+            // Jump to the path name table (should already be here but lets play it safe).
+            reader.JumpTo(pathNameTableOffset);
 
-            uint pathTableSize = reader.ReadUInt32();
+            // Read the size of the path name table.
+            uint pathNameTableSize = reader.ReadUInt32();
 
             // Skip an unknown value that is always the same as pathCount.
             reader.JumpAhead(0x04);
 
+            // Loop through each path in this file.
             for (int i = 0; i < pathCount; i++)
             {
+                // Set up a new path entry.
                 SplinePath path = new();
+
                 // Skip an unknown, sequential value.
                 reader.JumpAhead(0x02);
+                
+                // Read this path's name.
                 path.Name = reader.ReadNullPaddedString(reader.ReadUInt16());
+                
+                // Save this path entry.
                 Data.Add(path);
             }
 
+            // Jump to the path data table (should already be here but lets play it safe).
             reader.JumpTo(pathDataTableOffset);
 
+            // Read the size of the path data table.
             uint pathDataTableSize = reader.ReadUInt32();
 
             // Skip an unknown value that is always the same as pathCount.
             reader.JumpAhead(0x04);
 
+            // Loop through each path in this file.
             for (int i = 0; i < pathCount; i++)
             {
+                // Read this path's size.
                 uint pathSize = reader.ReadUInt32();
+
+                // Read this path's position value.
                 Data[i].Position = reader.ReadVector3();
+
+                // Read this path's rotation value.
                 Data[i].Rotation = reader.ReadQuaternion();
+
+                // Read this path's scale value.
                 Data[i].Scale = reader.ReadVector3();
+
+                // Read this path's unknown floating point value.
                 Data[i].UnknownFloat_1 = reader.ReadSingle();
 
+                // Read this path's spline table size.
                 uint splineTableSize = reader.ReadUInt32();
+
+                // Read this path's spline count.
                 uint splineCount = reader.ReadUInt32();
+
+                // Set up this path's unknown integer value count.
                 Data[i].UnknownUInts_1 = new uint[splineCount];
+
+                // Set up this path's spline count.
                 Data[i].Splines = new List<SplinePoint>[splineCount];
 
+                // Loop through each spline in this path.
                 for (int s = 0; s < splineCount; s++)
                 {
+                    // Initialise the spline entry.
                     Data[i].Splines[s] = new();
+
+                    // Read this spline's size.
                     uint splineSize = reader.ReadUInt32();
+
+                    // Read this spline's unknown integer value.
                     Data[i].UnknownUInts_1[s] = reader.ReadUInt32();
+
+                    // Read this spline's point count.
                     uint pointCount = reader.ReadUInt32();
 
+                    // Loop through each spline point in this spline.
                     for (int p = 0; p < pointCount; p++)
                     {
+                        // Set up a new spline point entry.
                         SplinePoint spline = new();
+
+                        // Read this spline point's unknown integer value.
                         spline.UnknownUInt32_1 = reader.ReadUInt32();
+
+                        // Read this spline point's first unknown Vector3.
                         spline.UnknownVector3_1 = reader.ReadVector3();
+
+                        // Read this spline point's second unknown Vector3.
                         spline.UnknownVector3_2 = reader.ReadVector3();
+
+                        // Read this spline point's third unknown Vector3.
                         spline.UnknownVector3_3 = reader.ReadVector3();
+
+                        // Save this spline point.
                         Data[i].Splines[s].Add(spline);
                     }
                 }
