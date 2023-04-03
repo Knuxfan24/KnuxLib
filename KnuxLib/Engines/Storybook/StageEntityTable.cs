@@ -1,4 +1,7 @@
-﻿namespace KnuxLib.Engines.Storybook
+﻿using libHSON;
+using System.Text.Json;
+
+namespace KnuxLib.Engines.Storybook
 {
     public class StageEntityTable : FileBase
     {
@@ -413,6 +416,45 @@
 
             // Close Marathon's BinaryWriter.
             writer.Close();
+        }
+
+        /// <summary>
+        /// Exports this format's object data to the Hedgehog Set Object Notation format.
+        /// </summary>
+        /// <param name="filepath">The path to save to.</param>
+        /// <param name="hsonName">The name to add to the HSON metadata.</param>
+        /// <param name="hsonAuthor">The author to add to the HSON metadata.</param>
+        /// <param name="hsonDescription">The description to add to the HSON metadata.</param>
+        public void ExportHSON(string filepath, string hsonName, string hsonAuthor, string hsonDescription)
+        {
+            // Create the HSON Project.
+            Project hsonProject = Helpers.CreateHSONProject(hsonName, hsonAuthor, hsonDescription);
+
+            // Loop through each object in this file.
+            for (int i = 0; i < Data.Objects.Count; i++)
+            {
+                // Set up a type definition.
+                string type = $"Table 0x{Data.Objects[i].TableID.ToString("X").PadLeft(2, '0')} | Object 0x{Data.Objects[i].ObjectID.ToString("X").PadLeft(2, '0')}";
+
+                // If we've filled in this object's type from an items table, then set type to it.
+                if (Data.Objects[i].Type != null)
+                    type = Data.Objects[i].Type;
+
+                // Create a new HSON Object from this object.
+                libHSON.Object hsonObject = Helpers.CreateHSONObject(type, $"{type}{i}", Data.Objects[i].Position, Helpers.EulerToQuat(Data.Objects[i].Rotation), false);
+
+                // Write each parameter byte.
+                // TODO: Unhardcode this when parameter types are figured out.
+                if (Data.Objects[i].Parameters != null)
+                    for (int p = 0; p < Data.Objects[i].Parameters.Count; p++)
+                        hsonObject.LocalParameters.Add($"Parameter{p}", new Parameter((byte)Data.Objects[i].Parameters[p].Data));
+
+                // Add this object to the HSON Project.
+                hsonProject.Objects.Add(hsonObject);
+            }
+
+            // Save this HSON.
+            hsonProject.Save(filepath, jsonOptions: new JsonWriterOptions { Indented = true, });
         }
     }
 }

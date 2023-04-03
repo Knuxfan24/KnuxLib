@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using libHSON;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Text.Json;
 
 namespace KnuxLib.Engines.WorldAdventureWii
 {
@@ -375,6 +377,37 @@ namespace KnuxLib.Engines.WorldAdventureWii
 
             // Close Marathon's BinaryWriter.
             writer.Close();
+        }
+
+        /// <summary>
+        /// Exports this format's object data to the Hedgehog Set Object Notation format.
+        /// </summary>
+        /// <param name="filepath">The path to save to.</param>
+        /// <param name="hsonName">The name to add to the HSON metadata.</param>
+        /// <param name="hsonAuthor">The author to add to the HSON metadata.</param>
+        /// <param name="hsonDescription">The description to add to the HSON metadata.</param>
+        public void ExportHSON(string filepath, string hsonName, string hsonAuthor, string hsonDescription)
+        {
+            // Create the HSON Project.
+            Project hsonProject = Helpers.CreateHSONProject(hsonName, hsonAuthor, hsonDescription);
+
+            // Loop through each object in this file.
+            for (int i = 0; i < Data.Count; i++)
+            {
+                // Create a new HSON Object from this object.
+                libHSON.Object hsonObject = Helpers.CreateHSONObject(Data[i].Type.ToString(), $"{Data[i].Type}{i}", Data[i].Position, Data[i].Rotation, false);
+
+                // Write each parameter byte.
+                // TODO: Unhardcode this when parameter types are figured out.
+                for (int p = 0; p < Data[i].Parameters.Count; p++)
+                    hsonObject.LocalParameters.Add($"Parameter{p}", new Parameter((byte)Data[i].Parameters[p].Data));
+
+                // Add this object to the HSON Project.
+                hsonProject.Objects.Add(hsonObject);
+            }
+            
+            // Save this HSON.
+            hsonProject.Save(filepath, jsonOptions: new JsonWriterOptions { Indented = true, });
         }
     }
 }

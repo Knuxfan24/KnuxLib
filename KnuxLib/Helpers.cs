@@ -412,5 +412,18 @@ namespace KnuxLib
             // Return the object.
             return hsonObj;
         }
+
+        /// <summary>
+        /// Converts a rotation in Euler Angles to a Quaternion.
+        /// </summary>
+        /// <param name="angles">The Euler Angles to convert.</param>
+        public static Quaternion EulerToQuat(Vector3 angles)
+        {
+            // Create a HedgeLib# quaternion from the input angles.
+            HedgeLib.Quaternion hedgelibQuaternion = new(new HedgeLib.Vector3(angles.X, angles.Y, angles.Z));
+
+            // Return the conversion as a System.Numerics quaternion.
+            return new(hedgelibQuaternion.X, hedgelibQuaternion.Y, hedgelibQuaternion.Z, hedgelibQuaternion.W);
+        }
     }
 }
