@@ -205,7 +205,7 @@ Known games:
 
 Supported formats:
 
-- [Area Points Table](KnuxLib/Engines/Storybook/AreaPoints.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Area Points Table](KnuxLib/Engines/WorldAdventureWii/AreaPoints.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [ONE Archive](KnuxLib/Engines/WorldAdventureWii/ONE.cs) reading, writing, data extraction and data importing.
 
