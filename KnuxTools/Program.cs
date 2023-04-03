@@ -338,6 +338,33 @@ namespace KnuxTools
                                     messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.tru");
                                 }
                                 break;
+
+                            case ".worldadventurewii.areapoints.json":
+                                // Ask the user for the version to save with.
+                                Console.WriteLine
+                                (
+                                    "This file has multiple file version options, please specifiy the version to save with;\n" +
+                                    "1. PlayStation2\n" +
+                                    "2. Wii"
+                                );
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
+                                        using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new())
+                                        {
+                                            areaPoints.Data = areaPoints.JsonDeserialise<List<KnuxLib.Engines.WorldAdventureWii.AreaPoints.Area>>(arg);
+                                            areaPoints.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wap", KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.PlayStation2);
+                                        }
+                                        break;
+                                    case '2':
+                                        using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new())
+                                        {
+                                            areaPoints.Data = areaPoints.JsonDeserialise<List<KnuxLib.Engines.WorldAdventureWii.AreaPoints.Area>>(arg);
+                                            areaPoints.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wap", KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.Wii);
+                                        }
+                                        break;
+                                }
+                                break;
                             #endregion
 
                             #region Generic Extensions
@@ -488,6 +515,22 @@ namespace KnuxTools
 
                             #region Sonic World Adventure Wii Engine Formats
                             case ".onz": using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
+                            case ".wap":
+                                // Ask the user for the wmp version.
+                                Console.WriteLine
+                                        (
+                                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                                            "1. PlayStation 2\n" +
+                                            "2. Wii"
+                                        );
+
+                                // Seralise the wmp file according to the selected version.
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1': using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new(arg, KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.PlayStation2, true)) break;
+                                    case '2': using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new(arg, KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.Wii, true)) break;
+                                }
+                                break;
                             #endregion
 
                             #region Westwood Engine Formats
@@ -540,6 +583,7 @@ namespace KnuxTools
                                   "Texture Directory (.txd) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Sonic World Adventure Wii Engine:\n" +
+                                  "Area Points Table (.wap)\n" +
                                   "ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Westwood Engine:\n" +

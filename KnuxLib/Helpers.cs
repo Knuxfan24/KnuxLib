@@ -1,6 +1,7 @@
 ﻿global using HedgeLib.Headers;
 global using Marathon.IO;
 global using System.Numerics;
+using libHSON;
 
 namespace KnuxLib
 {
@@ -358,5 +359,58 @@ namespace KnuxLib
         /// </summary>
         /// <param name="value">The value to convert.</param>
         public static float CalculateBAMsValue(float value) => value * 65536f / 360f;
+    
+        /// <summary>
+        /// Creates a project for the HSON Specification in libHSON-csharp.
+        /// </summary>
+        /// <param name="name">The name for this project's metadata.</param>
+        /// <param name="author">The author for this project's metadata</param>
+        /// <param name="description">The description for this project's metadata.</param>
+        public static Project CreateHSONProject(string name, string author = "Knuxfan24", string? description = null)
+        {
+            // Create and return the project.
+            return new Project
+            {
+                Metadata = new ProjectMetadata
+                {
+                    Name = name,
+                    Author = author,
+                    Date = DateTime.UtcNow,
+                    Description = description
+                }
+            };
+        }
+
+        /// <summary>
+        /// Creates an empty object for the HSON Specification in libHSON-csharp.
+        /// </summary>
+        /// <param name="type">The type of object to add.</param>
+        /// <param name="name">The name of the the object to add.</param>
+        /// <param name="position">The position in 3D space of this object.</param>
+        /// <param name="rotation">The rotation in 3D space of this object.</param>
+        /// <param name="addRangeTags">Whether to add the RangeIn RangeOut tags used by the GEdit standard.</param>
+        /// <param name="rangeIn">What to set the RangeIn tag to.</param>
+        /// <param name="rangeOut">What to set the RangeOut tag to.</param>
+        public static libHSON.Object CreateHSONObject(string type, string name, Vector3 position, Quaternion rotation, bool addRangeTags = true, float rangeIn = 100f, float rangeOut = 20f)
+        {
+            // Create the object.
+            libHSON.Object hsonObj = new libHSON.Object
+            (
+                type: type,
+                name: name,
+                position: position,
+                rotation: rotation
+            );
+
+            // Add the range tags if we need to.
+            if (addRangeTags)
+            {
+                hsonObj.LocalParameters.Add("tags/RangeSpawning/rangeIn", new Parameter(rangeIn));
+                hsonObj.LocalParameters.Add("tags/RangeSpawning/rangeOut", new Parameter(rangeOut));
+            }
+
+            // Return the object.
+            return hsonObj;
+        }
     }
 }

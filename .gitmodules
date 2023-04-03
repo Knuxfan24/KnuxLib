@@ -8,3 +8,6 @@
 [submodule "puyotools"]
 	path = puyotools
 	url = https://github.com/nickworonekin/puyotools.git
+[submodule "libHSON-csharp"]
+	path = libHSON-csharp
+	url = https://github.com/hedge-dev/libHSON-csharp.git

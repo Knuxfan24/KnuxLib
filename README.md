@@ -6,9 +6,11 @@ This repository consists of three projects. The KnuxLib project is the main libr
 
 This repository also uses various other libraries as part of it, included as either a Nuget Package or a Git Submodule. These projects are:
 
-- [Marathon](https://github.com/Big-Endian-32/Marathon) - Used for its BinaryReader and Writer.
+- [libHSON-cssharp](https://github.com/hedge-dev/libHSON-csharp) - Used for a few HSON related functions (that are more for my own benefit as of writing).
 
 - [HedgeLib](https://github.com/Radfordhound/HedgeLib/tree/master) - Used for its BINAV2 Reader and Writer.
+
+- [Marathon](https://github.com/Big-Endian-32/Marathon) - Used for its BinaryReader and Writer.
 
 - [prs.net](https://github.com/FraGag/prs.net) - Used for decompressing/recompressing data in Sonic Storybook Engine ONE Archives.
 
@@ -202,6 +204,8 @@ Known games:
 - Sonic Unleashed (PS2, Wii)
 
 Supported formats:
+
+- [Area Points Table](KnuxLib/Engines/Storybook/AreaPoints.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [ONE Archive](KnuxLib/Engines/WorldAdventureWii/ONE.cs) reading, writing, data extraction and data importing.
 

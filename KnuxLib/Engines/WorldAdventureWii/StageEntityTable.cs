@@ -19,7 +19,7 @@ namespace KnuxLib.Engines.WorldAdventureWii
         // Classes for this format.
         public enum FormatVersion
         {
-            PlayStaion2 = 0,
+            PlayStation2 = 0,
             Wii = 1
         }
 
