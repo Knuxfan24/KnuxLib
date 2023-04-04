@@ -574,13 +574,13 @@ namespace KnuxTools
                 Console.WriteLine("Rockman X7 Engine:\n" +
                                   "Stage Entity Table (.328f438b/.osd)\n");
 
-                Console.WriteLine("Sonic The Portable Engine:\n" +
-                                  "AMB Archive (.amb) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
-
                 Console.WriteLine("Sonic Storybook Engine:\n" +
                                   "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n" +
                                   "Stage Entity Table Object Table (.bin)\n" +
                                   "Texture Directory (.txd) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+
+                Console.WriteLine("Sonic The Portable Engine:\n" +
+                                  "AMB Archive (.amb) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Sonic World Adventure Wii Engine:\n" +
                                   "Area Points Table (.wap)\n" +

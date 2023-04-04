@@ -26,7 +26,7 @@ Known games:
 
 Supported formats:
 
-- [Assets Container](KnuxLib/Engines/Alchemy/AssetsContainer.cs) reading and data extraction.
+- [Assets Container (.gfc/gob)](KnuxLib/Engines/Alchemy/AssetsContainer.cs) reading and data extraction.
 
 Notes:
 
@@ -40,9 +40,9 @@ Known games:
 
 Supported formats:
 
-- [Material Library](KnuxLib/Engines/CarZ/MaterialLibrary.cs) reading, writing, MTL conversion and Assimp based importing.
+- [Material Library (.mat)](KnuxLib/Engines/CarZ/MaterialLibrary.cs) reading, writing, MTL conversion and Assimp based importing.
 
-- [SCO Model](KnuxLib/Engines/CarZ/SCO.cs) reading, writing, OBJ conversion and Assimp based importing.
+- [SCO Model (.sco)](KnuxLib/Engines/CarZ/SCO.cs) reading, writing, OBJ conversion and Assimp based importing.
 
 Notes:
 
@@ -60,7 +60,7 @@ Known games:
 
 Supported formats:
 
-- [WAD Archive](KnuxLib/Engines/Gods/WAD.cs) reading and data extraction.
+- [WAD Archive (.wad)](KnuxLib/Engines/Gods/WAD.cs) reading and data extraction.
 
 Notes:
 
@@ -102,15 +102,15 @@ Known games:
 
 Supported formats:
 
-- [Archive Info](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Archive Info (.arcinfo)](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Gismo V3](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Gismo V3 (.gismod/.gismop)](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Light Field V3](KnuxLib/Engines/Hedgehog/LightFieldV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Light Field V3 (.lf)](KnuxLib/Engines/Hedgehog/LightFieldV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Point Cloud](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Point Cloud (.pccol/.pcmodel/.pcrt)](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Sector Visibility Collision](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Sector Visibility Collision (.bin.svcol)](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 > **Note**
 > The Sector Visibility Collision format has some extra data in it that is not currently handled, but doesn't seem required?
@@ -123,9 +123,9 @@ Known games:
 
 Supported formats:
 
-- [AI Entity Table](KnuxLib/Engines/Nu2/AIEntityTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [AI Entity Table (.ai)](KnuxLib/Engines/Nu2/AIEntityTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Wumpa Fruit Table](KnuxLib/Engines/Nu2/WumpaTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Wumpa Fruit Table (.wmp)](KnuxLib/Engines/Nu2/WumpaTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
@@ -141,7 +141,7 @@ Known games:
 
 Supported formats:
 
-- [Message Table](KnuxLib/Engines/ProjectM/MessageTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Message Table (.dat)](KnuxLib/Engines/ProjectM/MessageTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
@@ -155,7 +155,7 @@ Known games:
 
 Supported formats:
 
-- [Stage Entity Table](KnuxLib/Engines/RockmanX7/StageEntityTable.cs) basic reading, writing, JSON serialisation and JSON deserialisation.
+- [Stage Entity Table (.328f438b/.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs) basic reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
@@ -171,11 +171,11 @@ Known games:
 
 Supported formats:
 
-- [ONE Archive](KnuxLib/Engines/Storybook/ONE.cs) reading, writing, data extraction and data importing.
+- [ONE Archive (.one)](KnuxLib/Engines/Storybook/ONE.cs) reading, writing, data extraction and data importing.
 
-- [Stage Entity Table Object Table](KnuxLib/Engines/Storybook/StageEntityTableItems.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Stage Entity Table Object Table (.bin)](KnuxLib/Engines/Storybook/StageEntityTableItems.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Texture Directory](KnuxLib/Engines/Storybook/TextureDirectory.cs) reading, writing, data extraction and data importing.
+- [Texture Directory (.txd)](KnuxLib/Engines/Storybook/TextureDirectory.cs) reading, writing, data extraction and data importing.
 
 Notes:
 
@@ -191,7 +191,7 @@ Known games:
 
 Supported formats:
 
-- [AMB Archive](KnuxLib/Engines/Portable/AMB.cs) reading, writing, data extraction and data importing.
+- [AMB Archive (.amb)](KnuxLib/Engines/Portable/AMB.cs) reading, writing, data extraction and data importing.
 
 Notes:
 
@@ -205,9 +205,9 @@ Known games:
 
 Supported formats:
 
-- [Area Points Table](KnuxLib/Engines/WorldAdventureWii/AreaPoints.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Area Points Table (.wap)](KnuxLib/Engines/WorldAdventureWii/AreaPoints.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [ONE Archive](KnuxLib/Engines/WorldAdventureWii/ONE.cs) reading, writing, data extraction and data importing.
+- [ONE Archive (.one/.onz)](KnuxLib/Engines/WorldAdventureWii/ONE.cs) reading, writing, data extraction and data importing.
 
 Notes:
 
@@ -221,7 +221,7 @@ Known games:
 
 Supported formats:
 
-- [Message Table](KnuxLib/Engines/Westwood/MessageTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Message Table (.tru)](KnuxLib/Engines/Westwood/MessageTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
@@ -231,16 +231,16 @@ Notes:
 
 The following formats are only partially supported and have no implementation in the KnuxTools project, either due to missing functionality or just being unfinished.
 
-- [Alchemy Engine Map Collision](KnuxLib/Engines/Alchemy/Collision.cs). There is currently a lot of unknown data in this format that would need to be reverse engineered properly for true support of the format. This format also currently lacks any form of Import function and only has a temporary OBJ export solution.
+- [Alchemy Engine Map Collision (.hke)](KnuxLib/Engines/Alchemy/Collision.cs). There is currently a lot of unknown data in this format that would need to be reverse engineered properly for true support of the format. This format also currently lacks any form of Import function and only has a temporary OBJ export solution.
 
-- [Hedgehog Engine Scene Effect Collision](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
+- [Hedgehog Engine Scene Effect Collision (.bin.fxcol)](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
 
-- [Nu2 Engine Scenes](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save, Export or Import function.
+- [Nu2 Engine Scenes (.nus/.nux/.gsc)](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save, Export or Import function.
 
-- [Storybook Engine Player Motion Table](KnuxLib/Engines/Storybook/PlayerMotionTable.cs). Entirely functional besides every value being an unknown.
+- [Storybook Engine Player Motion Table (.bin)](KnuxLib/Engines/Storybook/PlayerMotionTable.cs). Entirely functional besides every value being an unknown.
 
-- [Storybook Engine Stage Entity Table](KnuxLib/Engines/Storybook/StageEntityTable.cs). Lacks proper object parameters (each byte in the parameter table is read as a seperate parameter with no context) and has a lot of unknown values.
+- [Storybook Engine Stage Entity Table (.bin)](KnuxLib/Engines/Storybook/StageEntityTable.cs). Lacks proper object parameters (each byte in the parameter table is read as a seperate parameter with no context) and has a lot of unknown values.
 
-- [World Adventure Wii Engine Path Spline](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has reading and writing with a lot of unknowns. Completely lacking an Import or Export (other than generic JSON serialisation) function.
+- [World Adventure Wii Engine Path Spline (.path.dat)](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has reading and writing with a lot of unknowns. Completely lacking an Import or Export (other than generic JSON serialisation) function.
 
-- [World Adventure Wii Engine Stage Entity Table](KnuxLib/Engines/WorldAdventureWii/StageEntityTable.cs). Entirely functional besides a lack of proper object parameters (each byte in the parameter table is read as a seperate parameter with no context).
+- [World Adventure Wii Engine Stage Entity Table (.set)](KnuxLib/Engines/WorldAdventureWii/StageEntityTable.cs). Entirely functional besides a lack of proper object parameters (each byte in the parameter table is read as a seperate parameter with no context).
