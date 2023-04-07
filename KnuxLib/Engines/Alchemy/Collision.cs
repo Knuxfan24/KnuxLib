@@ -473,6 +473,9 @@
                 // Save this instance.
                 Data.Subspace.Instances.Add(instance);
             }
+
+            // Close Marathon's BinaryReader.
+            reader.Close();
         }
 
         /// <summary>

@@ -24,7 +24,7 @@
 
             /// <summary>
             /// The type of this object.
-            /// TODO: Find out what each number corrosponds to.
+            /// TODO: Find out what each number corresponds to.
             /// </summary>
             public uint ObjectType { get; set; }
 

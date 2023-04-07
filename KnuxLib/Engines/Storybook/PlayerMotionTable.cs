@@ -22,7 +22,7 @@
             public uint UnknownUInt32_1 { get; set; }
 
             /// <summary>
-            /// This stage's name.
+            /// This motion's name.
             /// </summary>
             public string Name { get; set; } = "";
 

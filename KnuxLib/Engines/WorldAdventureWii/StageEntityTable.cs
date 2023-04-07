@@ -204,25 +204,6 @@ namespace KnuxLib.Engines.WorldAdventureWii
             public override string ToString() => Type.ToString();
         }
 
-        public class SetParameter
-        {
-            /// <summary>
-            /// This parameter's name.
-            /// TODO: Currently not used as these parameters just boil down to reading the table each byte at a time.
-            /// </summary>
-            public string Name { get; set; } = "";
-
-            /// <summary>
-            /// The data for this parameter.
-            /// </summary>
-            public object Data { get; set; } = (byte)0;
-
-            /// <summary>
-            /// The type of this parameter.
-            /// </summary>
-            public Type DataType { get; set; } = typeof(byte);
-        }
-
         // Actual data presented to the end user.
         public List<SetObject> Data = new();
 

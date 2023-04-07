@@ -161,6 +161,20 @@ Notes:
 
 - Uncertain if this is the engine's name.
 
+## Rockman X8 Engine
+
+Known games:
+
+- Megaman X8 (PC, PS2)
+
+Supported formats:
+
+- [Stage Entity Table (.31bf570e/.set)](KnuxLib/Engines/RockmanX8/StageEntityTable.cs) basic reading, writing, JSON serialisation and JSON deserialisation.
+
+Notes:
+
+- Uncertain if this is the engine's name.
+
 ## Sonic Storybook Engine
 
 Known games:

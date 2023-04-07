@@ -304,6 +304,33 @@ namespace KnuxTools
                                 }
                                 break;
 
+                            case ".rockmanx8.stageentitytable.json":
+                                // Ask the user for the extension to save with.
+                                Console.WriteLine
+                                (
+                                    "This file has multiple file extension options, please specifiy the extension to save with;\n" +
+                                    "1. .SET (PC)\n" +
+                                    "2. .31BF570E (Legacy Collection)"
+                                );
+                                switch (Console.ReadKey().KeyChar)
+                                {
+                                    case '1':
+                                        using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new())
+                                        {
+                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX8.StageEntityTable.SetObject>>(arg);
+                                            stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.SET", KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original);
+                                        }
+                                        break;
+                                    case '2':
+                                        using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new())
+                                        {
+                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX8.StageEntityTable.SetObject>>(arg);
+                                            stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.31BF570E", KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.LegacyCollection);
+                                        }
+                                        break;
+                                }
+                                break;
+
                             case ".storybook.stageentitytableitems.json":
                                 // Ask the user for the version to save with.
                                 Console.WriteLine
@@ -505,6 +532,11 @@ namespace KnuxTools
                             case ".328f438b": case ".osd": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
                             #endregion
 
+                            #region Rockman X8 Engine Formats
+                            case ".31bf570e": using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.LegacyCollection, true)) break;
+                            case ".set": using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original, true)) break;
+                            #endregion
+
                             #region Sonic Storybook Engine Formats
                             case ".txd": using (KnuxLib.Engines.Storybook.TextureDirectory textureDirectory = new(arg, true)) break;
                             #endregion
@@ -573,6 +605,9 @@ namespace KnuxTools
 
                 Console.WriteLine("Rockman X7 Engine:\n" +
                                   "Stage Entity Table (.328f438b/.osd)\n");
+
+                Console.WriteLine("Rockman X8 Engine:\n" +
+                                  "Stage Entity Table (.31bf570e/.set)\n");
 
                 Console.WriteLine("Sonic Storybook Engine:\n" +
                                   "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n" +
