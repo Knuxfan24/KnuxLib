@@ -8,11 +8,11 @@
 
   <ItemGroup>
     <PackageReference Include="BE32.Marathon" Version="1.0.68" />
+    <PackageReference Include="libHSON" Version="1.0.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\HedgeLib\HedgeLib\HedgeLib.csproj" />
-    <ProjectReference Include="..\libHSON-csharp\libHSON\libHSON.csproj" />
     <ProjectReference Include="..\prs.net\FraGag.Compression.Prs\FraGag.Compression.Prs.csproj" />
     <ProjectReference Include="..\puyotools\src\PuyoTools.Core\PuyoTools.Core.csproj" />
   </ItemGroup>
