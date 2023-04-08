@@ -15,8 +15,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FraGag.Compression.Prs", "p
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PuyoTools.Core", "puyotools\src\PuyoTools.Core\PuyoTools.Core.csproj", "{45016CF2-2B9F-4241-8960-33B23B0077B5}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "libHSON", "libHSON-csharp\libHSON\libHSON.csproj", "{0635C2AF-4CC9-4561-B496-BC81FD1A464A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,10 +45,6 @@ Global
 		{45016CF2-2B9F-4241-8960-33B23B0077B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45016CF2-2B9F-4241-8960-33B23B0077B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45016CF2-2B9F-4241-8960-33B23B0077B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{0635C2AF-4CC9-4561-B496-BC81FD1A464A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{0635C2AF-4CC9-4561-B496-BC81FD1A464A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{0635C2AF-4CC9-4561-B496-BC81FD1A464A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{0635C2AF-4CC9-4561-B496-BC81FD1A464A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
