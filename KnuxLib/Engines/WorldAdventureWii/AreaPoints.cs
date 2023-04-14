@@ -33,7 +33,7 @@
             public float UnknownFloat_1 { get; set; }
 
             /// <summary>
-            /// A copy of this instance's matrix decomposed into a human readable format.
+            /// A copy of this area's matrix decomposed into a human readable format.
             /// </summary>
             public DecomposedMatrix Transform { get; set; } = new();
         }
