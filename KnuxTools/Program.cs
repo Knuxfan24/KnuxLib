@@ -164,6 +164,14 @@ namespace KnuxTools
                                 }
                                 break;
 
+                            case ".hedgehog.instanceinfo.json":
+                                using (KnuxLib.Engines.Hedgehog.InstanceInfo instanceInfo = new())
+                                {
+                                    instanceInfo.Data = instanceInfo.JsonDeserialise<KnuxLib.Engines.Hedgehog.InstanceInfo.FormatData>(arg);
+                                    instanceInfo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.terrain-instanceinfo");
+                                }
+                                break;
+
                             case ".hedgehog.lightfieldv3.json":
                                 using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new())
                                 {
@@ -484,6 +492,7 @@ namespace KnuxTools
                             case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
                             case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new(arg, true)) break;
                             case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
+                            case ".terrain-instanceinfo": using (KnuxLib.Engines.Hedgehog.InstanceInfo instanceInfo = new(arg, true)) break;
                             case ".lf": using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new(arg, true)) break;
                             case ".pcmodel": case ".pccol": case ".pcrt": using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new(arg, true)) break;
                             case ".svcol.bin": using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new(arg, true)) break;
@@ -592,6 +601,7 @@ namespace KnuxTools
                 Console.WriteLine("Hedgehog Engine:\n" +
                                   "Archive Info (.arcinfo)\n" +
                                   "Gismo V3 (.gismod/.gismop)\n" +
+                                  "Instance Info (.terrain-instanceinfo)\n" +
                                   "Light Field V3 (.lf)\n" +
                                   "Point Cloud (.pccol/.pcmodel/.pcrt)\n" +
                                   "Sector Visibility Collision (.bin.svcol)\n");

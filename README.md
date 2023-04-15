@@ -106,6 +106,8 @@ Supported formats:
 
 - [Gismo V3 (.gismod/.gismop)](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+- [Instance Info (.terrain-instanceinfo)](KnuxLib/Engines/Hedgehog/InstanceInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
 - [Light Field V3 (.lf)](KnuxLib/Engines/Hedgehog/LightFieldV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Point Cloud (.pccol/.pcmodel/.pcrt)](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
