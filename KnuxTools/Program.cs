@@ -156,6 +156,14 @@ namespace KnuxTools
                                 }
                                 break;
 
+                            case ".hedgehog.bulletskeleton.json":
+                                using (KnuxLib.Engines.Hedgehog.BulletSkeleton bulletSkeleton = new())
+                                {
+                                    bulletSkeleton.Data = bulletSkeleton.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.BulletSkeleton.Node>>(arg);
+                                    bulletSkeleton.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.skl.pxd");
+                                }
+                                break;
+
                             case ".hedgehog.gismov3.json":
                                 using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new())
                                 {
@@ -216,10 +224,10 @@ namespace KnuxTools
                                 break;
 
                             case ".hedgehog.sectorvisiblitycollision.json":
-                                using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision gismo = new())
+                                using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new())
                                 {
-                                    gismo.Data = gismo.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.SectorVisibilityCollision.SectorVisibilityShape>>(arg);
-                                    gismo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
+                                    sectorVisibilityCollision.Data = sectorVisibilityCollision.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.SectorVisibilityCollision.SectorVisibilityShape>>(arg);
+                                    sectorVisibilityCollision.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
                                 }
                                 break;
 
@@ -490,6 +498,7 @@ namespace KnuxTools
 
                             #region Hedgehog Engine Formats
                             case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
+                            case ".skl.pxd": using (KnuxLib.Engines.Hedgehog.BulletSkeleton bulletSkeleton = new(arg, true)) break;
                             case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new(arg, true)) break;
                             case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
                             case ".terrain-instanceinfo": using (KnuxLib.Engines.Hedgehog.InstanceInfo instanceInfo = new(arg, true)) break;
@@ -600,6 +609,7 @@ namespace KnuxTools
 
                 Console.WriteLine("Hedgehog Engine:\n" +
                                   "Archive Info (.arcinfo)\n" +
+                                  "Bullet Skeleton (.skl.pxd)\n" +
                                   "Gismo V3 (.gismod/.gismop)\n" +
                                   "Instance Info (.terrain-instanceinfo)\n" +
                                   "Light Field V3 (.lf)\n" +

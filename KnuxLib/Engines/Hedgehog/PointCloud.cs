@@ -165,7 +165,7 @@
                 Helpers.WriteHedgeLibVector3(writer, Data[i].Scale);
 
                 // Write this instance's empty value.
-                writer.Write(0);
+                writer.Write(0x00);
 
                 // All Data but the last one appear to be aligned, so if this isn't the last instance, align it.
                 if (i != Data.Count - 1)

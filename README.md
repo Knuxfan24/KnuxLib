@@ -104,6 +104,8 @@ Supported formats:
 
 - [Archive Info (.arcinfo)](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+- [Bullet Skeleton (.skl.pxd)](KnuxLib/Engines/Hedgehog/BulletSkeleton.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
 - [Gismo V3 (.gismod/.gismop)](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Instance Info (.terrain-instanceinfo)](KnuxLib/Engines/Hedgehog/InstanceInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
