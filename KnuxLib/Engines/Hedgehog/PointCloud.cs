@@ -21,9 +21,9 @@
             public string InstanceName { get; set; } = "";
 
             /// <summary>
-            /// The name of the model used by this instance.
+            /// The name of the asset used by this instance.
             /// </summary>
-            public string ModelName { get; set; } = "";
+            public string AssetName { get; set; } = "";
 
             /// <summary>
             /// This instance's position in 3D space.
@@ -90,9 +90,11 @@
                 // Set up a new instance.
                 Instance inst = new()
                 {
-                    // Read the two name values for this instance, while they are usually the same, they can be different.
+                    // Read this instance's name.
                     InstanceName = Helpers.ReadNullTerminatedStringTableEntry(reader),
-                    ModelName = Helpers.ReadNullTerminatedStringTableEntry(reader),
+
+                    // Read the name of the asset used by this instance.
+                    AssetName = Helpers.ReadNullTerminatedStringTableEntry(reader),
 
                     // Read this instance's position.
                     Position = Helpers.ReadHedgeLibVector3(reader),
@@ -148,9 +150,11 @@
             // Loop through each instance.
             for (int i = 0; i < Data.Count; i++)
             {
-                // Add the two strings to the BINA String Table and write their offsets.
-                writer.AddString($"instance{i}name1", Data[i].InstanceName, 0x08);
-                writer.AddString($"instance{i}name2", Data[i].ModelName, 0x08);
+                // Add the string for this instance's name.
+                writer.AddString($"instance{i}name", Data[i].InstanceName, 0x08);
+
+                // Add the string for this instance's asset.
+                writer.AddString($"instance{i}asset", Data[i].AssetName, 0x08);
 
                 // Write this instance's position.
                 Helpers.WriteHedgeLibVector3(writer, Data[i].Position);
