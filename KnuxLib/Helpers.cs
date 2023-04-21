@@ -301,7 +301,7 @@ namespace KnuxLib
         public static libHSON.Object CreateHSONObject(string type, string name, Vector3 position, Quaternion rotation, bool addRangeTags = true, float rangeIn = 100f, float rangeOut = 20f)
         {
             // Create the object.
-            libHSON.Object hsonObj = new libHSON.Object
+            libHSON.Object hsonObj = new
             (
                 type: type,
                 name: name,
@@ -332,5 +332,40 @@ namespace KnuxLib
             // Return the conversion as a System.Numerics quaternion.
             return new(hedgelibQuaternion.X, hedgelibQuaternion.Y, hedgelibQuaternion.Z, hedgelibQuaternion.W);
         }
+
+        /// <summary>
+        /// Creates a Matrix4x4 from a position, scale and rotation.
+        /// </summary>
+        /// <param name="translation">The position values for this matrix.</param>
+        /// <param name="scale">The scale values for this matrix.</param>
+        /// <param name="rotation">The rotation values for this matrix.</param>
+        public static Matrix4x4 CreateMatrix(Vector3 translation, Vector3 scale, Quaternion rotation)
+        {
+            // Create the initial matrix from the rotation.
+            Matrix4x4 matrix = Matrix4x4.CreateFromQuaternion(rotation);
+
+            // Set the matrix's translation.
+            matrix.Translation = translation;
+
+            // Apply the scale values to the matrix.
+            matrix.M11 *= scale.X;
+            matrix.M12 *= scale.X;
+            matrix.M13 *= scale.X;
+            matrix.M21 *= scale.Y;
+            matrix.M22 *= scale.Y;
+            matrix.M23 *= scale.Y;
+            matrix.M31 *= scale.Z;
+            matrix.M32 *= scale.Z;
+            matrix.M33 *= scale.Z;
+
+            // Return the generated matrix.
+            return matrix;
+        }
+
+        /// <summary>
+        /// Returns a uint as a string, formatted as a 32-bit hex value.
+        /// </summary>
+        /// <param name="value">The value to return.</param>
+        public static string ReturnUIntAsHex(uint value) => $"0x{value.ToString("X").PadLeft(8, '0')}";
     }
 }
