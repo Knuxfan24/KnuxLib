@@ -39,8 +39,9 @@ namespace KnuxLib
         /// <param name="is64bit">Whether or not the offset value we need to read is 64-bit (8 bytes) or not.</param>
         /// <param name="hasReaderOffset">Whether or not the jump has to respect the reader's offset.</param>
         /// <param name="extraOffset">A custom value to add to the read offset before jumping.</param>
+        /// <param name="isUTF16">Whether or not to read the text with UTF16 encoding.</param>
         /// <returns>The string read from the location.</returns>
-        public static string? ReadNullTerminatedStringTableEntry(HedgeLib.IO.BINAReader reader, bool is64bit = true, bool hasReaderOffset = true, uint extraOffset = 0)
+        public static string? ReadNullTerminatedStringTableEntry(HedgeLib.IO.BINAReader reader, bool is64bit = true, bool hasReaderOffset = true, uint extraOffset = 0, bool isUTF16 = false)
         {
             // Set up a dummy position value.
             long position;
@@ -77,8 +78,14 @@ namespace KnuxLib
                 reader.JumpTo(offset + extraOffset, !hasReaderOffset);
             }
 
-            // Read the string at the offset.
-            string entry = reader.ReadNullTerminatedString();
+            // Set up a string entry.
+            string entry;
+
+            // Read the string at the offset based on whether it needs to be UTF16 or not.
+            if (!isUTF16)
+                entry = reader.ReadNullTerminatedString();
+            else
+                entry = reader.ReadNullTerminatedStringUTF16();
 
             // Jump back.
             reader.JumpTo(position);
