@@ -4,6 +4,9 @@ using System.Text;
 
 namespace KnuxTools
 {
+    // TODO: Test all the formats following the rewrite.
+    // TOOO: Settle on consistent version options.
+    // TODO: List all the version options.
     internal class Program
     {
         static void Main(string[] args)
@@ -17,6 +20,20 @@ namespace KnuxTools
             // Check for arguments.
             if (args.Length > 0)
             {
+                // Set up the extension and version values.
+                string? extension = null;
+                string? version = null;
+
+                // Loop through and set the extension and version, if the parameters are passed.
+                foreach (string arg in args)
+                {
+                    if (arg.StartsWith("-extension=") || arg.StartsWith("-e="))
+                        extension = arg.Split('=')[1];
+
+                    if (arg.StartsWith("-version=") || arg.StartsWith("-v="))
+                        version = arg.Split('=')[1];
+                }
+
                 // Loop through each argument.
                 foreach (string arg in args)
                 {
@@ -26,86 +43,8 @@ namespace KnuxTools
                         // Print the directory name.
                         Console.WriteLine($"Directory: {arg}\n");
 
-                        // Ask the user what to pack this folder as.
-                        Console.WriteLine
-                        (
-                            "Please specify the archive type to pack this directory into;\n" +
-                            "1. Alchemy Engine GFC/GOB File Pair\n" +
-                            "2. Gods Engine WAD File\n" +
-                            "3. Sonic The Portable AMB File\n" +
-                            "4. Sonic Storybook Engine ONE File\n" +
-                            "5. Sonic Storybook Engine TXD File\n" +
-                            "6. Sonic World Adventure Wii ONE File."
-                        );
-                        switch (Console.ReadKey().KeyChar)
-                        {
-                            case '1':
-                                using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new())
-                                {
-                                    assetsContainer.Import(arg);
-                                    assetsContainer.Save($@"{arg}");
-                                }
-                                break;
-                            case '2':
-                                // Ask the user for the WAD version to save as.
-                                Console.WriteLine
-                                (
-                                    "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
-                                    "1. Ninjabread Man PC/PS2\n" +
-                                    "2. Ninjabread Man Wii"
-                                );
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        using (KnuxLib.Engines.Gods.WAD wad = new())
-                                        {
-                                            wad.Import(arg);
-                                            wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_PCPS2);
-                                        }
-                                        break;
-                                    case '2':
-                                        using (KnuxLib.Engines.Gods.WAD wad = new())
-                                        {
-                                            wad.Import(arg);
-                                            wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii);
-                                        }
-                                        break;
-                                }
-                                break;
-                            case '3':
-                                using (KnuxLib.Engines.Portable.AMB amb = new())
-                                {
-                                    Console.WriteLine("\n");
-                                    amb.Import(arg);
-                                    amb.Save($@"{arg}.amb");
-                                }
-                                break;
-                            case '4':
-                                using (KnuxLib.Engines.Storybook.ONE one = new())
-                                {
-                                    Console.WriteLine("\n");
-                                    one.Import(arg);
-                                    one.Save($@"{arg}.one");
-                                }
-                                break;
-                            case '5':
-                                using (KnuxLib.Engines.Storybook.TextureDirectory textureDirectory = new())
-                                {
-                                    Console.WriteLine("\n");
-                                    textureDirectory.Import(arg);
-                                    textureDirectory.Save($@"{arg}.txd");
-                                }
-                                break;
-                            case '6':
-                                using (KnuxLib.Engines.WorldAdventureWii.ONE one = new())
-                                {
-                                    Console.WriteLine("\n");
-                                    one.Import(arg);
-                                    one.Save($@"{arg}.one");
-                                }
-                                break;
-                        }
-                        break;
+                        // Pass the argument and version onto the SaveArchives function.
+                        HandleDirectory(arg, version);
                     }
 
                     // File based checks.
@@ -114,479 +53,8 @@ namespace KnuxTools
                         // Print the file name.
                         Console.WriteLine($"File: {arg}\n");
 
-                        // Treat this file differently depending on type.
-                        switch (KnuxLib.Helpers.GetExtension(arg).ToLower())
-                        {
-                            #region Seralised Models
-                            case ".fbx":
-                            case ".dae":
-                            case ".obj":
-                                // Ask the user what to convert this model to.
-                                Console.WriteLine
-                                (
-                                    "This file is a generic seralised type, please specify what format it is;\n" +
-                                    "1. CarZ Engine Model"
-                                );
-
-                                // Convert the model to the selected format.
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        using (KnuxLib.Engines.CarZ.SCO sco = new())
-                                        {
-                                            sco.ImportAssimp(arg);
-                                            sco.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.sco");
-                                        }
-                                        using (KnuxLib.Engines.CarZ.MaterialLibrary mat = new())
-                                        {
-                                            mat.ImportAssimp(arg);
-                                            mat.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.mat");
-                                        }
-                                        break;
-                                }
-                                break;
-                            #endregion
-
-                            #region Seralised Data
-                            case ".hedgehog.archiveinfo.json":
-                                using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new())
-                                {
-                                    archiveInfo.Data = archiveInfo.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.ArchiveInfo.ArchiveEntry>>(arg);
-                                    archiveInfo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.arcinfo");
-                                }
-                                break;
-
-                            case ".hedgehog.bulletskeleton.json":
-                                using (KnuxLib.Engines.Hedgehog.BulletSkeleton bulletSkeleton = new())
-                                {
-                                    bulletSkeleton.Data = bulletSkeleton.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.BulletSkeleton.Node>>(arg);
-                                    bulletSkeleton.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.skl.pxd");
-                                }
-                                break;
-
-                            case ".hedgehog.gismov3.json":
-                                using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new())
-                                {
-                                    gismoV3.Data = gismoV3.JsonDeserialise<KnuxLib.Engines.Hedgehog.GismoV3.FormatData>(arg);
-                                    gismoV3.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.gismod");
-                                }
-                                break;
-
-                            case ".hedgehog.instanceinfo.json":
-                                using (KnuxLib.Engines.Hedgehog.InstanceInfo instanceInfo = new())
-                                {
-                                    instanceInfo.Data = instanceInfo.JsonDeserialise<KnuxLib.Engines.Hedgehog.InstanceInfo.FormatData>(arg);
-                                    instanceInfo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.terrain-instanceinfo");
-                                }
-                                break;
-
-                            case ".hedgehog.lightfieldv3.json":
-                                using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new())
-                                {
-                                    lightfieldV3.Data = lightfieldV3.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.LightFieldV3.LightField>>(arg);
-                                    lightfieldV3.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.lf");
-                                }
-                                break;
-
-                            case ".hedgehog.pointcloud.json":
-                                // Ask the user for the extension to save with.
-                                Console.WriteLine
-                                (
-                                    "This file has multiple file extension options, please specifiy the extension to save with;\n" +
-                                    "1. .pccol (Collision Instance)\n" +
-                                    "2. .pcmodel (Terrain Instance)\n" +
-                                    "3. .pcrt (Lighting Instance)"
-                                );
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
-                                        {
-                                            pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
-                                            pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.pccol");
-                                        }
-                                        break;
-                                    case '2':
-                                        using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
-                                        {
-                                            pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
-                                            pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.pcmodel");
-                                        }
-                                        break;
-                                    case '3':
-                                        using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
-                                        {
-                                            pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
-                                            pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.pcrt");
-                                        }
-                                        break;
-                                }
-                                break;
-
-                            case ".hedgehog.sectorvisiblitycollision.json":
-                                using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new())
-                                {
-                                    sectorVisibilityCollision.Data = sectorVisibilityCollision.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.SectorVisibilityCollision.SectorVisibilityShape>>(arg);
-                                    sectorVisibilityCollision.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
-                                }
-                                break;
-
-                            case ".nu2.aientitytable.json":
-                                // Ask the user for the version to save with.
-                                Console.WriteLine
-                                (
-                                    "This file has multiple file version options, please specifiy the version to save with;\n" +
-                                    "1. GameCube\n" +
-                                    "2. PlayStation2/Xbox"
-                                );
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
-                                        {
-                                            aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
-                                            aiEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.GameCube);
-                                        }
-                                        break;
-                                    case '2':
-                                        using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
-                                        {
-                                            aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
-                                            aiEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.PlayStation2Xbox);
-                                        }
-                                        break;
-                                }
-                                break;
-
-                            case ".nu2.wumpatable.json":
-                                // Ask the user for the version to save with.
-                                Console.WriteLine
-                                (
-                                    "This file has multiple file version options, please specifiy the version to save with;\n" +
-                                    "1. GameCube\n" +
-                                    "2. PlayStation2/Xbox"
-                                );
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
-                                        {
-                                            wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
-                                            wumpaTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube);
-                                        }
-                                        break;
-                                    case '2':
-                                        using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
-                                        {
-                                            wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
-                                            wumpaTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox);
-                                        }
-                                        break;
-                                }
-                                break;
-
-                            case ".projectm.messagetable.json":
-                                using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
-                                {
-                                    messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
-                                    messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.dat");
-                                }
-                                break;
-
-                            case ".rockmanx7.stageentitytable.json":
-                                // Ask the user for the extension to save with.
-                                Console.WriteLine
-                                (
-                                    "This file has multiple file extension options, please specifiy the extension to save with;\n" +
-                                    "1. .OSD (PlayStation 2/PC)\n" +
-                                    "2. .328F438B (Legacy Collection)"
-                                );
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
-                                        {
-                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
-                                            stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.OSD");
-                                        }
-                                        break;
-                                    case '2':
-                                        using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
-                                        {
-                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
-                                            stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.328F438B");
-                                        }
-                                        break;
-                                }
-                                break;
-
-                            case ".rockmanx8.stageentitytable.json":
-                                // Ask the user for the extension to save with.
-                                Console.WriteLine
-                                (
-                                    "This file has multiple file extension options, please specifiy the extension to save with;\n" +
-                                    "1. .SET (PC)\n" +
-                                    "2. .31BF570E (Legacy Collection)"
-                                );
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new())
-                                        {
-                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX8.StageEntityTable.SetObject>>(arg);
-                                            stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.SET", KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original);
-                                        }
-                                        break;
-                                    case '2':
-                                        using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new())
-                                        {
-                                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX8.StageEntityTable.SetObject>>(arg);
-                                            stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.31BF570E", KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.LegacyCollection);
-                                        }
-                                        break;
-                                }
-                                break;
-
-                            case ".storybook.stageentitytableitems.json":
-                                // Ask the user for the version to save with.
-                                Console.WriteLine
-                                (
-                                    "This file has multiple file version options, please specifiy the version to save with;\n" +
-                                    "1. Sonic and the Secret Rings\n" +
-                                    "2. Sonic and the Black Knight"
-                                );
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
-                                        {
-                                            setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
-                                            setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings);
-                                        }
-                                        break;
-                                    case '2':
-                                        using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
-                                        {
-                                            setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
-                                            setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight);
-                                        }
-                                        break;
-                                }
-                                break;
-
-                            case ".westwood.messagetable.json":
-                                using (KnuxLib.Engines.Westwood.MessageTable messageTable = new())
-                                {
-                                    messageTable.Data = messageTable.JsonDeserialise<List<string>>(arg);
-                                    messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.tru");
-                                }
-                                break;
-
-                            case ".worldadventurewii.areapoints.json":
-                                // Ask the user for the version to save with.
-                                Console.WriteLine
-                                (
-                                    "This file has multiple file version options, please specifiy the version to save with;\n" +
-                                    "1. PlayStation2\n" +
-                                    "2. Wii"
-                                );
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new())
-                                        {
-                                            areaPoints.Data = areaPoints.JsonDeserialise<List<KnuxLib.Engines.WorldAdventureWii.AreaPoints.Area>>(arg);
-                                            areaPoints.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wap", KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.PlayStation2);
-                                        }
-                                        break;
-                                    case '2':
-                                        using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new())
-                                        {
-                                            areaPoints.Data = areaPoints.JsonDeserialise<List<KnuxLib.Engines.WorldAdventureWii.AreaPoints.Area>>(arg);
-                                            areaPoints.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wap", KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.Wii);
-                                        }
-                                        break;
-                                }
-                                break;
-                            #endregion
-
-                            #region Generic Extensions
-                            case ".bin":
-                                // Ask the user what to read this file as.
-                                Console.WriteLine
-                                (
-                                    "This file is a generic type, please specify what format it is;\n" +
-                                    "1. Sonic Storybook Engine Stage Entity Table Object Table"
-                                );
-
-                                // Read this file with the selected format.
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1':
-                                        // Ask the user for the file version.
-                                        Console.WriteLine
-                                                (
-                                                    "\n\nThis file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
-                                                    "1. Sonic and the Secret Rings\n" +
-                                                    "2. Sonic and the Black Knight"
-                                                );
-
-                                        // Read the file according to the selected version.
-                                        switch (Console.ReadKey().KeyChar)
-                                        {
-                                            case '1': using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings, true)) break;
-                                            case '2': using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight, true)) break;
-                                        }
-                                        break;
-                                }
-                                break;
-
-                            case ".one":
-                                // Ask the user for the file version.
-                                Console.WriteLine
-                                        (
-                                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
-                                            "1. Sonic Storybook Engine ONE Archive\n" +
-                                            "2. Sonic World Adventure Wii Uncompressed ONE Archive\n" +
-                                            "3. Compress to Sonic World Adventure ONZ Archive."
-                                        );
-
-                                // Read the file according to the selected version.
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1': using (KnuxLib.Engines.Storybook.ONE one = new(arg, true)) break;
-                                    case '2': using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
-                                    case '3':
-                                        MemoryStream buffer = new();
-                                        PuyoTools.Core.Compression.Lz11Compression lz11 = new();
-                                        buffer = lz11.Compress(File.OpenRead(arg));
-                                        buffer.WriteTo(File.Create($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.onz"));
-                                        break;
-                                }
-                                break;
-
-                            #endregion
-
-                            #region Alchemy Engine Formats
-                            case ".gfc": using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new(arg, true)) break;
-                            case ".gob": using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.gfc", true)) break;
-                            #endregion
-
-                            #region CarZ Engine Formats
-                            case ".mat": using (KnuxLib.Engines.CarZ.MaterialLibrary mat = new(arg, true)) break;
-                            case ".sco": using (KnuxLib.Engines.CarZ.SCO sco = new(arg, true)) break;
-                            #endregion
-
-                            #region Gods Engine Formats
-                            case ".wad":
-                                // Ask the user for the WAD version.
-                                Console.WriteLine
-                                        (
-                                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
-                                            "1. Ninjabread Man PC/PS2\n" +
-                                            "2. Ninjabread Man Wii"
-                                        );
-
-                                // Extract the WAD according to the selected version.
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1': using (KnuxLib.Engines.Gods.WAD wad = new(arg, KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_PCPS2, true)) break;
-                                    case '2': using (KnuxLib.Engines.Gods.WAD wad = new(arg, KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii, true)) break;
-                                }
-                                break;
-                            #endregion
-
-                            #region Hedgehog Engine Formats
-                            case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
-                            case ".skl.pxd": using (KnuxLib.Engines.Hedgehog.BulletSkeleton bulletSkeleton = new(arg, true)) break;
-                            case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new(arg, true)) break;
-                            case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
-                            case ".terrain-instanceinfo": using (KnuxLib.Engines.Hedgehog.InstanceInfo instanceInfo = new(arg, true)) break;
-                            case ".lf": using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new(arg, true)) break;
-                            case ".pcmodel": case ".pccol": case ".pcrt": using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new(arg, true)) break;
-                            case ".svcol.bin": using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new(arg, true)) break;
-                            #endregion
-
-                            #region Nu2 Engine Formats
-                            case ".ai":
-                                // Ask the user for the ai version.
-                                Console.WriteLine
-                                        (
-                                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
-                                            "1. GameCube\n" +
-                                            "2. PlayStation 2/Xbox"
-                                        );
-
-                                // Seralise the ai file according to the selected version.
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1': using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.GameCube, true)) break;
-                                    case '2': using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.PlayStation2Xbox, true)) break;
-                                }
-                                break;
-                            case ".wmp":
-                                // Ask the user for the wmp version.
-                                Console.WriteLine
-                                        (
-                                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
-                                            "1. GameCube\n" +
-                                            "2. PlayStation 2/Xbox"
-                                        );
-
-                                // Seralise the wmp file according to the selected version.
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1': using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube, true)) break;
-                                    case '2': using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox, true)) break;
-                                }
-                                break;
-                            #endregion
-
-                            #region Project M Engine Formats
-                            case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;
-                            #endregion
-
-                            #region Rockman X7 Engine Formats
-                            case ".328f438b": case ".osd": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
-                            #endregion
-
-                            #region Rockman X8 Engine Formats
-                            case ".31bf570e": using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.LegacyCollection, true)) break;
-                            case ".set": using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original, true)) break;
-                            #endregion
-
-                            #region Sonic Storybook Engine Formats
-                            case ".txd": using (KnuxLib.Engines.Storybook.TextureDirectory textureDirectory = new(arg, true)) break;
-                            #endregion
-
-                            #region Sonic The Portable Engine Formats
-                            case ".amb": using (KnuxLib.Engines.Portable.AMB amb = new(arg, true)) break;
-                            #endregion
-
-                            #region Sonic World Adventure Wii Engine Formats
-                            case ".onz": using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
-                            case ".wap":
-                                // Ask the user for the wmp version.
-                                Console.WriteLine
-                                        (
-                                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
-                                            "1. PlayStation 2\n" +
-                                            "2. Wii"
-                                        );
-
-                                // Seralise the wmp file according to the selected version.
-                                switch (Console.ReadKey().KeyChar)
-                                {
-                                    case '1': using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new(arg, KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.PlayStation2, true)) break;
-                                    case '2': using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new(arg, KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.Wii, true)) break;
-                                }
-                                break;
-                            #endregion
-
-                            #region Westwood Engine Formats
-                            case ".tru": using (KnuxLib.Engines.Westwood.MessageTable messageTable = new(arg, true)) break;
-                            #endregion
-                        }
+                        // Pass the argument, extension and version onto the HandleFile function.
+                        HandleFile(arg, extension, version);
                     }
                 }
             }
@@ -649,6 +117,863 @@ namespace KnuxTools
                                   "Alternatively, simply drag a supported file onto this application in Windows Explorer.\n\n" +
                                   "Press any key to continue.");
                 Console.ReadKey();
+            }
+        }
+
+        /// <summary>
+        /// Function for handling directories.
+        /// </summary>
+        /// <param name="arg">The path of the directory that is currently being processed.</param>
+        /// <param name="version">The version parameter to use.</param>
+        private static void HandleDirectory(string arg, string? version)
+        {
+            // If a version isn't specified, then ask the user which archive to save as.
+            if (version == null)
+            {
+                // List our supported archive types.
+                Console.WriteLine
+                (
+                    "Please specify the archive type to pack this directory into;\n" +
+                    "1. Alchemy Engine GFC/GOB File Pair\n" +
+                    "2. Gods Engine WAD File\n" +
+                    "3. Sonic The Portable AMB File\n" +
+                    "4. Sonic Storybook Engine ONE File\n" +
+                    "5. Sonic Storybook Engine TXD File\n" +
+                    "6. Sonic World Adventure Wii ONE File."
+                );
+
+                // Wait for the user to input an option.
+                switch (Console.ReadKey().KeyChar)
+                {
+                    // Alchemy Engine Asset Containers.
+                    case '1': version = "alchemy_gfcgob"; break;
+
+                    // GODS Engine WAD Archives.
+                    case '2':
+                        // List our supported versions for the GODS Engine WAD format.
+                        Console.WriteLine
+                        (
+                            "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
+                            "1. Ninjabread Man PC/PS2\n" +
+                            "2. Ninjabread Man Wii"
+                        );
+
+                        // Set the version to either gods_ninjabreadpc or gods_ninjabreadwii depending on the user's selection.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "gods_ninjabreadpc"; break;
+                            case '2': version = "gods_ninjabreadwii"; break;
+                        }
+                        break;
+
+                    // Sonic The Portable Engine AMB Archives.
+                    case '3': version = "portable_amb"; break;
+
+                    // Sonic Storybook Series ONE Archives.
+                    case '4': version = "storybook_one"; break;
+
+                    // Sonic Storybook Series Texture Directories.
+                    case '5': version = "storybook_txd"; break;
+
+                    // Sonic World Adventure Wii ONE Archives.
+                    case '6':
+                        // List our supported versions for the Sonic World Adventure Wii ONE format.
+                        Console.WriteLine
+                        (
+                            "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
+                            "1. Uncompressed ONE Archive.\n" +
+                            "2. Compressed ONZ Archive"
+                        );
+
+                        // Set the version to either swawii_one or swawii_onz depending on the user's selection.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "swawii_one"; break;
+                            case '2': version = "swawii_onz"; break;
+                        }
+                        break;
+                }
+            }
+
+            // Sanity check that version actually has a value.
+            if (version != null)
+            {
+                switch (version)
+                {
+                    // Alchemy Engine Asset Containers.
+                    case "alchemy_gfc":
+                    case "alchemy_gob":
+                    case "alchemy_gfcgob":
+                        using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new())
+                        {
+                            assetsContainer.Import(arg);
+                            assetsContainer.Save($@"{arg}");
+                        }
+                        break;
+
+                    // GODS Engine WAD Archives.
+                    case "gods_pc":
+                    case "gods_playstation2":
+                    case "gods_ps2":
+                    case "gods_ninjabreadpc":
+                    case "gods_ninjabreadplaystation2":
+                    case "gods_ninjabreadps2":
+                        using (KnuxLib.Engines.Gods.WAD wad = new())
+                        {
+                            wad.Import(arg);
+                            wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_PCPS2);
+                        }
+                        break;
+                    case "gods_wii":
+                    case "gods_ninjabreadwii":
+                        using (KnuxLib.Engines.Gods.WAD wad = new())
+                        {
+                            wad.Import(arg);
+                            wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii);
+                        }
+                        break;
+
+                    // Sonic The Portable Engine AMB Archives.
+                    case "portable_amb":
+                        using (KnuxLib.Engines.Portable.AMB amb = new())
+                        {
+                            Console.WriteLine("\n");
+                            amb.Import(arg);
+                            amb.Save($@"{arg}.amb");
+                        }
+                        break;
+
+                    // Sonic Storybook Series ONE Archives.
+                    case "storybook_one":
+                        using (KnuxLib.Engines.Storybook.ONE one = new())
+                        {
+                            Console.WriteLine("\n");
+                            one.Import(arg);
+                            one.Save($@"{arg}.one");
+                        }
+                        break;
+
+                    // Sonic Storybook Series Texture Directories.
+                    case "storybook_txd":
+                        using (KnuxLib.Engines.Storybook.TextureDirectory textureDirectory = new())
+                        {
+                            Console.WriteLine("\n");
+                            textureDirectory.Import(arg);
+                            textureDirectory.Save($@"{arg}.txd");
+                        }
+                        break;
+
+                    // Sonic World Adventure Wii ONE Archives.
+                    case "swawii_one":
+                    case "swawii_onz":
+                        using (KnuxLib.Engines.WorldAdventureWii.ONE one = new())
+                        {
+                            Console.WriteLine("\n");
+                            one.Import(arg);
+                            one.Save($@"{arg}.one");
+                        }
+
+                        // If the version indicates that the archive needs to be compressed, then compress it.
+                        if (version == "swawii_onz")
+                        {
+                            // Set up a buffer.
+                            MemoryStream buffer = new();
+
+                            // Set up PuyoTools' LZ11 Compression.
+                            PuyoTools.Core.Compression.Lz11Compression lz11 = new();
+
+                            // Set up a file stream of the uncompressed archive.
+                            var stream = File.OpenRead($@"{arg}.one");
+
+                            // Compress the previously saved ONE archive into the buffer.
+                            buffer = lz11.Compress(stream);
+
+                            // Write the buffer to disk.
+                            buffer.WriteTo(File.Create($@"{arg}.onz"));
+
+                            // Close the file stream so the uncompressed archive can be deleted.
+                            stream.Close();
+
+                            // Delete the temporary uncompressed file.
+                            File.Delete($@"{arg}.one");
+                        }
+                        break;
+
+                    // If a command line argument without a corrosponding format has been passed, then inform the user.
+                    default:
+                        Console.WriteLine($"\n\nFormat identifer {version} is not valid for any currently supported archive types.\nPress any key to continue.");
+                        Console.ReadKey();
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Function for handling files.
+        /// </summary>
+        /// <param name="arg">The path of the file that is currently being processed.</param>
+        /// <param name="extension">The extension parameter to use.</param>
+        /// <param name="version">The version parameter to use.</param>
+        private static void HandleFile(string arg, string? extension, string? version)
+        {
+            switch (KnuxLib.Helpers.GetExtension(arg).ToLower())
+            {
+                #region Seralised Models.
+                case ".fbx":
+                case ".dae":
+                case ".obj":
+                    // If a version isn't specified, then ask the user what to convert to.
+                    if (version == null)
+                    {
+                        // List our supported model formats.
+                        Console.WriteLine
+                        (
+                            "This file is a generic seralised type, please specify what format it is;\n" +
+                            "1. CarZ Engine Model"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            // CarZ Engine SCO Models (and Material Libraries).
+                            case '1': version = "carz_sco"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            // CarZ Engine SCO Models (and Material Libraries).
+                            case "carz_sco":
+                                using (KnuxLib.Engines.CarZ.SCO sco = new())
+                                {
+                                    sco.ImportAssimp(arg);
+                                    sco.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.sco");
+                                }
+                                using (KnuxLib.Engines.CarZ.MaterialLibrary mat = new())
+                                {
+                                    mat.ImportAssimp(arg);
+                                    mat.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.mat");
+                                }
+                                break;
+                        }
+                    }
+                break;
+                #endregion
+
+                #region Generic Extensions.
+                case ".one":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. Sonic Storybook Engine ONE Archive\n" +
+                            "2. Sonic World Adventure Wii Uncompressed ONE Archive\n"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "storybook_one"; break;
+                            case '2': version = "swawii_one"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "storybook_one": using (KnuxLib.Engines.Storybook.ONE one = new(arg, true)) break;
+                            case "swawii_one": using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
+                        }
+                    }
+                    break;
+                #endregion
+
+                #region Alchemy Engine Formats.
+                case ".gfc": using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new(arg, true)) break;
+                case ".gob": using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.gfc", true)) break;
+                #endregion
+
+                #region CarZ Engine Formats.
+                case ".mat": using (KnuxLib.Engines.CarZ.MaterialLibrary mat = new(arg, true)) break;
+                case ".sco": using (KnuxLib.Engines.CarZ.SCO sco = new(arg, true)) break;
+                #endregion
+
+                #region GODS Engine Formats.
+                case ".wad":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. Ninjabread Man PC/PS2\n" +
+                            "2. Ninjabread Man Wii"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "gods_ninjabreadpc"; break;
+                            case '2': version = "gods_ninjabreadwii"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "gods_pc":
+                            case "gods_playstation2":
+                            case "gods_ps2":
+                            case "gods_ninjabreadpc":
+                            case "gods_ninjabreadplaystation2":
+                            case "gods_ninjabreadps2":
+                                using (KnuxLib.Engines.Gods.WAD wad = new(arg, KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_PCPS2, true))
+                                break;
+                            case "gods_wii":
+                            case "gods_ninjabreadwii":
+                                using (KnuxLib.Engines.Gods.WAD wad = new(arg, KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii, true))
+                                break;
+                        }
+                    }
+                    break;
+                #endregion
+
+                #region Hedgehog Engine Formats.
+                case ".arcinfo": using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true)) break;
+                case ".hedgehog.archiveinfo.json":
+                    using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new())
+                    {
+                        archiveInfo.Data = archiveInfo.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.ArchiveInfo.ArchiveEntry>>(arg);
+                        archiveInfo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.arcinfo");
+                    }
+                    break;
+
+                case ".skl.pxd": using (KnuxLib.Engines.Hedgehog.BulletSkeleton bulletSkeleton = new(arg, true)) break;
+                case ".hedgehog.bulletskeleton.json":
+                    using (KnuxLib.Engines.Hedgehog.BulletSkeleton bulletSkeleton = new())
+                    {
+                        bulletSkeleton.Data = bulletSkeleton.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.BulletSkeleton.Node>>(arg);
+                        bulletSkeleton.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.skl.pxd");
+                    }
+                    break;
+
+                case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new(arg, true)) break;
+                case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
+                case ".hedgehog.gismov3.json":
+                    using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new())
+                    {
+                        gismoV3.Data = gismoV3.JsonDeserialise<KnuxLib.Engines.Hedgehog.GismoV3.FormatData>(arg);
+                        gismoV3.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.gismod");
+                    }
+                    break;
+
+                case ".terrain-instanceinfo": using (KnuxLib.Engines.Hedgehog.InstanceInfo instanceInfo = new(arg, true)) break;
+                case ".hedgehog.instanceinfo.json":
+                    using (KnuxLib.Engines.Hedgehog.InstanceInfo instanceInfo = new())
+                    {
+                        instanceInfo.Data = instanceInfo.JsonDeserialise<KnuxLib.Engines.Hedgehog.InstanceInfo.FormatData>(arg);
+                        instanceInfo.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.terrain-instanceinfo");
+                    }
+                    break;
+
+                case ".lf": using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new(arg, true)) break;
+                case ".hedgehog.lightfieldv3.json":
+                    using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new())
+                    {
+                        lightfieldV3.Data = lightfieldV3.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.LightFieldV3.LightField>>(arg);
+                        lightfieldV3.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.lf");
+                    }
+                    break;
+
+                case ".pcmodel": case ".pccol": case ".pcrt": using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new(arg, true)) break;
+                case ".hedgehog.pointcloud.json":
+                    // If an extension isn't specified, then ask the user what to save as.
+                    if (extension == null)
+                    {
+                        // List our supported extension options.
+                        Console.WriteLine
+                        (
+                            "This file has multiple file extension options, please specifiy the extension to save with;\n" +
+                            "1. .pccol (Collision Instance)\n" +
+                            "2. .pcmodel (Terrain Instance)\n" +
+                            "3. .pcrt (Lighting Instance)"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': extension = "pccol"; break;
+                            case '2': extension = "pcmodel"; break;
+                            case '3': extension = "pcrt"; break;
+                        }
+                    }
+
+                    // Sanity check that extension actually has a value.
+                    if (extension != null)
+                    {
+                        using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new())
+                        {
+                            pointCloud.Data = pointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.PointCloud.Instance>>(arg);
+                            pointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.{extension}");
+                        }
+                    }
+                    break;
+
+                case ".svcol.bin": using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new(arg, true)) break;
+                case ".hedgehog.sectorvisiblitycollision.json":
+                    using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new())
+                    {
+                        sectorVisibilityCollision.Data = sectorVisibilityCollision.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.SectorVisibilityCollision.SectorVisibilityShape>>(arg);
+                        sectorVisibilityCollision.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
+                    }
+                    break;
+                #endregion
+
+                #region Nu2 Formats.
+                case ".ai":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. GameCube\n" +
+                            "2. PlayStation 2/Xbox"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "nu2_gamecube"; break;
+                            case '2': version = "nu2_playstation2"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "nu2_gamecube":
+                            case "nu2_gc":
+                            case "nu2_ngc":
+                            case "nu2_gcn":
+                                using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.GameCube, true))
+                                break;
+                            case "nu2_playstation2":
+                            case "nu2_ps2":
+                            case "nu2_xbox":
+                            case "nu2_xb":
+                                using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.PlayStation2Xbox, true))
+                                break;
+                        }
+                    }
+                    break;
+                case ".nu2.aientitytable.json":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. GameCube\n" +
+                            "2. PlayStation 2/Xbox"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "nu2_gamecube"; break;
+                            case '2': version = "nu2_playstation2"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "nu2_gamecube":
+                            case "nu2_gc":
+                            case "nu2_ngc":
+                            case "nu2_gcn":
+                                using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
+                                {
+                                    aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
+                                    aiEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.GameCube);
+                                }
+                                break;
+                            case "nu2_playstation2":
+                            case "nu2_ps2":
+                            case "nu2_xbox":
+                            case "nu2_xb":
+                                using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new())
+                                {
+                                    aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.AIEntityTable.AIEntity>>(arg);
+                                    aiEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.PlayStation2Xbox);
+                                }
+                                break;
+                        }
+                    }
+                    break;
+
+                case ".wmp":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. GameCube\n" +
+                            "2. PlayStation 2/Xbox"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "nu2_gamecube"; break;
+                            case '2': version = "nu2_playstation2"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "nu2_gamecube":
+                            case "nu2_gc":
+                            case "nu2_ngc":
+                            case "nu2_gcn":
+                                using (KnuxLib.Engines.Nu2.WumpaTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube, true))
+                                break;
+                            case "nu2_playstation2":
+                            case "nu2_ps2":
+                            case "nu2_xbox":
+                            case "nu2_xb":
+                                using (KnuxLib.Engines.Nu2.WumpaTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox, true))
+                                break;
+                        }
+                    }
+                    break;
+                case ".nu2.wumpatable.json":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. GameCube\n" +
+                            "2. PlayStation 2/Xbox"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "nu2_gamecube"; break;
+                            case '2': version = "nu2_playstation2"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "nu2_gamecube":
+                            case "nu2_gc":
+                            case "nu2_ngc":
+                            case "nu2_gcn":
+                                using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
+                                {
+                                    wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
+                                    wumpaTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube);
+                                }
+                                break;
+                            case "nu2_playstation2":
+                            case "nu2_ps2":
+                            case "nu2_xbox":
+                            case "nu2_xb":
+                                using (KnuxLib.Engines.Nu2.WumpaTable wumpaTable = new())
+                                {
+                                    wumpaTable.Data = wumpaTable.JsonDeserialise<List<Vector3>>(arg);
+                                    wumpaTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wmp", KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox);
+                                }
+                                break;
+                        }
+                    }
+                    break;
+                #endregion
+
+                #region Project M Engine Formats.
+                case ".dat": using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new(arg, true)) break;
+                case ".projectm.messagetable.json":
+                    using (KnuxLib.Engines.ProjectM.MessageTable messageTable = new())
+                    {
+                        messageTable.Data = messageTable.JsonDeserialise<KnuxLib.Engines.ProjectM.MessageTable.FormatData>(arg);
+                        messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.dat");
+                    }
+                    break;
+                #endregion
+
+                #region Rockman X7 Engine Formats.
+                case ".328f438b": case ".osd": using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true)) break;
+                case ".rockmanx7.stageentitytable.json":
+                    // If an extension isn't specified, then ask the user what to save as.
+                    if (extension == null)
+                    {
+                        // List our supported extension options.
+                        Console.WriteLine
+                        (
+                            "This file has multiple file extension options, please specifiy the extension to save with;\n" +
+                            "1. .OSD (PlayStation 2/PC)\n" +
+                            "2. .328F438B (Legacy Collection)"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': extension = "OSD"; break;
+                            case '2': extension = "328F438B"; break;
+                        }
+                    }
+
+                    // Sanity check that extension actually has a value.
+                    if (extension != null)
+                    {
+                        using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
+                        {
+                            stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
+                            stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.{extension}");
+                        }
+                        break;
+                    }
+                    break;
+                #endregion
+
+                #region Rockman X8 Engine Formats.
+                case ".31bf570e": using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.LegacyCollection, true)) break;
+                case ".set": using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original, true)) break;
+                case ".rockmanx8.stageentitytable.json":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. PC\n" +
+                            "2. Legacy Collection"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "rx8_pc"; break;
+                            case '2': version = "rx8_legacycollection"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "rx8_pc":
+                                using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new())
+                                {
+                                    stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX8.StageEntityTable.SetObject>>(arg);
+                                    stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.SET", KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original);
+                                }
+                                break;
+                            case "rx8_legacycollection":
+                                using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new())
+                                {
+                                    stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX8.StageEntityTable.SetObject>>(arg);
+                                    stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.31BF570E", KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.LegacyCollection);
+                                }
+                                break;
+                        }
+                    }
+                    break;
+                #endregion
+
+                #region Sonic The Portable Engine Formats.
+                case ".amb": using (KnuxLib.Engines.Portable.AMB amb = new(arg, true)) break;
+                #endregion
+
+                #region Sonic Storybook Engine Formats.
+                case ".bin":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. Sonic and the Secret Rings\n" +
+                            "2. Sonic and the Black Knight"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "storybook_secretrings"; break;
+                            case '2': version = "storybook_blackknight"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "storybook_secretrings":
+                                using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings, true))
+                                break;
+                            case "storybook_blackknight":
+                                using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight, true))
+                                break;
+                        }
+                    }
+                    break;
+                case ".storybook.stageentitytableitems.json":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. Sonic and the Secret Rings\n" +
+                            "2. Sonic and the Black Knight"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "storybook_secretrings"; break;
+                            case '2': version = "storybook_blackknight"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "storybook_secretrings":
+                                using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
+                                {
+                                    setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
+                                    setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings);
+                                }
+                                break;
+                            case "storybook_blackknight":
+                                using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
+                                {
+                                    setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
+                                    setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight);
+                                }
+                                break;
+                        }
+                    }
+                    break;
+
+                case ".txd": using (KnuxLib.Engines.Storybook.TextureDirectory textureDirectory = new(arg, true)) break;
+                #endregion
+
+                #region Sonic World Adventure Wii Engine Formats.
+                case ".onz": using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
+
+                case ".wap":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. PlayStation 2\n" +
+                            "2. Wii"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "swawii_ps2"; break;
+                            case '2': version = "swawii_wii"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "swawii_ps2": using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new(arg, KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.PlayStation2, true)) break;
+                            case "swawii_wii": using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new(arg, KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.Wii, true)) break;
+                        }
+                    }
+                    break;
+                case ".worldadventurewii.areapoints.json":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. PlayStation 2\n" +
+                            "2. Wii"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "swawii_ps2"; break;
+                            case '2': version = "swawii_wii"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "swawii_ps2":
+                                using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new())
+                                {
+                                    areaPoints.Data = areaPoints.JsonDeserialise<List<KnuxLib.Engines.WorldAdventureWii.AreaPoints.Area>>(arg);
+                                    areaPoints.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wap", KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.PlayStation2);
+                                }
+                                break;
+                            case "swawii_wii":
+                                using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new())
+                                {
+                                    areaPoints.Data = areaPoints.JsonDeserialise<List<KnuxLib.Engines.WorldAdventureWii.AreaPoints.Area>>(arg);
+                                    areaPoints.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.wap", KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.Wii);
+                                }
+                                break;
+                        }
+                    }
+                    break;
+                #endregion
+
+                #region Westwood Engine Formats.
+                case ".tru": using (KnuxLib.Engines.Westwood.MessageTable messageTable = new(arg, true)) break;
+                case ".westwood.messagetable.json":
+                    using (KnuxLib.Engines.Westwood.MessageTable messageTable = new())
+                    {
+                        messageTable.Data = messageTable.JsonDeserialise<List<string>>(arg);
+                        messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.tru");
+                    }
+                    break;
+                #endregion
             }
         }
     }
