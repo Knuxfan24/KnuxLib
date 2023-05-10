@@ -482,7 +482,7 @@
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "UnknownUInt32_3", "type": "uint32" },
-        { "name": "UnknownFloat32_7", "type": "float32" }
+        { "name": "UnknownUInt32_4", "type": "uint32" }
       ]
     },
     "GIM_SONIC_CANNON": {
@@ -498,8 +498,8 @@
         { "name": "UnknownFloat32_6", "type": "float32" },
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownFloat32_7", "type": "float32" },
-        { "name": "UnknownFloat32_8", "type": "float32" }
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" }
       ]
     },
     "GIM_SONIC_IVY": {
@@ -1540,23 +1540,23 @@
         { "name": "UnknownFloat32_3", "type": "float32" },
         { "name": "UnknownFloat32_4", "type": "float32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownFloat32_5", "type": "float32" },
-        { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "UnknownUInt32_3", "type": "uint32" },
-        { "name": "UnknownFloat32_6", "type": "float32" },
         { "name": "UnknownUInt32_4", "type": "uint32" },
-        { "name": "UnknownFloat32_7", "type": "float32" },
+        { "name": "UnknownFloat32_5", "type": "float32" },
+        { "name": "UnknownUInt32_5", "type": "uint32" },
+        { "name": "UnknownFloat32_6", "type": "float32" },
         { "name": "Padding3", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "Padding4", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "Padding5", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "Padding6", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "Padding7", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "Padding8", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "UnknownUInt32_5", "type": "uint32" },
         { "name": "UnknownUInt32_6", "type": "uint32" },
+        { "name": "UnknownUInt32_7", "type": "uint32" },
         { "name": "Padding9", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "UnknownFloat32_8", "type": "float32" },
+        { "name": "UnknownFloat32_7", "type": "float32" },
         { "name": "Padding10", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
