@@ -192,7 +192,7 @@ namespace KnuxLib.Engines.WorldAdventureWii
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        /// <param name="hsonPath">The path to the HSON Template Table to read this file with.</param>
+        /// <param name="hsonPath">The path to the HSON Template Table to write this file with.</param>
         /// <param name="version">The system version to save this file as.</param>
         public void Save(string filepath, string hsonPath, FormatVersion version = FormatVersion.Wii)
         {
@@ -364,11 +364,15 @@ namespace KnuxLib.Engines.WorldAdventureWii
         /// Exports this format's object data to the Hedgehog Set Object Notation format.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
+        /// <param name="hsonPath">The path to the HSON Template Table to write this file with.</param>
         /// <param name="hsonName">The name to add to the HSON metadata.</param>
         /// <param name="hsonAuthor">The author to add to the HSON metadata.</param>
         /// <param name="hsonDescription">The description to add to the HSON metadata.</param>
-        public void ExportHSON(string filepath, string hsonName, string hsonAuthor, string hsonDescription)
+        public void ExportHSON(string filepath, string hsonPath, string hsonName, string hsonAuthor, string hsonDescription)
         {
+            // Read the HSON Templates for this SET.
+            HSONTemplate templates = new(hsonPath);
+
             // Create the HSON Project.
             Project hsonProject = Helpers.CreateHSONProject(hsonName, hsonAuthor, hsonDescription);
 
@@ -378,10 +382,43 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 // Create a new HSON Object from this object.
                 libHSON.Object hsonObject = Helpers.CreateHSONObject(Data[i].Type.ToString(), $"{Data[i].Type}{i}", Data[i].Position, Data[i].Rotation, false);
 
-                // Write each parameter byte.
-                // TODO: Unhardcode this when parameter types are figured out.
-                for (int p = 0; p < Data[i].Parameters.Count; p++)
-                    hsonObject.LocalParameters.Add($"Parameter{p}", new Parameter((byte)Data[i].Parameters[p].Data));
+                // Check for this object's type in the template sheet.
+                if (templates.Data.Structs.ContainsKey(Data[i].Type))
+                {
+                    // Reference the object's type.
+                    var objStruct = templates.Data.Structs[Data[i].Type];
+
+                    // Check the object has any parameters to write.
+                    if (objStruct.Fields != null)
+                    {
+                        // Loop through each parameter defined in the template.
+                        for (int p = 0; p < objStruct.Fields.Length; p++)
+                        {
+                            // Loop through each parameter in the object.
+                            foreach (var param in Data[i].Parameters)
+                            {
+                                // Check the parameter's name against the one in the template.
+                                if (param.Name == objStruct.Fields[p].Name)
+                                {
+                                    // Write this parameter's data depending on the type.
+                                    switch (objStruct.Fields[p].Type)
+                                    {
+                                        case "float32": hsonObject.LocalParameters.Add(param.Name, new Parameter((float)param.Data)); break;
+                                        case "uint32": hsonObject.LocalParameters.Add(param.Name, new Parameter((uint)param.Data)); break;
+                                        default: throw new NotImplementedException();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // If this object wasn't in the parameter sheet, then write each parameter as an individual byte.
+                else
+                {
+                    for (int p = 0; p < Data[i].Parameters.Count; p++)
+                        hsonObject.LocalParameters.Add($"Parameter{p}", new Parameter((byte)Data[i].Parameters[p].Data));
+                }
 
                 // Add this object to the HSON Project.
                 hsonProject.Objects.Add(hsonObject);

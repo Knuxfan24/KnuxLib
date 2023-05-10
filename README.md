@@ -263,4 +263,4 @@ The following formats are only partially supported and have no implementation in
 
 - [World Adventure Wii Engine Path Spline (.path.dat)](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has reading and writing with a lot of unknowns. Completely lacking an Import or Export (other than generic JSON serialisation) function.
 
-- [World Adventure Wii Engine Stage Entity Table (.set)](KnuxLib/Engines/WorldAdventureWii/StageEntityTable.cs). Entirely functional besides a lack of proper object parameters (each byte in the parameter table is read as a seperate parameter with no context).
+- [World Adventure Wii Engine Stage Entity Table (.set)](KnuxLib/Engines/WorldAdventureWii/StageEntityTable.cs). Entirely functional besides a lack of proper object parameters names and types, the HSON template sheet I've created only reads things as either a uint or a float, so if something is actually a different data type it won't be parsed correctly.
