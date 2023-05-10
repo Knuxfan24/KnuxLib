@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace KnuxLib
+namespace KnuxLib.HSON
 {
     public class HSONTemplate
     {
