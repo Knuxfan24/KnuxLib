@@ -259,7 +259,7 @@ The following formats are only partially supported and have no implementation in
 
 - [Storybook Engine Player Motion Table (.bin)](KnuxLib/Engines/Storybook/PlayerMotionTable.cs). Entirely functional besides every value being an unknown.
 
-- [Storybook Engine Stage Entity Table (.bin)](KnuxLib/Engines/Storybook/StageEntityTable.cs). Lacks proper object parameters (each byte in the parameter table is read as a seperate parameter with no context) and has a lot of unknown values.
+- [Storybook Engine Stage Entity Table (.bin)](KnuxLib/Engines/Storybook/StageEntityTable.cs). Has a lot of little unknown values and lacks proper object parameters names and types, the HSON template sheet I've created only reads things as either a uint or a float, so if something is actually a different data type it won't be parsed correctly.
 
 - [World Adventure Wii Engine Path Spline (.path.dat)](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has reading and writing with a lot of unknowns. Completely lacking an Import or Export (other than generic JSON serialisation) function.
 

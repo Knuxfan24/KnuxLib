@@ -1,4 +1,5 @@
-﻿using libHSON;
+﻿using KnuxLib.HSON;
+using libHSON;
 using System.Text.Json;
 
 namespace KnuxLib.Engines.Storybook
@@ -7,9 +8,9 @@ namespace KnuxLib.Engines.Storybook
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public StageEntityTable() { }
-        public StageEntityTable(string filepath, StageEntityTableItems? items = null, bool export = false)
+        public StageEntityTable(string filepath, string hsonPath, bool export = false, bool includePadding = false)
         {
-            Load(filepath, items);
+            Load(filepath, hsonPath);
 
             if (export)
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.storybook.stageentitytable.json", Data);
@@ -35,9 +36,8 @@ namespace KnuxLib.Engines.Storybook
         {
             /// <summary>
             /// This object's type, as determined from the ID and Table.
-            /// This is NOT actually a thing the SET file has, and is only set by the Load function having a StageEntityTableItems object passed to it.
             /// </summary>
-            public string? Type { get; set; }
+            public string Type { get; set; } = "";
 
             /// <summary>
             /// This object's position in 3D space.
@@ -121,8 +121,13 @@ namespace KnuxLib.Engines.Storybook
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        public void Load(string filepath, StageEntityTableItems? items = null)
+        /// <param name="hsonPath">The path to the HSON Template Table to read this file with.</param>
+        /// <param name="includePadding">Whether the always 0 values should be stored.</param>
+        public void Load(string filepath, string hsonPath, bool includePadding = false)
         {
+            // Read the HSON Templates for this SET.
+            HSONTemplate templates = new(hsonPath);
+
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath));
 
@@ -192,11 +197,21 @@ namespace KnuxLib.Engines.Storybook
                 // Read the index of this object's parameters.
                 uint parameterIndex = reader.ReadUInt32();
 
-                // If we've loaded a StageEntityTableItems object, then find this object's name from it.
-                if (items != null)
-                    foreach (var item in items.Data.Objects)
-                        if ((item.ObjectID == obj.ObjectID) && (item.TableID == obj.TableID))
-                            obj.Type = item.Name;
+                // String together the object ID and table into a type.
+                string objectType = $"0x{obj.ObjectID.ToString("X").PadLeft(2, '0')}{obj.TableID.ToString("X").PadLeft(2, '0')}";
+
+                // Check for this object's type in the template sheet.
+                if (templates.Data.Objects.ContainsKey(objectType))
+                {
+                    // Set this object's type to the struct's name.
+                    obj.Type = templates.Data.Objects[objectType].ObjectStruct;
+                }
+
+                // If the object isn't found, then set the type to the object id and table id.
+                else
+                {
+                    obj.Type = objectType;
+                }
 
                 // If this object's first unknown byte value is NOT 0x01, then read this object's parameters.
                 if (obj.UnknownByte_1 != 0x01)
@@ -238,16 +253,61 @@ namespace KnuxLib.Engines.Storybook
                     // Jump to the parameter data table, adding our offset value.
                     reader.JumpTo(parameterDataTableOffset + parameterOffset);
 
-                    // Read each of this object's parameters.
-                    // TODO: Unhardcode this once a template solution is figured out.
-                    for (byte parameter = 0; parameter < objectParameterLength; parameter++)
+                    // Check for this type in the template sheet.
+                    if (templates.Data.Objects.ContainsKey(objectType))
                     {
-                        SetParameter param = new()
+                        // Make a reference to the object's struct. Just nicer than repeating this abomination of a line three times.
+                        var objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
+
+                        // Check that this object actually has parameters.
+                        if (objStruct.Fields != null)
                         {
-                            Data = reader.ReadByte(),
-                            DataType = typeof(byte)
-                        };
-                        obj.Parameters.Add(param);
+                            // Loop through each parameter for this object.
+                            for (int p = 0; p < objStruct.Fields.Length; p++)
+                            {
+                                // Set up a parameter entry with the name of the parameter in the template.
+                                SetParameter param = new()
+                                {
+                                    Name = objStruct.Fields[p].Name
+                                };
+
+                                // Read this parameter's data depending on its type.
+                                switch (objStruct.Fields[p].Type)
+                                {
+                                    case "float32":
+                                        param.DataType = typeof(float);
+                                        param.Data = reader.ReadSingle();
+                                        break;
+                                    case "uint32":
+                                        param.DataType = typeof(uint);
+                                        param.Data = reader.ReadUInt32();
+                                        break;
+                                    default: throw new NotImplementedException();
+                                }
+
+                                // Don't save this parameter if it's a padding one and we've chosen to ignore them.
+                                if (!includePadding && objStruct.Fields[p].Name.Contains("Padding"))
+                                    continue;
+
+                                // Save this parameter to the object.
+                                obj.Parameters.Add(param);
+                            }
+                        }
+                    }
+
+                    // If this object is missing from the templates, then just read each byte individually.
+                    else
+                    {
+                        // Loop through each byte in the parameter table and read them individually.
+                        for (byte parameter = 0; parameter < objectParameterLength; parameter++)
+                        {
+                            SetParameter param = new()
+                            {
+                                Data = reader.ReadByte(),
+                                DataType = typeof(byte)
+                            };
+                            obj.Parameters.Add(param);
+                        }
                     }
 
                     // Jump back to our saved position for the next object.
@@ -266,8 +326,12 @@ namespace KnuxLib.Engines.Storybook
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath)
+        /// <param name="hsonPath">The path to the HSON Template Table to write this file with.</param>
+        public void Save(string filepath, string hsonPath)
         {
+            // Read the HSON Templates for this SET.
+            HSONTemplate templates = new(hsonPath);
+
             // Set up Marathon's BinaryWriter.
             BinaryWriterEx writer = new(File.Create(filepath));
 
@@ -367,8 +431,27 @@ namespace KnuxLib.Engines.Storybook
                     writer.Write((byte)0x00);
 
                     // Write this object's parameter count.
-                    // TODO: Unhardcode this when parameter types are figured out.
-                    writer.Write((byte)Data.Objects[i].Parameters.Count);
+                    // String together the object ID and table into a type.
+                    string objectType = $"0x{Data.Objects[i].ObjectID.ToString("X").PadLeft(2, '0')}{Data.Objects[i].TableID.ToString("X").PadLeft(2, '0')}";
+
+                    // Check for this type in the template sheet.
+                    if (templates.Data.Objects.ContainsKey(objectType))
+                    {
+                        // Make a reference to the object's struct. Just nicer than repeating this abomination of a line three times.
+                        var objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
+
+                        // Check that this object actually has parameters and write the amount of them multiplied by 4.
+                        if (objStruct.Fields != null)
+                            writer.Write((byte)(objStruct.Fields.Length * 0x04));
+                        else
+                            writer.Write((byte)0);
+                    }
+
+                    // If this object doesn't exist in the templates, then just write the amount of parameters.
+                    else
+                    {
+                        writer.Write((byte)Data.Objects[i].Parameters.Count);
+                    }
 
                     // Write five null bytes.
                     writer.WriteNulls(0x05);
@@ -381,9 +464,59 @@ namespace KnuxLib.Engines.Storybook
             // Write each object's parameters, assuming it has any.
             // TODO: Unhardcode this when parameter types are figured out.
             for (int i = 0; i < Data.Objects.Count; i++)
+            {
                 if (Data.Objects[i].Parameters != null)
-                    for (int p = 0; p < Data.Objects[i].Parameters.Count; p++)
-                        writer.Write((byte)Data.Objects[i].Parameters[p].Data);
+                {
+                    // String together the object ID and table into a type.
+                    string objectType = $"0x{Data.Objects[i].ObjectID.ToString("X").PadLeft(2, '0')}{Data.Objects[i].TableID.ToString("X").PadLeft(2, '0')}";
+
+                    // Check for this type in the template sheet.
+                    if (templates.Data.Objects.ContainsKey(objectType))
+                    {
+                        // Make a reference to the object's struct. Just nicer than repeating this abomination of a line three times.
+                        var objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
+
+                        // Check that this object actually has parameters and write the amount of them multiplied by 4.
+                        if (objStruct.Fields != null)
+                        {
+                            // Loop through each parameter defined in the template.
+                            for (int p = 0; p < objStruct.Fields.Length; p++)
+                            {
+                                // Set up a check for if this parameter was found in the object.
+                                bool foundParam = false;
+
+                                // Loop through each parameter in the object.
+                                foreach (var param in Data.Objects[i].Parameters)
+                                {
+                                    // Check the parameter's name against the one in the template.
+                                    if (param.Name == objStruct.Fields[p].Name)
+                                    {
+                                        // Mark that this parameter has been found.
+                                        foundParam = true;
+
+                                        // Write this parameter's data depending on the type.
+                                        switch (objStruct.Fields[p].Type)
+                                        {
+                                            case "float32": writer.Write((float)param.Data); break;
+                                            case "uint32": writer.Write((uint)param.Data); break;
+                                            default: throw new NotImplementedException();
+                                        }
+                                    }
+                                }
+
+                                // If we didn't find this parameter, then write a 0 to fill it in.
+                                if (!foundParam)
+                                    writer.Write(0);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int p = 0; p < Data.Objects[i].Parameters.Count; p++)
+                            writer.Write((byte)Data.Objects[i].Parameters[p].Data);
+                    }
+                }
+            }
 
             // Calculate the parameter data table's length.
             parameterDataTableLength = writer.BaseStream.Length - parameterDataTableLength;
@@ -403,32 +536,62 @@ namespace KnuxLib.Engines.Storybook
         /// Exports this format's object data to the Hedgehog Set Object Notation format.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
+        /// <param name="hsonPath">The path to the HSON Template Table to write this file with.</param>
         /// <param name="hsonName">The name to add to the HSON metadata.</param>
         /// <param name="hsonAuthor">The author to add to the HSON metadata.</param>
         /// <param name="hsonDescription">The description to add to the HSON metadata.</param>
-        public void ExportHSON(string filepath, string hsonName, string hsonAuthor, string hsonDescription)
+        public void ExportHSON(string filepath, string hsonPath, string hsonName, string hsonAuthor, string hsonDescription)
         {
+            // Read the HSON Templates for this SET.
+            HSONTemplate templates = new(hsonPath);
+
             // Create the HSON Project.
             Project hsonProject = Helpers.CreateHSONProject(hsonName, hsonAuthor, hsonDescription);
 
             // Loop through each object in this file.
             for (int i = 0; i < Data.Objects.Count; i++)
             {
-                // Set up a type definition.
-                string type = $"Table 0x{Data.Objects[i].TableID.ToString("X").PadLeft(2, '0')} | Object 0x{Data.Objects[i].ObjectID.ToString("X").PadLeft(2, '0')}";
-
-                // If we've filled in this object's type from an items table, then set type to it.
-                if (Data.Objects[i].Type != null)
-                    type = Data.Objects[i].Type;
-
                 // Create a new HSON Object from this object.
-                libHSON.Object hsonObject = Helpers.CreateHSONObject(type, $"{type}{i}", Data.Objects[i].Position, Helpers.EulerToQuat(Data.Objects[i].Rotation), false);
+                libHSON.Object hsonObject = Helpers.CreateHSONObject(Data.Objects[i].Type.ToString(), $"{Data.Objects[i].Type}{i}", Data.Objects[i].Position, Helpers.EulerToQuat(Data.Objects[i].Rotation), false);
 
-                // Write each parameter byte.
-                // TODO: Unhardcode this when parameter types are figured out.
-                if (Data.Objects[i].Parameters != null)
-                    for (int p = 0; p < Data.Objects[i].Parameters.Count; p++)
-                        hsonObject.LocalParameters.Add($"Parameter{p}", new Parameter((byte)Data.Objects[i].Parameters[p].Data));
+                // Check for this object's type in the template sheet.
+                if (templates.Data.Structs.ContainsKey(Data.Objects[i].Type))
+                {
+                    // Reference the object's type.
+                    var objStruct = templates.Data.Structs[Data.Objects[i].Type];
+
+                    // Check the object has any parameters to write.
+                    if (objStruct.Fields != null)
+                    {
+                        // Loop through each parameter defined in the template.
+                        for (int p = 0; p < objStruct.Fields.Length; p++)
+                        {
+                            // Loop through each parameter in the object.
+                            foreach (var param in Data.Objects[i].Parameters)
+                            {
+                                // Check the parameter's name against the one in the template.
+                                if (param.Name == objStruct.Fields[p].Name)
+                                {
+                                    // Write this parameter's data depending on the type.
+                                    switch (objStruct.Fields[p].Type)
+                                    {
+                                        case "float32": hsonObject.LocalParameters.Add(param.Name, new Parameter((float)param.Data)); break;
+                                        case "uint32": hsonObject.LocalParameters.Add(param.Name, new Parameter((uint)param.Data)); break;
+                                        default: throw new NotImplementedException();
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // If this object wasn't in the parameter sheet, then write each parameter as an individual byte.
+                else
+                {
+                    if (Data.Objects[i].Parameters != null)
+                        for (int p = 0; p < Data.Objects[i].Parameters.Count; p++)
+                            hsonObject.LocalParameters.Add($"Parameter{p}", new Parameter((byte)Data.Objects[i].Parameters[p].Data));
+                }
 
                 // Add this object to the HSON Project.
                 hsonProject.Objects.Add(hsonObject);

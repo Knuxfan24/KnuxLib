@@ -272,7 +272,7 @@ namespace KnuxLib
         /// Converts a floating point value to a signed integer stored in the Binary Angle Measurement System.
         /// </summary>
         /// <param name="value">The value to convert.</param>
-        public static float CalculateBAMsValue(float value) => value * 65536f / 360f;
+        public static int CalculateBAMsValue(float value) => (int)(value * 65536f / 360f);
     
         /// <summary>
         /// Creates a project for the HSON Specification in libHSON-csharp.

@@ -1,0 +1,2043 @@
+{
+  "version": 1,
+  "format": "black_knight",
+  "enums": {},
+  "structs": {
+    "SYSTEM OBJECT1": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "SYSTEM OBJECT3": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "SYSTEM OBJECT4": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "SAMPLE OBJECT": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "RING_FAIRY": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "RICHRING": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "BOOST_FAIRY": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "RING": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "LAUNCHER_FAIRY": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "ITEM_POUCH": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "SWITCH": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "GOAL": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "SPRING_FAIRY": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "NEEDLE_BALL": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "DASH_FAIRY": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "JUMP_PANEL": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "SPRING": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+      ]
+    },
+    "VERT_SPRING": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "CORNER_POLE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "DASH_PANEL": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "JUMP_BOARD": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+      ]
+    },
+    "CHECK_POINT": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "GOAL_RING": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "EGG_FLYER": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "ILLUSION": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "FLOW": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "FOOTING": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "WILL_O_WISP": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+      ]
+    },
+    "SLIME": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" },
+      ]
+    },
+    "SPIKE_ROLLER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+      ]
+    },
+    "HIDDEN_FAIRY": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "ITEM_BOX": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "MIMIC": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+      ]
+    },
+    "STONE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "SOLID_STONE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "RIGID_STONE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "BOMB_STONE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "RANDOM_BOX": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "ENEMY_STONE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "FLYING_MIMIC": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "DROP_POUCH": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "MULTI_RING_MANAGER": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "MULTI_FLAG_MANAGER": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "MULTI_STONE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "MULTI_REAPER": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "CAMERA COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" },
+        { "name": "UnknownUInt32_5", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "LIGHT_COLLISION": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "SOUND_COLLISION": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "SWITCH_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "HINT_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "INVISIBLE_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "CHECK_POINT_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "SE_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" },
+        { "name": "UnknownUInt32_5", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STUNT_COLLISION": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "PATROL_POINT_COLLISION": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "RAPTIME_COLLISION": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "RING_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "JUMP_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+      ]
+    },
+    "GLARE_COLLISION": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "FOG_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+      ]
+    },
+    "INVISIBLE_DASH_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+      ]
+    },
+    "EARTH_QUAKE_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+      ]
+    },
+    "DAMAGE_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "GOAL_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "HOMING_BLOCK_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "SEM_SND_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "SCARECROW": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "EVIL_GAZER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "EVIL_GAZER_CHASER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "NO_FACE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "PHANTOM_SOLDIER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+      ]
+    },
+    "PHANTOM_SOLDIER_BIG": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" },
+        { "name": "UnknownUInt32_5", "type": "uint32" },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "CRAWLER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "WALKER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding3", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding4", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "CRAWLER_CHASER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "MULTI_PHANTOM_SOLDIER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+      ]
+    },
+    "MULTI_PHANTOM_SOLDIER_BIG": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "EFFECT_LENSFLARE": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+      ]
+    },
+    "EFFECT_LGIHT_OVERFLOW": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "EFFECT_PARTICLE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "PEOPLE_COM": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" },
+        { "name": "UnknownUInt32_5", "type": "uint32" },
+        { "name": "UnknownUInt32_6", "type": "uint32" },
+        { "name": "UnknownUInt32_7", "type": "uint32" },
+      ]
+    },
+    "PEOPLE_MOVE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "PEOPLE_STAND": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "GRIND_PATH": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "WARP_OBJECT": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "GRIND_PATH2": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "BOSS_SHADOW": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "BOSS_SHADOW2": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "BOSS_KNUCKLES": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "BOSS_BLAZE": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "BOSS_KING_ARTHUR": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "BOSS_MERLINA": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "BOSS_JUMP_POINT": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "BOSS_CHECK_POINT": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "BOSS_SKY": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "BOSS_GROUND": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG00_TARGET": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG00_WILD_BOAR": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "STG00_FRUITS": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG00_BIG_STONE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG00_DUMMY_TARGET": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG00_FAIRY": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+      ]
+    },
+    "STG00_MIST_DRAGON": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG00_FROG": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "STG00_SWAN": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG00_TUTORIAL_COLLISION": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+      ]
+    },
+    "STG10_BIRD": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+      ]
+    },
+    "STG10_BARREL": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG10_JAR": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG10_FIRE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG10_BALLISTA": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "STG10_BARRICADE": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "STG10_LANCE": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "STG10_FRUITS": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG10_DOOR": {
+      "notice": "Has no parameters."
+    },
+    "STG10_DOWN_PADLOCK": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG10_FLAG": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "STG11_FLOOD": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+      ]
+    },
+    "STG11_SHIPACT": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG11_NEEDLE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "STG11_WEIGHT": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG11_JAR": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG11_BARREL": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG11_CAVE_IN": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+      ]
+    },
+    "STG11_RAT": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "STG20_CHOOK": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG20_STEEL_TRAP": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "STG20_ROOT_ATTACK": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG20_FALL_TREE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG20_TREE_BRIDGE": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+      ]
+    },
+    "STG20_TREE_BRANCH": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "STG20_TREE_HAND": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG20_TRAP_SWAMP": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "STG20_SPIKE_BALL": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG20_CAGE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG20_WAGON_ACT": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG20_TRAP_SEED": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+      ]
+    },
+    "STG20_KICKER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG20_TRAP_BEE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+      ]
+    },
+    "STG20_SHAKE_WAGON": {
+      "notice": "Has no parameters."
+    },
+    "STG20_MOTH": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG20_RAIN": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG20_BOX": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG20_DEBRIS": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG20_SPORE_BALL": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG30_TRAWL": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG30_IRON_SPEAR_A": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+      ]
+    },
+    "STG30_PADLOCK": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG30_WALL_OF_RUINS": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG30_FRONT_PRISON": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG30_SIDE_PRISON": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG30_FALL_PILLAR": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+      ]
+    },
+    "STG30_DULLING_GRASS": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "STG30_RABBIT": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+      ]
+    },
+    "STG30_SKINK": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG30_KITE": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_4", "type": "float32" },
+        { "name": "UnknownFloat32_5", "type": "float32" },
+        { "name": "UnknownFloat32_6", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG30_COLOSSUS": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG30_DOUGHNUT_ROCK": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG30_STUNT_PEOPLE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+      ]
+    },
+    "STG30_IRON_SPEAR_B": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG31_SIDE_PRISON": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG30_PILED_STONE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG40_SMALL_CRISTAL": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG40_SMALL_STALACTITE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG40_FALL_STALACTITE": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG40_MUSHROOM": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" },
+      ]
+    },
+    "STG40_LIGHT_PILLAR": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+      ]
+    },
+    "STG40_BLACK_ONYX": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG40_THIN_STALACTITE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "STG40_BROKEN_FLOOR": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG40_BONE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG40_DRAGON": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG40_DRAGON_PILLAR": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG40_SNAKE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" },
+      ]
+    },
+    "STG40_DRAGONFLY": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+      ]
+    },
+    "STG40_THUNDER_DRAGON": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_4", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_BAT": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG50_BEDROCK": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG50_TRUCK_01": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+      ]
+    },
+    "STG50_HUGE_STONE": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_4", "type": "float32" },
+        { "name": "UnknownFloat32_5", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_BIG_LAVA": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_METEORITE": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_FALLING_ROCK": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_LAVA": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_BUILDING": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+      ]
+    },
+    "STG50_MAGMA": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_COLLAPSED_TOWER": {
+      "notice": "Has no parameters."
+    },
+    "STG50_GEYSER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+      ]
+    },
+    "STG50_SHUTTER": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_PROMINENCE": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+      ]
+    },
+    "STG50_LIZARD": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_HAWK": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_CROW": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    },
+    "STG50_FALLING_ROCK_2": {
+      "fields": [
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_METEORITE_2": {
+      "fields": [
+        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "UnknownFloat32_4", "type": "float32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "STG50_MIRAGE": {
+      "fields": [
+        { "name": "UnknownUInt32_0", "type": "uint32" },
+      ]
+    },
+    "SYSTEM OBJECT2": {
+      "notice": "Never placed in any SET, parameter count unknown."
+    }
+  },
+  "objects": {
+    "0xF0FF": {
+      "struct": "SYSTEM OBJECT1",
+      "category": "Table_0xFF"
+    },
+    "0xFEFF": {
+      "struct": "SYSTEM OBJECT3",
+      "category": "Table_0xFF"
+    },
+    "0xFDFF": {
+      "struct": "SYSTEM OBJECT4",
+      "category": "Table_0xFF"
+    },
+    "0xFFFF": {
+      "struct": "SAMPLE OBJECT",
+      "category": "Table_0xFF"
+    },
+    "0x0100": {
+      "struct": "RING_FAIRY",
+      "category": "Table_0x00"
+    },
+    "0x0200": {
+      "struct": "RICHRING",
+      "category": "Table_0x00"
+    },
+    "0x0400": {
+      "struct": "BOOST_FAIRY",
+      "category": "Table_0x00"
+    },
+    "0x0300": {
+      "struct": "RING",
+      "category": "Table_0x00"
+    },
+    "0x0500": {
+      "struct": "LAUNCHER_FAIRY",
+      "category": "Table_0x00"
+    },
+    "0x0600": {
+      "struct": "ITEM_POUCH",
+      "category": "Table_0x00"
+    },
+    "0x0700": {
+      "struct": "SWITCH",
+      "category": "Table_0x00"
+    },
+    "0x0A00": {
+      "struct": "GOAL",
+      "category": "Table_0x00"
+    },
+    "0x1100": {
+      "struct": "SPRING_FAIRY",
+      "category": "Table_0x00"
+    },
+    "0x1200": {
+      "struct": "NEEDLE_BALL",
+      "category": "Table_0x00"
+    },
+    "0x1300": {
+      "struct": "DASH_FAIRY",
+      "category": "Table_0x00"
+    },
+    "0x1400": {
+      "struct": "JUMP_PANEL",
+      "category": "Table_0x00"
+    },
+    "0x1500": {
+      "struct": "SPRING",
+      "category": "Table_0x00"
+    },
+    "0x1600": {
+      "struct": "VERT_SPRING",
+      "category": "Table_0x00"
+    },
+    "0x1700": {
+      "struct": "CORNER_POLE",
+      "category": "Table_0x00"
+    },
+    "0x1800": {
+      "struct": "DASH_PANEL",
+      "category": "Table_0x00"
+    },
+    "0x1900": {
+      "struct": "JUMP_BOARD",
+      "category": "Table_0x00"
+    },
+    "0x1A00": {
+      "struct": "CHECK_POINT",
+      "category": "Table_0x00"
+    },
+    "0x1B00": {
+      "struct": "GOAL_RING",
+      "category": "Table_0x00"
+    },
+    "0x1C00": {
+      "struct": "EGG_FLYER",
+      "category": "Table_0x00"
+    },
+    "0x1D00": {
+      "struct": "ILLUSION",
+      "category": "Table_0x00"
+    },
+    "0x1E00": {
+      "struct": "FLOW",
+      "category": "Table_0x00"
+    },
+    "0x1F00": {
+      "struct": "FOOTING",
+      "category": "Table_0x00"
+    },
+    "0x2000": {
+      "struct": "WILL_O_WISP",
+      "category": "Table_0x00"
+    },
+    "0x2100": {
+      "struct": "SLIME",
+      "category": "Table_0x00"
+    },
+    "0x2200": {
+      "struct": "SPIKE_ROLLER",
+      "category": "Table_0x00"
+    },
+    "0x2300": {
+      "struct": "HIDDEN_FAIRY",
+      "category": "Table_0x00"
+    },
+    "0x2400": {
+      "struct": "ITEM_BOX",
+      "category": "Table_0x00"
+    },
+    "0x2500": {
+      "struct": "MIMIC",
+      "category": "Table_0x00"
+    },
+    "0x2600": {
+      "struct": "STONE",
+      "category": "Table_0x00"
+    },
+    "0x2700": {
+      "struct": "SOLID_STONE",
+      "category": "Table_0x00"
+    },
+    "0x2800": {
+      "struct": "RIGID_STONE",
+      "category": "Table_0x00"
+    },
+    "0x2A00": {
+      "struct": "BOMB_STONE",
+      "category": "Table_0x00"
+    },
+    "0x2B00": {
+      "struct": "RANDOM_BOX",
+      "category": "Table_0x00"
+    },
+    "0x2C00": {
+      "struct": "ENEMY_STONE",
+      "category": "Table_0x00"
+    },
+    "0x2D00": {
+      "struct": "FLYING_MIMIC",
+      "category": "Table_0x00"
+    },
+    "0x4000": {
+      "struct": "DROP_POUCH",
+      "category": "Table_0x00"
+    },
+    "0x00B0": {
+      "struct": "MULTI_RING_MANAGER",
+      "category": "Table_0xB0"
+    },
+    "0x01B0": {
+      "struct": "MULTI_FLAG_MANAGER",
+      "category": "Table_0xB0"
+    },
+    "0x02B0": {
+      "struct": "MULTI_STONE",
+      "category": "Table_0xB0"
+    },
+    "0x03B0": {
+      "struct": "MULTI_REAPER",
+      "category": "Table_0xB0"
+    },
+    "0x5000": {
+      "struct": "CAMERA COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5100": {
+      "struct": "LIGHT_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5200": {
+      "struct": "SOUND_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5300": {
+      "struct": "SWITCH_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5400": {
+      "struct": "HINT_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5500": {
+      "struct": "INVISIBLE_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5700": {
+      "struct": "CHECK_POINT_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5600": {
+      "struct": "SE_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5800": {
+      "struct": "STUNT_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5900": {
+      "struct": "PATROL_POINT_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5A00": {
+      "struct": "RAPTIME_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5B00": {
+      "struct": "RING_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5D00": {
+      "struct": "JUMP_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5E00": {
+      "struct": "GLARE_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x5F00": {
+      "struct": "FOG_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x6000": {
+      "struct": "INVISIBLE_DASH_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x6100": {
+      "struct": "EARTH_QUAKE_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x6200": {
+      "struct": "DAMAGE_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x6300": {
+      "struct": "GOAL_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x6400": {
+      "struct": "HOMING_BLOCK_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x6500": {
+      "struct": "SEM_SND_COLLISION",
+      "category": "Table_0x00"
+    },
+    "0x7000": {
+      "struct": "SCARECROW",
+      "category": "Table_0x00"
+    },
+    "0x7200": {
+      "struct": "EVIL_GAZER",
+      "category": "Table_0x00"
+    },
+    "0x7100": {
+      "struct": "EVIL_GAZER_CHASER",
+      "category": "Table_0x00"
+    },
+    "0x7300": {
+      "struct": "NO_FACE",
+      "category": "Table_0x00"
+    },
+    "0x7400": {
+      "struct": "PHANTOM_SOLDIER",
+      "category": "Table_0x00"
+    },
+    "0x7500": {
+      "struct": "PHANTOM_SOLDIER_BIG",
+      "category": "Table_0x00"
+    },
+    "0x7600": {
+      "struct": "CRAWLER",
+      "category": "Table_0x00"
+    },
+    "0x7700": {
+      "struct": "WALKER",
+      "category": "Table_0x00"
+    },
+    "0x7800": {
+      "struct": "CRAWLER_CHASER",
+      "category": "Table_0x00"
+    },
+    "0x7900": {
+      "struct": "MULTI_PHANTOM_SOLDIER",
+      "category": "Table_0x00"
+    },
+    "0x7A00": {
+      "struct": "MULTI_PHANTOM_SOLDIER_BIG",
+      "category": "Table_0x00"
+    },
+    "0x8000": {
+      "struct": "EFFECT_LENSFLARE",
+      "category": "Table_0x00"
+    },
+    "0x8200": {
+      "struct": "EFFECT_LGIHT_OVERFLOW",
+      "category": "Table_0x00"
+    },
+    "0x8100": {
+      "struct": "EFFECT_PARTICLE",
+      "category": "Table_0x00"
+    },
+    "0x9100": {
+      "struct": "PEOPLE_COM",
+      "category": "Table_0x00"
+    },
+    "0x9200": {
+      "struct": "PEOPLE_MOVE",
+      "category": "Table_0x00"
+    },
+    "0x9300": {
+      "struct": "PEOPLE_STAND",
+      "category": "Table_0x00"
+    },
+    "0xA600": {
+      "struct": "GRIND_PATH",
+      "category": "Table_0x00"
+    },
+    "0xA700": {
+      "struct": "WARP_OBJECT",
+      "category": "Table_0x00"
+    },
+    "0xA900": {
+      "struct": "GRIND_PATH2",
+      "category": "Table_0x00"
+    },
+    "0xC000": {
+      "struct": "BOSS_SHADOW",
+      "category": "Table_0x00"
+    },
+    "0xC300": {
+      "struct": "BOSS_SHADOW2",
+      "category": "Table_0x00"
+    },
+    "0xC100": {
+      "struct": "BOSS_KNUCKLES",
+      "category": "Table_0x00"
+    },
+    "0xC200": {
+      "struct": "BOSS_BLAZE",
+      "category": "Table_0x00"
+    },
+    "0xC700": {
+      "struct": "BOSS_KING_ARTHUR",
+      "category": "Table_0x00"
+    },
+    "0xC800": {
+      "struct": "BOSS_MERLINA",
+      "category": "Table_0x00"
+    },
+    "0xCC00": {
+      "struct": "BOSS_JUMP_POINT",
+      "category": "Table_0x00"
+    },
+    "0xCD00": {
+      "struct": "BOSS_CHECK_POINT",
+      "category": "Table_0x00"
+    },
+    "0xCE00": {
+      "struct": "BOSS_SKY",
+      "category": "Table_0x00"
+    },
+    "0xCF00": {
+      "struct": "BOSS_GROUND",
+      "category": "Table_0x00"
+    },
+    "0x00A0": {
+      "struct": "STG00_TARGET",
+      "category": "Table_0xA0"
+    },
+    "0x01A0": {
+      "struct": "STG00_WILD_BOAR",
+      "category": "Table_0xA0"
+    },
+    "0x02A0": {
+      "struct": "STG00_FRUITS",
+      "category": "Table_0xA0"
+    },
+    "0x03A0": {
+      "struct": "STG00_BIG_STONE",
+      "category": "Table_0xA0"
+    },
+    "0x04A0": {
+      "struct": "STG00_DUMMY_TARGET",
+      "category": "Table_0xA0"
+    },
+    "0x05A0": {
+      "struct": "STG00_FAIRY",
+      "category": "Table_0xA0"
+    },
+    "0x06A0": {
+      "struct": "STG00_MIST_DRAGON",
+      "category": "Table_0xA0"
+    },
+    "0x07A0": {
+      "struct": "STG00_FROG",
+      "category": "Table_0xA0"
+    },
+    "0x08A0": {
+      "struct": "STG00_SWAN",
+      "category": "Table_0xA0"
+    },
+    "0x09A0": {
+      "struct": "STG00_TUTORIAL_COLLISION",
+      "category": "Table_0xA0"
+    },
+    "0x0110": {
+      "struct": "STG10_BIRD",
+      "category": "Table_0x10"
+    },
+    "0x0210": {
+      "struct": "STG10_BARREL",
+      "category": "Table_0x10"
+    },
+    "0x0310": {
+      "struct": "STG10_JAR",
+      "category": "Table_0x10"
+    },
+    "0x0410": {
+      "struct": "STG10_FIRE",
+      "category": "Table_0x10"
+    },
+    "0x0510": {
+      "struct": "STG10_BALLISTA",
+      "category": "Table_0x10"
+    },
+    "0x0610": {
+      "struct": "STG10_BARRICADE",
+      "category": "Table_0x10"
+    },
+    "0x0710": {
+      "struct": "STG10_LANCE",
+      "category": "Table_0x10"
+    },
+    "0x0810": {
+      "struct": "STG10_FRUITS",
+      "category": "Table_0x10"
+    },
+    "0x0910": {
+      "struct": "STG10_DOOR",
+      "category": "Table_0x10"
+    },
+    "0x1010": {
+      "struct": "STG10_DOWN_PADLOCK",
+      "category": "Table_0x10"
+    },
+    "0x2010": {
+      "struct": "STG10_FLAG",
+      "category": "Table_0x10"
+    },
+    "0x0111": {
+      "struct": "STG11_FLOOD",
+      "category": "Table_0x11"
+    },
+    "0x0211": {
+      "struct": "STG11_SHIPACT",
+      "category": "Table_0x11"
+    },
+    "0x0311": {
+      "struct": "STG11_NEEDLE",
+      "category": "Table_0x11"
+    },
+    "0x0411": {
+      "struct": "STG11_WEIGHT",
+      "category": "Table_0x11"
+    },
+    "0x0511": {
+      "struct": "STG11_JAR",
+      "category": "Table_0x11"
+    },
+    "0x0611": {
+      "struct": "STG11_BARREL",
+      "category": "Table_0x11"
+    },
+    "0x0711": {
+      "struct": "STG11_CAVE_IN",
+      "category": "Table_0x11"
+    },
+    "0x8011": {
+      "struct": "STG11_RAT",
+      "category": "Table_0x11"
+    },
+    "0x0120": {
+      "struct": "STG20_CHOOK",
+      "category": "Table_0x20"
+    },
+    "0x0220": {
+      "struct": "STG20_STEEL_TRAP",
+      "category": "Table_0x20"
+    },
+    "0x0320": {
+      "struct": "STG20_ROOT_ATTACK",
+      "category": "Table_0x20"
+    },
+    "0x0420": {
+      "struct": "STG20_FALL_TREE",
+      "category": "Table_0x20"
+    },
+    "0x0520": {
+      "struct": "STG20_TREE_BRIDGE",
+      "category": "Table_0x20"
+    },
+    "0x0620": {
+      "struct": "STG20_TREE_BRANCH",
+      "category": "Table_0x20"
+    },
+    "0x0720": {
+      "struct": "STG20_TREE_HAND",
+      "category": "Table_0x20"
+    },
+    "0x0820": {
+      "struct": "STG20_TRAP_SWAMP",
+      "category": "Table_0x20"
+    },
+    "0x0920": {
+      "struct": "STG20_SPIKE_BALL",
+      "category": "Table_0x20"
+    },
+    "0x0A20": {
+      "struct": "STG20_CAGE",
+      "category": "Table_0x20"
+    },
+    "0x0B20": {
+      "struct": "STG20_WAGON_ACT",
+      "category": "Table_0x20"
+    },
+    "0x0C20": {
+      "struct": "STG20_TRAP_SEED",
+      "category": "Table_0x20"
+    },
+    "0x0D20": {
+      "struct": "STG20_KICKER",
+      "category": "Table_0x20"
+    },
+    "0x0E20": {
+      "struct": "STG20_TRAP_BEE",
+      "category": "Table_0x20"
+    },
+    "0x0F20": {
+      "struct": "STG20_SHAKE_WAGON",
+      "category": "Table_0x20"
+    },
+    "0x1020": {
+      "struct": "STG20_MOTH",
+      "category": "Table_0x20"
+    },
+    "0x1120": {
+      "struct": "STG20_RAIN",
+      "category": "Table_0x20"
+    },
+    "0x1320": {
+      "struct": "STG20_BOX",
+      "category": "Table_0x20"
+    },
+    "0x1420": {
+      "struct": "STG20_DEBRIS",
+      "category": "Table_0x20"
+    },
+    "0x1520": {
+      "struct": "STG20_SPORE_BALL",
+      "category": "Table_0x20"
+    },
+    "0x0530": {
+      "struct": "STG30_TRAWL",
+      "category": "Table_0x30"
+    },
+    "0x0630": {
+      "struct": "STG30_IRON_SPEAR_A",
+      "category": "Table_0x30"
+    },
+    "0x0730": {
+      "struct": "STG30_PADLOCK",
+      "category": "Table_0x30"
+    },
+    "0x0830": {
+      "struct": "STG30_WALL_OF_RUINS",
+      "category": "Table_0x30"
+    },
+    "0x0930": {
+      "struct": "STG30_FRONT_PRISON",
+      "category": "Table_0x30"
+    },
+    "0x0A30": {
+      "struct": "STG30_SIDE_PRISON",
+      "category": "Table_0x30"
+    },
+    "0x0B30": {
+      "struct": "STG30_FALL_PILLAR",
+      "category": "Table_0x30"
+    },
+    "0x0C30": {
+      "struct": "STG30_DULLING_GRASS",
+      "category": "Table_0x30"
+    },
+    "0x0D30": {
+      "struct": "STG30_RABBIT",
+      "category": "Table_0x30"
+    },
+    "0x0E30": {
+      "struct": "STG30_SKINK",
+      "category": "Table_0x30"
+    },
+    "0x0F30": {
+      "struct": "STG30_KITE",
+      "category": "Table_0x30"
+    },
+    "0x1030": {
+      "struct": "STG30_COLOSSUS",
+      "category": "Table_0x30"
+    },
+    "0x1130": {
+      "struct": "STG30_DOUGHNUT_ROCK",
+      "category": "Table_0x30"
+    },
+    "0x1230": {
+      "struct": "STG30_STUNT_PEOPLE",
+      "category": "Table_0x30"
+    },
+    "0x1330": {
+      "struct": "STG30_IRON_SPEAR_B",
+      "category": "Table_0x30"
+    },
+    "0x1430": {
+      "struct": "STG31_SIDE_PRISON",
+      "category": "Table_0x30"
+    },
+    "0x1530": {
+      "struct": "STG30_PILED_STONE",
+      "category": "Table_0x30"
+    },
+    "0x0040": {
+      "struct": "STG40_SMALL_CRISTAL",
+      "category": "Table_0x40"
+    },
+    "0x0140": {
+      "struct": "STG40_SMALL_STALACTITE",
+      "category": "Table_0x40"
+    },
+    "0x0340": {
+      "struct": "STG40_FALL_STALACTITE",
+      "category": "Table_0x40"
+    },
+    "0x0440": {
+      "struct": "STG40_MUSHROOM",
+      "category": "Table_0x40"
+    },
+    "0x0540": {
+      "struct": "STG40_LIGHT_PILLAR",
+      "category": "Table_0x40"
+    },
+    "0x0640": {
+      "struct": "STG40_BLACK_ONYX",
+      "category": "Table_0x40"
+    },
+    "0x0740": {
+      "struct": "STG40_THIN_STALACTITE",
+      "category": "Table_0x40"
+    },
+    "0x0940": {
+      "struct": "STG40_BROKEN_FLOOR",
+      "category": "Table_0x40"
+    },
+    "0x1240": {
+      "struct": "STG40_BONE",
+      "category": "Table_0x40"
+    },
+    "0x0D40": {
+      "struct": "STG40_DRAGON",
+      "category": "Table_0x40"
+    },
+    "0x0E40": {
+      "struct": "STG40_DRAGON_PILLAR",
+      "category": "Table_0x40"
+    },
+    "0x1040": {
+      "struct": "STG40_SNAKE",
+      "category": "Table_0x40"
+    },
+    "0x1140": {
+      "struct": "STG40_DRAGONFLY",
+      "category": "Table_0x40"
+    },
+    "0x1141": {
+      "struct": "STG40_THUNDER_DRAGON",
+      "category": "Table_0x41"
+    },
+    "0x0150": {
+      "struct": "STG50_BAT",
+      "category": "Table_0x50"
+    },
+    "0x0250": {
+      "struct": "STG50_BEDROCK",
+      "category": "Table_0x50"
+    },
+    "0x0350": {
+      "struct": "STG50_TRUCK_01",
+      "category": "Table_0x50"
+    },
+    "0x0450": {
+      "struct": "STG50_HUGE_STONE",
+      "category": "Table_0x50"
+    },
+    "0x0550": {
+      "struct": "STG50_BIG_LAVA",
+      "category": "Table_0x50"
+    },
+    "0x0650": {
+      "struct": "STG50_METEORITE",
+      "category": "Table_0x50"
+    },
+    "0x0750": {
+      "struct": "STG50_FALLING_ROCK",
+      "category": "Table_0x50"
+    },
+    "0x0850": {
+      "struct": "STG50_LAVA",
+      "category": "Table_0x50"
+    },
+    "0x0950": {
+      "struct": "STG50_BUILDING",
+      "category": "Table_0x50"
+    },
+    "0x0A50": {
+      "struct": "STG50_MAGMA",
+      "category": "Table_0x50"
+    },
+    "0x0B50": {
+      "struct": "STG50_COLLAPSED_TOWER",
+      "category": "Table_0x50"
+    },
+    "0x0C50": {
+      "struct": "STG50_GEYSER",
+      "category": "Table_0x50"
+    },
+    "0x0D50": {
+      "struct": "STG50_SHUTTER",
+      "category": "Table_0x50"
+    },
+    "0x0F50": {
+      "struct": "STG50_PROMINENCE",
+      "category": "Table_0x50"
+    },
+    "0x1050": {
+      "struct": "STG50_LIZARD",
+      "category": "Table_0x50"
+    },
+    "0x1150": {
+      "struct": "STG50_HAWK",
+      "category": "Table_0x50"
+    },
+    "0x1250": {
+      "struct": "STG50_CROW",
+      "category": "Table_0x50"
+    },
+    "0x1350": {
+      "struct": "STG50_FALLING_ROCK_2",
+      "category": "Table_0x50"
+    },
+    "0x1450": {
+      "struct": "STG50_METEORITE_2",
+      "category": "Table_0x50"
+    },
+    "0x1550": {
+      "struct": "STG50_MIRAGE",
+      "category": "Table_0x50"
+    },
+    "0xF1FF": {
+      "struct": "SYSTEM OBJECT2",
+      "category": "Table_0xFF"
+    }
+  }
+}
