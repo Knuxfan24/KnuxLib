@@ -6,7 +6,7 @@ This repository consists of three projects. The KnuxLib project is the main libr
 
 This repository also uses various other libraries as part of it, included as either a Nuget Package or a Git Submodule. These projects are:
 
-- [libHSON-cssharp](https://github.com/hedge-dev/libHSON-csharp) - Used for a few HSON related functions (that are more for my own benefit as of writing).
+- [libHSON-csharp](https://github.com/hedge-dev/libHSON-csharp) - Used for reading and writing HSON files.
 
 - [HedgeLib](https://github.com/Radfordhound/HedgeLib/tree/master) - Used for its BINAV2 Reader and Writer.
 
