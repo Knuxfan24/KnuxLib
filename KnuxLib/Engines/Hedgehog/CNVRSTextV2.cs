@@ -119,6 +119,7 @@ namespace KnuxLib.Engines.Hedgehog
 
             /// <summary>
             /// An unknown integer value.
+            /// TODO: What is this?
             /// </summary>
             public uint UnknownUInt32_1 { get; set; }
 
@@ -129,6 +130,7 @@ namespace KnuxLib.Engines.Hedgehog
 
             /// <summary>
             /// An unknown integer value.
+            /// TODO: What is this?
             /// </summary>
             public uint UnknownUInt32_2 { get; set; }
         }
@@ -219,6 +221,7 @@ namespace KnuxLib.Engines.Hedgehog
             Header = reader.ReadHeader();
 
             // Skip an unknown value of 0x06.
+            // TODO: Is this a version number? Forces has 0x03 here.
             reader.JumpAhead(0x01);
 
             // Read the language index for this file.

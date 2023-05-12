@@ -1,5 +1,7 @@
 ﻿namespace KnuxLib.Engines.WorldAdventureWii
 {
+    // TODO: Add a way to export this format to an OBJ or other approriate model format.
+    // TODO: Add a way to import this format.
     public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
