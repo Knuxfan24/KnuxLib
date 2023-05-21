@@ -98,9 +98,8 @@ namespace KnuxLib
     {
         /// <summary>
         /// This parameter's name.
-        /// TODO: Currently not used as these parameters just boil down to reading the table each byte at a time.
         /// </summary>
-        public string Name { get; set; } = "";
+        public string? Name { get; set; }
 
         /// <summary>
         /// The data for this parameter.

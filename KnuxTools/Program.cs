@@ -466,13 +466,13 @@ namespace KnuxTools
                     }
                     break;
 
-                case ".gismod": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new(arg, true)) break;
-                case ".gismop": using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
-                case ".hedgehog.gismov3.json":
-                    using (KnuxLib.Engines.Hedgehog.GismoV3 gismoV3 = new())
+                case ".gismod": using (KnuxLib.Engines.Hedgehog.Gismo_Rangers gismo_rangers = new(arg, true)) break;
+                case ".gismop": using (KnuxLib.Engines.Hedgehog.Gismo_Rangers gismo_rangers = new($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg).Replace("_pln", "")}.gismod", true)) break;
+                case ".hedgehog.gismo_rangers.json":
+                    using (KnuxLib.Engines.Hedgehog.Gismo_Rangers gismo_rangers = new())
                     {
-                        gismoV3.Data = gismoV3.JsonDeserialise<KnuxLib.Engines.Hedgehog.GismoV3.FormatData>(arg);
-                        gismoV3.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.gismod");
+                        gismo_rangers.Data = gismo_rangers.JsonDeserialise<KnuxLib.Engines.Hedgehog.Gismo_Rangers.FormatData>(arg);
+                        gismo_rangers.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.gismod");
                     }
                     break;
 
@@ -485,12 +485,12 @@ namespace KnuxTools
                     }
                     break;
 
-                case ".lf": using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new(arg, true)) break;
-                case ".hedgehog.lightfieldv3.json":
-                    using (KnuxLib.Engines.Hedgehog.LightFieldV3 lightfieldV3 = new())
+                case ".lf": using (KnuxLib.Engines.Hedgehog.LightField_Rangers lightfield_rangers = new(arg, true)) break;
+                case ".hedgehog.lightfield_rangers.json":
+                    using (KnuxLib.Engines.Hedgehog.LightField_Rangers lightfield_rangers = new())
                     {
-                        lightfieldV3.Data = lightfieldV3.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.LightFieldV3.LightField>>(arg);
-                        lightfieldV3.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.lf");
+                        lightfield_rangers.Data = lightfield_rangers.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.LightField_Rangers.LightField>>(arg);
+                        lightfield_rangers.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.lf");
                     }
                     break;
 

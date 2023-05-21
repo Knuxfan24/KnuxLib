@@ -1,17 +1,16 @@
 ﻿namespace KnuxLib.Engines.Hedgehog
 {
-    // TODO: Is V3 the right name for this? Assuming Generations and Lost World are V1 and Forces is V2.
     // TODO: Figure out all the unknowns.
-    public class LightFieldV3 : FileBase
+    public class LightField_Rangers : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
-        public LightFieldV3() { }
-        public LightFieldV3(string filepath, bool export = false)
+        public LightField_Rangers() { }
+        public LightField_Rangers(string filepath, bool export = false)
         {
             Load(filepath);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.lightfieldv3.json", Data);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.lightfield_rangers.json", Data);
         }
 
         // Classes for this format.

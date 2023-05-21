@@ -4,17 +4,16 @@ using Newtonsoft.Json.Converters;
 namespace KnuxLib.Engines.Hedgehog
 {
     // Based on: https://github.com/blueskythlikesclouds/RflTemplates/blob/master/SonicFrontiers/Uncategorized/GismoConfigDesignData.bt
-    // TODO: Is V3 the right name for this? Assuming Lost World is V1 and Forces is V2.
-    public class GismoV3 : FileBase
+    public class Gismo_Rangers : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
-        public GismoV3() { }
-        public GismoV3(string filepath, bool export = false)
+        public Gismo_Rangers() { }
+        public Gismo_Rangers(string filepath, bool export = false)
         {
             Load(filepath);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.gismov3.json", Data);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.gismo_rangers.json", Data);
         }
 
         // Classes for this format.

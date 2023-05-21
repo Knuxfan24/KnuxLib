@@ -497,8 +497,8 @@ namespace KnuxLib.Engines.Storybook
                                         // Write this parameter's data depending on the type.
                                         switch (objStruct.Fields[p].Type)
                                         {
-                                            case "float32": writer.Write((float)param.Data); break;
-                                            case "uint32": writer.Write((uint)param.Data); break;
+                                            case "float32": writer.Write(Convert.ToSingle(param.Data)); break;
+                                            case "uint32": writer.Write(Convert.ToInt32(param.Data)); break;
                                             default: throw new NotImplementedException();
                                         }
                                     }
