@@ -112,6 +112,8 @@ Supported formats:
 
 - [Light Field V3 (.lf)](KnuxLib/Engines/Hedgehog/LightFieldV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+- [Message Table (Sonic2010) (.xtb)](KnuxLib/Engines/Hedgehog/MessageTable_2010.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
 - [Point Cloud (.pccol/.pcmodel/.pcrt)](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Sector Visibility Collision (.bin.svcol)](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.
