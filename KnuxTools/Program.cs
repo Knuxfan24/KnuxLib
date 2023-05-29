@@ -536,6 +536,15 @@ namespace KnuxTools
                         sectorVisibilityCollision.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
                     }
                     break;
+
+                case ".xtb": using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new(arg, true)) break;
+                case ".hedgehog.messagetable_2010.json":
+                    using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new())
+                    {
+                        messageTable_2010.Data = messageTable_2010.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatData>(arg);
+                        messageTable_2010.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.xtb");
+                    }
+                    break;
                 #endregion
 
                 #region Nu2 Formats.

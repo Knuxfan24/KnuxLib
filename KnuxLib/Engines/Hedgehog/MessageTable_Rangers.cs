@@ -4,16 +4,16 @@ using Newtonsoft.Json.Converters;
 namespace KnuxLib.Engines.Hedgehog
 {
     // TODO: Finish saving this offset hell. Won't be accurate due to how I've handled the fonts and layout, is that a problem or will I need to rejig it?
-    public class CNVRSText_Rangers : FileBase
+    public class MessageTable_Rangers : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
-        public CNVRSText_Rangers() { }
-        public CNVRSText_Rangers(string filepath, bool export = false)
+        public MessageTable_Rangers() { }
+        public MessageTable_Rangers(string filepath, bool export = false)
         {
             Load(filepath);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.cnvrs-text_rangers.json", Data);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.messagetable_rangers.json", Data);
         }
 
         // Classes for this format.
