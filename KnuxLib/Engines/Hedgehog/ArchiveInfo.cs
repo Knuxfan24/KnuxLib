@@ -60,7 +60,7 @@
             // Skip an unknown value that seems to be the same as stringTableEnd but with offsetSize added to it.
             reader.JumpAhead(0x04);
 
-            // Skip an unknown (potentially padding) value of 0x0.
+            // Skip an unknown (potentially padding) value of 0x00.
             reader.JumpAhead(0x04);
 
             // Read the amount of archives in this file.

@@ -253,7 +253,9 @@ The following formats are only partially supported and have no implementation in
 
 - [Alchemy Engine Map Collision (.hke)](KnuxLib/Engines/Alchemy/Collision.cs). There is currently a lot of unknown data in this format that would need to be reverse engineered properly for true support of the format. This format also currently lacks any form of Import function and only has a temporary OBJ export solution.
 
-- [Hedgehog Engine CNVRS Message Table V2 (.cnvrs-text)](KnuxLib/Engines/Hedgehog/CNVRSTextV2.cs). Lacks most of a save function, as this format is offset hell and is not going to be fun to write a save setup for, especially if I want to make it accurate to the original files, as I'm reading fonts and layouts in such a way that saving will dupe them a lot.
+- [Hedgehog Engine 2010 Collision (.orc)](KnuxLib/Engines/Hedgehog/Collision_2010.cs). Only reads about half the format but does have an OBJ exporter that exports the basic collision geometry.
+
+- [Hedgehog Engine Rangers Message Table (.cnvrs-text)](KnuxLib/Engines/Hedgehog/MessageTable_Rangers.cs). Lacks most of a save function, as this format is offset hell and is not going to be fun to write a save setup for, especially if I want to make it accurate to the original files, as I'm reading fonts and layouts in such a way that saving will dupe them a lot.
 
 - [Hedgehog Engine Scene Effect Collision (.bin.fxcol)](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
 
