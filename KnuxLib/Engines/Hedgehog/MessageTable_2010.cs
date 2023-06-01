@@ -8,12 +8,19 @@ namespace KnuxLib.Engines.Hedgehog
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public MessageTable_2010() { }
-        public MessageTable_2010(string filepath, bool export = false)
+        public MessageTable_2010(string filepath, FormatVersion version = FormatVersion.sonic_2010, bool export = false)
         {
-            Load(filepath);
+            Load(filepath, version);
 
             if (export)
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.messagetable_2010.json", Data);
+        }
+
+        // Classes for this format.
+        public enum FormatVersion
+        {
+            sonic_2010 = 0,
+            blueblur = 1
         }
 
         // Classes for this format.
@@ -118,19 +125,41 @@ namespace KnuxLib.Engines.Hedgehog
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        public override void Load(string filepath)
+        /// <param name="version">The system version to read this file as.</param>
+        public void Load(string filepath, FormatVersion version = FormatVersion.sonic_2010)
         {
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath));
 
+            ushort StyleCount = 0;
+            ushort CategoryCount = 0;
+
             // Skip the very start of the file, as it's always eight 0xFF bytes followed by 0x0200.
             reader.JumpAhead(0x0A);
 
-            // Read the amount of style sheets in this file.
-            ushort StyleCount = reader.ReadUInt16();
+            // Read the style count depending on the version.
+            switch (version)
+            {
+                case FormatVersion.sonic_2010:
+                    // Read the amount of style sheets in this file.
+                    StyleCount = reader.ReadUInt16();
 
-            // Skip six null bytes.
-            reader.JumpAhead(0x06);
+                    // Skip six null bytes.
+                    reader.JumpAhead(0x06);
+
+                    break;
+                case FormatVersion.blueblur:
+                    // Switch the endianness to Big Endian.
+                    reader.IsBigEndian = true;
+
+                    // Skip six null bytes.
+                    reader.JumpAhead(0x06);
+
+                    // Read the amount of style sheets in this file.
+                    StyleCount = reader.ReadUInt16();
+
+                    break;
+            }
 
             // Loop through and read each style sheet.
             for (int i = 0; i < StyleCount; i++)
@@ -162,11 +191,27 @@ namespace KnuxLib.Engines.Hedgehog
                 Data.Styles.Add(style);
             }
 
-            // Read the amount of categories in this file.
-            ushort CategoryCount = reader.ReadUInt16();
+            // Read the category count depending on the version.
+            switch (version)
+            {
+                case FormatVersion.sonic_2010:
+                    // Read the amount of categories in this file.
+                    CategoryCount = reader.ReadUInt16();
 
-            // Skip six null bytes.
-            reader.JumpAhead(0x06);
+                    // Skip six null bytes.
+                    reader.JumpAhead(0x06);
+
+                    break;
+
+                case FormatVersion.blueblur:
+                    // Skip six null bytes.
+                    reader.JumpAhead(0x06);
+
+                    // Read the amount of categories in this file.
+                    CategoryCount = reader.ReadUInt16();
+
+                    break;
+            }
 
             // Loop through and read each category in this file.
             for (int cat = 0; cat < CategoryCount; cat++)
@@ -211,6 +256,22 @@ namespace KnuxLib.Engines.Hedgehog
                     // Set up a char array to hold the decoded characters.
                     char[] characters = new char[MessageCharacterCount];
 
+                    // If this is a Sonic Generations XTB file, then we need to endian swap the UTF16 encoded text's bytes.
+                    if (version == FormatVersion.blueblur)
+                    {
+                        // Loop through every other byte.
+                        for (int characterByte = 0; characterByte < MessageBytes.Length; characterByte += 2)
+                        {
+                            // Read this byte and the next one.
+                            byte val0 = MessageBytes[characterByte];
+                            byte val1 = MessageBytes[characterByte + 1];
+
+                            // Switch the values around.
+                            MessageBytes[characterByte] = val1;
+                            MessageBytes[characterByte + 1] = val0;
+                        }
+                    }
+
                     // Decode the bytes to the char array.
                     utf16Decoder.GetChars(MessageBytes, 0, MessageByteCount, characters, 0, true);
 
@@ -233,10 +294,14 @@ namespace KnuxLib.Engines.Hedgehog
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath)
+        /// <param name="version">The system version to save this file as.</param>
+        public void Save(string filepath, FormatVersion version = FormatVersion.sonic_2010)
         {
             // Set up Marathon's BinaryWriter.
             BinaryWriterEx writer = new(File.Create(filepath));
+
+            if (version == FormatVersion.blueblur)
+                writer.IsBigEndian = true;
 
             // Write the first eight bytes that are always 0xFF.
             writer.Write(0xFFFFFFFFFFFFFFFFL);
@@ -244,11 +309,26 @@ namespace KnuxLib.Engines.Hedgehog
             // Write the next two bytes that are always 0x0200.
             writer.Write((ushort)0x0002);
 
-            // Write the amount of style sheets in this file.
-            writer.Write((ushort)Data.Styles.Count);
+            // Write the style count depending on the version.
+            switch (version)
+            {
+                case FormatVersion.sonic_2010:
+                    // Write the amount of style sheets in this file.
+                    writer.Write((ushort)Data.Styles.Count);
 
-            // Write six null bytes.
-            writer.WriteNulls(0x06);
+                    // Write six null bytes.
+                    writer.WriteNulls(0x06);
+
+                    break;
+                case FormatVersion.blueblur:
+                    // Write six null bytes.
+                    writer.WriteNulls(0x06);
+
+                    // Write the amount of style sheets in this file.
+                    writer.Write((ushort)Data.Styles.Count);
+
+                    break;
+            }
 
             // Loop through and write each style sheet.
             for (int i = 0; i < Data.Styles.Count; i++)
@@ -277,11 +357,27 @@ namespace KnuxLib.Engines.Hedgehog
                 writer.Write((byte)0x00);
             }
 
-            // Write the amount of message categories in this file.
-            writer.Write((ushort)Data.Categories.Count);
+            // Write the category count depending on the version.
+            switch (version)
+            {
+                case FormatVersion.sonic_2010:
+                    // Write the amount of message categories in this file.
+                    writer.Write((ushort)Data.Categories.Count);
 
-            // Write six null bytes.
-            writer.WriteNulls(0x06);
+                    // Write six null bytes.
+                    writer.WriteNulls(0x06);
+
+                    break;
+
+                case FormatVersion.blueblur:
+                    // Write six null bytes.
+                    writer.WriteNulls(0x06);
+
+                    // Write the amount of message categories in this file.
+                    writer.Write((ushort)Data.Categories.Count);
+
+                    break;
+            }
 
             // Loop through and write this file's categories.
             for (int i = 0; i < Data.Categories.Count; i++)
@@ -324,6 +420,22 @@ namespace KnuxLib.Engines.Hedgehog
 
                     // Encode this message into a UTF16 byte array.
                     utf16Encoder.GetBytes(Data.Categories[i].Messages[m].Message.ToCharArray(), messageBytes, true);
+
+                    // If this is a Sonic Generations XTB file, then we need to endian swap the UTF16 encoded text's bytes.
+                    if (version == FormatVersion.blueblur)
+                    {
+                        // Loop through every other byte.
+                        for (int characterByte = 0; characterByte < messageBytes.Length; characterByte += 2)
+                        {
+                            // Read this byte and the next one.
+                            byte val0 = messageBytes[characterByte];
+                            byte val1 = messageBytes[characterByte + 1];
+
+                            // Switch the values around.
+                            messageBytes[characterByte] = val1;
+                            messageBytes[characterByte + 1] = val0;
+                        }
+                    }
 
                     // Write the encoded array.
                     writer.Write(messageBytes);

@@ -537,12 +537,78 @@ namespace KnuxTools
                     }
                     break;
 
-                case ".xtb": using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new(arg, true)) break;
-                case ".hedgehog.messagetable_2010.json":
-                    using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new())
+                case ".xtb":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
                     {
-                        messageTable_2010.Data = messageTable_2010.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatData>(arg);
-                        messageTable_2010.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.xtb");
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. Sonic Colours\n" +
+                            "2. Sonic Generations"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "xtb_sonic2010"; break;
+                            case '2': version = "xtb_blueblur"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "xtb_sonic2010":
+                                using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.sonic_2010, true))
+                                break;
+                            case "xtb_blueblur":
+                                using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.blueblur, true))
+                                break;
+                        }
+                    }
+                    break;
+                case ".hedgehog.messagetable_2010.json":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. Sonic Colours\n" +
+                            "2. Sonic Generations"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "xtb_sonic2010"; break;
+                            case '2': version = "xtb_blueblur"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "xtb_sonic2010":
+                                using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new())
+                                {
+                                    messageTable_2010.Data = messageTable_2010.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatData>(arg);
+                                    messageTable_2010.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.xtb");
+                                }
+                                break;
+                            case "xtb_blueblur":
+                                using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new())
+                                {
+                                    messageTable_2010.Data = messageTable_2010.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatData>(arg);
+                                    messageTable_2010.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.xtb", KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.blueblur);
+                                }
+                                break;
+                        }
                     }
                     break;
                 #endregion
