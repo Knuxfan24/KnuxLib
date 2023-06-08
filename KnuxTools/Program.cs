@@ -80,7 +80,9 @@ namespace KnuxTools
                                   "Bullet Skeleton (.skl.pxd)\n" +
                                   "Gismo V3 (.gismod/.gismop)\n" +
                                   "Instance Info (.terrain-instanceinfo)\n" +
-                                  "Light Field V3 (.lf)\n" +
+                                  "Light Field (Rangers) (.lf)\n" +
+                                  "Message Table (sonic2010/blueblur)\n" +
+                                  "Message Table (sonic2013)\n" +
                                   "Point Cloud (.pccol/.pcmodel/.pcrt)\n" +
                                   "Sector Visibility Collision (.bin.svcol)\n");
 
@@ -609,6 +611,15 @@ namespace KnuxTools
                                 }
                                 break;
                         }
+                    }
+                    break;
+
+                case ".xtb2": using (KnuxLib.Engines.Hedgehog.MessageTable_2013 messageTable_2013 = new(arg, true)) break;
+                case ".hedgehog.messagetable_2013.json":
+                    using (KnuxLib.Engines.Hedgehog.MessageTable_2013 messageTable_2013 = new())
+                    {
+                        messageTable_2013.Data = messageTable_2013.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2013.FormatData>(arg);
+                        messageTable_2013.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
                     }
                     break;
                 #endregion

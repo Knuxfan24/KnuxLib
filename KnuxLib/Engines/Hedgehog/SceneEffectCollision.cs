@@ -251,6 +251,9 @@ namespace KnuxLib.Engines.Hedgehog
                 // Save this group.
                 Data.Groups.Add(group);
             }
+
+            // Close HedgeLib#'s BINAReader.
+            reader.Close();
         }
 
         /// <summary>

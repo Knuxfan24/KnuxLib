@@ -114,6 +114,11 @@ Supported formats:
 
 - [Message Table (Sonic2010/BlueBlur) (.xtb)](KnuxLib/Engines/Hedgehog/MessageTable_2010.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+- [Message Table (Sonic2013) (.xtb)](KnuxLib/Engines/Hedgehog/MessageTable_2013.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Sonic Lost World has two main message tables, one of them writes in a binary identical fashion to the source file, but the other has mistakes in the BINA Footer. This implementation has also not being tested in game due to HedgeArcPack seemingly corrupting the UI pac files containing the xtb2 files when trying to resave them.
+
 - [Point Cloud (.pccol/.pcmodel/.pcrt)](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Sector Visibility Collision (.bin.svcol)](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.

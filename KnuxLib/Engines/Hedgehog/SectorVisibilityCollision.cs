@@ -169,6 +169,9 @@
                 // Save this shape.
                 Data.Add(shape);
             }
+
+            // Close HedgeLib#'s BINAReader.
+            reader.Close();
         }
 
         /// <summary>
