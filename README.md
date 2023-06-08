@@ -106,11 +106,11 @@ Supported formats:
 
 - [Bullet Skeleton (.skl.pxd)](KnuxLib/Engines/Hedgehog/BulletSkeleton.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Gismo V3 (.gismod/.gismop)](KnuxLib/Engines/Hedgehog/GismoV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Gismo (Rangers) (.gismod/.gismop)](KnuxLib/Engines/Hedgehog/Gismo_Rangers.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Instance Info (.terrain-instanceinfo)](KnuxLib/Engines/Hedgehog/InstanceInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Light Field V3 (.lf)](KnuxLib/Engines/Hedgehog/LightFieldV3.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Light Field (Rangers)) (.lf)](KnuxLib/Engines/Hedgehog/LightField_Rangers.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Message Table (Sonic2010/BlueBlur) (.xtb)](KnuxLib/Engines/Hedgehog/MessageTable_2010.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
