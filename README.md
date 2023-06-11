@@ -258,6 +258,8 @@ The following formats are only partially supported and have no implementation in
 
 - [Alchemy Engine Map Collision (.hke)](KnuxLib/Engines/Alchemy/Collision.cs). There is currently a lot of unknown data in this format that would need to be reverse engineered properly for true support of the format. This format also currently lacks any form of Import function and only has a temporary OBJ export solution.
 
+- [Engine Black Archive Data (.data)](KnuxLib/Engines/Black/DataArchive.cs). Currently reads, decompresses and exports data from the data archive found in Shantae and the Pirate's Curse. Writing hardcodes a sequence of 0x204 bytes near the start of the file and only has placeholders for another sequence later on, which leads to the game crashing on launch, replacing the sequence of placeholders with the original values seems to make the file work in game, although this hasn't been tested beyond the WayForward logo.
+
 - [Hedgehog Engine 2010 Collision (.orc)](KnuxLib/Engines/Hedgehog/Collision_2010.cs). Only reads about half the format but does have an OBJ exporter that exports the basic collision geometry.
 
 - [Hedgehog Engine Rangers Message Table (.cnvrs-text)](KnuxLib/Engines/Hedgehog/MessageTable_Rangers.cs). Lacks most of a save function, as this format is offset hell and is not going to be fun to write a save setup for, especially if I want to make it accurate to the original files, as I'm reading fonts and layouts in such a way that saving will dupe them a lot.
