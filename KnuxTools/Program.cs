@@ -100,6 +100,7 @@ namespace KnuxTools
                                   "Stage Entity Table (.31bf570e/.set)\n");
 
                 Console.WriteLine("Sonic Storybook Engine:\n" +
+                                  "Message Table (Secret Rings) (.mtx)\n" +
                                   "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n" +
                                   "Stage Entity Table Object Table (.bin)\n" +
                                   "Texture Directory (.txd) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
@@ -969,6 +970,26 @@ namespace KnuxTools
                                 }
                                 break;
                         }
+                    }
+                    break;
+
+                case ".mtx":
+                    bool isJapanese = false;
+                    if (arg.ToUpper().Contains("JAPANESE"))
+                        isJapanese = true;
+
+                    using (KnuxLib.Engines.Storybook.MessageTable_SecretRings messageTable = new(arg, isJapanese, true))
+
+                    break;
+                case ".storybook.messagetable_secretrings.json":
+                    bool isJapaneseSave = false;
+                    if (arg.ToUpper().Contains("JAPANESE"))
+                        isJapaneseSave = true;
+
+                    using (KnuxLib.Engines.Storybook.MessageTable_SecretRings messageTable = new())
+                    {
+                        messageTable.Data = messageTable.JsonDeserialise<List<KnuxLib.Engines.Storybook.MessageTable_SecretRings.MessageEntry>>(arg);
+                        messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.MTX", isJapaneseSave);
                     }
                     break;
 

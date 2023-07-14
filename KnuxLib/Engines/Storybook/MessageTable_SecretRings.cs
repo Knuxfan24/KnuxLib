@@ -3,14 +3,14 @@
 namespace KnuxLib.Engines.Storybook
 {
     // TODO: What is the extra set of offsets even for?
-    // TODO: Fix encoding, this seems fine for Japanese, but some other special characters break everything. A string of "déjá vu" became "d駛・vu".
+    // TODO: The event message tables save incorrectly, why?
     public class MessageTable_SecretRings : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public MessageTable_SecretRings() { }
-        public MessageTable_SecretRings(string filepath, bool export = false)
+        public MessageTable_SecretRings(string filepath, bool isJapanese = false, bool export = false)
         {
-            Load(filepath);
+            Load(filepath, isJapanese);
 
             if (export)
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.storybook.messagetable_secretrings.json", Data);
@@ -40,10 +40,14 @@ namespace KnuxLib.Engines.Storybook
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        public override void Load(string filepath)
+        public void Load(string filepath, bool isJapanese = false)
         {
-            // Set up the shift-jis support.
-            Encoding japaneseEncoding = Encoding.GetEncoding(932);
+            // Set up the correct encoding.
+            Encoding encoding = Encoding.GetEncoding("cp1252");
+
+            // If this is a Japanese file, then switch to shift-jis.
+            if (isJapanese)
+                encoding = Encoding.GetEncoding(932);
 
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath), true);
@@ -103,7 +107,7 @@ namespace KnuxLib.Engines.Storybook
                 reader.JumpTo(stringOffset);
 
                 // Use the encoder to read the amount of bytes in length as a shift-jis encoded string.
-                message.Message = japaneseEncoding.GetString(reader.ReadBytes(length));
+                message.Message = encoding.GetString(reader.ReadBytes(length));
 
                 // Jump back for the next message.
                 reader.JumpTo(pos);
@@ -120,10 +124,14 @@ namespace KnuxLib.Engines.Storybook
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath)
+        public void Save(string filepath, bool isJapanese = false)
         {
-            // Set up the shift-jis support.
-            Encoding japaneseEncoding = Encoding.GetEncoding(932);
+            // Set up the correct encoding.
+            Encoding encoding = Encoding.GetEncoding("cp1252");
+
+            // If this is a Japanese file, then switch to shift-jis.
+            if (isJapanese)
+                encoding = Encoding.GetEncoding(932);
 
             // Set up Marathon's BinaryWriter.
             BinaryWriterEx writer = new(File.Create(filepath), true);
@@ -163,7 +171,7 @@ namespace KnuxLib.Engines.Storybook
                 writer.FillOffset($"Message{i}String");         
                 
                 // Write this message's string, encoded into shift-jis bytes.
-                writer.Write(japaneseEncoding.GetBytes(Data[i].Message));
+                writer.Write(encoding.GetBytes(Data[i].Message));
 
                 // Write a null terminator for this string.
                 writer.WriteNull();

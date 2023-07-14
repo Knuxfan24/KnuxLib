@@ -196,6 +196,11 @@ Known games:
 
 Supported formats:
 
+- [Message Table (Secret Rings) (.mtx)](KnuxLib/Engines/Storybook/ONE.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> The Event Message Tables do not write correctly for some reason.
+
 - [ONE Archive (.one)](KnuxLib/Engines/Storybook/ONE.cs) reading, writing, data extraction and data importing.
 
 - [Stage Entity Table Object Table (.bin)](KnuxLib/Engines/Storybook/StageEntityTableItems.cs) reading, writing, JSON serialisation and JSON deserialisation.
@@ -267,8 +272,6 @@ The following formats are only partially supported and have no implementation in
 - [Hedgehog Engine Scene Effect Collision (.bin.fxcol)](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
 
 - [Nu2 Engine Scenes (.nus/.nux/.gsc)](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save, Export or Import function.
-
-- [Storybook Engine Message Table (Secret Rings) (.mtx)](KnuxLib/Engines/Storybook/MessageTable_SecretRings.cs). Has all the required functionality, but the text encoding is currently wrong, leading to reading and writing errors when special characters are involved (e.g. the words `déjá vu` becoming `d駛・vu`).
 
 - [Storybook Engine Path Spline (.pth)](KnuxLib/Engines/Storybook/PathSpline.cs). Has reading and writing with a lot of unknown values and basic OBJ exporting.
 
