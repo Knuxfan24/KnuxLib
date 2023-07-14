@@ -379,7 +379,7 @@ namespace KnuxLib
         /// Returns a string that is simply the specified filepath with the file extension switched out, as I found myself typing this a lot when testing stuff.
         /// </summary>
         /// <param name="filepath">The filepath to use.</param>
-        /// <param name="extension">The file extension to swap in.</param>
+        /// <param name="extension">The file extension to swap in, excluding the point.</param>
         public static string GetDirectoryAndFileNameWithNewExtension(string filepath, string extension) => $@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.{extension}";
     }
 }
