@@ -126,6 +126,23 @@ Supported formats:
 > **Note**
 > The Sector Visibility Collision format has some extra data in it that is not currently handled, but doesn't seem required?
 
+## NiGHTS2 Engine
+
+Known games:
+
+- NiGHTS: Journey of Dreams (Wii)
+
+Supported formats:
+
+- [ONE Archive (.one)](KnuxLib/Engines/NiGHTS2/ONE.cs) reading, writing, data extraction and data importing.
+
+> **Note**
+> The ONE Archives aren't written accurately and need more testing in game (the hub loaded, but I haven't tested beyond that).
+
+Notes:
+
+- Uncertain if this is the engine's name.
+
 ## Nu2 Engine
 
 Known games:

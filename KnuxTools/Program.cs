@@ -86,6 +86,9 @@ namespace KnuxTools
                                   "Point Cloud (.pccol/.pcmodel/.pcrt)\n" +
                                   "Sector Visibility Collision (.bin.svcol)\n");
 
+                Console.WriteLine("NiGHTS 2 Engine:\n" +
+                                  "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+
                 Console.WriteLine("Nu2 Engine:\n" +
                                   "AI Entity Table (.ai)\n" +
                                   "Wumpa Fruit Table (.wmp)\n");
@@ -139,10 +142,11 @@ namespace KnuxTools
                     "Please specify the archive type to pack this directory into;\n" +
                     "1. Alchemy Engine GFC/GOB File Pair\n" +
                     "2. Gods Engine WAD File\n" +
-                    "3. Sonic The Portable AMB File\n" +
-                    "4. Sonic Storybook Engine ONE File\n" +
-                    "5. Sonic Storybook Engine TXD File\n" +
-                    "6. Sonic World Adventure Wii ONE File."
+                    "3. NiGHTS 2 Engine ONE File\n" +
+                    "4. Sonic The Portable Engine AMB File\n" +
+                    "5. Sonic Storybook Engine ONE File\n" +
+                    "6. Sonic Storybook Engine TXD File\n" +
+                    "7. Sonic World Adventure Wii ONE File."
                 );
 
                 // Wait for the user to input an option.
@@ -169,17 +173,20 @@ namespace KnuxTools
                         }
                         break;
 
+                    // NiGHTS 2 Engine ONE Archives.
+                    case '3': version = "nights2_one"; break;
+
                     // Sonic The Portable Engine AMB Archives.
-                    case '3': version = "portable_amb"; break;
+                    case '4': version = "portable_amb"; break;
 
-                    // Sonic Storybook Series ONE Archives.
-                    case '4': version = "storybook_one"; break;
+                    // Sonic Storybook Series Engine ONE Archives.
+                    case '5': version = "storybook_one"; break;
 
-                    // Sonic Storybook Series Texture Directories.
-                    case '5': version = "storybook_txd"; break;
+                    // Sonic Storybook Series Engine Texture Directories.
+                    case '6': version = "storybook_txd"; break;
 
-                    // Sonic World Adventure Wii ONE Archives.
-                    case '6':
+                    // Sonic World Adventure Wii Engine ONE Archives.
+                    case '7':
                         // List our supported versions for the Sonic World Adventure Wii ONE format.
                         Console.WriteLine
                         (
@@ -233,6 +240,16 @@ namespace KnuxTools
                         {
                             wad.Import(arg);
                             wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii);
+                        }
+                        break;
+
+                    // NiGHTS 2 Engine ONE Archives.
+                    case "nights2_one":
+                        using (KnuxLib.Engines.NiGHTS2.ONE one = new())
+                        {
+                            Console.WriteLine("\n");
+                            one.Import(arg);
+                            one.Save($@"{arg}.one");
                         }
                         break;
 
@@ -374,15 +391,17 @@ namespace KnuxTools
                         Console.WriteLine
                         (
                             "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
-                            "1. Sonic Storybook Engine ONE Archive\n" +
-                            "2. Sonic World Adventure Wii Uncompressed ONE Archive\n"
+                            "1. NiGHTS 2 Engine ONE Archive\n" +
+                            "2. Sonic Storybook Engine ONE Archive\n" +
+                            "3. Sonic World Adventure Wii Uncompressed ONE Archive\n"
                         );
 
                         // Wait for the user to input an option.
                         switch (Console.ReadKey().KeyChar)
                         {
-                            case '1': version = "storybook_one"; break;
-                            case '2': version = "swawii_one"; break;
+                            case '1': version = "nights2_one"; break;
+                            case '2': version = "storybook_one"; break;
+                            case '3': version = "swawii_one"; break;
                         }
                     }
 
@@ -391,6 +410,7 @@ namespace KnuxTools
                     {
                         switch (version)
                         {
+                            case "nights2_one": using (KnuxLib.Engines.NiGHTS2.ONE one = new(arg, true)) break;
                             case "storybook_one": using (KnuxLib.Engines.Storybook.ONE one = new(arg, true)) break;
                             case "swawii_one": using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true)) break;
                         }
