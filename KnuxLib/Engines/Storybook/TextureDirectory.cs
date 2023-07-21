@@ -112,37 +112,12 @@
         /// Extracts the textures in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory)
-        {
-            // Create the extraction directory.
-            Directory.CreateDirectory(directory);
-
-            // Loop through each node to extract.
-            foreach (FileNode node in Data)
-            {
-                // Print the name of the texture we're extracting.
-                Console.WriteLine($"Extracting {node.Name}.");
-
-                // Extract the texture.
-                File.WriteAllBytes($@"{directory}\{node.Name}.gvr", node.Data);
-            }
-        }
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory);
 
         /// <summary>
         /// Imports files from a directory into a texture directory.
         /// </summary>
-        /// <param name="directory">The directory to import, excluding sub directories.</param>
-        public void Import(string directory)
-        {
-            foreach (string file in Directory.GetFiles(directory, "*.gvr"))
-            {
-                FileNode node = new()
-                {
-                    Name = Path.GetFileNameWithoutExtension(file),
-                    Data = File.ReadAllBytes(file)
-                };
-                Data.Add(node);
-            }
-        }
+        /// <param name="directory">The directory to import.</param>
+        public void Import(string directory) => Data = Helpers.ImportArchive(directory);
     }
 }

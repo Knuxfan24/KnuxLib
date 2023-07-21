@@ -129,6 +129,7 @@
 
         /// <summary>
         /// Extracts the files in this format to disc.
+        /// TODO: Add fileordering to the FileNode extractor so this can use it instead.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
         public void Extract(string directory)
@@ -162,6 +163,7 @@
 
         /// <summary>
         /// Imports files from a directory into a ONE node, respecting a fileorder.log file if one exists.
+        /// TODO: Add fileordering to the FileNode importer so this can use it instead.
         /// </summary>
         /// <param name="directory">The directory to import, excluding sub directories.</param>
         public void Import(string directory)

@@ -190,50 +190,13 @@ namespace KnuxLib.Engines.NiGHTS2
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory)
-        {
-            // Create the extraction directory.
-            Directory.CreateDirectory(directory);
-
-            // Loop through each node to extract.
-            foreach (FileNode node in Data)
-            {
-                // Print the name of the file we're extracting.
-                Console.WriteLine($"Extracting {node.Name}.");
-
-                // Some files in Journey of Dreams have a full drive path in them, trying to extract them fails, so replace the colon with an indicator as a workaround.
-                if (node.Name.Contains(':'))
-                    node.Name = node.Name.Replace(":", "[COLON]");
-
-                // The NiGHTS 2 Engine can use sub directories in its archives. Create the directory if needed.
-                if (!Directory.Exists($@"{directory}\{Path.GetDirectoryName(node.Name)}"))
-                    Directory.CreateDirectory($@"{directory}\{Path.GetDirectoryName(node.Name)}");
-
-                // Extract the file.
-                File.WriteAllBytes($@"{directory}\{node.Name}", node.Data);
-            }
-        }
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory);
 
         /// <summary>
         /// Imports files from a directory into a ONE node.
         /// TODO: This seemed to work, but hasn't been extensively tested at all.
         /// </summary>
-        /// <param name="directory">The directory to import, including sub directories.</param>
-        public void Import(string directory)
-        {
-            foreach (string file in Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories))
-            {
-                FileNode node = new()
-                {
-                    Name = file.Replace($@"{directory}\", ""),
-                    Data = File.ReadAllBytes(file)
-                };
-
-                if (node.Name.Contains("[COLON]"))
-                    node.Name = node.Name.Replace("[COLON]", ":");
-
-                Data.Add(node);
-            }
-        }
+        /// <param name="directory">The directory to import.</param>
+        public void Import(string directory) => Data = Helpers.ImportArchive(directory);
     }
 }

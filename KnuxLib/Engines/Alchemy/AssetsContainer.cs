@@ -213,50 +213,18 @@
         /// TODO: Implement.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath)
-        {
-            throw new NotImplementedException();
-        }
+        public void Save(string filepath) => throw new NotImplementedException();
 
         /// <summary>
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory)
-        {
-            // Create the extraction directory.
-            Directory.CreateDirectory(directory);
-
-            // Loop through each node to extract.
-            foreach (FileNode node in Data)
-            {
-                // Print the name of the file we're extracting.
-                Console.WriteLine($"Extracting {node.Name}.");
-
-                // The Alchemy Engine can use sub directories in its archives. Create the directory if needed.
-                if (!Directory.Exists($@"{directory}\{Path.GetDirectoryName(node.Name)}"))
-                    Directory.CreateDirectory($@"{directory}\{Path.GetDirectoryName(node.Name)}");
-
-                // Extract the file.
-                File.WriteAllBytes($@"{directory}\{node.Name}", node.Data);
-            }
-        }
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory);
 
         /// <summary>
         /// Imports files from a directory into an Alchemy node.
         /// </summary>
-        /// <param name="directory">The directory to import, including sub directories.</param>
-        public void Import(string directory)
-        {
-            foreach (string file in Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories))
-            {
-                FileNode node = new()
-                {
-                    Name = file.Replace(directory, ".\\"),
-                    Data = File.ReadAllBytes(file)
-                };
-                Data.Add(node);
-            }
-        }
+        /// <param name="directory">The directory to import.</param>
+        public void Import(string directory) => Data = Helpers.ImportArchive(directory);
     }
 }

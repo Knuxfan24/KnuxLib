@@ -202,6 +202,7 @@
 
         /// <summary>
         /// Extracts the files in this format to disc.
+        /// TODO: Get around to converting this to use the FileNode system so this can be replaced with the generic extractor.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
         public void Extract(string directory)

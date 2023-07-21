@@ -381,5 +381,67 @@ namespace KnuxLib
         /// <param name="filepath">The filepath to use.</param>
         /// <param name="extension">The file extension to swap in, excluding the point.</param>
         public static string GetDirectoryAndFileNameWithNewExtension(string filepath, string extension) => $@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.{extension}";
+    
+        /// <summary>
+        /// Extracts a list of generic filenodes.
+        /// </summary>
+        /// <param name="files">The list of files to extract.</param>
+        /// <param name="directory">The path to extract to.</param>
+        public static void ExtractArchive(List<FileNode> files, string directory)
+        {
+            // Create the extraction directory.
+            Directory.CreateDirectory(directory);
+
+            // Loop through each node to extract.
+            foreach (FileNode node in files)
+            {
+                // Print the name of the file we're extracting.
+                Console.WriteLine($"Extracting {node.Name}.");
+
+                // Some files in Journey of Dreams have a full drive path in them, trying to extract them fails, so replace the colon with an indicator as a workaround.
+                if (node.Name.Contains(':'))
+                    node.Name = node.Name.Replace(":", "[COLON]");
+
+                // Create directory paths if needed.
+                if (!Directory.Exists($@"{directory}\{Path.GetDirectoryName(node.Name)}"))
+                    Directory.CreateDirectory($@"{directory}\{Path.GetDirectoryName(node.Name)}");
+
+                // Extract the file.
+                File.WriteAllBytes($@"{directory}\{node.Name}", node.Data);
+            }
+        }
+
+        /// <summary>
+        /// Imports a directory of files to a list of generic filenodes.
+        /// </summary>
+        /// <param name="directory">The path to import.</param>
+        /// <returns>The list of imported files.</returns>
+        public static List<FileNode> ImportArchive(string directory)
+        {
+            // Set up a new list of files.
+            List<FileNode> files = new();
+
+            // Loop through each file in the directory.
+            // TODO: Is it worth making a toggle for current directory only for formats that don't use subdirectories?
+            foreach (string file in Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories))
+            {
+                // Read this file's name (stripping out the directory name in the search) and binary data.
+                FileNode node = new()
+                {
+                    Name = file.Replace($@"{directory}\", ""),
+                    Data = File.ReadAllBytes(file)
+                };
+
+                // Some files in Journey of Dreams have a full drive path in them, extracting them replaces the colon with an indicator as a workaround, so undo that.
+                if (node.Name.Contains("[COLON]"))
+                    node.Name = node.Name.Replace("[COLON]", ":");
+
+                // Save this file.
+                files.Add(node);
+            }
+
+            // Return the list of files.
+            return files;
+        }
     }
 }

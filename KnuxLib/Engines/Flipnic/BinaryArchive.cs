@@ -167,24 +167,12 @@
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory)
-        {
-            // Create the extraction directory.
-            Directory.CreateDirectory(directory);
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory);
 
-            // Loop through each node to extract.
-            foreach (FileNode node in Data)
-            {
-                // Print the name of the file we're extracting.
-                Console.WriteLine($"Extracting {node.Name}.");
-
-                // The Flipnic Engine can use directories in its archives (but cannot have directories within directories). Create the directory if needed.
-                if (!Directory.Exists($@"{directory}\{Path.GetDirectoryName(node.Name)}"))
-                    Directory.CreateDirectory($@"{directory}\{Path.GetDirectoryName(node.Name)}");
-
-                // Extract the file.
-                File.WriteAllBytes($@"{directory}\{node.Name}", node.Data);
-            }
-        }
+        /// <summary>
+        /// Imports files from a directory into a Flipnic node.
+        /// </summary>
+        /// <param name="directory">The directory to import.</param>
+        public void Import(string directory) => Data = Helpers.ImportArchive(directory);
     }
 }
