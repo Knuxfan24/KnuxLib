@@ -1105,6 +1105,10 @@ namespace KnuxTools
                     break;
                 #endregion
 
+                #region Wayforward Engine Formats.
+                case ".pak": using (KnuxLib.Engines.Wayforward.Package pak = new(arg, true)) break;
+                #endregion
+
                 #region Westwood Engine Formats.
                 case ".tru": using (KnuxLib.Engines.Westwood.MessageTable messageTable = new(arg, true)) break;
                 case ".westwood.messagetable.json":
