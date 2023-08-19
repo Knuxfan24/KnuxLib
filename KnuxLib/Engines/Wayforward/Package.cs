@@ -119,8 +119,21 @@
                 // Write this file's name, replacing the divider of sub directories with a colon.
                 writer.WriteNullTerminatedString(Data[i].Name.Replace('\\', ':'));
 
-                // Realign the writer. The actual files use question marks for this, but null bytes seem to work fine.
+                // Store our current position to figure out how many bytes we need.
+                var paddingCount = writer.BaseStream.Position;
+
+                // Realign the writer.
                 writer.FixPadding(0x8);
+
+                // Calculate padding.
+                paddingCount = writer.BaseStream.Position - paddingCount;
+
+                // Jump back by the amount of padding bytes.
+                writer.BaseStream.Position -= paddingCount;
+
+                // Replace the padding bytes with question marks.
+                for (int f = 0; f < paddingCount; f++)
+                    writer.Write((byte)0x3F);
             }
 
             // Realign the writer. The actual files use question marks for this, but null bytes seem to work fine.
@@ -144,8 +157,21 @@
                 // Write this file's data.
                 writer.Write(Data[i].Data);
 
-                // Realign the writer. The actual files use question marks for this, but null bytes seem to work fine.
+                // Store our current position to figure out how many bytes we need.
+                var paddingCount = writer.BaseStream.Position;
+
+                // Realign the writer.
                 writer.FixPadding(0x10);
+
+                // Calculate padding.
+                paddingCount = writer.BaseStream.Position - paddingCount;
+
+                // Jump back by the amount of padding bytes.
+                writer.BaseStream.Position -= paddingCount;
+
+                // Replace the padding bytes with question marks.
+                for (int f = 0; f < paddingCount; f++)
+                    writer.Write((byte)0x3F);
             }
 
             // Close Marathon's BinaryWriter.
