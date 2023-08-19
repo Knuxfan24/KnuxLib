@@ -260,6 +260,25 @@ Notes:
 
 - Uncertain if this is the engine's name.
 
+## Wayforward Engine
+
+Known games:
+
+- Shantae Risky's Revenge (DSi, iOS, PC, PS4, Wii U, NSW, XB1, PS5)
+
+- Shantae Half-Genie Hero (PS4, PSV, Wii U, PC, XB1, NSW, PS5)
+
+- Shantae and the Seven Sirens (iOS, NSW, PS4, PC, XB1, PS5)
+
+Supported formats:
+
+- [Package Archive (.pak)](KnuxLib/Engines/Wayforward/Package.cs) reading, writing, data extraction and data importing.
+
+> **Note**
+> The Package Archive code has only been tested on pak files from the PC version of Seven Sirens.
+
+- Definitely used by other Wayforward games, but I have yet to obtain and look at them myself.
+
 ## Westwood Engine
 
 Known games:

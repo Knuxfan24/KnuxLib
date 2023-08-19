@@ -146,7 +146,8 @@ namespace KnuxTools
                     "4. Sonic The Portable Engine AMB File\n" +
                     "5. Sonic Storybook Engine ONE File\n" +
                     "6. Sonic Storybook Engine TXD File\n" +
-                    "7. Sonic World Adventure Wii ONE File."
+                    "7. Sonic World Adventure Wii ONE File.\n" +
+                    "8. Wayforward Engine PAK File."
                 );
 
                 // Wait for the user to input an option.
@@ -202,6 +203,9 @@ namespace KnuxTools
                             case '2': version = "swawii_onz"; break;
                         }
                         break;
+
+                    // Wayforward Engine Packages.
+                    case '8': version = "wayforward_pak"; break;
                 }
             }
 
@@ -316,6 +320,16 @@ namespace KnuxTools
 
                             // Delete the temporary uncompressed file.
                             File.Delete($@"{arg}.one");
+                        }
+                        break;
+
+                    // Wayforward Engine Packages.
+                    case "wayfoward_pak":
+                        using (KnuxLib.Engines.Wayforward.Package pak = new())
+                        {
+                            Console.WriteLine("\n");
+                            pak.Import(arg);
+                            pak.Save($@"{arg}.pak");
                         }
                         break;
 
