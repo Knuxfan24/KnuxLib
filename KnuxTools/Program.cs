@@ -324,7 +324,7 @@ namespace KnuxTools
                         break;
 
                     // Wayforward Engine Packages.
-                    case "wayfoward_pak":
+                    case "wayforward_pak":
                         using (KnuxLib.Engines.Wayforward.Package pak = new())
                         {
                             Console.WriteLine("\n");
