@@ -4,11 +4,11 @@
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public WumpaTable() { }
-        public WumpaTable(string filepath, FormatVersion version = FormatVersion.GameCube, bool extract = false)
+        public WumpaTable(string filepath, FormatVersion version = FormatVersion.GameCube, bool export = false)
         {
             Load(filepath, version);
 
-            if (extract)
+            if (export)
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.nu2.wumpatable.json", Data);
         }
 

@@ -11,11 +11,11 @@ namespace KnuxLib.Engines.Nu2
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public Scene() { }
-        public Scene(string filepath, FormatVersion version = FormatVersion.GameCube, bool extract = false)
+        public Scene(string filepath, FormatVersion version = FormatVersion.GameCube, bool export = false)
         {
             Load(filepath, version);
 
-            if (extract)
+            if (export)
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.nu2.scene.json", Data);
         }
 

@@ -4,11 +4,11 @@
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public PlayerMotionTable() { }
-        public PlayerMotionTable(string filepath, bool extract = false)
+        public PlayerMotionTable(string filepath, bool export = false)
         {
             Load(filepath);
 
-            if (extract)
+            if (export)
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.storybook.playermotion.json", Data);
         }
 
