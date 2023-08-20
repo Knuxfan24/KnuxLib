@@ -274,13 +274,10 @@ Supported formats:
 
 - [List Table (.ltb)](KnuxLib/Engines/Wayforward/ListTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-> **Note**
-> The List Table code has only been tested on pak files from the PC version of Seven Sirens.
-
 - [Package Archive (.pak)](KnuxLib/Engines/Wayforward/Package.cs) reading, writing, data extraction and data importing.
 
 > **Note**
-> The Package Archive code has only been tested on pak files from the PC version of Seven Sirens.
+> The Package Archive code produces incorrect results for some files in Half-Genie Hero due to an incorrect assumption that needs revising. Risky's Revenge resaving has not been tested.
 
 - Definitely used by other Wayforward games, but I have yet to obtain and look at them myself.
 
