@@ -1106,6 +1106,15 @@ namespace KnuxTools
                 #endregion
 
                 #region Wayforward Engine Formats.
+                case ".ltb": using (KnuxLib.Engines.Wayforward.ListTable ltb = new(arg, true)) break;
+                case ".wayforward.listtable.json":
+                    using (KnuxLib.Engines.Wayforward.ListTable ltb = new())
+                    {
+                        ltb.Data = ltb.JsonDeserialise<KnuxLib.Engines.Wayforward.ListTable.FormatData>(arg);
+                        ltb.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ltb");
+                    }
+                    break;
+
                 case ".pak": using (KnuxLib.Engines.Wayforward.Package pak = new(arg, true)) break;
                 #endregion
 

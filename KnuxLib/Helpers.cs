@@ -11,16 +11,42 @@ namespace KnuxLib
         /// <param name="hasReaderOffset">Whether or not the jump has to respect the reader's offset.</param>
         /// <param name="extraOffset">A custom value to add to the read offset before jumping.</param>
         /// <returns>The string read from the location.</returns>
-        public static string ReadNullTerminatedStringTableEntry(BinaryReaderEx reader, bool hasReaderOffset = false, uint extraOffset = 0)
+        public static string? ReadNullTerminatedStringTableEntry(BinaryReaderEx reader, bool hasReaderOffset = false, uint extraOffset = 0, bool is64bit = false)
         {
-            // Read our offset's value.
-            uint offset = reader.ReadUInt32();
+            // Set up a dummy position value.
+            long position;
 
-            // Store our current position in the file.
-            long position = reader.BaseStream.Position;
+            // Check if the file is 32-bit or 64-bit.
+            if (is64bit)
+            {
+                // Read our offset's value.
+                long offset = reader.ReadInt64();
 
-            // Jump to the offset, using the reader's offset if needed.
-            reader.JumpTo(offset + extraOffset, hasReaderOffset);
+                // If this offset is empty, then don't jump and just return a null string instead.
+                if (offset == 0)
+                    return null;
+
+                // Store our current position in the file.
+                position = reader.BaseStream.Position;
+
+                // Jump to the offset, using the reader's offset if needed.
+                reader.JumpTo(offset + extraOffset, hasReaderOffset);
+            }
+            else
+            {
+                // Read our offset's value.
+                uint offset = reader.ReadUInt32();
+
+                // If this offset is empty, then don't jump and just return a null string instead.
+                if (offset == 0)
+                    return null;
+
+                // Store our current position in the file.
+                position = reader.BaseStream.Position;
+
+                // Jump to the offset, using the reader's offset if needed.
+                reader.JumpTo(offset + extraOffset, hasReaderOffset);
+            }
 
             // Read the string at the offset.
             string entry = reader.ReadNullTerminatedString();

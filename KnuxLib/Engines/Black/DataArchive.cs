@@ -5,7 +5,6 @@ namespace KnuxLib.Engines.Black
     // Based on https://github.com/meh2481/MSFHDEx
     // TODO: Finish format saving.
     // TODO: Only tested on Shantae and the Pirate's Curse. The QuickBMS script linked above has multiple versions, so this will definitely fail on other Engine Black games.
-    // TODO: Does this archive have the concept of folders? The QuickBMS script replaces any _ with a / to make directories, but that feels very wrong to me.
     // TODO: What is the sequence of 0x204 bytes that I'm not reading for? Nulling them crashes the game.
     // TODO: What is the unknown value in the file data for? Nulling them crashes the game. Checksum?
     public class DataArchive : FileBase
@@ -124,15 +123,9 @@ namespace KnuxLib.Engines.Black
             // Jump to the file name table.
             reader.JumpTo(FileNameTableOffset);
 
-            // Loop through and read each file's name.
+            // Loop through, initalise a file and read its name.
             for (int i = 0; i < FileCount; i++)
-            {
-                // Initalise the file at this index.
-                entries[i] = new();
-
-                // Read this file's name.
-                entries[i].Name = Helpers.ReadNullTerminatedStringTableEntry(reader);
-            }
+                entries[i] = new() { Name = Helpers.ReadNullTerminatedStringTableEntry(reader) };
 
             // Jump to the second unknown offset.
             reader.JumpTo(UnknownOffset_2);

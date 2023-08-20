@@ -272,6 +272,11 @@ Known games:
 
 Supported formats:
 
+- [List Table (.ltb)](KnuxLib/Engines/Wayforward/ListTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> The List Table code has only been tested on pak files from the PC version of Seven Sirens.
+
 - [Package Archive (.pak)](KnuxLib/Engines/Wayforward/Package.cs) reading, writing, data extraction and data importing.
 
 > **Note**
