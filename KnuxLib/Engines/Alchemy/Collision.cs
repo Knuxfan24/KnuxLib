@@ -708,7 +708,7 @@
                     if (Data.Subspace.Instances[i].Name == model.Name)
                         instanceIndex = i;
 
-                // Create a StreamWrite for this model.
+                // Create a StreamWriter for this model.
                 StreamWriter obj = new($@"{directory}\{model.Name}.obj");
 
                 // Print the model we're exporting.
