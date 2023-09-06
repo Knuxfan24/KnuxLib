@@ -81,7 +81,7 @@ namespace KnuxTools
                                   "Gismo V3 (.gismod/.gismop)\n" +
                                   "Instance Info (.terrain-instanceinfo)\n" +
                                   "Light Field (Rangers) (.lf)\n" +
-                                  "Message Table (sonic2010/blueblur)\n" +
+                                  "Message Table (sonic2010/blueblur/william)\n" +
                                   "Message Table (sonic2013)\n" +
                                   "Point Cloud (.pccol/.pcmodel/.pcrt)\n" +
                                   "Sector Visibility Collision (.bin.svcol)\n");
@@ -114,6 +114,10 @@ namespace KnuxTools
                 Console.WriteLine("Sonic World Adventure Wii Engine:\n" +
                                   "Area Points Table (.wap)\n" +
                                   "ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+
+                Console.WriteLine("Wayforward Engine:\n" +
+                                  "List Table (.ltb)\n" +
+                                  "Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Westwood Engine:\n" +
                                   "Message Table (.tru)\n");
@@ -615,7 +619,8 @@ namespace KnuxTools
                         (
                             "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
                             "1. Sonic Colours\n" +
-                            "2. Sonic Generations"
+                            "2. Sonic Generations\n" +
+                            "3. Mario and Sonic at the London 2012 Olympic Games."
                         );
 
                         // Wait for the user to input an option.
@@ -623,6 +628,7 @@ namespace KnuxTools
                         {
                             case '1': version = "xtb_sonic2010"; break;
                             case '2': version = "xtb_blueblur"; break;
+                            case '3': version = "xtb_william"; break;
                         }
                     }
 
@@ -643,6 +649,13 @@ namespace KnuxTools
                                 {
                                     messageTable_2010.Data = messageTable_2010.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatData>(arg);
                                     messageTable_2010.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.xtb", KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.blueblur);
+                                }
+                                break;
+                            case "xtb_william":
+                                using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new())
+                                {
+                                    messageTable_2010.Data = messageTable_2010.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatData>(arg);
+                                    messageTable_2010.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.xtb", KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.william);
                                 }
                                 break;
                         }

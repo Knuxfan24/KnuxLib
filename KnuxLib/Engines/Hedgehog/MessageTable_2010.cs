@@ -20,7 +20,8 @@ namespace KnuxLib.Engines.Hedgehog
         public enum FormatVersion
         {
             sonic_2010 = 0,
-            blueblur = 1
+            blueblur = 1,
+            william = 2
         }
 
         // Classes for this format.
@@ -141,6 +142,7 @@ namespace KnuxLib.Engines.Hedgehog
             switch (version)
             {
                 case FormatVersion.sonic_2010:
+                case FormatVersion.william:
                     // Read the amount of style sheets in this file.
                     StyleCount = reader.ReadUInt16();
 
@@ -195,6 +197,7 @@ namespace KnuxLib.Engines.Hedgehog
             switch (version)
             {
                 case FormatVersion.sonic_2010:
+                case FormatVersion.william:
                     // Read the amount of categories in this file.
                     CategoryCount = reader.ReadUInt16();
 
@@ -223,7 +226,14 @@ namespace KnuxLib.Engines.Hedgehog
                 category.Name = reader.ReadNullPaddedString(reader.ReadByte());
 
                 // Read the amount of messages in this category.
-                byte MessageCount = reader.ReadByte();
+                uint MessageCount = reader.ReadByte();
+
+                // If this is a Mario and Sonic at the London 2012 Olympic Games file, then read the MessageCount as a uint instead.
+                if (version == FormatVersion.william)
+                {
+                    reader.JumpBehind(0x01);
+                    MessageCount = reader.ReadUInt32();
+                }    
 
                 // Loop through and read each message in this category.
                 for (int i = 0; i < MessageCount; i++)
@@ -313,6 +323,7 @@ namespace KnuxLib.Engines.Hedgehog
             switch (version)
             {
                 case FormatVersion.sonic_2010:
+                case FormatVersion.william:
                     // Write the amount of style sheets in this file.
                     writer.Write((ushort)Data.Styles.Count);
 
@@ -361,6 +372,7 @@ namespace KnuxLib.Engines.Hedgehog
             switch (version)
             {
                 case FormatVersion.sonic_2010:
+                case FormatVersion.william:
                     // Write the amount of message categories in this file.
                     writer.Write((ushort)Data.Categories.Count);
 
@@ -389,7 +401,10 @@ namespace KnuxLib.Engines.Hedgehog
                 writer.Write(Data.Categories[i].Name);
 
                 // Write the amount of messages in this category.
-                writer.Write((byte)Data.Categories[i].Messages.Count);
+                if (version != FormatVersion.william)
+                    writer.Write((byte)Data.Categories[i].Messages.Count);
+                else
+                    writer.Write(Data.Categories[i].Messages.Count);
 
                 for (int m = 0; m < Data.Categories[i].Messages.Count; m++)
                 {
