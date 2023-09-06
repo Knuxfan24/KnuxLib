@@ -586,7 +586,8 @@ namespace KnuxTools
                         (
                             "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
                             "1. Sonic Colours\n" +
-                            "2. Sonic Generations"
+                            "2. Sonic Generations\n" +
+                            "3. Mario and Sonic at the London 2012 Olympic Games"
                         );
 
                         // Wait for the user to input an option.
@@ -594,6 +595,7 @@ namespace KnuxTools
                         {
                             case '1': version = "xtb_sonic2010"; break;
                             case '2': version = "xtb_blueblur"; break;
+                            case '3': version = "xtb_william"; break;
                         }
                     }
 
@@ -607,6 +609,9 @@ namespace KnuxTools
                                 break;
                             case "xtb_blueblur":
                                 using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.blueblur, true))
+                                break;
+                            case "xtb_william":
+                                using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.william, true))
                                 break;
                         }
                     }
