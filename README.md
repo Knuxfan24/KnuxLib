@@ -305,7 +305,7 @@ Known games:
 
 Supported formats:
 
-- [Environment (.ltb)](KnuxLib/Engines/Wayforward/Environment.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Environment (.env)](KnuxLib/Engines/Wayforward/Environment.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 > **Note**
 > Has a few unknown values.
