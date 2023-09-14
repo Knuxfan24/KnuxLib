@@ -28,6 +28,9 @@ Supported formats:
 
 - [Assets Container (.gfc/gob)](KnuxLib/Engines/Alchemy/AssetsContainer.cs) reading and data extraction.
 
+> **Note**
+> Has an unknown chunk of data.
+
 Notes:
 
 - Definitely used by other Vicarious Visions games, but I have yet to obtain and look at them myself.
@@ -61,6 +64,9 @@ Known games:
 Supported formats:
 
 - [WAD Archive (.wad)](KnuxLib/Engines/Gods/WAD.cs) reading and data extraction.
+
+> **Note**
+> Has a few unknown values.
 
 Notes:
 
@@ -104,6 +110,9 @@ Supported formats:
 
 - [Archive Info (.arcinfo)](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+> **Note**
+> Has an unknown value.
+
 - [Bullet Skeleton (.skl.pxd)](KnuxLib/Engines/Hedgehog/BulletSkeleton.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Gismo (Rangers) (.gismod/.gismop)](KnuxLib/Engines/Hedgehog/Gismo_Rangers.cs) reading, writing, JSON serialisation and JSON deserialisation.
@@ -117,11 +126,20 @@ Supported formats:
 - [Message Table (Sonic2013) (.xtb2)](KnuxLib/Engines/Hedgehog/MessageTable_2013.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 > **Note**
+> Has a few unknown values.
+
+> **Note**
 > Sonic Lost World has two main message tables, one of them writes in a binary identical fashion to the source file, but the other has mistakes in the BINA Footer. This implementation has also not being tested in game due to HedgeArcPack seemingly corrupting the UI pac files containing the xtb2 files when trying to resave them.
 
 - [Point Cloud (.pccol/.pcmodel/.pcrt)](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+> **Note**
+> Has an unknown value.
+
 - [Sector Visibility Collision (.bin.svcol)](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Has an unknown value.
 
 > **Note**
 > The Sector Visibility Collision format has some extra data in it that is not currently handled, but doesn't seem required?
@@ -135,6 +153,9 @@ Known games:
 Supported formats:
 
 - [ONE Archive (.one)](KnuxLib/Engines/NiGHTS2/ONE.cs) reading, writing, data extraction and data importing.
+
+> **Note**
+> Has a few unknown or skipped values.
 
 > **Note**
 > The ONE Archives aren't written accurately and need more testing in game (the hub loaded, but I haven't tested beyond that).
@@ -185,6 +206,9 @@ Supported formats:
 
 - [Stage Entity Table (.328f438b/.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs) basic reading, writing, JSON serialisation and JSON deserialisation.
 
+> **Note**
+> Almost entirely unknowns.
+
 Notes:
 
 - Uncertain if this is the engine's name.
@@ -198,6 +222,9 @@ Known games:
 Supported formats:
 
 - [Stage Entity Table (.31bf570e/.set)](KnuxLib/Engines/RockmanX8/StageEntityTable.cs) basic reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Almost entirely unknowns.
 
 Notes:
 
@@ -214,6 +241,9 @@ Known games:
 Supported formats:
 
 - [Message Table (Secret Rings) (.mtx)](KnuxLib/Engines/Storybook/ONE.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Has an unknown value.
 
 > **Note**
 > The Event Message Tables do not write correctly for some reason.
@@ -254,6 +284,9 @@ Supported formats:
 
 - [Area Points Table (.wap)](KnuxLib/Engines/WorldAdventureWii/AreaPoints.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+> **Note**
+> Has an unknown value.
+
 - [ONE Archive (.one/.onz)](KnuxLib/Engines/WorldAdventureWii/ONE.cs) reading, writing, data extraction and data importing.
 
 Notes:
@@ -271,6 +304,11 @@ Known games:
 - Shantae and the Seven Sirens (iOS, NSW, PS4, PC, XB1, PS5)
 
 Supported formats:
+
+- [Environment (.ltb)](KnuxLib/Engines/Wayforward/Environment.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Has a few unknown values.
 
 - [List Table (.ltb)](KnuxLib/Engines/Wayforward/ListTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 

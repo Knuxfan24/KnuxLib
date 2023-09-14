@@ -73,7 +73,7 @@ namespace KnuxLib.Engines.Wayforward
             /// <summary>
             /// How this model behaves.
             /// </summary>
-            public Behaviour Behaviour { get; set; }
+            public Behaviour Behaviour { get; set; } = Behaviour.Solid;
 
             /// <summary>
             /// An unknown 64 bit integer value that is only present in Seven Sirens.

@@ -116,6 +116,7 @@ namespace KnuxTools
                                   "ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Wayforward Engine:\n" +
+                                  "Environment (.env)\n" +
                                   "List Table (.ltb)\n" +
                                   "Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
@@ -1124,6 +1125,15 @@ namespace KnuxTools
                 #endregion
 
                 #region Wayforward Engine Formats.
+                case ".env": using (KnuxLib.Engines.Wayforward.Environment env = new(arg, true)) break;
+                case ".wayforward.environment.json":
+                    using (KnuxLib.Engines.Wayforward.Environment env = new())
+                    {
+                        env.Data = env.JsonDeserialise<KnuxLib.Engines.Wayforward.Environment.FormatData>(arg);
+                        env.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.env");
+                    }
+                    break;
+
                 case ".ltb": using (KnuxLib.Engines.Wayforward.ListTable ltb = new(arg, true)) break;
                 case ".wayforward.listtable.json":
                     using (KnuxLib.Engines.Wayforward.ListTable ltb = new())
