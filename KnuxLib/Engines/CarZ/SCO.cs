@@ -234,7 +234,7 @@ namespace KnuxLib.Engines.CarZ
         }
 
         /// <summary>
-        /// Imports an Assimp compatible model and converts it to an SCO model.
+        /// Imports a Assimp compatible model and converts it to an SCO model.
         /// TODO: Seems to get texture coordinates wrong.
         /// </summary>
         /// <param name="filepath">The filepath of the model to import.</param>

@@ -112,7 +112,7 @@ Supported formats:
 
 - [Light Field (Rangers)) (.lf)](KnuxLib/Engines/Hedgehog/LightField_Rangers.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Message Table (Sonic2010/BlueBlur) (.xtb)](KnuxLib/Engines/Hedgehog/MessageTable_2010.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Message Table (Sonic2010/BlueBlur/William) (.xtb)](KnuxLib/Engines/Hedgehog/MessageTable_2010.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Message Table (Sonic2013) (.xtb2)](KnuxLib/Engines/Hedgehog/MessageTable_2013.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
@@ -317,7 +317,7 @@ The following formats are only partially supported and have no implementation in
 
 - [Storybook Engine Stage Entity Table (.bin)](KnuxLib/Engines/Storybook/StageEntityTable.cs). Has a lot of little unknown values and lacks proper object parameters names and types, the HSON template sheet I've created only reads things as either a uint or a float, so if something is actually a different data type it won't be parsed correctly.
 
-- [Wayforward Engine Collision (.clb)](KnuxLib/Engines/Wayforward/Collision.cs). The actual model data is read fine, but the rest of the file is completely alien to me, so it's just read as a massive sequence of values for the sake of being able to write it back for testing. Also doesn't seem to work on the files from Shantae Half-Genie Hero, as they seem to be structured differently to the ones in Shantae and the Seven Sirens.
+- [Wayforward Engine Collision (.clb)](KnuxLib/Engines/Wayforward/Collision.cs). Reads and writes fine, but Seven Sirens has a massive chunk of Unknown Data added on to the end that is completely alien to me and needs to be properly reverse engineered. Also has a (potentially temporary) OBJ exporter and Assimp importer.
 
 - [World Adventure Wii Engine Path Spline (.path.dat)](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has reading and writing with a lot of unknowns. Completely lacking an Import or Export (other than generic JSON serialisation) function.
 

@@ -160,7 +160,7 @@
                 // Write this file's data.
                 writer.Write(Data[i].Data);
 
-                // Store our current position to figure out how many bytes we need.
+                // Store our current position to figure out how many bytes we need to pad by.
                 var paddingCount = writer.BaseStream.Position;
 
                 // Realign the writer.
@@ -176,6 +176,22 @@
                 for (int f = 0; f < paddingCount; f++)
                     writer.Write((byte)0x3F);
             }
+
+            // Store our current position to figure out how many bytes we need to pad by.
+            var finalPaddingCount = writer.BaseStream.Position;
+
+            // Realign the writer.
+            writer.FixPadding(0x40);
+
+            // Calculate padding.
+            finalPaddingCount = writer.BaseStream.Position - finalPaddingCount;
+
+            // Jump back by the amount of padding bytes.
+            writer.BaseStream.Position -= finalPaddingCount;
+
+            // Replace the padding bytes with question marks.
+            for (int f = 0; f < finalPaddingCount; f++)
+                writer.Write((byte)0x3F);
 
             // Close Marathon's BinaryWriter.
             writer.Close();
