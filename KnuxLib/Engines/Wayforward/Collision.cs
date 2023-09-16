@@ -32,6 +32,8 @@ namespace KnuxLib.Engines.Wayforward
         public enum Behaviour : ulong
         {
             // TODO: Figure out if I can split 0x400 depending on format version.
+            // TODO: Figure out the unknown tags.
+            // TODO: Check the game specific ones in the other (just in case some HGH stuff works in SS and vice versa)
             Solid = 0x1,
             TopSolid = 0x2,
             Unknown_1 = 0x4, // Half-Genie Hero only.
@@ -43,17 +45,16 @@ namespace KnuxLib.Engines.Wayforward
             Unknown_3 = 0x100, // Half-Genie Hero only.
             WoodSound = 0x400, // Half-Genie Hero only.
             //HealingZone = 0x400, // Has to be paired with Water to use. Seven Sirens only.
-            Drill_1 = 0x800, // How does this one actually work? Seven Sirens only.
-            Unknown_5 = 0x4000,  // Half-Genie Hero only.
-            Drill_2 = 0x8000, // How does this one actually work? Seven Sirens only.
+            Unknown_4 = 0x4000,  // Half-Genie Hero only.
+            DrillZone = 0x8000, // How does this one actually work? Seven Sirens only.
             Water = 0x200000, //Seven Sirens only.
             Slide = 0x400000, // Half-Genie Hero only.
-            Unknown_6 = 0x800000, // Half-Genie Hero only.
-            Unknown_7 = 0x1000000, // Half-Genie Hero only.
-            Unknown_8 = 0x2000000, // Half-Genie Hero only.
-            Unknown_9 = 0x10000000, // What does this one do? Seems to be next to water a lot?
-            Unknown_10 = 0x20000000, // What does this one do? Seven Sirens only.
-            Unknown_11 = 0x80000000, // What does this one do? Half-Genie Hero only.
+            Unknown_5 = 0x800000, // Half-Genie Hero only.
+            Unknown_6 = 0x1000000, // Half-Genie Hero only.
+            Unknown_7 = 0x2000000, // Half-Genie Hero only.
+            Unknown_8 = 0x10000000, // What does this one do? Seems to be next to water a lot?
+            Unknown_9 = 0x20000000, // What does this one do? Seven Sirens only.
+            Unknown_10 = 0x80000000, // What does this one do? Half-Genie Hero only.
             UseBoundingBox = 0x200000000 // Seven Sirens only.
         }
 
@@ -472,16 +473,37 @@ namespace KnuxLib.Engines.Wayforward
                     model.Faces[f] = new() { IndexA = (uint)assimpModel.Meshes[i].Faces[f].Indices[0], IndexB = (uint)assimpModel.Meshes[i].Faces[f].Indices[1], IndexC = (uint)assimpModel.Meshes[i].Faces[f].Indices[2] };
 
                 // Add the behaviour tags for this mesh.
-                // TODO: Fill in all the tags.
                 if (assimpModel.Meshes[i].Name.Contains('@'))
                 {
+                    // Split the mesh name based on the @ character (hold over from old Sonic stuff).
                     string[] nameSplit = assimpModel.Meshes[i].Name.Split('@');
+
+                    // Loop through each split (ignoring the first) and apply the approriate tag.
                     for (int s = 1; s < nameSplit.Length; s++)
                     {
-                        switch (nameSplit[s])
+                        switch (nameSplit[s].ToLower())
                         {
-                            case "SOLID": model.Behaviour |= Behaviour.Solid; break;
-                            case "SLIDE": model.Behaviour |= Behaviour.Slide; break;
+                            case "solid":                         model.Behaviour |= Behaviour.Solid;          break;
+                            case "topsolid":                      model.Behaviour |= Behaviour.TopSolid;       break;
+                            case "unknown_1":                     model.Behaviour |= Behaviour.Unknown_1;      break;
+                            case "unknown_2":                     model.Behaviour |= Behaviour.Unknown_2;      break;
+                            case "spikes":                        model.Behaviour |= Behaviour.Spikes;         break;
+                            case "nomonkey":                      model.Behaviour |= Behaviour.NoMonkey;       break;
+                            case "bottomlesspit":                 model.Behaviour |= Behaviour.BottomlessPit;  break;
+                            case "damagezone":                    model.Behaviour |= Behaviour.DamageZone;     break;
+                            case "unknown_3":                     model.Behaviour |= Behaviour.Unknown_3;      break;
+                            case "woodsound": case "healingzone": model.Behaviour |= Behaviour.WoodSound;      break;
+                            case "unknown_4":                     model.Behaviour |= Behaviour.Unknown_4;      break;
+                            case "drillzone":                     model.Behaviour |= Behaviour.DrillZone;      break;
+                            case "water":                         model.Behaviour |= Behaviour.Water;          break;
+                            case "slide":                         model.Behaviour |= Behaviour.Slide;          break;
+                            case "unknown_5":                     model.Behaviour |= Behaviour.Unknown_5;      break;
+                            case "unknown_6":                     model.Behaviour |= Behaviour.Unknown_6;      break;
+                            case "unknown_7":                     model.Behaviour |= Behaviour.Unknown_7;      break;
+                            case "unknown_8":                     model.Behaviour |= Behaviour.Unknown_8;      break;
+                            case "unknown_9":                     model.Behaviour |= Behaviour.Unknown_9;      break;
+                            case "unknown_10":                    model.Behaviour |= Behaviour.Unknown_10;     break;
+                            case "useboundingbox":                model.Behaviour |= Behaviour.UseBoundingBox; break;
                         }
                     }
                 }
