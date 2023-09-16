@@ -9,7 +9,7 @@ namespace KnuxLib.Engines.Wayforward
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public Collision() { }
-        public Collision(string filepath, FormatVersion version = FormatVersion.sevensirens, bool export = false)
+        public Collision(string filepath, FormatVersion version = FormatVersion.hero, bool export = false)
         {
             Load(filepath, version);
 
@@ -27,27 +27,34 @@ namespace KnuxLib.Engines.Wayforward
             sevensirens = 1
         }
 
-        // Classes for this format.
         [Flags]
         [JsonConverter(typeof(StringEnumConverter))]
         public enum Behaviour : ulong
         {
-            // TODO: Are these the same between games?
+            // TODO: Figure out if I can split 0x400 depending on format version.
             Solid = 0x1,
             TopSolid = 0x2,
-            Unknown_1 = 0x5, // What does this one do? Often paired with NoNewt?
+            Unknown_1 = 0x4, // Half-Genie Hero only.
+            Unknown_2 = 0x5,
             Spikes = 0x8,
-            NoNewt = 0x10,
+            NoMonkey = 0x10,
             BottomlessPit = 0x20,
-            DamageZone = 0x40, // Has to be paired with Water to use.
-            HealingZone = 0x400, // Has to be paired with Water to use. Seems to not be this tag in Half-Genie Hero.
-            Drill_1 = 0x800, // How does this one actually work?
-            Drill_2 = 0x8000, // How does this one actually work?
-            Water = 0x200000,
-            Slide = 0x400000, // Does this work in Seven Sirens?
-            Unknown_2 = 0x10000000, // What does this one do?
-            Unknown_3 = 0x20000000, // What does this one do?
-            UseBoundingBox = 0x200000000
+            DamageZone = 0x40, // Has to be paired with Water to use. Seven Sirens only.
+            Unknown_3 = 0x100, // Half-Genie Hero only.
+            WoodSound = 0x400, // Half-Genie Hero only.
+            //HealingZone = 0x400, // Has to be paired with Water to use. Seven Sirens only.
+            Drill_1 = 0x800, // How does this one actually work? Seven Sirens only.
+            Unknown_5 = 0x4000,  // Half-Genie Hero only.
+            Drill_2 = 0x8000, // How does this one actually work? Seven Sirens only.
+            Water = 0x200000, //Seven Sirens only.
+            Slide = 0x400000, // Half-Genie Hero only.
+            Unknown_6 = 0x800000, // Half-Genie Hero only.
+            Unknown_7 = 0x1000000, // Half-Genie Hero only.
+            Unknown_8 = 0x2000000, // Half-Genie Hero only.
+            Unknown_9 = 0x10000000, // What does this one do? Seems to be next to water a lot?
+            Unknown_10 = 0x20000000, // What does this one do? Seven Sirens only.
+            Unknown_11 = 0x80000000, // What does this one do? Half-Genie Hero only.
+            UseBoundingBox = 0x200000000 // Seven Sirens only.
         }
 
         public class FormatData
@@ -269,7 +276,7 @@ namespace KnuxLib.Engines.Wayforward
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath, FormatVersion version = FormatVersion.sevensirens)
+        public void Save(string filepath, FormatVersion version = FormatVersion.hero)
         {
             // Set up Marathon's BinaryWriter.
             BinaryWriterEx writer = new(File.Create(filepath));
