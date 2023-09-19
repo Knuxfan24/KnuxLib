@@ -412,24 +412,31 @@ namespace KnuxLib.Engines.Wayforward
                 Console.WriteLine($@"Exporting {directory}\model{i}.obj");
 
                 // Write each vertex.
-                foreach (var vertex in Data.Models[i].Vertices)
+                foreach (Vector3 vertex in Data.Models[i].Vertices)
                     obj.WriteLine($"v {vertex.X} {vertex.Y} {vertex.Z}");
+
+                // Set up a list of the behaviour tags.
+                string tags = "";
+
+                // Populate the list with the tags from this model.
+                foreach (string tag in Data.Models[i].Behaviour.ToString().Split(", "))
+                    tags += $"@{tag}";
 
                 // Write the object name for this model.
                 if (Data.Models[i].UnknownULong_1 != null)
                 {
                     ulong value = (ulong)Data.Models[i].UnknownULong_1;
-                    obj.WriteLine($"g model{i}_{Data.Models[i].Behaviour}_unk1[0x{value.ToString("X").PadLeft(16, '0')}]");
-                    obj.WriteLine($"o model{i}_{Data.Models[i].Behaviour}_unk1[0x{value.ToString("X").PadLeft(16, '0')}]");
+                    obj.WriteLine($"g model{i}{tags}_unk1[0x{value.ToString("X").PadLeft(16, '0')}]");
+                    obj.WriteLine($"o model{i}{tags}_unk1[0x{value.ToString("X").PadLeft(16, '0')}]");
                 }
                 else
                 {
-                    obj.WriteLine($"g model{i}_{Data.Models[i].Behaviour}");
-                    obj.WriteLine($"o model{i}_{Data.Models[i].Behaviour}");
+                    obj.WriteLine($"g model{i}{tags}");
+                    obj.WriteLine($"o model{i}{tags}");
                 }
 
                 // Write each face for this model, with the indices incremented by 1 due to OBJ counting from 1 not 0.
-                foreach (var face in Data.Models[i].Faces)
+                foreach (Face face in Data.Models[i].Faces)
                     obj.WriteLine($"f {face.IndexA + 1} {face.IndexB + 1} {face.IndexC + 1}");
 
                 // Close the StreamWriter.

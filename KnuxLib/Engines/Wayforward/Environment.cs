@@ -29,10 +29,9 @@
         public class Entity
         {
             /// <summary>
-            /// The index into the name list for this entity's name.
-            /// TODO: Is this right?
+            /// The name of this entity.
             /// </summary>
-            public uint EntityNameIndex { get; set; }
+            public string EntityName { get; set; } = "";
 
             /// <summary>
             /// An unknown integer value.
@@ -71,7 +70,7 @@
             /// <summary>
             /// The scale of this entity's model.
             /// </summary>
-            public Vector3 Scale { get; set; }
+            public Vector3 Scale { get; set; } = new(1f, 1f, 1f);
 
             /// <summary>
             /// The rotation of this entity.
@@ -92,23 +91,15 @@
             public uint UnknownUInt32_2 { get; set; }
 
             /// <summary>
-            /// The index into the name list for this entity's model.
+            /// The name of the wf3d mesh this entity should use.
             /// </summary>
-            public uint ModelNameIndex { get; set; }
+            public string ModelName { get; set; } = "";
 
-            /// <summary>
-            /// The name of this entity. Not actually stored with this data, but copied here for ease of reading in a JSON.
-            /// </summary>
-            public string EntityNameJson { get; set; } = "";
-
-            /// <summary>
-            /// The name of this entity's model. Not actually stored with this data, but copied here for ease of reading in a JSON.
-            /// </summary>
-            public string ModelNameJson { get; set; } = "";
+            public override string ToString() => EntityName;
         }
 
         // Actual data presented to the end user.
-        public FormatData Data = new();
+        public Entity[] Data = Array.Empty<Entity>();
 
         /// <summary>
         /// Loads and parses this format's file.
@@ -138,7 +129,7 @@
             reader.FixPadding(0x40);
 
             // Create the entity array.
-            Data.Entities = new Entity[entityCount];
+            Data = new Entity[entityCount];
 
             // Loop through and read each entity.
             for (ulong i = 0; i < entityCount; i++)
@@ -158,8 +149,8 @@
                 // Skip an unknown sequence of bytes that is always 00 00 00 00 10 01 0A 57 00 00 00 00
                 reader.JumpAhead(0x0C);
 
-                // Read the entity's name index.
-                entity.EntityNameIndex = reader.ReadUInt32();
+                // Read the entity's name.
+                entity.EntityName = Helpers.ReadWayforwardLengthPrefixedString(reader, entityNameTableOffset, reader.ReadUInt32());
 
                 // Skip an unknown value of 0.
                 reader.JumpAhead(0x04);
@@ -222,46 +213,14 @@
                 // Skip an unknown sequence of bytes that is always 00 00 00 00 1A 52 9A 1A 30 00 00 00
                 reader.JumpAhead(0x0C);
 
-                // Read the entity's model name index.
-                entity.ModelNameIndex = reader.ReadUInt32();
+                // Read the entity's model name.
+                entity.ModelName = Helpers.ReadWayforwardLengthPrefixedString(reader, entityNameTableOffset, reader.ReadUInt32());
 
                 // Save this entity.
-                Data.Entities[i] = entity;
+                Data[i] = entity;
 
                 // Jump back for the next entity.
                 reader.JumpTo(position);
-            }
-
-            // Jump to the name table offset.
-            reader.JumpTo(entityNameTableOffset);
-
-            // Create the string array for the names.
-            Data.Names = new string[entityNameCount];
-
-            // Loop through each name entry.
-            for (ulong i = 0; i < entityNameCount; i++)
-            {
-                // Read this name's offset.
-                long entityNameOffset = reader.ReadInt64();
-
-                // Save our position to jump back for the next name.
-                long position = reader.BaseStream.Position;
-
-                // Jump to this name's offset.
-                reader.JumpTo(entityNameOffset);
-
-                // Read and save this name's string.
-                Data.Names[i] = reader.ReadNullPaddedString(reader.ReadInt32());
-
-                // Jump back for the next name.
-                reader.JumpTo(position);
-            }
-
-            // Fill in the names for the entities for readability.
-            foreach (Entity entity in Data.Entities)
-            {
-                entity.EntityNameJson = Data.Names[entity.EntityNameIndex];
-                entity.ModelNameJson = Data.Names[entity.ModelNameIndex];
             }
 
             // Close Marathon's BinaryReader.
@@ -277,17 +236,32 @@
             // Set up Marathon's BinaryWriter.
             BinaryWriterEx writer = new(File.Create(filepath));
 
+            // Set up a list of names used by this file so we don't end up writing the same string multiple times.
+            List<string> names = new();
+
+            // Loop through each entity.
+            foreach (var entity in Data)
+            {
+                // Add this entity's name to the list if it isn't already there.
+                if (!names.Contains(entity.EntityName))
+                    names.Add(entity.EntityName);
+
+                // Add this entity's model name to the list if it isn't already there.
+                if (!names.Contains(entity.ModelName))
+                    names.Add(entity.ModelName);
+            }
+
             // Write an unknown value that is always 0.
             writer.Write(0);
 
             // Write the count of entities in this file.
-            writer.Write(Data.Entities.Length);
+            writer.Write(Data.Length);
 
             // Write a value that is always 0x40. This is likely an offset, but as there's no table like a BINA Format, I don't need to worry about it.
             writer.Write(0x40L);
 
             // Write the count of names in this file.
-            writer.Write((ulong)Data.Names.Length);
+            writer.Write((ulong)names.Count);
 
             // Add an offset for the entity name table.
             writer.AddOffset("EntityNameTableOffset", 0x08);
@@ -296,14 +270,14 @@
             writer.FixPadding(0x40);
 
             // Add offsets for all the entities.
-            for (int i = 0; i < Data.Entities.Length; i++)
+            for (int i = 0; i < Data.Length; i++)
                 writer.AddOffset($"Entity{i}Offset", 0x08);
 
             // Realign to 0x40 bytes.
             writer.FixPadding(0x40);
 
             // Loop through each entity.
-            for (int i = 0; i < Data.Entities.Length; i++)
+            for (int i = 0; i < Data.Length; i++)
             {
                 // Fill in this entity's offset.
                 writer.FillOffset($"Entity{i}Offset");
@@ -313,8 +287,8 @@
                 writer.Write(0x570A0110);
                 writer.Write(0);
 
-                // Write the entity name index.
-                writer.Write(Data.Entities[i].EntityNameIndex);
+                // Write the index of this entity's name.
+                writer.Write(names.IndexOf(Data[i].EntityName));
 
                 // Write an unknown value of 0.
                 writer.Write(0);
@@ -325,20 +299,20 @@
                 writer.Write(0xFFFFFFFF);
 
                 // Write the first unknown integer value.
-                writer.Write(Data.Entities[i].UnknownUInt32_1);
+                writer.Write(Data[i].UnknownUInt32_1);
 
                 // Write an unknown boolean value.
-                writer.Write(Data.Entities[i].UnknownBoolean_1);
+                writer.Write(Data[i].UnknownBoolean_1);
                 writer.FixPadding(0x04);
 
                 // Write this entity's colour modifier.
-                writer.Write(Data.Entities[i].ColourModifier);
+                writer.Write(Data[i].ColourModifier);
 
                 // Write this entity's horizontal texture scroll speed value.
-                writer.Write(Data.Entities[i].HorizontalTextureScrollSpeed);
+                writer.Write(Data[i].HorizontalTextureScrollSpeed);
 
                 // Write this entity's vertical texture scroll speed value.
-                writer.Write(Data.Entities[i].VerticalTextureScrollSpeed);
+                writer.Write(Data[i].VerticalTextureScrollSpeed);
 
                 // Write three unknown floating point values that are always 0.5.
                 writer.Write(0.5f);
@@ -361,16 +335,16 @@
                 writer.Write(0x30);
 
                 // Write this entity's position.
-                writer.Write(Data.Entities[i].Position);
-                
+                writer.Write(Data[i].Position);
+
                 // Write this entity's scale.
-                writer.Write(Data.Entities[i].Scale);
+                writer.Write(Data[i].Scale);
 
                 // Write this entity's rotation.
-                writer.Write(Data.Entities[i].Rotation);
+                writer.Write(Data[i].Rotation);
 
                 // Write this entity's first unknown floating point value.
-                writer.Write(Data.Entities[i].UnknownFloat_1);
+                writer.Write(Data[i].UnknownFloat_1);
 
                 // Write an unknown sequenece of bytes that is always 0B 01 8A A1
                 writer.Write(0xA18A010B);
@@ -379,41 +353,44 @@
                 writer.Write(0x30);
 
                 // Write the second unknown integer value.
-                writer.Write(Data.Entities[i].UnknownUInt32_2);
+                writer.Write(Data[i].UnknownUInt32_2);
 
                 // Write an unknown sequence of bytes that is always 00 00 00 00 1A 52 9A 1A 30 00 00 00
                 writer.Write(0);
                 writer.Write(0x1A9A521A);
                 writer.Write(0x30);
 
-                // Write this entity's model name index.
-                writer.Write(Data.Entities[i].ModelNameIndex);
+                // Write the index of this entity's model name.
+                writer.Write(names.IndexOf(Data[i].ModelName));
 
                 // Realign to 0x40 bytes.
                 writer.FixPadding(0x40);
             }
 
+            // Realign to 0x40 bytes.
+            writer.FixPadding(0x40);
+
             // Fill in the offset for this file's name table.
             writer.FillOffset("EntityNameTableOffset");
 
             // Add offsets for all the names.
-            for (int i = 0; i < Data.Names.Length; i++)
+            for (int i = 0; i < names.Count; i++)
                 writer.AddOffset($"Name{i}Offset", 0x08);
 
             // Realign to 0x40 bytes.
             writer.FixPadding(0x40);
-            
+
             // Loop through each name.
-            for (int i = 0; i < Data.Names.Length; i++)
+            for (int i = 0; i < names.Count; i++)
             {
                 // Fill in this name's offset.
                 writer.FillOffset($"Name{i}Offset");
 
                 // Write the length of this name.
-                writer.Write(Data.Names[i].Length);
+                writer.Write(names[i].Length);
 
                 // Write this name's string.
-                writer.WriteNullTerminatedString(Data.Names[i]);
+                writer.WriteNullTerminatedString(names[i]);
 
                 // Realign to 0x08 bytes.
                 writer.FixPadding(0x08);

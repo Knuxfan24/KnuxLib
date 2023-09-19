@@ -1129,7 +1129,7 @@ namespace KnuxTools
                 case ".wayforward.environment.json":
                     using (KnuxLib.Engines.Wayforward.Environment env = new())
                     {
-                        env.Data = env.JsonDeserialise<KnuxLib.Engines.Wayforward.Environment.FormatData>(arg);
+                        env.Data = env.JsonDeserialise<KnuxLib.Engines.Wayforward.Environment.Entity[]>(arg);
                         env.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.env");
                     }
                     break;
