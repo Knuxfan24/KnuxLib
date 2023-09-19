@@ -117,6 +117,7 @@ namespace KnuxTools
 
                 Console.WriteLine("Wayforward Engine:\n" +
                                   "Environment (.env)\n" +
+                                  "Layer List (.lgb)\n" +
                                   "List Table (.ltb)\n" +
                                   "Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
@@ -1131,6 +1132,15 @@ namespace KnuxTools
                     {
                         env.Data = env.JsonDeserialise<KnuxLib.Engines.Wayforward.Environment.Entity[]>(arg);
                         env.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.env");
+                    }
+                    break;
+
+                case ".lgb": using (KnuxLib.Engines.Wayforward.Layers lgb = new(arg, true)) break;
+                case ".wayforward.layers.json":
+                    using (KnuxLib.Engines.Wayforward.Layers lgb = new())
+                    {
+                        lgb.Data = lgb.JsonDeserialise<List<string>>(arg);
+                        lgb.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.lgb");
                     }
                     break;
 

@@ -310,6 +310,11 @@ Supported formats:
 > **Note**
 > Has a few unknown values.
 
+- [Layer List (.lgb)](KnuxLib/Engines/Wayforward/Layers.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Unsure on the length of the strings within this file, 40 characters seems to work, but I'm not confident that all 40 can be used. Needs testing.
+
 - [List Table (.ltb)](KnuxLib/Engines/Wayforward/ListTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Package Archive (.pak)](KnuxLib/Engines/Wayforward/Package.cs) reading, writing, data extraction and data importing.

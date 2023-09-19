@@ -85,10 +85,9 @@
             public float UnknownFloat_1 { get; set; }
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
+            /// The index of the layer (definied in the stage's LGB file) that this entity is part of.
             /// </summary>
-            public uint UnknownUInt32_2 { get; set; }
+            public uint LayerIndex { get; set; }
 
             /// <summary>
             /// The name of the wf3d mesh this entity should use.
@@ -207,8 +206,8 @@
                 // Skip an unknown value of 0x30.
                 reader.JumpAhead(0x04);
 
-                // Read the second unknown integer value.
-                entity.UnknownUInt32_2 = reader.ReadUInt32();
+                // Read this entity's layer index.
+                entity.LayerIndex = reader.ReadUInt32();
 
                 // Skip an unknown sequence of bytes that is always 00 00 00 00 1A 52 9A 1A 30 00 00 00
                 reader.JumpAhead(0x0C);
@@ -352,8 +351,8 @@
                 // Write an unknown value of 0x30.
                 writer.Write(0x30);
 
-                // Write the second unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_2);
+                // Write this entity's layer index.
+                writer.Write(Data[i].LayerIndex);
 
                 // Write an unknown sequence of bytes that is always 00 00 00 00 1A 52 9A 1A 30 00 00 00
                 writer.Write(0);
