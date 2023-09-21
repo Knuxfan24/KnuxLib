@@ -61,14 +61,7 @@
             /// <summary>
             /// The rotation of this entity.
             /// </summary>
-            public Vector3 Rotation { get; set; }
-
-            /// <summary>
-            /// An unknown floating point value.
-            /// TODO: What is this?
-            /// TODO: Caused some weird rotational stuff?
-            /// </summary>
-            public float UnknownFloat_1 { get; set; }
+            public Quaternion Rotation { get; set; }
 
             /// <summary>
             /// The index of the layer (definied in the stage's LGB file) that this entity is part of.
@@ -181,10 +174,7 @@
                 entity.Scale = reader.ReadVector3();
 
                 // Read the entity's rotation.
-                entity.Rotation = reader.ReadVector3();
-
-                // Read the first unknown floating point value.
-                entity.UnknownFloat_1 = reader.ReadSingle();
+                entity.Rotation = reader.ReadQuaternion();
 
                 // Skip an unknown sequenece of bytes that is always 0B 01 8A A1
                 reader.JumpAhead(0x04);
@@ -327,9 +317,6 @@
 
                 // Write this entity's rotation.
                 writer.Write(Data[i].Rotation);
-
-                // Write this entity's first unknown floating point value.
-                writer.Write(Data[i].UnknownFloat_1);
 
                 // Write an unknown sequenece of bytes that is always 0B 01 8A A1
                 writer.Write(0xA18A010B);

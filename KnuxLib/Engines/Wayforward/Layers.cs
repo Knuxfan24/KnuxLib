@@ -13,6 +13,7 @@
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.wayforward.layers.json", Data);
         }
 
+        // Actual data presented to the end user.
         public List<string> Data = new();
 
         /// <summary>
