@@ -14,10 +14,7 @@ namespace KnuxLib.Engines.Wayforward
             Load(filepath, version);
 
             if (export)
-            {
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.wayforward.collision.json", Data);
-                ExportOBJTemp($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}");
-            }
+                ExportOBJ(Helpers.GetDirectoryAndFileNameWithNewExtension(filepath, "obj"));
         }
 
         // Classes for this format.
@@ -394,26 +391,31 @@ namespace KnuxLib.Engines.Wayforward
         }
 
         /// <summary>
-        /// Temporary solution to export the model data to an OBJ.
+        /// Exports this collision's model data to an OBJ file.
+        /// TODO: Figure out what I want to do with the Unknown Data in Seven Sirens when it comes to this.
+        /// TODO: Figure out how I want to present the tags, the @ system is what I want but 3DS Max's OBJ importer is stupid and changes most special characters to an underscore.
         /// </summary>
-        /// <param name="directory">The directory to export to.</param>
-        public void ExportOBJTemp(string directory)
+        /// <param name="filepath">The directory to export to.</param>
+        public void ExportOBJ(string filepath)
         {
-            // Create the directory.
-            Directory.CreateDirectory(directory);
+            // Set up an integer to keep track of the amount of vertices.
+            int vertexCount = 0;
+
+            // Create the StreamWriter.
+            StreamWriter obj = new(filepath);
 
             // Loop through each model.
             for (int i = 0; i < Data.Models.Count; i++)
             {
-                // Create a StreamWriter for this model.
-                StreamWriter obj = new($@"{directory}\model{i}.obj");
-
-                // Print the model we're exporting.
-                Console.WriteLine($@"Exporting {directory}\model{i}.obj");
+                // Write the Vertex Comment for this model.
+                obj.WriteLine($"# Model {i} Vertices\r\n");
 
                 // Write each vertex.
                 foreach (Vector3 vertex in Data.Models[i].Vertices)
                     obj.WriteLine($"v {vertex.X} {vertex.Y} {vertex.Z}");
+
+                // Write the Name/Behaviour Tags Comment for this model.
+                obj.WriteLine($"\r\n# Model {i} Name and Behaviour Tags\r\n");
 
                 // Set up a list of the behaviour tags.
                 string tags = "";
@@ -435,13 +437,22 @@ namespace KnuxLib.Engines.Wayforward
                     obj.WriteLine($"o model{i}{tags}");
                 }
 
-                // Write each face for this model, with the indices incremented by 1 due to OBJ counting from 1 not 0.
-                foreach (Face face in Data.Models[i].Faces)
-                    obj.WriteLine($"f {face.IndexA + 1} {face.IndexB + 1} {face.IndexC + 1}");
+                // Write the Faces Comment for this model.
+                obj.WriteLine($"\r\n# Model {i} Faces\r\n");
 
-                // Close the StreamWriter.
-                obj.Close();
+                // Write each face for this model, with the indices incremented by 1 (and the current value of vertexCount) due to OBJ counting from 1 not 0.
+                foreach (Face face in Data.Models[i].Faces)
+                    obj.WriteLine($"f {face.IndexA + 1 + vertexCount} {face.IndexB + 1 + vertexCount} {face.IndexC + 1 + vertexCount}");
+
+                // Add the amount of vertices in this model to the count.
+                vertexCount += Data.Models[i].Vertices.Length;
+
+                // Write an empty line for neatness.
+                obj.WriteLine();
             }
+
+            // Close the StreamWriter.
+            obj.Close();
         }
 
         /// <summary>

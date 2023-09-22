@@ -1126,6 +1126,40 @@ namespace KnuxTools
                 #endregion
 
                 #region Wayforward Engine Formats.
+                case ".clb":
+                    // If a version isn't specified, then ask the user what to read as.
+                    if (version == null)
+                    {
+                        Console.WriteLine
+                        (
+                            "This file has multiple variants that can't be auto detected, please specifiy the variant;\n" +
+                            "1. Shantae: Half-Genie Hero\n" +
+                            "2. Shantae and the Seven Sirens"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': version = "clb_hero"; break;
+                            case '2': version = "clb_sevensirens"; break;
+                        }
+                    }
+
+                    // Sanity check that version actually has a value.
+                    if (version != null)
+                    {
+                        switch (version)
+                        {
+                            case "clb_hero":
+                                using (KnuxLib.Engines.Wayforward.Collision collision = new(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.hero, true))
+                                    break;
+                            case "clb_sevensirens":
+                                using (KnuxLib.Engines.Wayforward.Collision collision = new(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.sevensirens, true))
+                                    break;
+                        }
+                    }
+                    break;
+
                 case ".env": using (KnuxLib.Engines.Wayforward.Environment env = new(arg, true)) break;
                 case ".wayforward.environment.json":
                     using (KnuxLib.Engines.Wayforward.Environment env = new())
