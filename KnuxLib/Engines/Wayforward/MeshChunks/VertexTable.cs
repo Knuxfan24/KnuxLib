@@ -32,7 +32,7 @@ namespace KnuxLib.Engines.Wayforward.MeshChunks
             /// The indices of this vertex.
             /// TODO: How do these affect things?
             /// </summary>
-            public byte[] Indices { get; set; } = new byte[2];
+            public byte[] Indices { get; set; } = new byte[4];
 
             /// <summary>
             /// The tangent space normals for this vertex.
@@ -60,6 +60,11 @@ namespace KnuxLib.Engines.Wayforward.MeshChunks
         /// The list of the vertices in this table.
         /// </summary>
         public Vertex[] Vertices { get; set; } = Array.Empty<Vertex>();
+
+        /// <summary>
+        /// The size of the vertices in this table, calculated during and used for writing.
+        /// </summary>
+        private int VertexSize = 0x1C;
 
         /// <summary>
         /// Read the data of this vertex table from the reader's current position.
@@ -143,6 +148,98 @@ namespace KnuxLib.Engines.Wayforward.MeshChunks
 
             // Return our read vertex table.
             return vertexTable;
+        }
+
+        /// <summary>
+        /// Writes the data of this vertex table to the writer's current position.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void Write(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Write the Node Type.
+            writer.Write(0x02);
+
+            // Write empty values for the sub node count and offset, as vertex tables don't have them.
+            writer.Write(0);
+            writer.Write(0L);
+
+            // Write the amount of vertices in this vertex table.
+            writer.Write(Vertices.Length);
+
+            // Write the flag value depending on if this vertex table has any tangent or unknown bytes.
+            // Also calculate the vertex size.
+            if (Vertices[0].Tangent != null)
+            {
+                writer.Write(0x01);
+                VertexSize = 0x24;
+            }
+            else if (Vertices[0].Flag8_UnknownBytes != null)
+            {
+                writer.Write(0x08);
+                VertexSize = 0x20;
+            }
+            else
+            {
+                writer.Write(0x00);
+            }
+
+            // Write this vertex table's hash.
+            writer.Write(Hash);
+
+            // Add an offset for this face table's data.
+            writer.AddOffset($"VertexTable{nodeIndex}Data");
+
+            // Write the length of this vertex table's data, including the data magic value and size.
+            writer.Write((VertexSize * Vertices.Length) + 0x08);
+        }
+
+        /// <summary>
+        /// Write this vertex table's vertex data.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void WriteData(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Fill in the offset for this texture's image.
+            writer.FillOffset($"VertexTable{nodeIndex}Data");
+
+            // Write the data magic value.
+            writer.Write(0xFFFFFF);
+
+            // Write the length of this vertex table's data.
+            writer.Write(VertexSize * Vertices.Length);
+
+            // Loop through and write each vertex.
+            for (int i = 0; i < Vertices.Length; i++)
+            {
+                // Write this vertex's position.
+                writer.Write(Vertices[i].Position);
+
+                // Write this vertex's weights.
+                writer.Write(Vertices[i].Weights);
+
+                // Write this vertex's indices.
+                writer.Write(Vertices[i].Indices);
+
+                // If this vertex has tangent values, then write them.
+                if (Vertices[i].Tangent != null)
+                {
+                    writer.Write(Vertices[i].Tangent[0]);
+                    writer.Write(Vertices[i].Tangent[1]);
+                }
+
+                // Write this vertex's UV Coordinates.
+                writer.Write((Half)Vertices[i].UVCoordinates[0]);
+                writer.Write((Half)Vertices[i].UVCoordinates[1]);
+
+                // If this vertex has the Flag 8 bytes, then write them.
+                if (Vertices[i].Flag8_UnknownBytes != null)
+                    writer.Write(Vertices[i].Flag8_UnknownBytes);
+            }
+
+            // Realign to 0x08 bytes.
+            writer.FixPadding(0x08);
         }
     }
 }

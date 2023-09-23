@@ -42,6 +42,9 @@
 
         public override string ToString() => Name;
 
+        // A list of offsets, used for writing.
+        private readonly List<long> Offsets = new();
+
         /// <summary>
         /// Read the data of this group from the reader's current position.
         /// </summary>
@@ -131,6 +134,114 @@
 
             // Return this group.
             return group;
+        }
+
+        /// <summary>
+        /// Writes the data of this group to the writer's current position.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void Write(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Write the Node Type.
+            writer.Write(0x05);
+
+            // Write the amount of sub nodes this group has.
+            writer.Write(SubNodes.Count);
+
+            // Add an offset for this group's sub nodes.
+            writer.AddOffset($"Group{nodeIndex}SubNodes", 0x08);
+
+            // Write this group's hash.
+            writer.Write(Hash);
+
+            // Write a placeholder value for UnknownOffset_1.
+            // TODO: Add the count of the unknown data 1 once we figure it out.
+            writer.Write(0);
+
+            // Write a placeholder value for UnknownOffset_2.
+            // TODO: Add the count of the unknown data 2 once we figure it out.
+            writer.Write(0);
+
+            // Write this group's unknown hash.
+            writer.Write(UnknownHash);
+
+            // Write this group's transposed matrix.
+            writer.Write(Matrix4x4.Transpose(Matrix));
+
+            // Add an offset for this group's first unknown chunk.
+            writer.AddOffset($"Group{nodeIndex}Unknown1");
+
+            // Write a placeholder size for UnknownOffset_1.
+            // TODO: Fill this in once we figure that data out.
+            writer.Write(0);
+
+            // Add an offset for this group's second unknown chunk.
+            writer.AddOffset($"Group{nodeIndex}Unknown2");
+
+            // Write a placeholder size for UnknownOffset_2.
+            // TODO: Fill this in once we figure that data out.
+            writer.Write(0);
+
+            // Add an offset for this group's name.
+            writer.AddOffset($"Group{nodeIndex}Name");
+
+            // Write the length of this group's name, including the null terminator, data magic value and size.
+            writer.Write(Name.Length + 0x09);
+        }
+
+        /// <summary>
+        /// Write this group's sub nodes.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void WriteSubNodes(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Loop through each sub node.
+            for (int i = 0; i < SubNodes.Count; i++)
+            {
+                // Add an offset of this node's position so we can fill in the sub node offsets.
+                Offsets.Add(writer.BaseStream.Position);
+
+                // Write the node based on its type.
+                switch (SubNodes[i].GetType().Name)
+                {
+                    case "TextureMap": (SubNodes[i] as TextureMap).Write(writer); break;
+                    case "ObjectMap":  (SubNodes[i] as ObjectMap).Write(writer);  break;
+
+                    default: Console.WriteLine($"Writing of node type '{SubNodes[i].GetType().Name}' not yet implemented."); break;
+                }
+            }
+
+            // Fill in the offset for the sub node table.
+            writer.FillOffset($"Group{nodeIndex}SubNodes");
+
+            // Write all the offsets for the sub nodes.
+            foreach (long offset in Offsets)
+                writer.Write(offset);
+        }
+
+        /// <summary>
+        /// Write this group's name.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void WriteName(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Fill in the offset for this group's name.
+            writer.FillOffset($"Group{nodeIndex}Name");
+
+            // Write the data magic value.
+            writer.Write(0xFFFFFF);
+
+            // Write the length of the name, including the null terminator.
+            writer.Write(Name.Length + 0x01);
+
+            // Write this group's name.
+            writer.WriteNullTerminatedString(Name);
+
+            // Realign to 0x08 bytes.
+            writer.FixPadding(0x08);
         }
     }
 }

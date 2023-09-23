@@ -19,7 +19,7 @@
         public ulong[] UnknownULong_Array { get; set; } = new ulong[3];
 
         /// <summary>
-        /// Read the data of this face table from the reader's current position.
+        /// Read the data of this texture map from the reader's current position.
         /// </summary>
         /// <param name="reader">The Marathon BinaryReader to use.</param>
         public static TextureMap Read(BinaryReaderEx reader)
@@ -40,6 +40,31 @@
 
             // Return our read texture map.
             return textureMap;
+        }
+
+        /// <summary>
+        /// Writes the data of this texture map to the writer's current position.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        public void Write(BinaryWriterEx writer)
+        {
+            // Write the Node Type.
+            writer.Write(0x04);
+
+            // Write empty values for the sub node count and offset, as texture maps don't have them.
+            writer.Write(0);
+            writer.Write(0L);
+
+            // Write this texture map's object hash.
+            writer.Write(ObjectHash);
+
+            // Write this texture map's texture hash.
+            writer.Write(TextureHash);
+
+            // Write the three unknown ulong values for this texture map.
+            writer.Write(UnknownULong_Array[0]);
+            writer.Write(UnknownULong_Array[1]);
+            writer.Write(UnknownULong_Array[2]);
         }
     }
 }

@@ -56,5 +56,35 @@
             // Return our read object map.
             return objectMap;
         }
+
+        /// <summary>
+        /// Writes the data of this object map to the writer's current position.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        public void Write(BinaryWriterEx writer)
+        {
+            // Write the Node Type.
+            writer.Write(0x06);
+
+            // Write empty values for the sub node count and offset, as object maps don't have them.
+            writer.Write(0);
+            writer.Write(0L);
+
+            // Write this object map's unknown hash.
+            writer.Write(UnknownHash);
+
+            // Write this object map's target object hash.
+            writer.Write(ObjectHash);
+
+            // Write this object map's vertex object hash.
+            writer.Write(VertexHash);
+
+            // Write this object map's face object hash.
+            writer.Write(FaceHash);
+
+            // Write the two Vector3s for this object map's AABB.
+            writer.Write(AABB[0]);
+            writer.Write(AABB[1]);
+        }
     }
 }

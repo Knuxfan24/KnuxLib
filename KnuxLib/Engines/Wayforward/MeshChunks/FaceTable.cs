@@ -87,5 +87,63 @@
             // Return our read face table.
             return faceTable;
         }
+
+        /// <summary>
+        /// Writes the data of this face table to the writer's current position.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void Write(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Write the Node Type.
+            writer.Write(0x03);
+
+            // Write empty values for the sub node count and offset, as face tables don't have them.
+            writer.Write(0);
+            writer.Write(0L);
+
+            // Write the face indices count.
+            writer.Write(Faces.Length * 3);
+
+            // Write an unknown value of 0x02.
+            writer.Write(0x02);
+
+            // Write this face table's hash.
+            writer.Write(Hash);
+
+            // Add an offset for this face table's data.
+            writer.AddOffset($"FaceTable{nodeIndex}Data");
+
+            // Write the length of this face table's data, including the data magic value and size.
+            writer.Write((Faces.Length * 0x0C) + 0x08);
+        }
+
+        /// <summary>
+        /// Write this face table's data.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void WriteData(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Fill in the offset for this face table's data.
+            writer.FillOffset($"FaceTable{nodeIndex}Data");
+
+            // Write the data magic value.
+            writer.Write(0xFFFFFF);
+
+            // Write the length of this texture's data.
+            writer.Write(Faces.Length * 0x0C);
+
+            // Loop through and write each face's indices.
+            for (int i = 0; i < Faces.Length; i++)
+            {
+                writer.Write(Faces[i].IndexA);
+                writer.Write(Faces[i].IndexB);
+                writer.Write(Faces[i].IndexC);
+            }
+
+            // Realign to 0x08 bytes.
+            writer.FixPadding(0x08);
+        }
     }
 }

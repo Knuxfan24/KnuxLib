@@ -8,7 +8,7 @@ namespace KnuxLib.Engines.Wayforward
     // TODO: Reverse engineer the data at the unknown offsets in each of the chunks.
     // TODO: Figure out an export solution.
     // TODO: Figure out an import solution.
-    // TODO: Figure out a way to save this format accurately.
+    // TODO: Get saving fully working once the unknown data in the chunks is sorted out.
     // TODO: Texture decompression/recompression.
     public class Mesh : FileBase
     {
@@ -147,6 +147,103 @@ namespace KnuxLib.Engines.Wayforward
 
             // Jump back for the next node.
             reader.JumpTo(position);
+        }
+
+        /// <summary>
+        /// Saves this format's file.
+        /// </summary>
+        /// <param name="filepath">The path to save to.</param>
+        public void Save(string filepath)
+        {
+            // Set up a list of offsets.
+            List<long> Offsets = new();
+
+            // Set up Marathon's BinaryWriter.
+            BinaryWriterEx writer = new(File.Create(filepath));
+
+            // Write the WFSN signature.
+            writer.Write("WFSN");
+
+            // Add an offset to the first data chunk. The .wf3d files don't seem to need this, but the .gpu ones do.
+            writer.AddOffset("FirstDataChunk");
+
+            // Realign to 0x10 bytes.
+            writer.FixPadding(0x10);
+
+            // Write the root node's type.
+            writer.Write(0);
+
+            // Write the amount of nodes in this file.
+            writer.Write(Data.Count);
+
+            // Add an offset for the root node's table.
+            writer.AddOffset("RootNodeOffsetTable", 0x08);
+
+            // Loop through each node for the main writing.
+            for (int i = 0; i < Data.Count; i++)
+            {
+                // Add an offset for this node.
+                Offsets.Add(writer.BaseStream.Position);
+
+                // Write the node based on its type.
+                switch (Data[i].GetType().Name)
+                {
+                    case "Texture":     (Data[i] as Texture).Write(writer, i);     break;
+                    case "VertexTable": (Data[i] as VertexTable).Write(writer, i); break;
+                    case "FaceTable":   (Data[i] as FaceTable).Write(writer, i);   break;
+                    case "TextureMap":  (Data[i] as TextureMap).Write(writer);     break;
+                    case "Group":       (Data[i] as Group).Write(writer, i);       break;
+                    case "ObjectMap":   (Data[i] as ObjectMap).Write(writer);      break;
+
+                    default: Console.WriteLine($"Writing of node type '{Data[i].GetType().Name}' not yet implemented."); break;
+                }
+            }
+
+            // Loop through each node for the sub nodes.
+            for (int i = 0; i < Data.Count; i++)
+            {
+                // Write the sub nodes based on the parent node's type.
+                switch (Data[i].GetType().Name)
+                {
+                    case "Group": (Data[i] as Group).WriteSubNodes(writer, i); break;
+                }
+            }
+
+            // Fill in the offset for the root node's table.
+            writer.FillOffset("RootNodeOffsetTable");
+
+            // Write all the offsets for the nodes.
+            foreach (long offset in Offsets)
+                writer.Write(offset);
+
+            // Fill in the offset for the first data chunk.
+            writer.FillOffset("FirstDataChunk");
+
+            // Loop through each node for their names.
+            for (int i = 0; i < Data.Count; i++)
+            {
+                // Write the node name based on the type.
+                switch (Data[i].GetType().Name)
+                {
+                    case "Texture": (Data[i] as Texture).WriteName(writer, i); break;
+                    case "Group":   (Data[i] as Group).WriteName(writer, i);   break;
+                }
+            }
+
+            // Loop through each node for their extra data chunks.
+            for (int i = 0; i < Data.Count; i++)
+            {
+                // Write the extra data based on the node type.
+                switch (Data[i].GetType().Name)
+                {
+                    case "Texture":     (Data[i] as Texture).WriteData(writer, i);     break;
+                    case "VertexTable": (Data[i] as VertexTable).WriteData(writer, i); break;
+                    case "FaceTable":   (Data[i] as FaceTable).WriteData(writer, i);   break;
+                }
+            }
+
+            // Close Marathon's BinaryWriter.
+            writer.Close();
         }
     }
 }

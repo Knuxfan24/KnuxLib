@@ -123,5 +123,88 @@ namespace KnuxLib.Engines.Wayforward.MeshChunks
             // Return our read texture.
             return texture;
         }
+
+        /// <summary>
+        /// Writes the data of this texture to the writer's current position.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void Write(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Write the Node Type.
+            writer.Write(0x01);
+
+            // Write empty values for the sub node count and offset, as vertex tables don't have them.
+            writer.Write(0);
+            writer.Write(0L);
+
+            writer.Write(Width);
+            
+            writer.Write(Height);
+
+            writer.Write(UnknownUInt32_1);
+
+            writer.Write((uint)Type);
+
+            writer.Write(Hash);
+
+            // Add an offset for this texture's image data.
+            writer.AddOffset($"Texture{nodeIndex}ImageData");
+
+            // Write the size of this texture's image data.
+            writer.Write(Data.Length + 0x08);
+
+            // Add an offset for this texture's name.
+            writer.AddOffset($"Texture{nodeIndex}Name");
+
+            // Write the length of this texture's name, including the null terminator, data magic value and size.
+            writer.Write(Name.Length + 0x09);
+        }
+
+        /// <summary>
+        /// Write this texture's name.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void WriteName(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Fill in the offset for this group's name.
+            writer.FillOffset($"Texture{nodeIndex}Name");
+
+            // Write the data magic value.
+            writer.Write(0xFFFFFF);
+
+            // Write the length of the name, including the null terminator.
+            writer.Write(Name.Length + 0x01);
+
+            // Write this texture's name.
+            writer.WriteNullTerminatedString(Name);
+
+            // Realign to 0x08 bytes.
+            writer.FixPadding(0x08);
+        }
+
+        /// <summary>
+        /// Write this texture's image data.
+        /// </summary>
+        /// <param name="writer">The BinaryWriterEx we're using.</param>
+        /// <param name="nodeIndex">The index of this node.</param>
+        public void WriteData(BinaryWriterEx writer, int nodeIndex)
+        {
+            // Fill in the offset for this texture's image.
+            writer.FillOffset($"Texture{nodeIndex}ImageData");
+
+            // Write the data magic value.
+            writer.Write(0xFFFFFF);
+
+            // Write the length of this texture's data.
+            writer.Write(Data.Length);
+
+            // Write this texture's name.
+            writer.Write(Data);
+
+            // Realign to 0x08 bytes.
+            writer.FixPadding(0x08);
+        }
     }
 }
