@@ -50,7 +50,7 @@ namespace KnuxLib.Engines.Wayforward.MeshChunks
         /// </summary>
         public string Name { get; set; } = "";
 
-        public override string ToString() => Name;
+        public override string ToString() => $"Texture {Name}: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
 
         /// <summary>
         /// Read the data of this texture from the reader's current position.

@@ -12,6 +12,8 @@
         /// </summary>
         public DecomposedMatrix[] DecomposedMatrices { get; set; } = Array.Empty<DecomposedMatrix>();
 
+        public override string ToString() => "Bone";
+
         /// <summary>
         /// Read the data of this bone from the reader's current position.
         /// </summary>

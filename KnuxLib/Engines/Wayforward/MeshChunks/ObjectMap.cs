@@ -11,7 +11,7 @@
         /// <summary>
         /// The hash identifier of this object map.
         /// </summary>
-        public ulong ObjectHash { get; set; }
+        public ulong Hash { get; set; }
 
         /// <summary>
         /// The hash of the vertex table to use for this object map, either in this file or a .gpu file.
@@ -28,6 +28,8 @@
         /// </summary>
         public Vector3[] AABB { get; set; } = new Vector3[2];
 
+        public override string ToString() => $"Object Map: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
+
         /// <summary>
         /// Read the data of this group from the reader's current position.
         /// </summary>
@@ -41,7 +43,7 @@
             objectMap.UnknownHash = reader.ReadUInt64();
 
             // Read this object map's target object hash.
-            objectMap.ObjectHash = reader.ReadUInt64();
+            objectMap.Hash = reader.ReadUInt64();
 
             // Read this object map's target vertex hash.
             objectMap.VertexHash = reader.ReadUInt64();
@@ -74,7 +76,7 @@
             writer.Write(UnknownHash);
 
             // Write this object map's target object hash.
-            writer.Write(ObjectHash);
+            writer.Write(Hash);
 
             // Write this object map's vertex object hash.
             writer.Write(VertexHash);

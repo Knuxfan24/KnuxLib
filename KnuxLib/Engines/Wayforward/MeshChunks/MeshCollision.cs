@@ -23,7 +23,7 @@
         /// </summary>
         public List<object> SubNodes { get; set; } = new();
 
-        public override string ToString() => Name;
+        public override string ToString() => $"Mesh Collision {Name}: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
 
         /// <summary>
         /// Read the data of this collision from the reader's current position.

@@ -18,6 +18,8 @@
         /// </summary>
         public List<object> SubNodes { get; set; } = new();
 
+        public override string ToString() => $"Unknown 1 Chunk: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
+
         /// <summary>
         /// Read the data of this unknown chunk from the reader's current position.
         /// </summary>

@@ -12,7 +12,7 @@
         /// </summary>
         public string Type { get; set; } = "";
 
-        public override string ToString() => Type;
+        public override string ToString() => $"Object Data {Type}: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
 
         /// <summary>
         /// Read the data of this object data from the reader's current position.

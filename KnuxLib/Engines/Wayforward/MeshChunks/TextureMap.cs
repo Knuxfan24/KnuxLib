@@ -18,6 +18,8 @@
         /// </summary>
         public ulong[] UnknownULong_Array { get; set; } = new ulong[3];
 
+        public override string ToString() => "Texture Map";
+
         /// <summary>
         /// Read the data of this texture map from the reader's current position.
         /// </summary>

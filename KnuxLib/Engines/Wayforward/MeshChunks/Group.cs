@@ -40,7 +40,7 @@
         /// </summary>
         public List<object> SubNodes { get; set; } = new();
 
-        public override string ToString() => Name;
+        public override string ToString() => $"Group {Name}: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
 
         // A list of offsets, used for writing.
         private readonly List<long> Offsets = new();

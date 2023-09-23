@@ -19,7 +19,7 @@
         /// </summary>
         public string Name { get; set; } = "";
 
-        public override string ToString() => Name;
+        public override string ToString() => $"Unknown 2 Chunk: {Name}";
 
         /// <summary>
         /// Read the data of this unknown chunk from the reader's current position.

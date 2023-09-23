@@ -18,7 +18,7 @@
         /// </summary>
         public string Name { get; set; } = "";
 
-        public override string ToString() => Name;
+        public override string ToString() => $"Bone Name {Name}: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
 
         /// <summary>
         /// Read the data of this bone name from the reader's current position.

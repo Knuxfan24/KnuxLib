@@ -30,6 +30,8 @@
         /// </summary>
         public Face[] Faces { get; set; } = Array.Empty<Face>();
 
+        public override string ToString() => $"Face Table: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
+
         /// <summary>
         /// Read the data of this face table from the reader's current position.
         /// </summary>

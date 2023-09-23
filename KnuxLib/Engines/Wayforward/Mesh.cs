@@ -1,4 +1,6 @@
-﻿using KnuxLib.Engines.Wayforward.MeshChunks;
+﻿using Assimp.Configs;
+using Assimp;
+using KnuxLib.Engines.Wayforward.MeshChunks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
@@ -56,9 +58,7 @@ namespace KnuxLib.Engines.Wayforward
             // Read the file signature.
             reader.ReadSignature(4, "WFSN");
 
-            // Always set to 0 in .wf3d files, has a varying value in .gpu files.
-            // TODO: This seems to be important in some way, either store it or find out what controls it.
-            uint UnknownUInt32_1 = reader.ReadUInt32();
+            // There's a value here that's usually set to 0 in the .wf3d files, but the .gpu files seem to point to the first data offset.
 
             // Realign to 0x10 bytes.
             reader.FixPadding(0x10);
@@ -111,18 +111,18 @@ namespace KnuxLib.Engines.Wayforward
             // Read each node based on their type.
             switch (nodeType)
             {
-                case NodeType.Texture:     Data.Add(Texture.Read(reader));       break;
-                case NodeType.VertexTable: Data.Add(VertexTable.Read(reader));   break;
-                case NodeType.FaceTable:   Data.Add(FaceTable.Read(reader));     break;
-                case NodeType.TextureMap:  Data.Add(TextureMap.Read(reader));    break;
-                case NodeType.Group:       Data.Add(Group.Read(reader));         break;
-                case NodeType.ObjectMap:   Data.Add(ObjectMap.Read(reader));     break;
-                case NodeType.Unknown_1:   Data.Add(Unknown1.Read(reader));      break;
-                case NodeType.BoneName:    Data.Add(BoneName.Read(reader));      break;
-                case NodeType.Bone:        Data.Add(Bone.Read(reader));          break;
-                case NodeType.Collision:   Data.Add(MeshCollision.Read(reader)); break;
-                case NodeType.ObjectData:  Data.Add(ObjectData.Read(reader));    break;
-                case NodeType.Unknown_2:   Data.Add(Unknown2.Read(reader));      break;
+                case NodeType.Texture:     Data.Add(Texture.Read(reader));         break;
+                case NodeType.VertexTable: Data.Add(VertexTable.Read(reader));     break;
+                case NodeType.FaceTable:   Data.Add(FaceTable.Read(reader));       break;
+                case NodeType.TextureMap:  Data.Add(TextureMap.Read(reader));      break;
+                case NodeType.Group:       Data.Add(Group.Read(reader));           break;
+                case NodeType.ObjectMap:   Data.Add(ObjectMap.Read(reader));       break;
+                case NodeType.Unknown_1:   Data.Add(Unknown1.Read(reader));        break;
+                case NodeType.BoneName:    Data.Add(BoneName.Read(reader));        break;
+                case NodeType.Bone:        Data.Add(MeshChunks.Bone.Read(reader)); break;
+                case NodeType.Collision:   Data.Add(MeshCollision.Read(reader));   break;
+                case NodeType.ObjectData:  Data.Add(ObjectData.Read(reader));      break;
+                case NodeType.Unknown_2:   Data.Add(Unknown2.Read(reader));        break;
                 default:                   throw new NotImplementedException();
             }
 
@@ -244,6 +244,151 @@ namespace KnuxLib.Engines.Wayforward
 
             // Close Marathon's BinaryWriter.
             writer.Close();
+        }
+
+        /// <summary>
+        /// Imports a Assimp compatible model and converts it to a Wayforward Engine mesh.
+        /// TODO: This is likely a temporary solution, considering the mesh format itself is yet to be fully reverse engineered.
+        /// </summary>
+        /// <param name="filepath">The file to import.</param>
+        /// <param name="wf3dOut">The .wf3d file to save.</param>
+        /// <param name="gpuInject">The .gpu file to inject the vertex and face tables to.</param>
+        /// <param name="vertTableHash">The hash to identify the vertex table(s) by.</param>
+        /// <param name="faceTableHash">The hash to identify the face table(s) by.</param>
+        public void ImportAssimp(string filepath, string wf3dOut, string gpuInject, ulong vertTableHash = 0x2424242400, ulong faceTableHash = 0x242424240000)
+        {
+            // Store the original hash values so we can use them later.
+            ulong origVertTableHash = vertTableHash;
+            ulong origFaceTableHash = faceTableHash;
+
+            // Setup AssimpNet Scene.
+            AssimpContext assimpImporter = new();
+            KeepSceneHierarchyConfig config = new(true);
+            assimpImporter.SetConfig(config);
+            Scene assimpModel = assimpImporter.ImportFile(filepath, PostProcessSteps.PreTransformVertices | PostProcessSteps.JoinIdenticalVertices | PostProcessSteps.GenerateBoundingBoxes);
+
+            // Load the .gpu file to inject the custom vertex and face tables into.
+            Load(gpuInject);
+
+            // Loop through each mesh to write their vertex tables.
+            for (int i = 0; i < assimpModel.Meshes.Count; i++)
+            {
+                // Create a vertex table entry.
+                VertexTable vertTable = new()
+                {
+                    Hash = vertTableHash,
+                    Vertices = new VertexTable.Vertex[assimpModel.Meshes[i].Vertices.Count]
+                };
+
+                // Loop through each vertex and add it to our table.
+                for (int v = 0; v < assimpModel.Meshes[i].Vertices.Count; v++)
+                {
+                    VertexTable.Vertex vert = new();
+                    vert.Position = new(assimpModel.Meshes[i].Vertices[v].X, assimpModel.Meshes[i].Vertices[v].Y, -assimpModel.Meshes[i].Vertices[v].Z);
+                    vert.UVCoordinates[0] = assimpModel.Meshes[i].TextureCoordinateChannels[0][v].X;
+                    vert.UVCoordinates[1] = assimpModel.Meshes[i].TextureCoordinateChannels[0][v].Y;
+                    vertTable.Vertices[v] = vert;
+                }
+
+                // Add our vertex table to the gpu file.
+                Data.Add(vertTable);
+
+                // Increment the vertex table hash for the next vertex table.
+                vertTableHash++;
+            }
+
+            // Loop through each mesh to write their face tables.
+            for (int i = 0; i < assimpModel.Meshes.Count; i++)
+            {
+                // Create a face table entry.
+                FaceTable faceTable = new()
+                {
+                    Hash = faceTableHash,
+                    Faces = new FaceTable.Face[assimpModel.Meshes[i].Faces.Count]
+                };
+
+                // Loop through each face and add it to our table.
+                for (int f = 0; f < assimpModel.Meshes[i].Faces.Count; f++)
+                {
+                    FaceTable.Face face = new()
+                    {
+                        IndexA = (uint)assimpModel.Meshes[i].Faces[f].Indices[0],
+                        IndexB = (uint)assimpModel.Meshes[i].Faces[f].Indices[1],
+                        IndexC = (uint)assimpModel.Meshes[i].Faces[f].Indices[2]
+                    };
+
+                    faceTable.Faces[f] = face;
+                }
+
+                // Add our face table to the gpu file.
+                Data.Add(faceTable);
+
+                // Increment the face table hash for the next face table.
+                faceTableHash++;
+            }
+
+            // Save our updated GPU file.
+            Save(gpuInject);
+
+            // Clear the data list.
+            Data = new();
+
+            // Reset the hash values.
+            vertTableHash = origVertTableHash;
+            faceTableHash = origFaceTableHash;
+
+            // Loop through each material in our model.
+            for (int i = 0; i < assimpModel.Materials.Count; i++)
+            {
+                // Create a texture map entry for this material.
+                // TODO: The object hash might end up wrong here.
+                // TODO: This texture hash is hardcoded to level_1_1_burning_env.gpu's version of the blockout texture.
+                TextureMap textureMap = new()
+                {
+                    ObjectHash = (ulong)(0x24242424000000 + i),
+                    TextureHash = 0x545FB4B4E41CCA95
+                };
+                
+                // Add this texture map to our file.
+                Data.Add(textureMap);
+            }
+
+            // Create a group for this mesh.
+            Group group = new()
+            {
+                Hash = 0x2424242400000000,
+                UnknownHash = 0x166E6DE3,
+                Matrix = new(1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1),
+                Name = Path.GetFileNameWithoutExtension(wf3dOut)
+            };
+
+            // Loop through each mesh.
+            for (int i = 0; i < assimpModel.Meshes.Count; i++)
+            {
+                // Create an object map for this mesh.
+                ObjectMap objectMap = new()
+                {
+                    UnknownHash = 0x7608AF45F703132C,
+                    Hash = (ulong)(0x24242424000000 + i),
+                    VertexHash = vertTableHash,
+                    FaceHash = faceTableHash
+                };
+                objectMap.AABB[0] = new(assimpModel.Meshes[i].BoundingBox.Min.X, assimpModel.Meshes[i].BoundingBox.Min.Y, assimpModel.Meshes[i].BoundingBox.Min.Z);
+                objectMap.AABB[1] = new(assimpModel.Meshes[i].BoundingBox.Max.X, assimpModel.Meshes[i].BoundingBox.Max.Y, assimpModel.Meshes[i].BoundingBox.Max.Z);
+
+                // Increment the vertex table and face table hashes for the next mesh.
+                vertTableHash++;
+                faceTableHash++;
+
+                // Add this object map as a sub node to the group.
+                group.SubNodes.Add(objectMap);
+            }
+
+            // Save the group.
+            Data.Add(group);
+
+            // Save our new mesh file.
+            Save(wf3dOut);
         }
     }
 }
