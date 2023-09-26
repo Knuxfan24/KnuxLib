@@ -61,6 +61,8 @@ namespace KnuxLib.Engines.Wayforward.MeshChunks
         /// </summary>
         public Vertex[] Vertices { get; set; } = Array.Empty<Vertex>();
 
+        public override string ToString() => $"Vertex Table: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
+
         /// <summary>
         /// The size of the vertices in this table, calculated during and used for writing.
         /// </summary>

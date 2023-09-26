@@ -390,5 +390,174 @@ namespace KnuxLib.Engines.Wayforward
             // Save our new mesh file.
             Save(wf3dOut);
         }
+
+        /// <summary>
+        /// Exports this mesh to an OBJ.
+        /// TODO: OBJ won't be suitable for this long term.
+        /// </summary>
+        /// <param name="filepath">The directory to export to.</param>
+        public void ExportOBJTemp(string filepath, string? gpuFile = null)
+        {
+            // Set up a GPU file.
+            Mesh gpu = new();
+            
+            // If the user has passed in a GPU file, then load it.
+            if (gpuFile != null)
+                gpu = new(gpuFile);
+
+            // Set up an integer to keep track of the amount of vertices.
+            int vertexCount = 0;
+
+            // Create the StreamWriters.
+            StreamWriter obj = new(filepath);
+            StreamWriter mtl = new(Helpers.GetDirectoryAndFileNameWithNewExtension(filepath, "mtl"));
+
+            obj.WriteLine($"mtllib {Path.GetFileNameWithoutExtension(filepath)}.mtl");
+
+            // Create a list of all the object maps in the .wf3d file we need to convert.
+            List<ObjectMap> ObjectMaps = new();
+
+            // Loop through each entry in the .wf3d file.
+            foreach (object entry in Data)
+            {
+                // If this entry is an object map, then add it to the list.
+                if (entry is ObjectMap map)
+                    ObjectMaps.Add(map);
+
+                // If this entry is a group, then check its sub nodes for any object maps and add them to the list.
+                if (entry is Group group)
+                    foreach (object subnode in group.SubNodes)
+                        if (subnode is ObjectMap subnodeMap)
+                            ObjectMaps.Add(subnodeMap);
+            }
+
+            // Loop through each object map we need to convert.
+            foreach (ObjectMap objectMap in ObjectMaps)
+            {
+                // Set up references to the chunks we need.
+                VertexTable? vertexTable = null;
+                FaceTable? faceTable = null;
+                TextureMap? textureMap = null;
+                Texture? texture = null;
+
+                // Loop through each entry in this .wf3d file.
+                foreach (object entry in Data)
+                {
+                    // If this entry is a vertex table with the correct hash, then set it as the one to use.
+                    if (entry is VertexTable vTable)
+                        if (vTable.Hash == objectMap.VertexHash)
+                            vertexTable = vTable;
+
+                    // If this entry is a face table with the correct hash, then set it as the one to use.
+                    if (entry is FaceTable fTable)
+                        if (fTable.Hash == objectMap.FaceHash)
+                            faceTable = fTable;
+
+                    // If this entry is a texture map that targets this object's hash, then set it as the one to use.
+                    if (entry is TextureMap tMap)
+                        if (tMap.ObjectHash == objectMap.Hash)
+                            textureMap = tMap;
+                }
+
+                // If a .gpu file has been provided, then loop through each entry in it too.
+                if (gpuFile != null)
+                {
+                    foreach (object entry in gpu.Data)
+                    {
+                        // If this entry is a vertex table with the correct hash, then set it as the one to use.
+                        if (entry is VertexTable vTable)
+                            if (vTable.Hash == objectMap.VertexHash)
+                                vertexTable = vTable;
+
+                        // If this entry is a face table with the correct hash, then set it as the one to use.
+                        if (entry is FaceTable fTable)
+                            if (fTable.Hash == objectMap.FaceHash)
+                                faceTable = fTable;
+                    }
+                }
+
+                // Error out if we haven't found the vertex or face table.
+                if (vertexTable == null)
+                    throw new Exception("No Vertex Table was found for this Object Map. Try specifying a .gpu file to search in as well.");
+                if (faceTable == null)
+                    throw new Exception("No Face Table was found for this Object Map. Try specifying a .gpu file to search in as well.");
+
+                // If a texture map chunk for this object map has been found, then search for a texture.
+                if (textureMap != null)
+                {
+                    // Loop through each entry in this .wf3d file.
+                    foreach (object entry in Data)
+                        if (entry is Texture tex)
+                            if (tex.Hash == textureMap.TextureHash)
+                                texture = tex;
+
+                    // Loop through each entry in the .gpu file if one was provided.
+                    if (gpuFile != null)
+                        foreach (object entry in gpu.Data)
+                            if (entry is Texture tex)
+                                if (tex.Hash == textureMap.TextureHash)
+                                    texture = tex;
+
+                    // If we found a texture with the right hash, then write a reference to it in the mtl.
+                    if (texture != null)
+                    {
+                        mtl.WriteLine($"newmtl {Path.GetFileNameWithoutExtension(texture.Name)}");
+                        mtl.WriteLine($"\tmap_Kd {texture.Name}");
+                    }
+                    // If not, then just write the hash with no diffuse map.
+                    else
+                    {
+                        mtl.WriteLine($"newmtl 0x{textureMap.TextureHash.ToString("X").PadLeft(16, '0')}");
+                    }
+                }
+
+                // Write the Vertex Comment for this model.
+                obj.WriteLine($"# ObjectMap 0x{objectMap.Hash.ToString("X").PadLeft(16, '0')} Vertices\r\n");
+
+                // Write each vertex for this model, flipping the Z Axis coordinate.
+                foreach (var vertex in vertexTable.Vertices)
+                    obj.WriteLine($"v {vertex.Position.X} {vertex.Position.Y} {-vertex.Position.Z}");
+
+                // Write the UV Coordinates Comment for this model.
+                obj.WriteLine($"# ObjectMap 0x{objectMap.Hash.ToString("X").PadLeft(16, '0')} UV Coordinates\r\n");
+
+                // Write each UV Coordinate for this model.
+                foreach (var vertex in vertexTable.Vertices)
+                    obj.WriteLine($"vt {vertex.UVCoordinates[0]} {vertex.UVCoordinates[1]}");
+
+                // Write the Object Name Comment for this model.
+                obj.WriteLine($"\r\n# ObjectMap 0x{objectMap.Hash.ToString("X").PadLeft(16, '0')} Name\r\n");
+
+                // Write the name strings for this model.
+                obj.WriteLine($"g {Path.GetFileNameWithoutExtension(filepath)} ObjectMap 0x{objectMap.Hash.ToString("X").PadLeft(16, '0')}");
+                obj.WriteLine($"o {Path.GetFileNameWithoutExtension(filepath)} ObjectMap 0x{objectMap.Hash.ToString("X").PadLeft(16, '0')}");
+
+                // If a texture map chunk for this object map has been found, then write the mtl reference based on if we found a texture.
+                if (textureMap != null)
+                {
+                    if (texture != null)
+                        obj.WriteLine($"usemtl {Path.GetFileNameWithoutExtension(texture.Name)}");
+                    else
+                        obj.WriteLine($"usemtl 0x{textureMap.TextureHash.ToString("X").PadLeft(16, '0')}");
+                }
+
+                // Write the Faces Comment for this model.
+                obj.WriteLine($"\r\n# ObjectMap 0x{objectMap.Hash.ToString("X").PadLeft(16, '0')} Faces\r\n");
+
+                // Write each face for this model, with the indices incremented by 1 (and the current value of vertexCount) due to OBJ counting from 1 not 0.
+                foreach (var face in faceTable.Faces)
+                    obj.WriteLine($"f {face.IndexA + 1 + vertexCount}/{face.IndexA + 1 + vertexCount} {face.IndexB + 1 + vertexCount}/{face.IndexB + 1 + vertexCount} {face.IndexC + 1 + vertexCount}/{face.IndexC + 1 + vertexCount}");
+
+                // Add the amount of vertices in this model to the count.
+                vertexCount += vertexTable.Vertices.Length;
+
+                // Write an empty line for neatness.
+                obj.WriteLine();
+            }
+
+            // Close the StreamWriters.
+            obj.Close();
+            mtl.Close();
+        }
     }
 }
