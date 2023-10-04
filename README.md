@@ -119,7 +119,15 @@ Supported formats:
 
 - [Instance Info (.terrain-instanceinfo)](KnuxLib/Engines/Hedgehog/InstanceInfo.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
-- [Light Field (Rangers)) (.lf)](KnuxLib/Engines/Hedgehog/LightField_Rangers.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Light Field (Rangers) (.lf)](KnuxLib/Engines/Hedgehog/LightField_Rangers.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+- [Master Level Table (.mlevel)](KnuxLib/Engines/Hedgehog/MasterLevels.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Has an unknown value.
+
+> **Note**
+> Doesn't write in a binary identical format due to a design choice in HedgeLib#, game doesn't seem to mind though?
 
 - [Message Table (Sonic2010/BlueBlur/William) (.xtb)](KnuxLib/Engines/Hedgehog/MessageTable_2010.cs) reading, writing, JSON serialisation and JSON deserialisation.
 

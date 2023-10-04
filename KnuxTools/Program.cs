@@ -81,8 +81,9 @@ namespace KnuxTools
                                   "Gismo V3 (.gismod/.gismop)\n" +
                                   "Instance Info (.terrain-instanceinfo)\n" +
                                   "Light Field (Rangers) (.lf)\n" +
-                                  "Message Table (sonic2010/blueblur/william)\n" +
-                                  "Message Table (sonic2013)\n" +
+                                  "Master Level Table (.mlevel)\n" +
+                                  "Message Table (sonic2010/blueblur/william) (.xtb)\n" +
+                                  "Message Table (sonic2013) (.xtb2)\n" +
                                   "Point Cloud (.pccol/.pcmodel/.pcrt)\n" +
                                   "Sector Visibility Collision (.bin.svcol)\n");
 
@@ -675,6 +676,15 @@ namespace KnuxTools
                     {
                         messageTable_2013.Data = messageTable_2013.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2013.FormatData>(arg);
                         messageTable_2013.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
+                    }
+                    break;
+
+                case ".mlevel": using (KnuxLib.Engines.Hedgehog.MasterLevels masterLevelTable = new(arg, true)) break;
+                case ".hedgehog.masterlevels.json":
+                    using (KnuxLib.Engines.Hedgehog.MasterLevels masterLevelTable = new())
+                    {
+                        masterLevelTable.Data = masterLevelTable.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.MasterLevels.Level>>(arg);
+                        masterLevelTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.mlevel");
                     }
                     break;
                 #endregion
