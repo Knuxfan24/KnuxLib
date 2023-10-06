@@ -354,6 +354,8 @@ The following formats are only partially supported and have no implementation in
 
 - [Engine Black Archive Data (.data)](KnuxLib/Engines/Black/DataArchive.cs). Currently reads, decompresses and exports data from the data archive found in Shantae and the Pirate's Curse. Writing hardcodes a sequence of 0x204 bytes near the start of the file and only has placeholders for another sequence later on, which leads to the game crashing on launch, replacing the sequence of placeholders with the original values seems to make the file work in game, although this hasn't been tested beyond the WayForward logo.
 
+- [Engine Black Volume Blob (.vol)](KnuxLib/Engines/Black/VolumeBlob.cs). Currently reads, decompresses (in the case of the 3DS version) and exports data from the vol files found in Shantae and the Pirate's Curse (although the GOG version has a different header which causes problems?).
+
 - [Flipnic Engine Binary Archive (.bin)](KnuxLib/Engines/Flipnic/BinaryArchive.cs). Currently reads and exports data, but doesn't have any functionality for importing or saving, as testing it would be a pain in the ass.
 
 - [Hedgehog Engine 2010 Collision (.orc)](KnuxLib/Engines/Hedgehog/Collision_2010.cs). Only reads about half the format but does have an OBJ exporter that exports the basic collision geometry.
