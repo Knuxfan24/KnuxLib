@@ -68,7 +68,7 @@
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        /// <param name="version">The system version to read this file as.</param>
+        /// <param name="version">The game version to read this file as.</param>
         public void Load(string filepath, FormatVersion version = FormatVersion.LegacyCollection)
         {
             // Set up Marathon's BinaryReader.
@@ -144,7 +144,7 @@
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        /// <param name="version">The system version to save this file as.</param>
+        /// <param name="version">The game version to save this file as.</param>
         public void Save(string filepath, FormatVersion version = FormatVersion.LegacyCollection)
         {
             // Set up Marathon's BinaryWriter.

@@ -125,6 +125,7 @@
         /// Reads this NuObject chunk and returns a list of the data within.
         /// </summary>
         /// <param name="reader">The Marathon BinaryReader to use.</param>
+        /// <param name="version">The system version to read this chunk as.</param>
         public static List<MaterialData> Read(BinaryReaderEx reader, Scene.FormatVersion version)
         {
             // Set up our list of materials.

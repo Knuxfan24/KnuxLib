@@ -35,6 +35,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
         /// Reads this NuObject chunk and returns a list of the data within.
         /// </summary>
         /// <param name="reader">The Marathon BinaryReader to use.</param>
+        /// <param name="version">The system version to read this chunk as.</param>
         public static List<TextureData> Read(BinaryReaderEx reader, FormatVersion version)
         {
             // Set up our list of Textures.

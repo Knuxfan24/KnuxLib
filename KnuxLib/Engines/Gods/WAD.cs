@@ -74,7 +74,7 @@
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        /// <param name="version">The WAD version to read this file as.</param>
+        /// <param name="version">The game/system version to read this file as.</param>
         public void Load(string filepath, FormatVersion version = FormatVersion.NinjabreadMan_PCPS2)
         {
             // Set up the size of an entry in the file table for later maths.
@@ -194,7 +194,7 @@
         /// TODO: Implement.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        /// <param name="version">The WAD version to save with.</param>
+        /// <param name="version">The game/system version to save with.</param>
         public void Save(string filepath, FormatVersion version = FormatVersion.NinjabreadMan_PCPS2)
         {
             throw new NotImplementedException();

@@ -137,7 +137,8 @@ namespace KnuxLib.Engines.Wayforward
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        public void Load(string filepath, FormatVersion version = FormatVersion.sevensirens)
+        /// <param name="version">The game version to read this file as.</param>
+        public void Load(string filepath, FormatVersion version = FormatVersion.hero)
         {
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath));
@@ -274,6 +275,7 @@ namespace KnuxLib.Engines.Wayforward
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
+        /// <param name="version">The game version to save this file as.</param>
         public void Save(string filepath, FormatVersion version = FormatVersion.hero)
         {
             // Set up Marathon's BinaryWriter.
