@@ -18,7 +18,7 @@
     "RING_FAIRY": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "RICHRING": {
@@ -26,13 +26,13 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "BOOST_FAIRY": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "RING": {
@@ -40,18 +40,18 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "LAUNCHER_FAIRY": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "ITEM_POUCH": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "SWITCH": {
@@ -59,38 +59,38 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "GOAL": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "SPRING_FAIRY": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "NEEDLE_BALL": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "DASH_FAIRY": {
       "fields": [
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "JUMP_PANEL": {
       "fields": [
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "SPRING": {
@@ -98,26 +98,26 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" }
       ]
     },
     "VERT_SPRING": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "CORNER_POLE": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "DASH_PANEL": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "JUMP_BOARD": {
@@ -125,7 +125,7 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" }
       ]
     },
     "CHECK_POINT": {
@@ -133,17 +133,17 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "GOAL_RING": {
       "fields": [
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "EGG_FLYER": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "ILLUSION": {
@@ -156,7 +156,7 @@
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "UnknownUInt32_3", "type": "uint32" },
         { "name": "UnknownUInt32_4", "type": "uint32" },
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "FOOTING": {
@@ -167,7 +167,7 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" }
       ]
     },
     "SLIME": {
@@ -176,7 +176,7 @@
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "UnknownUInt32_3", "type": "uint32" },
-        { "name": "UnknownUInt32_4", "type": "uint32" },
+        { "name": "UnknownUInt32_4", "type": "uint32" }
       ]
     },
     "SPIKE_ROLLER": {
@@ -184,45 +184,45 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" }
       ]
     },
     "HIDDEN_FAIRY": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "ITEM_BOX": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "MIMIC": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" }
       ]
     },
     "STONE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "SOLID_STONE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "RIGID_STONE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "BOMB_STONE": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "RANDOM_BOX": {
@@ -230,7 +230,7 @@
     },
     "ENEMY_STONE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "FLYING_MIMIC": {
@@ -238,14 +238,14 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "DROP_POUCH": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "MULTI_RING_MANAGER": {
@@ -259,7 +259,7 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "MULTI_REAPER": {
@@ -275,7 +275,7 @@
         { "name": "UnknownUInt32_5", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "LIGHT_COLLISION": {
@@ -289,7 +289,7 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "HINT_COLLISION": {
@@ -298,13 +298,13 @@
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "UnknownUInt32_3", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "INVISIBLE_COLLISION": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "CHECK_POINT_COLLISION": {
@@ -313,7 +313,7 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "SE_COLLISION": {
@@ -324,7 +324,7 @@
         { "name": "UnknownUInt32_3", "type": "uint32" },
         { "name": "UnknownUInt32_4", "type": "uint32" },
         { "name": "UnknownUInt32_5", "type": "uint32" },
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STUNT_COLLISION": {
@@ -344,7 +344,7 @@
         { "name": "UnknownFloat32_2", "type": "float32" },
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "JUMP_COLLISION": {
@@ -353,7 +353,7 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" }
       ]
     },
     "GLARE_COLLISION": {
@@ -369,7 +369,7 @@
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownUInt32_4", "type": "uint32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" }
       ]
     },
     "INVISIBLE_DASH_COLLISION": {
@@ -380,7 +380,7 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" }
       ]
     },
     "EARTH_QUAKE_COLLISION": {
@@ -388,7 +388,7 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
-        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" }
       ]
     },
     "DAMAGE_COLLISION": {
@@ -396,7 +396,7 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "GOAL_COLLISION": {
@@ -404,18 +404,18 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "HOMING_BLOCK_COLLISION": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "SEM_SND_COLLISION": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "SCARECROW": {
@@ -429,12 +429,12 @@
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "UnknownUInt32_3", "type": "uint32" },
         { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "EVIL_GAZER_CHASER": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "NO_FACE": {
@@ -443,7 +443,7 @@
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
-        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "PHANTOM_SOLDIER": {
@@ -452,7 +452,7 @@
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
-        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" }
       ]
     },
     "PHANTOM_SOLDIER_BIG": {
@@ -464,7 +464,7 @@
         { "name": "UnknownUInt32_3", "type": "uint32" },
         { "name": "UnknownUInt32_4", "type": "uint32" },
         { "name": "UnknownUInt32_5", "type": "uint32" },
-        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "CRAWLER": {
@@ -475,7 +475,7 @@
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "UnknownUInt32_3", "type": "uint32" },
         { "name": "UnknownUInt32_4", "type": "uint32" },
-        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "WALKER": {
@@ -487,25 +487,25 @@
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "Padding2", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "Padding3", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "Padding4", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding4", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "CRAWLER_CHASER": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "MULTI_PHANTOM_SOLDIER": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" }
       ]
     },
     "MULTI_PHANTOM_SOLDIER_BIG": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "EFFECT_LENSFLARE": {
@@ -514,7 +514,7 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" }
       ]
     },
     "EFFECT_LGIHT_OVERFLOW": {
@@ -523,7 +523,7 @@
     "EFFECT_PARTICLE": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "PEOPLE_COM": {
@@ -535,7 +535,7 @@
         { "name": "UnknownUInt32_4", "type": "uint32" },
         { "name": "UnknownUInt32_5", "type": "uint32" },
         { "name": "UnknownUInt32_6", "type": "uint32" },
-        { "name": "UnknownUInt32_7", "type": "uint32" },
+        { "name": "UnknownUInt32_7", "type": "uint32" }
       ]
     },
     "PEOPLE_MOVE": {
@@ -545,7 +545,7 @@
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "UnknownUInt32_3", "type": "uint32" },
         { "name": "UnknownUInt32_4", "type": "uint32" },
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "PEOPLE_STAND": {
@@ -554,7 +554,7 @@
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "UnknownUInt32_3", "type": "uint32" },
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "GRIND_PATH": {
@@ -566,7 +566,7 @@
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "GRIND_PATH2": {
@@ -574,32 +574,32 @@
     },
     "BOSS_SHADOW": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "BOSS_SHADOW2": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "BOSS_KNUCKLES": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "BOSS_BLAZE": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "BOSS_KING_ARTHUR": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "BOSS_MERLINA": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "BOSS_JUMP_POINT": {
@@ -607,22 +607,22 @@
     },
     "BOSS_CHECK_POINT": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "BOSS_SKY": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "BOSS_GROUND": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG00_TARGET": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG00_WILD_BOAR": {
@@ -630,22 +630,22 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "STG00_FRUITS": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG00_BIG_STONE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG00_DUMMY_TARGET": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG00_FAIRY": {
@@ -653,24 +653,24 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" }
       ]
     },
     "STG00_MIST_DRAGON": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG00_FROG": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "STG00_SWAN": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG00_TUTORIAL_COLLISION": {
@@ -679,29 +679,29 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" }
       ]
     },
     "STG10_BIRD": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" }
       ]
     },
     "STG10_BARREL": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG10_JAR": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG10_FIRE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG10_BALLISTA": {
@@ -709,7 +709,7 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "STG10_BARRICADE": {
@@ -720,7 +720,7 @@
     },
     "STG10_FRUITS": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG10_DOOR": {
@@ -731,7 +731,7 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG10_FLAG": {
@@ -739,43 +739,43 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "STG11_FLOOD": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" }
       ]
     },
     "STG11_SHIPACT": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG11_NEEDLE": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "STG11_WEIGHT": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG11_JAR": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG11_BARREL": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG11_CAVE_IN": {
@@ -786,7 +786,7 @@
         { "name": "UnknownFloat32_2", "type": "float32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
-        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" }
       ]
     },
     "STG11_RAT": {
@@ -795,7 +795,7 @@
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "STG20_CHOOK": {
@@ -803,31 +803,31 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG20_STEEL_TRAP": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "STG20_ROOT_ATTACK": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG20_FALL_TREE": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG20_TREE_BRIDGE": {
       "fields": [
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" }
       ]
     },
     "STG20_TREE_BRANCH": {
@@ -837,13 +837,13 @@
         { "name": "UnknownUInt32_2", "type": "uint32" },
         { "name": "UnknownUInt32_3", "type": "uint32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "STG20_TREE_HAND": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG20_TRAP_SWAMP": {
@@ -854,32 +854,32 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG20_CAGE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG20_WAGON_ACT": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG20_TRAP_SEED": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" }
       ]
     },
     "STG20_KICKER": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG20_TRAP_BEE": {
@@ -889,7 +889,7 @@
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
-        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" }
       ]
     },
     "STG20_SHAKE_WAGON": {
@@ -897,48 +897,48 @@
     },
     "STG20_MOTH": {
       "fields": [
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG20_RAIN": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG20_BOX": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG20_DEBRIS": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG20_SPORE_BALL": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG30_TRAWL": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG30_IRON_SPEAR_A": {
       "fields": [
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" }
       ]
     },
     "STG30_PADLOCK": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG30_WALL_OF_RUINS": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG30_FRONT_PRISON": {
@@ -946,19 +946,19 @@
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "Padding1", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG30_SIDE_PRISON": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG30_FALL_PILLAR": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" }
       ]
     },
     "STG30_DULLING_GRASS": {
@@ -968,7 +968,7 @@
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" }
       ]
     },
     "STG30_SKINK": {
@@ -976,7 +976,7 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG30_KITE": {
@@ -988,59 +988,59 @@
         { "name": "UnknownFloat32_4", "type": "float32" },
         { "name": "UnknownFloat32_5", "type": "float32" },
         { "name": "UnknownFloat32_6", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG30_COLOSSUS": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG30_DOUGHNUT_ROCK": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG30_STUNT_PEOPLE": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" }
       ]
     },
     "STG30_IRON_SPEAR_B": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG31_SIDE_PRISON": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG30_PILED_STONE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG40_SMALL_CRISTAL": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG40_SMALL_STALACTITE": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG40_FALL_STALACTITE": {
       "fields": [
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG40_MUSHROOM": {
@@ -1050,7 +1050,7 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownUInt32_2", "type": "uint32" },
-        { "name": "UnknownUInt32_3", "type": "uint32" },
+        { "name": "UnknownUInt32_3", "type": "uint32" }
       ]
     },
     "STG40_LIGHT_PILLAR": {
@@ -1059,53 +1059,53 @@
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
-        { "name": "UnknownFloat32_3", "type": "float32" },
+        { "name": "UnknownFloat32_3", "type": "float32" }
       ]
     },
     "STG40_BLACK_ONYX": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG40_THIN_STALACTITE": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "STG40_BROKEN_FLOOR": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG40_BONE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG40_DRAGON": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG40_DRAGON_PILLAR": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG40_SNAKE": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownUInt32_2", "type": "uint32" },
+        { "name": "UnknownUInt32_2", "type": "uint32" }
       ]
     },
     "STG40_DRAGONFLY": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownUInt32_1", "type": "uint32" },
+        { "name": "UnknownUInt32_1", "type": "uint32" }
       ]
     },
     "STG40_THUNDER_DRAGON": {
@@ -1115,25 +1115,25 @@
         { "name": "UnknownFloat32_2", "type": "float32" },
         { "name": "UnknownFloat32_3", "type": "float32" },
         { "name": "UnknownFloat32_4", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_BAT": {
       "fields": [
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG50_BEDROCK": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG50_TRUCK_01": {
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownUInt32_1", "type": "uint32" },
-        { "name": "UnknownFloat32_0", "type": "float32" },
+        { "name": "UnknownFloat32_0", "type": "float32" }
       ]
     },
     "STG50_HUGE_STONE": {
@@ -1144,12 +1144,12 @@
         { "name": "UnknownFloat32_3", "type": "float32" },
         { "name": "UnknownFloat32_4", "type": "float32" },
         { "name": "UnknownFloat32_5", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_BIG_LAVA": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_METEORITE": {
@@ -1158,29 +1158,29 @@
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
         { "name": "UnknownFloat32_3", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_FALLING_ROCK": {
       "fields": [
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_LAVA": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_BUILDING": {
       "fields": [
-        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
+        { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } }
       ]
     },
     "STG50_MAGMA": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_COLLAPSED_TOWER": {
@@ -1190,19 +1190,19 @@
       "fields": [
         { "name": "UnknownUInt32_0", "type": "uint32" },
         { "name": "UnknownFloat32_0", "type": "float32" },
-        { "name": "UnknownFloat32_1", "type": "float32" },
+        { "name": "UnknownFloat32_1", "type": "float32" }
       ]
     },
     "STG50_SHUTTER": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_PROMINENCE": {
       "fields": [
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
-        { "name": "UnknownFloat32_2", "type": "float32" },
+        { "name": "UnknownFloat32_2", "type": "float32" }
       ]
     },
     "STG50_LIZARD": {
@@ -1210,12 +1210,12 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_HAWK": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_CROW": {
@@ -1227,7 +1227,7 @@
         { "name": "UnknownFloat32_0", "type": "float32" },
         { "name": "UnknownFloat32_1", "type": "float32" },
         { "name": "UnknownFloat32_2", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_METEORITE_2": {
@@ -1238,12 +1238,12 @@
         { "name": "UnknownFloat32_3", "type": "float32" },
         { "name": "Padding0", "type": "uint32", "descriptions": { "en": "Always 0." } },
         { "name": "UnknownFloat32_4", "type": "float32" },
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "STG50_MIRAGE": {
       "fields": [
-        { "name": "UnknownUInt32_0", "type": "uint32" },
+        { "name": "UnknownUInt32_0", "type": "uint32" }
       ]
     },
     "SYSTEM OBJECT2": {
