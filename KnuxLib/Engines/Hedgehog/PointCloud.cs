@@ -74,7 +74,7 @@
             if (signature != Signature)
                 throw new Exception($"Invalid signature, got '{signature}', expected '{Signature}'.");
 
-            // Check this file version. Always 2?
+            // Check this file version. Usually 2, but can be 1?
             uint version = reader.ReadUInt32();
 
             // Get the 64 bit offset to the Instance Table and the count of the instances in it.

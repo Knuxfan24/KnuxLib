@@ -79,7 +79,7 @@ namespace KnuxTools
                                   "Archive Info (.arcinfo)\n" +
                                   "Bullet Skeleton (.skl.pxd)\n" +
                                   "Gismo V3 (.gismod/.gismop)\n" +
-                                  "Instance Info (.terrain-instanceinfo)\n" +
+                                  "Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file.\n" +
                                   "Light Field (Rangers) (.lf)\n" +
                                   "Master Level Table (.mlevel)\n" +
                                   "Message Table (sonic2010/blueblur/william) (.xtb)\n" +
@@ -154,7 +154,8 @@ namespace KnuxTools
                     "5. Sonic Storybook Engine ONE File\n" +
                     "6. Sonic Storybook Engine TXD File\n" +
                     "7. Sonic World Adventure Wii ONE File.\n" +
-                    "8. Wayforward Engine PAK File."
+                    "8. Wayforward Engine PAK File.\n" +
+                    "R. Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud."
                 );
 
                 // Wait for the user to input an option.
@@ -213,6 +214,9 @@ namespace KnuxTools
 
                     // Wayforward Engine Packages.
                     case '8': version = "wayforward_pak"; break;
+
+                    // Hedgehog Engine Terrain Instance Conversion.
+                    case 'r': version = "hedgehog_terrain2pointcloud"; break;
                 }
             }
 
@@ -338,6 +342,11 @@ namespace KnuxTools
                             pak.Import(arg);
                             pak.Save($@"{arg}.pak");
                         }
+                        break;
+
+                    // Hedgehog Engine Terrain Instance Conversion.
+                    case "hedgehog_terrain2pointcloud":
+                        KnuxLib.Engines.Hedgehog.InstanceInfo.ConvertDirectoryToPointCloud(arg);
                         break;
 
                     // If a command line argument without a corrosponding format has been passed, then inform the user.

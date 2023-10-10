@@ -177,5 +177,56 @@
             // Close Marathon's BinaryWriter.
             writer.Close();
         }
+
+        /// <summary>
+        /// Converts a folder of terrain-instanceinfo and terrain-models into a Sonic Frontiers pcmodel.
+        /// </summary>
+        /// <param name="directory"></param>
+        public static void ConvertDirectoryToPointCloud(string directory)
+        {
+            // Set up a list of used assets. Frontiers requires every model to have a point cloud entry, so we need to create some.
+            List<string> usedAssets = new();
+
+            // Set up the point cloud file to save to.
+            PointCloud pcmodel = new();
+
+            // Loop through all the terrain-instanceinfo files in the given directory.
+            foreach (string instanceInfoFile in Directory.GetFiles(directory, "*.terrain-instanceinfo"))
+            {
+                // Load this terrain-instanceinfo file.
+                InstanceInfo instanceInfo = new(instanceInfoFile);
+
+                // If the model this instance references isn't already in the usedAssets list, then add it.
+                if (!usedAssets.Contains(instanceInfo.Data.ModelName))
+                    usedAssets.Add(instanceInfo.Data.ModelName);
+
+                // Add an entry to the point cloud file for this instance, converting the rotation to radians.
+                pcmodel.Data.Add(new()
+                {
+                    InstanceName = instanceInfo.Data.InstanceName,
+                    AssetName = instanceInfo.Data.ModelName,
+                    Position = instanceInfo.Data.Transform.Translation,
+                    Scale = instanceInfo.Data.Transform.Scale,
+                    Rotation = new((float)(Math.PI / 180) * instanceInfo.Data.Transform.EulerRotation.X, (float)(Math.PI / 180) * instanceInfo.Data.Transform.EulerRotation.Y, (float)(Math.PI / 180) * instanceInfo.Data.Transform.EulerRotation.Z)
+                });
+            }
+
+            // Loop through all the terrain-model files in the given directory.
+            foreach (string terrainModelFile in Directory.GetFiles(directory, "*.terrain-model"))
+            {
+                // If this terrain-model was not referenced by an instance, then add a basic entry for it.
+                if (!usedAssets.Contains(Path.GetFileNameWithoutExtension(terrainModelFile)))
+                {
+                    pcmodel.Data.Add(new()
+                    {
+                        InstanceName = Path.GetFileNameWithoutExtension(terrainModelFile),
+                        AssetName = Path.GetFileNameWithoutExtension(terrainModelFile),
+                    });
+                }
+            }
+
+            // Save the point cloud file.
+            pcmodel.Save($@"{directory}.pcmodel");
+        }
     }
 }
