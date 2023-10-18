@@ -73,24 +73,6 @@
             public override string ToString() => Name;
         }
 
-        public class Face
-        {
-            /// <summary>
-            /// The index of this face's first vertex.
-            /// </summary>
-            public uint IndexA { get; set; }
-
-            /// <summary>
-            /// The index of this face's second vertex.
-            /// </summary>
-            public uint IndexB { get; set; }
-
-            /// <summary>
-            /// The index of this face's third vertex.
-            /// </summary>
-            public uint IndexC { get; set; }
-        }
-
         public class Subspace
         {
             /// <summary>

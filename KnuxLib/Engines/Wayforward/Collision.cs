@@ -97,24 +97,6 @@ namespace KnuxLib.Engines.Wayforward
             public Face[] Faces { get; set; } = Array.Empty<Face>();
         }
 
-        public class Face
-        {
-            /// <summary>
-            /// The index of this face's first vertex.
-            /// </summary>
-            public uint IndexA { get; set; }
-
-            /// <summary>
-            /// The index of this face's second vertex.
-            /// </summary>
-            public uint IndexB { get; set; }
-
-            /// <summary>
-            /// The index of this face's third vertex.
-            /// </summary>
-            public uint IndexC { get; set; }
-        }
-
         /// <summary>
         /// TODO: This is temporary and needs replacing with a proper class for whatever this data is.
         /// </summary>
