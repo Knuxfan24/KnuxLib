@@ -112,12 +112,12 @@
         /// Extracts the textures in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory);
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, ".gvr");
 
         /// <summary>
         /// Imports files from a directory into a texture directory.
         /// </summary>
         /// <param name="directory">The directory to import.</param>
-        public void Import(string directory) => Data = Helpers.ImportArchive(directory);
+        public void Import(string directory) => Data = Helpers.ImportArchive(directory, true);
     }
 }

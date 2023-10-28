@@ -413,7 +413,8 @@ namespace KnuxLib
         /// </summary>
         /// <param name="files">The list of files to extract.</param>
         /// <param name="directory">The path to extract to.</param>
-        public static void ExtractArchive(List<FileNode> files, string directory)
+        /// <param name="extension">The extension to change all the files to.</param>
+        public static void ExtractArchive(List<FileNode> files, string directory, string? extension = null)
         {
             // Create the extraction directory.
             Directory.CreateDirectory(directory);
@@ -421,19 +422,26 @@ namespace KnuxLib
             // Loop through each node to extract.
             foreach (FileNode node in files)
             {
+                // Get this file's name.
+                string fileName = node.Name;
+
+                // If we need to, change the extension.
+                if (extension != null)
+                    fileName = Path.ChangeExtension(fileName, extension);
+
                 // Print the name of the file we're extracting.
-                Console.WriteLine($"Extracting {node.Name}.");
+                Console.WriteLine($"Extracting {fileName}.");
 
                 // Some files in Journey of Dreams have a full drive path in them, trying to extract them fails, so replace the colon with an indicator as a workaround.
-                if (node.Name.Contains(':'))
-                    node.Name = node.Name.Replace(":", "[COLON]");
+                if (fileName.Contains(':'))
+                    fileName = fileName.Replace(":", "[COLON]");
 
                 // Create directory paths if needed.
-                if (!Directory.Exists($@"{directory}\{Path.GetDirectoryName(node.Name)}"))
-                    Directory.CreateDirectory($@"{directory}\{Path.GetDirectoryName(node.Name)}");
+                if (!Directory.Exists($@"{directory}\{Path.GetDirectoryName(fileName)}"))
+                    Directory.CreateDirectory($@"{directory}\{Path.GetDirectoryName(fileName)}");
 
                 // Extract the file.
-                File.WriteAllBytes($@"{directory}\{node.Name}", node.Data);
+                File.WriteAllBytes($@"{directory}\{fileName}", node.Data);
             }
         }
 
@@ -441,8 +449,9 @@ namespace KnuxLib
         /// Imports a directory of files to a list of generic filenodes.
         /// </summary>
         /// <param name="directory">The path to import.</param>
+        /// <param name="removeExtensions">Whether or not to remove the extensions.</param>
         /// <returns>The list of imported files.</returns>
-        public static List<FileNode> ImportArchive(string directory)
+        public static List<FileNode> ImportArchive(string directory, bool removeExtensions = false)
         {
             // Set up a new list of files.
             List<FileNode> files = new();
@@ -457,6 +466,10 @@ namespace KnuxLib
                     Name = file.Replace($@"{directory}\", ""),
                     Data = File.ReadAllBytes(file)
                 };
+
+                // Remove the extension if we need to.
+                if (removeExtensions)
+                    node.Name = Path.ChangeExtension(node.Name, null);
 
                 // Some files in Journey of Dreams have a full drive path in them, extracting them replaces the colon with an indicator as a workaround, so undo that.
                 if (node.Name.Contains("[COLON]"))
