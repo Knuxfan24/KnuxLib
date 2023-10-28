@@ -304,13 +304,13 @@ namespace KnuxLib.Engines.Wayforward
                 FaceTable faceTable = new()
                 {
                     Hash = faceTableHash,
-                    Faces = new FaceTable.Face[assimpModel.Meshes[i].Faces.Count]
+                    Faces = new Face[assimpModel.Meshes[i].Faces.Count]
                 };
 
                 // Loop through each face and add it to our table.
                 for (int f = 0; f < assimpModel.Meshes[i].Faces.Count; f++)
                 {
-                    FaceTable.Face face = new()
+                    Face face = new()
                     {
                         IndexA = (uint)assimpModel.Meshes[i].Faces[f].Indices[0],
                         IndexB = (uint)assimpModel.Meshes[i].Faces[f].Indices[1],
@@ -410,7 +410,7 @@ namespace KnuxLib.Engines.Wayforward
 
             // Create the StreamWriters.
             StreamWriter obj = new(filepath);
-            StreamWriter mtl = new(Helpers.GetDirectoryAndFileNameWithNewExtension(filepath, "mtl"));
+            StreamWriter mtl = new(Path.ChangeExtension(filepath, ".mtl"));
 
             obj.WriteLine($"mtllib {Path.GetFileNameWithoutExtension(filepath)}.mtl");
 

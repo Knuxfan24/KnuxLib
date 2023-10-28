@@ -14,7 +14,7 @@ namespace KnuxLib.Engines.Wayforward
             Load(filepath, version);
 
             if (export)
-                ExportOBJ(Helpers.GetDirectoryAndFileNameWithNewExtension(filepath, "obj"));
+                ExportOBJ(Path.ChangeExtension(filepath, ".obj"));
         }
 
         // Classes for this format.

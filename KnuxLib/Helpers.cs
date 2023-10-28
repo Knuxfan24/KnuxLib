@@ -402,13 +402,6 @@ namespace KnuxLib
         public static string ReturnUIntAsHex(uint value) => $"0x{value.ToString("X").PadLeft(8, '0')}";
 
         /// <summary>
-        /// Returns a string that is simply the specified filepath with the file extension switched out, as I found myself typing this a lot when testing stuff.
-        /// </summary>
-        /// <param name="filepath">The filepath to use.</param>
-        /// <param name="extension">The file extension to swap in, excluding the point.</param>
-        public static string GetDirectoryAndFileNameWithNewExtension(string filepath, string extension) => $@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.{extension}";
-    
-        /// <summary>
         /// Extracts a list of generic filenodes.
         /// </summary>
         /// <param name="files">The list of files to extract.</param>
