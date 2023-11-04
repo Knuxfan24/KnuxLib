@@ -16,20 +16,28 @@
         // Classes for this format.
         public class FormatData
         {
+            // The Japanese messages in this table.
             public string[] Japanese { get; set; } = Array.Empty<string>();
 
+            // The English messages in this table.
             public string[] English { get; set; } = Array.Empty<string>();
 
+            // The German messages in this table.
             public string[] German { get; set; } = Array.Empty<string>();
 
+            // The French messages in this table.
             public string[] French { get; set; } = Array.Empty<string>();
 
+            // The Spanish messages in this table.
             public string[] Spanish { get; set; } = Array.Empty<string>();
 
+            // The Italian messages in this table.
             public string[] Italian { get; set; } = Array.Empty<string>();
 
+            // The American French messages in this table.
             public string[] AmericanFrench { get; set; } = Array.Empty<string>();
 
+            // The American Spanish messages in this table.
             public string[] AmericanSpanish { get; set; } = Array.Empty<string>();
         }
 
@@ -54,16 +62,16 @@
             reader.JumpAhead(0x04); // Value of 0x30, might be where the data starts, assuming all this is a header.
 
             // Read the rest of the header(?)
-            uint FileSize = reader.ReadUInt32();
-            uint LanguageCount = reader.ReadUInt32();
+            uint fileSize = reader.ReadUInt32();
+            uint languageCount = reader.ReadUInt32();
             reader.JumpAhead(0x04); // Duplicate of LanguageCount.
             reader.JumpAhead(0x04); // Value of 0, likely padding of some sort.
-            uint LanguageOffsetTableOffset = reader.ReadUInt32();
-            uint LanguageSizeTableOffset = reader.ReadUInt32();
+            uint languageOffsetTableOffset = reader.ReadUInt32();
+            uint languageSizeTableOffset = reader.ReadUInt32();
             reader.JumpAhead(0x08); // Value of 0, likely padding of some sort.
 
             // Jump to the Offset Table, should already be at this location but just to be safe.
-            reader.JumpTo(LanguageOffsetTableOffset);
+            reader.JumpTo(languageOffsetTableOffset);
 
             // Read all the offsets for each language.
             uint jpnOffset = reader.ReadUInt32();
@@ -76,7 +84,7 @@
             uint usesOffset = reader.ReadUInt32();
 
             // Jump to the Size Table, should already be at this location but just to be safe.
-            reader.JumpTo(LanguageSizeTableOffset);
+            reader.JumpTo(languageSizeTableOffset);
 
             // Read all the length values for each language.
             uint jpnLength = reader.ReadUInt32();
@@ -144,7 +152,7 @@
             writer.Write(0x30);
 
             // Set up the location of and write a placeholder size entry to fill in later.
-            long sizePos = writer.BaseStream.Position;
+            long sizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
             // Write the language counts, hardcoded to 0x08.
@@ -168,45 +176,45 @@
             writer.AddOffset("usesOffset");
 
             // Set up the locations and write language size entries to fill in later.
-            long jpnSizePos = writer.BaseStream.Position;
+            long jpnSizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
-            long enSizePos = writer.BaseStream.Position;
+            long enSizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
-            long deSizePos = writer.BaseStream.Position;
+            long deSizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
-            long frSizePos = writer.BaseStream.Position;
+            long frSizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
-            long esSizePos = writer.BaseStream.Position;
+            long esSizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
-            long itSizePos = writer.BaseStream.Position;
+            long itSizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
-            long usfrSizePos = writer.BaseStream.Position;
+            long usfrSizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
-            long usesSizePos = writer.BaseStream.Position;
+            long usesSizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
             // Write the 0x10 bytes of padding following the size table.
             writer.WriteNulls(0x10);
 
             // Write the string tables.
-            WriteLanguage(writer, "jpnOffset", Data.Japanese, jpnSizePos);
-            WriteLanguage(writer, "enOffset", Data.English, enSizePos);
-            WriteLanguage(writer, "deOffset", Data.German, deSizePos);
-            WriteLanguage(writer, "frOffset", Data.French, frSizePos);
-            WriteLanguage(writer, "esOffset", Data.Spanish, esSizePos);
-            WriteLanguage(writer, "itOffset", Data.Italian, itSizePos);
-            WriteLanguage(writer, "usfrOffset", Data.AmericanFrench, usfrSizePos);
-            WriteLanguage(writer, "usesOffset", Data.AmericanSpanish, usesSizePos);
+            WriteLanguage(writer, "jpnOffset", Data.Japanese, jpnSizePosition);
+            WriteLanguage(writer, "enOffset", Data.English, enSizePosition);
+            WriteLanguage(writer, "deOffset", Data.German, deSizePosition);
+            WriteLanguage(writer, "frOffset", Data.French, frSizePosition);
+            WriteLanguage(writer, "esOffset", Data.Spanish, esSizePosition);
+            WriteLanguage(writer, "itOffset", Data.Italian, itSizePosition);
+            WriteLanguage(writer, "usfrOffset", Data.AmericanFrench, usfrSizePosition);
+            WriteLanguage(writer, "usesOffset", Data.AmericanSpanish, usesSizePosition);
 
             // Fill in the file size.
-            writer.BaseStream.Position = sizePos;
+            writer.BaseStream.Position = sizePosition;
             writer.Write((uint)writer.BaseStream.Length);
 
             // Close Marathon's BinaryWriter.
@@ -223,32 +231,32 @@
         private static void WriteLanguage(BinaryWriterEx writer, string offset, string[] messages, long sizePosition)
         {
             // Save the start position of this string table for later maths.
-            long currentPos = writer.BaseStream.Position;
+            long currentPosition = writer.BaseStream.Position;
 
             // Fill in the offset to this string table.
             writer.FillOffset(offset);
 
             // Write every entry (minus the last one as a bodge in my reading code results in an empty entry) with a carriage return.
-            for (int i = 0; i < messages.Length - 1; i++)
+            for (int messageIndex = 0; messageIndex < messages.Length - 1; messageIndex++)
             {
-                writer.Write(messages[i]);
+                writer.Write(messages[messageIndex]);
                 writer.Write((byte)0x0D);
                 writer.Write((byte)0x0A);
             }
 
             // Calculate this string table's size.
-            uint size = (uint)(writer.BaseStream.Position - currentPos);
+            uint size = (uint)(writer.BaseStream.Position - currentPosition);
 
             // Do the alignment padding.
             writer.FixPadding(0x20);
 
             // Update currentPos so we can jump back after filling in the size.
-            currentPos = writer.BaseStream.Position;
+            currentPosition = writer.BaseStream.Position;
 
             // Fill in the size.
             writer.BaseStream.Position = sizePosition;
             writer.Write(size);
-            writer.BaseStream.Position = currentPos;
+            writer.BaseStream.Position = currentPosition;
         }
     }
 }

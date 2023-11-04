@@ -58,7 +58,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
             uint textureCount = reader.ReadUInt32();
 
             // Loop through based on the amount of textures listed in the Counter and read them.
-            for (int i = 0; i < textureCount; i++)
+            for (int textureIndex = 0; textureIndex < textureCount; textureIndex++)
             {
                 // Read and check the texture's chunk type.
                 chunkType = reader.ReadNullPaddedString(0x04);

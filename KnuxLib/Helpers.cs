@@ -184,36 +184,6 @@ namespace KnuxLib
         public static string ToBinaryString(uint num) => Convert.ToString(num, 2).PadLeft(32, '0');
 
         /// <summary>
-        /// Checks a value in a binary file against an expected value.
-        /// </summary>
-        /// <param name="reader">The Marathon BinaryReader to use.</param>
-        /// <param name="expectedValue">The value we expect this data to be.</param>
-        public static void TestValueUInt(BinaryReaderEx reader, uint expectedValue)
-        {
-            // Read the value.
-            uint actualValue = reader.ReadUInt32();
-
-            // Check it against our expected value and throw an exception if it's wrong.
-            if (actualValue != expectedValue)
-                throw new Exception($"Value at '0x{(reader.BaseStream.Position - 0x04).ToString("X").PadLeft(8, '0')}' is '0x{actualValue.ToString("X").PadLeft(8, '0')}', expected '0x{expectedValue.ToString("X").PadLeft(8, '0')}'");
-        }
-
-        /// <summary>
-        /// Checks a value in a binary file against an expected value.
-        /// </summary>
-        /// <param name="reader">The Marathon BinaryReader to use.</param>
-        /// <param name="expectedValue">The value we expect this data to be.</param>
-        public static void TestValueUShort(BinaryReaderEx reader, ushort expectedValue)
-        {
-            // Read the value.
-            ushort actualValue = reader.ReadUInt16();
-
-            // Check it against our expected value and throw an exception if it's wrong.
-            if (actualValue != expectedValue)
-                throw new Exception($"Value at '0x{(reader.BaseStream.Position - 0x04).ToString("X").PadLeft(8, '0')}' is '0x{actualValue.ToString("X").PadLeft(8, '0')}', expected '0x{expectedValue.ToString("X").PadLeft(8, '0')}'");
-        }
-
-        /// <summary>
         /// Finds a string in an Nu2 Engine scene file based on an offset.
         /// </summary>
         /// <param name="reader">The Marathon BinaryReader to use.</param>
@@ -229,7 +199,7 @@ namespace KnuxLib
                 expectedChunkType = new string(expectedChunkType.Reverse().ToArray());
 
             // Store our current position in the file.
-            long pos = reader.BaseStream.Position;
+            long position = reader.BaseStream.Position;
 
             // Jump to the first chunk in the Nu2 Scene.
             switch (version)
@@ -258,7 +228,7 @@ namespace KnuxLib
             string name = reader.ReadNullTerminatedString();
 
             // Jump back to the saved location.
-            reader.JumpTo(pos);
+            reader.JumpTo(position);
 
             // Return the name we read.
             return name;
@@ -272,10 +242,10 @@ namespace KnuxLib
         /// <param name="returnWithout">Return the path without the extension instead of the extension itself.</param>
         public static string GetExtension(string path, bool returnWithout = false)
         {
-            var ret = "";
+            string ret = "";
             for (; ; )
             {
-                var ext = Path.GetExtension(path);
+                string ext = Path.GetExtension(path);
                 if (string.IsNullOrEmpty(ext))
                     break;
                 path = path[..^ext.Length];

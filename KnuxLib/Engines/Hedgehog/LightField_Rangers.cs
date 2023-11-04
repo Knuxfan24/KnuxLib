@@ -74,7 +74,7 @@
             reader.JumpTo(lightfieldTableOffset, false);
 
             // Loop through and read each light field.
-            for (int i = 0; i < lightfieldCount; i++)
+            for (int lightfieldIndex = 0; lightfieldIndex < lightfieldCount; lightfieldIndex++)
             {
                 // Set up a new light field.
                 LightField lightfield = new();
@@ -128,23 +128,23 @@
             writer.FillInOffset("lightfieldTableOffset", false, false);
 
             // Loop through each light field in this file.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Add an offset for this light field's name.
-                writer.AddString($"lightfield{i}name", Data[i].Name, 0x08);
+                writer.AddString($"lightfield{dataIndex}name", Data[dataIndex].Name, 0x08);
 
                 // Loop through and write the three values of this light field's probes.
                 for (int probe = 0; probe < 3; probe++)
-                    writer.Write(Data[i].Probes[probe]);
+                    writer.Write(Data[dataIndex].Probes[probe]);
 
                 // Write this light field's position.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Position);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Position);
 
                 // Write this light field's rotation.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Rotation);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Rotation);
 
                 // Write this light field's size.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Size);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Size);
             }
 
             // Finish writing the BINA information.

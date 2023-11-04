@@ -141,20 +141,20 @@ namespace KnuxLib.Engines.Storybook
             Data.UnknownFloat_1 = reader.ReadSingle();
 
             // Read the offset to this file's path table (always 0x10).
-            uint PathTableOffset = reader.ReadUInt32();
+            uint pathTableOffset = reader.ReadUInt32();
 
             // Read this path's type.
             Data.Type = (PathType)reader.ReadUInt32();
 
             // Jump to the file's path table (should already be at this position but just to be safe).
-            reader.JumpTo(PathTableOffset);
+            reader.JumpTo(pathTableOffset);
 
             // If this is a Black Knight file, then read the path name.
             if (version == FormatVersion.BlackKnight)
                 Data.Name = reader.ReadNullPaddedString(0x20);
 
             // Loop through the points in this path.
-            for (int i = 0; i < pointCount; i++)
+            for (int pointIndex = 0; pointIndex < pointCount; pointIndex++)
             {
                 // Read the points differently depending on the type.
                 switch (pointType)
@@ -239,7 +239,7 @@ namespace KnuxLib.Engines.Storybook
                 writer.WriteNullPaddedString(Data.Name, 0x20);
 
             // Loop through and write each point.
-            for (int i = 0; i < Data.Points.Count; i++)
+            for (int pointIndex = 0; pointIndex < Data.Points.Count; pointIndex++)
             {
                 // Write the points depending on their type.
                 switch (pointType)
@@ -249,33 +249,33 @@ namespace KnuxLib.Engines.Storybook
                         writer.Write(0);
 
                         // Write this point's position.
-                        writer.Write(((SplinePointType1)Data.Points[i]).Position);
+                        writer.Write(((SplinePointType1)Data.Points[pointIndex]).Position);
 
                         // Write this point's unknown floating point value.
-                        writer.Write(((SplinePointType1)Data.Points[i]).UnknownFloat_1);
+                        writer.Write(((SplinePointType1)Data.Points[pointIndex]).UnknownFloat_1);
                         break;
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType3":
                         // Write this point's unknown integer value.
-                        writer.Write(((SplinePointType3)Data.Points[i]).UnknownUInt32_1);
+                        writer.Write(((SplinePointType3)Data.Points[pointIndex]).UnknownUInt32_1);
 
                         // Write this point's unknown Vector3 value.
-                        writer.Write(((SplinePointType3)Data.Points[i]).UnknownVector3_1);
+                        writer.Write(((SplinePointType3)Data.Points[pointIndex]).UnknownVector3_1);
 
                         // Write this point's position.
-                        writer.Write(((SplinePointType3)Data.Points[i]).Position);
+                        writer.Write(((SplinePointType3)Data.Points[pointIndex]).Position);
                         break;
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType4":
                         // Write this point's position.
-                        writer.Write(((SplinePointType4)Data.Points[i]).Position);
+                        writer.Write(((SplinePointType4)Data.Points[pointIndex]).Position);
 
                         // Write this point's first unknown Vector3 value.
-                        writer.Write(((SplinePointType4)Data.Points[i]).UnknownVector3_1);
+                        writer.Write(((SplinePointType4)Data.Points[pointIndex]).UnknownVector3_1);
 
                         // Write this point's second unknown Vector3 value.
-                        writer.Write(((SplinePointType4)Data.Points[i]).UnknownVector3_2);
+                        writer.Write(((SplinePointType4)Data.Points[pointIndex]).UnknownVector3_2);
 
                         // Write this point's third unknown Vector3 value.
-                        writer.Write(((SplinePointType4)Data.Points[i]).UnknownVector3_3);
+                        writer.Write(((SplinePointType4)Data.Points[pointIndex]).UnknownVector3_3);
                         break;
                 }
             }
@@ -297,18 +297,18 @@ namespace KnuxLib.Engines.Storybook
             string pointType = Data.Points[0].GetType().ToString();
 
             // Write each point's positions depending on type.
-            for (int i = 0; i < Data.Points.Count; i++)
+            for (int pointIndex = 0; pointIndex < Data.Points.Count; pointIndex++)
             {
                 switch (pointType)
                 {
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType1":
-                        obj.WriteLine($"v {((SplinePointType1)Data.Points[i]).Position.X} {((SplinePointType1)Data.Points[i]).Position.Y} {((SplinePointType1)Data.Points[i]).Position.Z}");
+                        obj.WriteLine($"v {((SplinePointType1)Data.Points[pointIndex]).Position.X} {((SplinePointType1)Data.Points[pointIndex]).Position.Y} {((SplinePointType1)Data.Points[pointIndex]).Position.Z}");
                         break;
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType3":
-                        obj.WriteLine($"v {((SplinePointType3)Data.Points[i]).Position.X} {((SplinePointType3)Data.Points[i]).Position.Y} {((SplinePointType3)Data.Points[i]).Position.Z}");
+                        obj.WriteLine($"v {((SplinePointType3)Data.Points[pointIndex]).Position.X} {((SplinePointType3)Data.Points[pointIndex]).Position.Y} {((SplinePointType3)Data.Points[pointIndex]).Position.Z}");
                         break;
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType4":
-                        obj.WriteLine($"v {((SplinePointType4)Data.Points[i]).Position.X} {((SplinePointType4)Data.Points[i]).Position.Y} {((SplinePointType4)Data.Points[i]).Position.Z}");
+                        obj.WriteLine($"v {((SplinePointType4)Data.Points[pointIndex]).Position.X} {((SplinePointType4)Data.Points[pointIndex]).Position.Y} {((SplinePointType4)Data.Points[pointIndex]).Position.Z}");
                         break;
                 }
             }
@@ -319,8 +319,8 @@ namespace KnuxLib.Engines.Storybook
 
             // Write this path's object.
             obj.Write("l ");
-            for (int i = 0; i < Data.Points.Count; i++)
-                obj.Write($"{i + 1} ");
+            for (int pointIndex = 0; pointIndex < Data.Points.Count; pointIndex++)
+                obj.Write($"{pointIndex + 1} ");
 
             // Close this StreamWriter.
             obj.Close();

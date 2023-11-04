@@ -51,10 +51,12 @@
                 // Reread the first four bytes.
                 compressedIdentifier = reader.ReadNullPaddedString(0x04);
             }
-
+            
+            // Read the amount of files in this archive.
             uint fileCount = reader.ReadUInt32();
 
-            for (int i = 0; i < fileCount; i++)
+            // Loop through each file.
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
             {
                 // Set up a new node.
                 FileNode node = new();
@@ -97,25 +99,37 @@
             // Set up Marathon's BinaryWriter.
             BinaryWriterEx writer = new(File.Create(filepath));
 
+            // Write this archive's signature.
             writer.WriteNullPaddedString("one.", 0x04);
 
+            // Write the amount of files in this archive.
             writer.Write(Data.Count);
 
-            for (int i = 0; i < Data.Count; i++)
+            // Loop through each file entry.
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
-                writer.WriteNullPaddedString(Data[i].Name, 0x38);
-                writer.AddOffset($"File{i}Data");
-                writer.Write(Data[i].Data.Length);
+                // Write this file's name, padded to 0x38 bytes.
+                writer.WriteNullPaddedString(Data[dataIndex].Name, 0x38);
+
+                // Add an offset for this file's data.
+                writer.AddOffset($"File{dataIndex}Data");
+
+                // Write the size of this file.
+                writer.Write(Data[dataIndex].Data.Length);
             }
 
             // Weird padding fix. Not sure about this one.
             writer.FixPadding(0x10);
             writer.WriteNulls(0x10);
 
-            for (int i = 0; i < Data.Count; i++)
+            // Loop through each file.
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
-                writer.FillOffset($"File{i}Data");
-                writer.Write(Data[i].Data);
+                // Fill in the offset for this file.
+                writer.FillOffset($"File{dataIndex}Data");
+
+                // Write this file's data.
+                writer.Write(Data[dataIndex].Data);
 
                 // Even weirder padding fix. Even less sure about this one.
                 if (writer.BaseStream.Position % 0x10 == 0)

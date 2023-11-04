@@ -93,22 +93,22 @@
             reader.ReadSignature(0x04, "WADH");
 
             // Read the offset to the data table.
-            uint DataTableOffset = reader.ReadUInt32();
+            uint dataTableOffset = reader.ReadUInt32();
 
             // Read the count of the nodes in this file.
-            uint NodeCount = reader.ReadUInt32();
+            uint nodeCount = reader.ReadUInt32();
 
             // Read the length of this file's string table.
-            uint StringTableLength = reader.ReadUInt32();
+            uint stringTableLength = reader.ReadUInt32();
 
             // Calculate where the string table will be.
-            uint StringTableOffset = (NodeCount * entrySize) + 0x10;
+            uint stringTableOffset = (nodeCount * entrySize) + 0x10;
 
             // Loop through and read the nodes.
-            for (int i = 0; i < NodeCount; i++)
+            for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
             {
                 // Skip the dummy root directory.
-                if (i == 0)
+                if (nodeIndex == 0)
                 {
                     reader.JumpAhead(entrySize);
                     continue;
@@ -118,14 +118,14 @@
                 Node node = new();
 
                 // Read this node's name.
-                node.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false, StringTableOffset);
+                node.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false, stringTableOffset);
 
                 // If this file is a Ninjabread Man Wii Version WAD, then read this node's first unknown value.
                 if (version == FormatVersion.NinjabreadMan_Wii) node.UnknownWiiInt32_1 = reader.ReadInt32();
 
                 // Read the offset and size to this node's data.
-                uint DataOffset = reader.ReadUInt32();
-                int DataSize = reader.ReadInt32();
+                uint nodeDataOffset = reader.ReadUInt32();
+                int nodeDataSize = reader.ReadInt32();
 
                 // If this file is a Ninjabread Man Wii Version WAD, then read this node's second unknown value.
                 if (version == FormatVersion.NinjabreadMan_Wii) node.UnknownWiiInt32_2 = reader.ReadInt32();
@@ -140,20 +140,20 @@
                 node.SiblingIndex = reader.ReadInt32();
 
                 // Save our current position so we can jump back for the next node.
-                long pos = reader.BaseStream.Position;
+                long position = reader.BaseStream.Position;
 
                 // If this entry has a data size, then jump to and read it.
-                if (DataSize != 0)
+                if (nodeDataSize != 0)
                 {
-                    reader.JumpTo(DataTableOffset + DataOffset);
-                    node.Data = reader.ReadBytes(DataSize);
+                    reader.JumpTo(dataTableOffset + nodeDataOffset);
+                    node.Data = reader.ReadBytes(nodeDataSize);
                 }
 
                 // Save this node.
                 Data.Add(node);
 
                 // Jump back for the next node.
-                reader.JumpTo(pos);
+                reader.JumpTo(position);
             }
 
             // Close Marathon's BinaryReader.
@@ -167,15 +167,15 @@
             string fullPath = "";
 
             // Loop through all our entries.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // If this entry does not have a sibling, then simply add its name onto the full path.
-                if (Data[i].SiblingIndex == -1)
-                    fullPath += $@"\{Data[i].Name}";
+                if (Data[dataIndex].SiblingIndex == -1)
+                    fullPath += $@"\{Data[dataIndex].Name}";
 
                 // If it does, then set the fullPath to the sibling's path, but remove the name of the sibling entry and add this entry's in its place.
                 else
-                    fullPath = paths[Data[i].SiblingIndex].Replace(Data[Data[i].SiblingIndex - 1].Name, Data[i].Name);
+                    fullPath = paths[Data[dataIndex].SiblingIndex].Replace(Data[Data[dataIndex].SiblingIndex - 1].Name, Data[dataIndex].Name);
 
                 // Add this entry's path for future entries to reference.
                 paths.Add(fullPath);
@@ -185,19 +185,8 @@
             paths.RemoveAt(0);
 
             // Set the node names to their paths.
-            for (int i = 0; i < Data.Count; i++)
-                Data[i].Name = paths[i];
-        }
-
-        /// <summary>
-        /// Saves this format's file.
-        /// TODO: Implement.
-        /// </summary>
-        /// <param name="filepath">The path to save to.</param>
-        /// <param name="version">The game/system version to save with.</param>
-        public void Save(string filepath, FormatVersion version = FormatVersion.NinjabreadMan_PCPS2)
-        {
-            throw new NotImplementedException();
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                Data[dataIndex].Name = paths[dataIndex];
         }
 
         /// <summary>
@@ -227,16 +216,6 @@
                 // Extract the file.
                 File.WriteAllBytes($@"{directory}\{node.Name}", node.Data);
             }
-        }
-
-        /// <summary>
-        /// Imports a directory as a Gods Engine WAD.
-        /// TODO: Implement.
-        /// </summary>
-        /// <param name="directory">The directory to import, including sub directories.</param>
-        public void Import(string directory)
-        {
-            throw new NotImplementedException();
         }
     }
 }

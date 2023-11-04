@@ -58,10 +58,10 @@
             group.Hash = reader.ReadUInt64();
 
             // Read the count of the data in UnknownOffset_1.
-            uint UnknownCount_1 = reader.ReadUInt32();
+            uint unknownCount_1 = reader.ReadUInt32();
 
             // Read the count of the data in UnknownOffset_2.
-            uint UnknownCount_2 = reader.ReadUInt32();
+            uint unknownCount_2 = reader.ReadUInt32();
 
             // Read this group's unknown hash.
             group.UnknownHash = reader.ReadUInt64();
@@ -74,33 +74,33 @@
 
             // Read an unknown offset.
             // TODO: Understand the data at this offset.
-            uint UnknownOffset_1 = reader.ReadUInt32();
+            uint unknownOffset_1 = reader.ReadUInt32();
 
             // Read the size (including the data magic and size) of the data at UnknownOffset_1.
-            uint UnknownOffset_1_Size = reader.ReadUInt32();
+            uint unknownOffset_1_Size = reader.ReadUInt32();
 
             // Read an unknown offset.
             // TODO: Read the data at this offset. Is a set of strings, but the count doesn't match up?
-            uint UnknownOffset_2 = reader.ReadUInt32();
+            uint unknownOffset_2 = reader.ReadUInt32();
 
             // Read the size (including the data magic and size) of the data at UnknownOffset_2.
-            uint UnknownOffset_2_Size = reader.ReadUInt32();
+            uint unknownOffset_2_Size = reader.ReadUInt32();
 
             // Read the offset to this group's name.
-            uint NameOffset = reader.ReadUInt32();
+            uint nameOffset = reader.ReadUInt32();
 
             // Read the size (including the data magic and size) of the data at the name offset.
-            uint NameOffset_Size = reader.ReadUInt32();
+            uint nameOffset_Size = reader.ReadUInt32();
 
             // Save our position to jump back to after reading the group data.
             long position = reader.BaseStream.Position;
 
             // Jump to this group's name offset.
-            reader.JumpTo(NameOffset);
+            reader.JumpTo(nameOffset);
 
             // Read and check this data's magic value.
             uint dataMagic = reader.ReadUInt32();
-            if (dataMagic != 0xFFFFFF) throw new Exception($"DataMagic at 0x{NameOffset:X} was 0x{dataMagic:X} rather than 0xFFFFFFFF!");
+            if (dataMagic != 0xFFFFFF) throw new Exception($"DataMagic at 0x{nameOffset:X} was 0x{dataMagic:X} rather than 0xFFFFFFFF!");
 
             // Read this data's size.
             uint dataSize = reader.ReadUInt32();
@@ -109,24 +109,24 @@
             group.Name = reader.ReadNullTerminatedString();
 
             // If UnknownOffset_1 has a value, then read its data.
-            if (UnknownOffset_1 != 0)
+            if (unknownOffset_1 != 0)
             {
                 // Initialise the array of unknown data.
-                group.UnknownUInt32_Array = new uint[UnknownCount_1];
+                group.UnknownUInt32_Array = new uint[unknownCount_1];
 
                 // Jump to the unknown offset.
-                reader.JumpTo(UnknownOffset_1);
+                reader.JumpTo(unknownOffset_1);
 
                 // Read and check this data's magic value.
                 dataMagic = reader.ReadUInt32();
-                if (dataMagic != 0xFFFFFF) throw new Exception($"DataMagic at 0x{NameOffset:X} was 0x{dataMagic:X} rather than 0xFFFFFFFF!");
+                if (dataMagic != 0xFFFFFF) throw new Exception($"DataMagic at 0x{nameOffset:X} was 0x{dataMagic:X} rather than 0xFFFFFFFF!");
 
                 // Read this data's size.
                 dataSize = reader.ReadUInt32();
 
                 // Loop through and read each value into the array.
-                for (int i = 0; i < UnknownCount_1; i++)
-                    group.UnknownUInt32_Array[i] = reader.ReadUInt32();
+                for (int unknownIndex = 0; unknownIndex < unknownCount_1; unknownIndex++)
+                    group.UnknownUInt32_Array[unknownIndex] = reader.ReadUInt32();
             }
 
             // Jump back to our saved position.
@@ -198,18 +198,18 @@
         public void WriteSubNodes(BinaryWriterEx writer, int nodeIndex)
         {
             // Loop through each sub node.
-            for (int i = 0; i < SubNodes.Count; i++)
+            for (int subNodeIndex = 0; subNodeIndex < SubNodes.Count; subNodeIndex++)
             {
                 // Add an offset of this node's position so we can fill in the sub node offsets.
                 Offsets.Add(writer.BaseStream.Position);
 
                 // Write the node based on its type.
-                switch (SubNodes[i].GetType().Name)
+                switch (SubNodes[subNodeIndex].GetType().Name)
                 {
-                    case "TextureMap": (SubNodes[i] as TextureMap).Write(writer); break;
-                    case "ObjectMap":  (SubNodes[i] as ObjectMap).Write(writer);  break;
+                    case "TextureMap": (SubNodes[subNodeIndex] as TextureMap).Write(writer); break;
+                    case "ObjectMap":  (SubNodes[subNodeIndex] as ObjectMap).Write(writer);  break;
 
-                    default: Console.WriteLine($"Writing of node type '{SubNodes[i].GetType().Name}' not yet implemented."); break;
+                    default: Console.WriteLine($"Writing of node type '{SubNodes[subNodeIndex].GetType().Name}' not yet implemented."); break;
                 }
             }
 

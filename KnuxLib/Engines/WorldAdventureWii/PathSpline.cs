@@ -127,7 +127,7 @@
             reader.JumpAhead(0x04);
 
             // Loop through each path in this file.
-            for (int i = 0; i < pathCount; i++)
+            for (int pathIndex = 0; pathIndex < pathCount; pathIndex++)
             {
                 // Set up a new path entry.
                 SplinePath path = new();
@@ -152,22 +152,22 @@
             reader.JumpAhead(0x04);
 
             // Loop through each path in this file.
-            for (int i = 0; i < pathCount; i++)
+            for (int pathIndex = 0; pathIndex < pathCount; pathIndex++)
             {
                 // Read this path's size.
                 uint pathSize = reader.ReadUInt32();
 
                 // Read this path's position value.
-                Data[i].Position = reader.ReadVector3();
+                Data[pathIndex].Position = reader.ReadVector3();
 
                 // Read this path's rotation value.
-                Data[i].Rotation = reader.ReadQuaternion();
+                Data[pathIndex].Rotation = reader.ReadQuaternion();
 
                 // Read this path's scale value.
-                Data[i].Scale = reader.ReadVector3();
+                Data[pathIndex].Scale = reader.ReadVector3();
 
                 // Read this path's unknown floating point value.
-                Data[i].UnknownFloat_1 = reader.ReadSingle();
+                Data[pathIndex].UnknownFloat_1 = reader.ReadSingle();
 
                 // Read this path's spline table size.
                 uint splineTableSize = reader.ReadUInt32();
@@ -176,28 +176,28 @@
                 uint splineCount = reader.ReadUInt32();
 
                 // Set up this path's unknown integer value count.
-                Data[i].UnknownUInts_1 = new uint[splineCount];
+                Data[pathIndex].UnknownUInts_1 = new uint[splineCount];
 
                 // Set up this path's spline count.
-                Data[i].Splines = new List<SplinePoint>[splineCount];
+                Data[pathIndex].Splines = new List<SplinePoint>[splineCount];
 
                 // Loop through each spline in this path.
-                for (int s = 0; s < splineCount; s++)
+                for (int splineIndex = 0; splineIndex < splineCount; splineIndex++)
                 {
                     // Initialise the spline entry.
-                    Data[i].Splines[s] = new();
+                    Data[pathIndex].Splines[splineIndex] = new();
 
                     // Read this spline's size.
                     uint splineSize = reader.ReadUInt32();
 
                     // Read this spline's unknown integer value.
-                    Data[i].UnknownUInts_1[s] = reader.ReadUInt32();
+                    Data[pathIndex].UnknownUInts_1[splineIndex] = reader.ReadUInt32();
 
                     // Read this spline's point count.
                     uint pointCount = reader.ReadUInt32();
 
                     // Loop through each spline point in this spline.
-                    for (int p = 0; p < pointCount; p++)
+                    for (int pointIndex = 0; pointIndex < pointCount; pointIndex++)
                     {
                         // Set up a new spline point entry.
                         SplinePoint spline = new();
@@ -215,7 +215,7 @@
                         spline.UnknownVector3_3 = reader.ReadVector3();
 
                         // Save this spline point.
-                        Data[i].Splines[s].Add(spline);
+                        Data[pathIndex].Splines[splineIndex].Add(spline);
                     }
                 }
             }
@@ -261,13 +261,13 @@
             writer.Write(Data.Count);
 
             // Loop through each path.
-            for (ushort i = 0; i < Data.Count; i++)
+            for (ushort dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write the index of this path.
-                writer.Write(i);
+                writer.Write(dataIndex);
 
                 // Calculate this path's name length to the nearest 0x04.
-                ushort stringSize = (ushort)Data[i].Name.Length;
+                ushort stringSize = (ushort)Data[dataIndex].Name.Length;
                 while (stringSize % 0x04 != 0)
                     stringSize++;
 
@@ -275,7 +275,7 @@
                 writer.Write(stringSize);
 
                 // Write this path's name, padded to the previously calculated value.
-                writer.WriteNullPaddedString(Data[i].Name, stringSize);
+                writer.WriteNullPaddedString(Data[dataIndex].Name, stringSize);
             }
 
             // Save the position of the end of the path name table.
@@ -298,7 +298,7 @@
             // Write this file's path count.
             writer.Write(Data.Count);
 
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Save the position of the start of this path.
                 long PathStartPosition = writer.BaseStream.Position;
@@ -307,16 +307,16 @@
                 writer.Write("SIZE");
 
                 // Write this path's position.
-                writer.Write(Data[i].Position);
+                writer.Write(Data[dataIndex].Position);
 
                 // Write this path's rotation.
-                writer.Write(Data[i].Rotation);
+                writer.Write(Data[dataIndex].Rotation);
 
                 // Write this path's scale.
-                writer.Write(Data[i].Scale);
+                writer.Write(Data[dataIndex].Scale);
 
                 // Write this path's unknown floating point value.
-                writer.Write(Data[i].UnknownFloat_1);
+                writer.Write(Data[dataIndex].UnknownFloat_1);
 
                 // Save the position of the start of this path's spline table.
                 long SplineTableStartPosition = writer.BaseStream.Position;
@@ -325,10 +325,10 @@
                 writer.Write("SIZE");
 
                 // Write the amount of splines in this path.
-                writer.Write(Data[i].Splines.Length);
+                writer.Write(Data[dataIndex].Splines.Length);
 
                 // Loop through each spline in this path.
-                for (int s = 0; s < Data[i].Splines.Length; s++)
+                for (int splineIndex = 0; splineIndex < Data[dataIndex].Splines.Length; splineIndex++)
                 {
                     // Save the position of the start of this spline.
                     long SplineStartPosition = writer.BaseStream.Position;
@@ -337,25 +337,25 @@
                     writer.Write("SIZE");
 
                     // Write this spline's unknown integer value.
-                    writer.Write(Data[i].UnknownUInts_1[s]);
+                    writer.Write(Data[dataIndex].UnknownUInts_1[splineIndex]);
 
                     // Write this spline's point count.
-                    writer.Write(Data[i].Splines[s].Count);
+                    writer.Write(Data[dataIndex].Splines[splineIndex].Count);
 
                     // Loop through each point in this spline.
-                    for (int p = 0; p < Data[i].Splines[s].Count; p++)
+                    for (int pointIndex = 0; pointIndex < Data[dataIndex].Splines[splineIndex].Count; pointIndex++)
                     {
                         // Write this point's unknown integer value.
-                        writer.Write(Data[i].Splines[s][p].UnknownUInt32_1);
+                        writer.Write(Data[dataIndex].Splines[splineIndex][pointIndex].UnknownUInt32_1);
 
                         // Write this point's first unknown Vector3.
-                        writer.Write(Data[i].Splines[s][p].UnknownVector3_1);
+                        writer.Write(Data[dataIndex].Splines[splineIndex][pointIndex].UnknownVector3_1);
 
                         // Write this point's second unknown Vector3.
-                        writer.Write(Data[i].Splines[s][p].UnknownVector3_2);
+                        writer.Write(Data[dataIndex].Splines[splineIndex][pointIndex].UnknownVector3_2);
 
                         // Write this point's third unknown Vector3.
-                        writer.Write(Data[i].Splines[s][p].UnknownVector3_3);
+                        writer.Write(Data[dataIndex].Splines[splineIndex][pointIndex].UnknownVector3_3);
                     }
 
                     // Save the position of the end of this spline.

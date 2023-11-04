@@ -73,10 +73,10 @@
             reader.JumpAhead(0x04);
 
             // Read the offset to this file's hierarchy table.
-            long HierarchyTableOffset = reader.ReadInt64();
+            long hierarchyTableOffset = reader.ReadInt64();
 
             // Read this file's node count.
-            ulong NodeCount = reader.ReadUInt64();
+            ulong nodeCount = reader.ReadUInt64();
 
             // Skip an unknown value that always matches NodeCount.
             reader.JumpAhead(0x08);
@@ -85,7 +85,7 @@
             reader.JumpAhead(0x08);
 
             // Read the offset to this file's string table.
-            long StringTableOffset = reader.ReadInt64();
+            long stringTableOffset = reader.ReadInt64();
 
             // Skip two unknown values that always matches NodeCount.
             reader.JumpAhead(0x10);
@@ -94,7 +94,7 @@
             reader.JumpAhead(0x08);
 
             // Read the offset to this file's transform table.
-            long TransformTableOffset = reader.ReadInt64();
+            long transformTableOffset = reader.ReadInt64();
 
             // Skip two unknown values that always matches NodeCount.
             reader.JumpAhead(0x10);
@@ -103,10 +103,10 @@
             reader.JumpAhead(0x08);
 
             // Jump to this file's hierarchy table.
-            reader.JumpTo(HierarchyTableOffset, false);
+            reader.JumpTo(hierarchyTableOffset, false);
 
             // Read each node's parent index.
-            for (ulong i = 0; i < NodeCount; i++)
+            for (ulong nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
             {
                 // Set up a new node entry.
                 Node node = new();
@@ -119,35 +119,35 @@
             }
 
             // Jump to this file's string table.
-            reader.JumpTo(StringTableOffset, false);
+            reader.JumpTo(stringTableOffset, false);
 
             // Read each node's string offset.
-            for (ulong i = 0; i < NodeCount; i++)
+            for (ulong nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
             {
                 // Read this node's name.
-                Data[(int)i].NodeName = Helpers.ReadNullTerminatedStringTableEntry(reader);
+                Data[(int)nodeIndex].NodeName = Helpers.ReadNullTerminatedStringTableEntry(reader);
 
                 // Skip an unknown value of 0.
                 reader.JumpAhead(0x08);
             }
 
             // Jump to this file's transform table.
-            reader.JumpTo(TransformTableOffset, false);
+            reader.JumpTo(transformTableOffset, false);
 
             // Read each node's transform.
-            for (ulong i = 0; i < NodeCount; i++)
+            for (ulong nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
             {
                 // Read this node's position.
-                Data[(int)i].Position = Helpers.ReadHedgeLibVector3(reader);
+                Data[(int)nodeIndex].Position = Helpers.ReadHedgeLibVector3(reader);
 
                 // Skip an unknown value of 0.
                 reader.JumpAhead(0x04);
 
                 // Read this node's rotation.
-                Data[(int)i].Rotation = Helpers.ReadHedgeLibQuaternion(reader);
+                Data[(int)nodeIndex].Rotation = Helpers.ReadHedgeLibQuaternion(reader);
 
                 // Read this node's scale.
-                Data[(int)i].Scale = Helpers.ReadHedgeLibVector3(reader);
+                Data[(int)nodeIndex].Scale = Helpers.ReadHedgeLibVector3(reader);
 
                 // Skip an unknown value of 0.
                 reader.JumpAhead(0x04);
@@ -212,10 +212,10 @@
             writer.FillInOffset("HierarchyTableOffset", false, false);
 
             // Loop through each node.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write this node's parent index.
-                writer.Write(Data[i].ParentNodeIndex);
+                writer.Write(Data[dataIndex].ParentNodeIndex);
             }
 
             // Realign to 0x10 bytes.
@@ -225,10 +225,10 @@
             writer.FillInOffset("StringTableOffset", false, false);
 
             // Loop through each node.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Add a string entry for this node's name.
-                writer.AddString($"node{i}name", Data[i].NodeName, 0x08);
+                writer.AddString($"node{dataIndex}name", Data[dataIndex].NodeName, 0x08);
 
                 // Write an unknown value of 0.
                 writer.Write(0x00ul);
@@ -238,19 +238,19 @@
             writer.FillInOffset("TransformTableOffset", false, false);
 
             // Loop through each node.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write this node's position.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Position);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Position);
 
                 // Write an unknown value of 0.
                 writer.Write(0x00);
 
                 // Write this node's quaternion.
-                Helpers.WriteHedgeLibQuaternion(writer, Data[i].Rotation);
+                Helpers.WriteHedgeLibQuaternion(writer, Data[dataIndex].Rotation);
 
                 // Write this node's scale.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Scale);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Scale);
 
                 // Write an unknown value of 0.
                 writer.Write(0x00);

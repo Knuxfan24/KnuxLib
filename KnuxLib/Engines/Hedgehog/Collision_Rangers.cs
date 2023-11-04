@@ -251,7 +251,7 @@ namespace KnuxLib.Engines.Hedgehog
             reader.JumpTo(meshesOffset, false);
 
             // Loop through each mesh.
-            for (ulong i = 0; i < meshCount; i++)
+            for (ulong meshIndex = 0; meshIndex < meshCount; meshIndex++)
             {
                 // Create a new mesh.
                 Mesh mesh = new();
@@ -263,56 +263,56 @@ namespace KnuxLib.Engines.Hedgehog
                 mesh.UnknownUInt32_2 = reader.ReadUInt32();
 
                 // Read this mesh's vertex count.
-                uint VertexCount = reader.ReadUInt32();
+                uint vertexCount = reader.ReadUInt32();
 
                 // Read this mesh's face count.
-                uint FaceCount = reader.ReadUInt32();
+                uint faceCount = reader.ReadUInt32();
 
                 // Read the size of this mesh's bounding volume hierarchy.
-                uint BVHLength = reader.ReadUInt32();
+                uint boundingVolumeHeirarchyLength = reader.ReadUInt32();
 
                 // Read this mesh's tag count, this always matches FaceCount, unless that value is 0, in which case this is always 1 instead.
-                uint TagCount = reader.ReadUInt32();
+                uint tagCount = reader.ReadUInt32();
 
                 // Skip two unknown values that are always 0.
                 reader.JumpAhead(0x08);
 
                 // Read the offset to this mesh's vertex table.
-                long VertexOffset = reader.ReadInt64();
+                long vertexOffset = reader.ReadInt64();
 
                 // Read the offset to this mesh's face table.
-                long FaceOffset = reader.ReadInt64();
+                long faceOffset = reader.ReadInt64();
 
                 // Read the offset to this mesh's bounding volume hierarchy.
-                long BVHOffset = reader.ReadInt64();
+                long boundingVolumeHeirarchyOffset = reader.ReadInt64();
 
                 // Read the offset to this mesh's tag table.
-                long TagTableOffset = reader.ReadInt64();
+                long tagTableOffset = reader.ReadInt64();
 
                 // Create an array of Vector3s for the vertices.
-                mesh.Vertices = new Vector3[VertexCount];
+                mesh.Vertices = new Vector3[vertexCount];
 
                 // If this mesh has faces, then create the face array too.
-                if (FaceCount > 0)
-                    mesh.Faces = new Face[FaceCount];
+                if (faceCount > 0)
+                    mesh.Faces = new Face[faceCount];
 
                 // Save our current position so we can jump back for the next shape.
                 long position = reader.BaseStream.Position;
 
                 // Jump to this mesh's vertex table.
-                reader.JumpTo(VertexOffset, false);
+                reader.JumpTo(vertexOffset, false);
 
                 // Loop through and read each vertex for this mesh.
-                for (int v = 0; v < VertexCount; v++)
-                    mesh.Vertices[v] = Helpers.ReadHedgeLibVector3(reader);
+                for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
+                    mesh.Vertices[vertexIndex] = Helpers.ReadHedgeLibVector3(reader);
 
                 // Jump to this mesh's face table.
-                reader.JumpTo(FaceOffset, false);
+                reader.JumpTo(faceOffset, false);
 
                 // Loop through and read each face for this mesh.
-                for (int f = 0; f < FaceCount; f++)
+                for (int faceIndex = 0; faceIndex < faceCount; faceIndex++)
                 {
-                    mesh.Faces[f] = new()
+                    mesh.Faces[faceIndex] = new()
                     {
                         IndexA = reader.ReadUInt16(),
                         IndexB = reader.ReadUInt16(),
@@ -321,15 +321,15 @@ namespace KnuxLib.Engines.Hedgehog
                 }
 
                 // Jump to this mesh's bounding volume hierarchy.
-                reader.JumpTo(BVHOffset, false);
+                reader.JumpTo(boundingVolumeHeirarchyOffset, false);
 
                 // TODO: Read this mesh's bounding volume hierarchy.
 
                 // Jump to this mesh's tag table.
-                reader.JumpTo(TagTableOffset, false);
+                reader.JumpTo(tagTableOffset, false);
 
                 // If this mesh doesn't have any faces, then read the one tag value set that's here.
-                if (FaceCount == 0)
+                if (faceCount == 0)
                 {
                     // Read this mesh's flags.
                     mesh.Flags = (Flags)reader.ReadByte();
@@ -347,19 +347,19 @@ namespace KnuxLib.Engines.Hedgehog
                 // If this mesh does have faces, then read the tags for each one.
                 else
                 {
-                    for (int t = 0; t < TagCount; t++)
+                    for (int tagIndex = 0; tagIndex < tagCount; tagIndex++)
                     {
                         // Read this face's flags.
-                        mesh.Faces[t].Flags = (Flags)reader.ReadByte();
+                        mesh.Faces[tagIndex].Flags = (Flags)reader.ReadByte();
 
                         // Read this face's unknown collision value.
-                        mesh.Faces[t].UnknownCollisionValue = reader.ReadByte();
+                        mesh.Faces[tagIndex].UnknownCollisionValue = reader.ReadByte();
 
                         // Skip an unknown value of 0.
                         reader.JumpAhead(0x01);
 
                         // Read this face's material type.
-                        mesh.Faces[t].Material = (Material)reader.ReadByte();
+                        mesh.Faces[tagIndex].Material = (Material)reader.ReadByte();
                     }
                 }
 
@@ -367,14 +367,14 @@ namespace KnuxLib.Engines.Hedgehog
                 reader.JumpTo(position);
 
                 // Save this mesh.
-                Data.Meshes[i] = mesh;
+                Data.Meshes[meshIndex] = mesh;
             }
 
             // Jump to the table of unknown data.
             reader.JumpTo(unknownOffset_1, false);
 
             // Loop through each unknown chunk.
-            for (ulong i = 0; i < unknownCount_1; i++)
+            for (ulong unknownIndex = 0; unknownIndex < unknownCount_1; unknownIndex++)
             {
                 // Create a new unknown data chunk.
                 UnknownData unknown = new();
@@ -395,7 +395,7 @@ namespace KnuxLib.Engines.Hedgehog
                 unknown.UnknownVector3_2 = Helpers.ReadHedgeLibVector3(reader);
 
                 // Save this unknown data chunk.
-                Data.UnknownData[i] = unknown;
+                Data.UnknownData[unknownIndex] = unknown;
             }
 
             // Close HedgeLib#'s BINAReader.

@@ -182,7 +182,7 @@
             uint objectCount = reader.ReadUInt32();
 
             // Read each object except for the last one, which has every value set to 0xFFFFFFFF.
-            for (int i = 0; i < objectCount - 1; i++)
+            for (int objectIndex = 0; objectIndex < objectCount - 1; objectIndex++)
             {
                 // Create a new object and read its data.
                 SetObject obj = new()

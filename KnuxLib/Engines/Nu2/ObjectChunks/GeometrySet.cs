@@ -103,7 +103,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
             uint geometryCount = reader.ReadUInt32();
 
             // Loop through and read each geometry entry.
-            for (int i = 0; i < geometryCount; i++)
+            for (int geometryIndex = 0; geometryIndex < geometryCount; geometryIndex++)
             {
                 // Set up a geometry entry.
                 GeometryData geometry = new();
@@ -128,7 +128,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
                         geometryMeshCount = reader.ReadUInt32();
 
                         // Loop through each mesh.
-                        for (int m = 0; m < geometryMeshCount; m++)
+                        for (int geometryMeshIndex = 0; geometryMeshIndex < geometryMeshCount; geometryMeshIndex++)
                         {
                             // Set up a new mesh entry.
                             MeshSet mesh = new();
@@ -140,7 +140,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
                             uint meshVertexCount = reader.ReadUInt32();
 
                             // Loop through each of this mesh's vertices.
-                            for (int v = 0; v < meshVertexCount; v++)
+                            for (int meshVertexIndex = 0; meshVertexIndex < meshVertexCount; meshVertexIndex++)
                             {
                                 // Set up a vertex entry.
                                 MeshVertex vertex = new();
@@ -178,7 +178,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
                                     mesh.PrimitiveTriangleList = new();
 
                                     // Read each face entry and save it to the triangle list.
-                                    for (int f = 0; f < primitiveFaceCount; f++)
+                                    for (int primitiveFaceIndex = 0; primitiveFaceIndex < primitiveFaceCount; primitiveFaceIndex++)
                                         mesh.PrimitiveTriangleList.Add(reader.ReadUInt16());
 
                                     break;
@@ -203,7 +203,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
                                         readValues++;
 
                                         // Loop through based on the amount of faces in this strip.
-                                        for (int f = 0; f < triangleStripFaceCount; f++)
+                                        for (int traingleStripFaceIndex = 0; traingleStripFaceIndex < triangleStripFaceCount; traingleStripFaceIndex++)
                                         {
                                             // Read a face index into the triangle strip.
                                             triangleStrip.Add(reader.ReadUInt16());
@@ -231,7 +231,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
                         geometryMeshCount = reader.ReadUInt32();
 
                         // Loop through each mesh.
-                        for (int m = 0; m < geometryMeshCount; m++)
+                        for (int geometryMeshIndex = 0; geometryMeshIndex < geometryMeshCount; geometryMeshIndex++)
                         {
                             // Set up a new mesh entry.
                             MeshSet mesh = new();
@@ -249,7 +249,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
                             reader.JumpAhead(0x04);
 
                             // Loop through each of this mesh's vertices.
-                            for (int v = 0; v < meshVertexCount; v++)
+                            for (int meshVertexIndex = 0; meshVertexIndex < meshVertexCount; meshVertexIndex++)
                             {
                                 // Set up a vertex entry.
                                 MeshVertex vertex = new();

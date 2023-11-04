@@ -64,55 +64,55 @@ namespace KnuxLib.Engines.Black
 
             // Read an unknown integer value.
             // TODO: What is this and is it important?
-            uint UnknownUInt32_1 = reader.ReadUInt32();
+            uint unknownUInt32_1 = reader.ReadUInt32();
 
             // Skip an unknown value that is always 0x1C
             reader.JumpAhead(0x04);
 
             // Read the count of entries in this blob.
-            uint EntryCount = reader.ReadUInt32();
+            uint entryCount = reader.ReadUInt32();
 
             // Read the size of this Volume Blob's header.
-            uint HeaderSize = reader.ReadUInt32();
+            uint headerSize = reader.ReadUInt32();
 
             // Set up a list of extra unknown values in the header.
             // TODO: What are these?
-            List<uint> ExtraHeaderUnknowns = new();
+            List<uint> extraHeaderUnknowns = new();
 
             // Read the unknown header values.
-            while (reader.BaseStream.Position < HeaderSize)
-                ExtraHeaderUnknowns.Add(reader.ReadUInt32());
+            while (reader.BaseStream.Position < headerSize)
+                extraHeaderUnknowns.Add(reader.ReadUInt32());
 
             // Loop through and read each entry.
-            for (int i = 0; i < EntryCount; i++)
+            for (int entryIndex = 0; entryIndex < entryCount; entryIndex++)
             {
                 // Set up a new node.
                 FileNode node = new();
 
                 // Read this node's unknown integer value.
                 // TODO: What is this and is important?
-                uint FileUnknownUInt32_1 = reader.ReadUInt32();
+                uint fileUnknownUInt32_1 = reader.ReadUInt32();
 
                 // Read this node's file name.
                 node.Name = Helpers.ReadNullTerminatedStringTableEntry(reader);
 
                 // Read the offset to this node's data.
-                uint DataOffset = reader.ReadUInt32();
+                uint dataOffset = reader.ReadUInt32();
 
                 // Skip an unknown value of 0.
                 reader.JumpAhead(0x04);
 
                 // Read this node's length.
-                int DataLength = reader.ReadInt32();
+                int dataLength = reader.ReadInt32();
 
                 // Save our current position so we can jump back for the next file.
                 long position = reader.BaseStream.Position;
 
                 // Jump to this node's data offset.
-                reader.JumpTo(DataOffset);
+                reader.JumpTo(dataOffset);
 
                 // Read this node's data.
-                node.Data = reader.ReadBytes(DataLength);
+                node.Data = reader.ReadBytes(dataLength);
 
                 // Jump back for the next node.
                 reader.JumpTo(position);

@@ -90,104 +90,104 @@ namespace KnuxLib.Engines.Black
 
             // Read this file's first unknown offset, consisting of 0x204 bytes that I don't know about.
             // These are important in someway, as nulling them made the game crash on launch, failing to find Boot.vol.
-            uint UnknownOffset_1 = reader.ReadUInt32();
+            uint unknownOffset_1 = reader.ReadUInt32();
 
             // Read this file's file count.
-            uint FileCount = reader.ReadUInt32();
+            uint fileCount = reader.ReadUInt32();
 
             // Read the offset to this file's name table.
-            uint FileNameTableOffset = reader.ReadUInt32();
+            uint fileNameTableOffset = reader.ReadUInt32();
 
             // Read this file's second unknown offset, consisting of a value for each file in it.
             // These are important in someway, as nulling them made the game crash on launch, failing to find Boot.vol.
-            uint UnknownOffset_2 = reader.ReadUInt32();
+            uint unknownOffset_2 = reader.ReadUInt32();
 
             // Read this file's compression table offset.
-            uint CompressionTableOffset = reader.ReadUInt32();
+            uint compressionTableOffset = reader.ReadUInt32();
 
             // Read this file's compressed size table offset.
-            uint CompressedSizeTableOffset = reader.ReadUInt32();
+            uint compressedSizeTableOffset = reader.ReadUInt32();
 
             // Read this file's uncompressed size table offset.
-            uint UncompressedSizeTableOffset = reader.ReadUInt32();
+            uint uncompressedSizeTableOffset = reader.ReadUInt32();
 
             // Read this file's data offset table offset.
-            uint DataOffsetTableOffset = reader.ReadUInt32();
+            uint dataOffsetTableOffset = reader.ReadUInt32();
 
             // Read this file's data table offset.
-            uint DataTableOffset = reader.ReadUInt32();
+            uint dataTableOffset = reader.ReadUInt32();
 
             // Create an array of data entries based on how many files this archive has.
-            DataEntry[] entries = new DataEntry[FileCount];
+            DataEntry[] entries = new DataEntry[fileCount];
 
             // Jump to the file name table.
-            reader.JumpTo(FileNameTableOffset);
+            reader.JumpTo(fileNameTableOffset);
 
             // Loop through, initalise a file and read its name.
-            for (int i = 0; i < FileCount; i++)
-                entries[i] = new() { Name = Helpers.ReadNullTerminatedStringTableEntry(reader) };
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
+                entries[fileIndex] = new() { Name = Helpers.ReadNullTerminatedStringTableEntry(reader) };
 
             // Jump to the second unknown offset.
-            reader.JumpTo(UnknownOffset_2);
+            reader.JumpTo(unknownOffset_2);
 
             // Loop through and read each unknown value here.
-            for (int i = 0; i < FileCount; i++)
-                entries[i].UnknownUInt32_1 = reader.ReadUInt32();
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
+                entries[fileIndex].UnknownUInt32_1 = reader.ReadUInt32();
 
             // Jump to this file's compression table.
-            reader.JumpTo(CompressionTableOffset);
+            reader.JumpTo(compressionTableOffset);
 
             // Loop through and read each file's compressed flag.
-            for (int i = 0; i < FileCount; i++)
-                entries[i].IsCompressed = reader.ReadBoolean();
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
+                entries[fileIndex].IsCompressed = reader.ReadBoolean();
 
             // Jump to this file's compressed size table.
-            reader.JumpTo(CompressedSizeTableOffset);
+            reader.JumpTo(compressedSizeTableOffset);
 
             // Loop through and read each file's compressed size.
-            for (int i = 0; i < FileCount; i++)
-                entries[i].CompressedSize = reader.ReadUInt64();
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
+                entries[fileIndex].CompressedSize = reader.ReadUInt64();
 
             // Jump to this file's uncompressed size table.
-            reader.JumpTo(UncompressedSizeTableOffset);
+            reader.JumpTo(uncompressedSizeTableOffset);
 
             // Loop through and read each file's uncompressed size.
-            for (int i = 0; i < FileCount; i++)
-                entries[i].UncompressedSize = reader.ReadUInt64();
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
+                entries[fileIndex].UncompressedSize = reader.ReadUInt64();
 
             // Jump to this file's data offset table.
-            reader.JumpTo(DataOffsetTableOffset);
+            reader.JumpTo(dataOffsetTableOffset);
 
             // Loop through and read each file's data offset.
-            for (int i = 0; i < FileCount; i++)
-                entries[i].DataOffset = reader.ReadInt64();
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
+                entries[fileIndex].DataOffset = reader.ReadInt64();
 
             // Loop through, read and decompress each file's data.
-            for (int i = 0; i < FileCount; i++)
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
             {
                 // Print the name of the file we're deccompressing.
-                Console.WriteLine($"Decompressing {entries[i].Name}.");
+                Console.WriteLine($"Decompressing {entries[fileIndex].Name}.");
 
                 // Jump to this file's data offset.
-                reader.JumpTo(entries[i].DataOffset);
+                reader.JumpTo(entries[fileIndex].DataOffset);
 
                 // Set up an output stream for the decompressed data.
                 using MemoryStream outputStream = new();
 
                 // Set up a deflate stream to decompress this file's data.
-                using DeflateStream deflateStream = new(new MemoryStream(reader.ReadBytes((int)entries[i].CompressedSize)), CompressionMode.Decompress);
+                using DeflateStream deflateStream = new(new MemoryStream(reader.ReadBytes((int)entries[fileIndex].CompressedSize)), CompressionMode.Decompress);
 
                 // Copy the output of the deflate stream to the output stream.
                 deflateStream.CopyTo(outputStream);
 
                 // Read the output stream as an array to get this file's data.
-                entries[i].Data = outputStream.ToArray();
+                entries[fileIndex].Data = outputStream.ToArray();
 
                 // Add this file to a standard FileNode list.
                 Data.Add(new()
                 {
-                    Name = entries[i].Name,
-                    Data = entries[i].Data
+                    Name = entries[fileIndex].Name,
+                    Data = entries[fileIndex].Data
                 });
             }
 
@@ -202,23 +202,21 @@ namespace KnuxLib.Engines.Black
         public void Save(string filepath)
         {
             // Set up a list of compressed data.
-            List<byte[]> CompressedData = new();
+            List<byte[]> compressedData = new();
 
             // Loop through and compress each file.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Print the name of the file we're compressing.
-                Console.WriteLine($"Compressing {Data[i].Name}.");
+                Console.WriteLine($"Compressing {Data[dataIndex].Name}.");
 
                 // Use a memory stream and deflate stream to compress the data.
                 using MemoryStream outputStream = new();
                 using (DeflateStream deflateStream = new(outputStream, CompressionMode.Compress))
-                {
-                    deflateStream.Write(Data[i].Data, 0, Data[i].Data.Length);
-                }
+                    deflateStream.Write(Data[dataIndex].Data, 0, Data[dataIndex].Data.Length);
 
                 // Add this decompressed data to our list.
-                CompressedData.Add(outputStream.ToArray());
+                compressedData.Add(outputStream.ToArray());
             }
 
             // Set up Marathon's BinaryWriter.
@@ -276,17 +274,17 @@ namespace KnuxLib.Engines.Black
             writer.FillOffset("FileNameTableOffset");
 
             // Loop through and add an offset for each file's name.
-            for (int i = 0; i < Data.Count; i++)
-                writer.AddOffset($"File{i}Name");
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.AddOffset($"File{dataIndex}Name");
 
             // Loop through and write each file's name.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill in the offset for this file's name.
-                writer.FillOffset($"File{i}Name");
+                writer.FillOffset($"File{dataIndex}Name");
 
                 // Write this file's name.
-                writer.WriteNullTerminatedString(Data[i].Name);
+                writer.WriteNullTerminatedString(Data[dataIndex].Name);
             }
 
             // Realign to 0x04 bytes.
@@ -298,7 +296,7 @@ namespace KnuxLib.Engines.Black
 
             // Loop through and write a placeholder for each file.
             // TODO: Fill in.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
                 writer.Write("UKWN");
 
             // Fill in the offset for the compressison table.
@@ -306,7 +304,7 @@ namespace KnuxLib.Engines.Black
 
             // Loop through and write a 0x01 for each file.
             // TODO: Unhardcode this.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
                 writer.Write(true);
 
             // Realign to 0x10 bytes.
@@ -316,34 +314,34 @@ namespace KnuxLib.Engines.Black
             writer.FillOffset("CompressedSizeTableOffset");
 
             // Loop through and write a placeholder for each file.
-            for (int i = 0; i < Data.Count; i++)
-                writer.Write((ulong)CompressedData[i].Length);
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.Write((ulong)compressedData[dataIndex].Length);
 
             // Fill in the offset for the uncompressed size table.
             writer.FillOffset("UncompressedSizeTableOffset");
 
             // Loop through and write each file's uncompressed size.
-            for (int i = 0; i < Data.Count; i++)
-                writer.Write((ulong)Data[i].Data.Length);
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.Write((ulong)Data[dataIndex].Data.Length);
 
             // Fill in the offset for the data offset table.
             writer.FillOffset("DataOffsetTableOffset");
 
             // Loop through and add an offset for each file's data.
-            for (int i = 0; i < Data.Count; i++)
-                writer.AddOffset($"File{i}Data", 0x08);
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.AddOffset($"File{dataIndex}Data", 0x08);
 
             // Fill in the offset for the data offset table.
             writer.FillOffset("DataTableOffset");
 
             // Loop through and write each file's compressed name.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill in the offset for this file's data.
-                writer.FillOffset($"File{i}Data");
+                writer.FillOffset($"File{dataIndex}Data");
 
                 // Write this file's data.
-                writer.Write(CompressedData[i]);
+                writer.Write(compressedData[dataIndex]);
             }
 
             // Close Marathon's BinaryWriter.

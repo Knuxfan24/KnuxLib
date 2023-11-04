@@ -111,13 +111,7 @@ namespace KnuxLib
         /// </summary>
         public Type DataType { get; set; } = typeof(byte);
 
-        public override string ToString()
-        {
-            if (Name != "")
-                return Name;
-            else
-                return null;
-        }
+        public override string ToString() => Name;
     }
 
     public class Face

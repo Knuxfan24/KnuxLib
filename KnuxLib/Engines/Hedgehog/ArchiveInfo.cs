@@ -73,7 +73,7 @@
             uint archiveByteOffset = reader.ReadUInt32();
 
             // Read each archive in this file.
-            for (int i = 0; i < archiveCount; i++)
+            for (int archiveIndex = 0; archiveIndex < archiveCount; archiveIndex++)
             {
                 // Set up a new archive entry.
                 ArchiveEntry entry = new();
@@ -82,16 +82,16 @@
                 entry.Archive = Helpers.ReadNullTerminatedStringTableEntry(reader, true);
 
                 // Save our current position.
-                long pos = reader.BaseStream.Position;
+                long position = reader.BaseStream.Position;
 
                 // Jump to the archive byte table, plus the index of whatever archive we're currently on.
-                reader.JumpTo(archiveByteOffset + i, true);
+                reader.JumpTo(archiveByteOffset + archiveIndex, true);
 
                 // Read this archive's unknown byte.
                 entry.UnknownByte_1 = reader.ReadByte();
 
                 // Jump back to the saved position.
-                reader.JumpTo(pos);
+                reader.JumpTo(position);
 
                 // Save this archive entry.
                 Data.Add(entry);
@@ -140,24 +140,24 @@
             writer.AddOffset("ByteTable");
 
             // Add the offsets for the string table.
-            for (int i = 0; i < Data.Count; i++)
-                writer.AddOffset($"Entry{i}Archive");
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.AddOffset($"Entry{dataIndex}Archive");
 
             // Fill in the offset for this file's byte table.
             writer.FillOffset("ByteTable", true);
 
             // Fill in the byte table.
-            for (int i = 0; i < Data.Count; i++)
-                writer.Write(Data[i].UnknownByte_1);
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.Write(Data[dataIndex].UnknownByte_1);
 
             // Align to 0x04.
             writer.FixPadding(0x04);
 
             // Fill in the archive names.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
-                writer.FillOffset($"Entry{i}Archive", true);
-                writer.WriteNullTerminatedString(Data[i].Archive);
+                writer.FillOffset($"Entry{dataIndex}Archive", true);
+                writer.WriteNullTerminatedString(Data[dataIndex].Archive);
             }
 
             // Align to 0x04.
@@ -170,8 +170,8 @@
             writer.Write(Data.Count + 0x02);
 
             // Write this weird offset table.
-            for (int i = 0; i < Data.Count + 0x02; i++)
-                writer.Write(0x04 * (i + 1));
+            for (int dataIndex = 0; dataIndex < Data.Count + 0x02; dataIndex++)
+                writer.Write(0x04 * (dataIndex + 1));
 
             // Write the file size.
             writer.BaseStream.Position = 0x00;

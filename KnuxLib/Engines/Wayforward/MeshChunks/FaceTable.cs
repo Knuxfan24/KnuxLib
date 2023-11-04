@@ -55,9 +55,9 @@
             faceTable.Faces = new Face[faceCount];
 
             // Loop through and read each face.
-            for (int i = 0; i < faceCount; i++)
+            for (int faceIndex = 0; faceIndex < faceCount; faceIndex++)
             {
-                faceTable.Faces[i] = new Face
+                faceTable.Faces[faceIndex] = new Face
                 {
                     IndexA = reader.ReadUInt32(),
                     IndexB = reader.ReadUInt32(),
@@ -119,11 +119,11 @@
             writer.Write(Faces.Length * 0x0C);
 
             // Loop through and write each face's indices.
-            for (int i = 0; i < Faces.Length; i++)
+            for (int faceIndex = 0; faceIndex < Faces.Length; faceIndex++)
             {
-                writer.Write(Faces[i].IndexA);
-                writer.Write(Faces[i].IndexB);
-                writer.Write(Faces[i].IndexC);
+                writer.Write(Faces[faceIndex].IndexA);
+                writer.Write(Faces[faceIndex].IndexB);
+                writer.Write(Faces[faceIndex].IndexC);
             }
 
             // Realign to 0x08 bytes.

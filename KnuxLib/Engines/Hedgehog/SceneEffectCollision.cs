@@ -173,7 +173,7 @@ namespace KnuxLib.Engines.Hedgehog
             reader.JumpTo(shapeTableOffset, false);
 
             // Loop through each shape in this file.
-            for (ulong i = 0; i < shapeCount; i++)
+            for (ulong shapeIndex = 0; shapeIndex < shapeCount; shapeIndex++)
             {
                 // Set up a new shape.
                 EffectVisiblityShape shape = new();
@@ -226,14 +226,14 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Read the specified amount of ulongs.
             // TODO: These are clearly not ulongs and are actually two different values, what are they?
-            for (ulong i = 0; i < bspNodeCount; i++)
+            for (ulong bspNodeIndex = 0; bspNodeIndex < bspNodeCount; bspNodeIndex++)
                 Data.BSPNodes.Add(reader.ReadUInt64());
 
             // Jump to this file's group table.
             reader.JumpTo(groupTableOffset, false);
 
             // Loop through each group in this file.
-            for (ulong i = 0; i < groupCount; i++)
+            for (ulong groupIndex = 0; groupIndex < groupCount; groupIndex++)
             {
                 // Set up a new group.
                 EffectVisiblityGroup group = new();
@@ -293,46 +293,46 @@ namespace KnuxLib.Engines.Hedgehog
             writer.FillInOffset("shapeTableOffset", false, false);
 
             // Loop through and write the data for each shape.
-            for (int i = 0; i < Data.Shapes.Count; i++)
+            for (int shapeIndex = 0; shapeIndex < Data.Shapes.Count; shapeIndex++)
             {
                 // Add an offset for this shape's name.
-                writer.AddString($"shape{i}name", Data.Shapes[i].Name, 0x08);
+                writer.AddString($"shape{shapeIndex}name", Data.Shapes[shapeIndex].Name, 0x08);
 
                 // Write this shape's type.
-                writer.Write((byte)Data.Shapes[i].Type);
+                writer.Write((byte)Data.Shapes[shapeIndex].Type);
 
                 // Write this shape's HasLight value.
-                writer.Write(Data.Shapes[i].HasLight);
+                writer.Write(Data.Shapes[shapeIndex].HasLight);
 
                 // Realign to 0x04 bytes.
                 writer.FixPadding(0x04);
 
                 // Write this shape's first unknown Vector3.
-                Helpers.WriteHedgeLibVector3(writer, Data.Shapes[i].UnknownVector3_1);
+                Helpers.WriteHedgeLibVector3(writer, Data.Shapes[shapeIndex].UnknownVector3_1);
 
                 // Write this shape's second unknown Vector3.
-                Helpers.WriteHedgeLibVector3(writer, Data.Shapes[i].UnknownVector3_2);
+                Helpers.WriteHedgeLibVector3(writer, Data.Shapes[shapeIndex].UnknownVector3_2);
 
                 // Write this shape's group index.
-                writer.Write(Data.Shapes[i].GroupIndex);
+                writer.Write(Data.Shapes[shapeIndex].GroupIndex);
 
                 // Write this shape's unknown integer value.
-                writer.Write(Data.Shapes[i].UnknownUInt32_1);
+                writer.Write(Data.Shapes[shapeIndex].UnknownUInt32_1);
 
                 // Write 0x1C bytes of nulls.
                 writer.WriteNulls(0x1C);
 
                 // Add an offset for this shape's "none" string.
-                writer.AddString($"shape{i}none", "none", 0x08);
+                writer.AddString($"shape{shapeIndex}none", "none", 0x08);
 
                 // Write this shape's position.
-                Helpers.WriteHedgeLibVector3(writer, Data.Shapes[i].Position);
+                Helpers.WriteHedgeLibVector3(writer, Data.Shapes[shapeIndex].Position);
 
                 // Write this shape's rotation.
-                Helpers.WriteHedgeLibQuaternion(writer, Data.Shapes[i].Rotation);
+                Helpers.WriteHedgeLibQuaternion(writer, Data.Shapes[shapeIndex].Rotation);
 
                 // If this is NOT the last shape, then write an extra four bytes as padding.
-                if (i < Data.Shapes.Count - 1)
+                if (shapeIndex < Data.Shapes.Count - 1)
                     writer.Write(0x00);
             }
 
@@ -340,24 +340,24 @@ namespace KnuxLib.Engines.Hedgehog
             writer.FillInOffset("bspNodeTableOffset", false, false);
 
             // Write each BSP node's temporary ulong.
-            for (int i = 0; i < Data.BSPNodes.Count; i++)
-                writer.Write(Data.BSPNodes[i]);
+            for (int bspNodeIndex = 0; bspNodeIndex < Data.BSPNodes.Count; bspNodeIndex++)
+                writer.Write(Data.BSPNodes[bspNodeIndex]);
 
             // Fill in the offset for this file's group table.
             writer.FillInOffset("groupTableOffset", false, false);
 
             // Loop through and write the data for each group.
-            for (int i = 0; i < Data.Groups.Count; i++)
+            for (int groupIndex = 0; groupIndex < Data.Groups.Count; groupIndex++)
             {
                 // Write this group's BSP node count.
-                writer.Write(Data.Groups[i].BSPNodeCount);
+                writer.Write(Data.Groups[groupIndex].BSPNodeCount);
 
                 // Write the index of this group's first BSP node.
-                writer.Write(Data.Groups[i].BSPFirstNodeIndex);
+                writer.Write(Data.Groups[groupIndex].BSPFirstNodeIndex);
 
                 // Loop through and write the six values of this group's Axis-Aligned Bounding Box.
                 for (int aabb = 0; aabb < 6; aabb++)
-                    writer.Write(Data.Groups[i].AABB[aabb]);
+                    writer.Write(Data.Groups[groupIndex].AABB[aabb]);
             }
 
             // Finish writing the BINA information.

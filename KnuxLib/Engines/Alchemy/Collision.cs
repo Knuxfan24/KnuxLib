@@ -264,14 +264,14 @@
                 uint vertexCount = reader.ReadUInt32();
 
                 // Read each of this model's vertices.
-                for (int i = 0; i < vertexCount; i++)
+                for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
                     model.Vertices.Add(reader.ReadVector3());
 
                 // Read this model's face count.
                 uint faceCount = reader.ReadUInt32();
 
                 // Read each of this model's faces.
-                for (int i = 0; i < faceCount; i++)
+                for (int faceIndex = 0; faceIndex < faceCount; faceIndex++)
                 {
                     Face face = new()
                     {
@@ -479,23 +479,23 @@
             writer.Write(new byte[] { 0xA9, 0xEE, 0x9F, 0x01, 0x45, 0x30, 0x05, 0x05 });
 
             // Loop through and write each model entry's data.
-            for (int i = 0; i < Data.Models.Count; i++)
+            for (int modelIndex = 0; modelIndex < Data.Models.Count; modelIndex++)
             {
                 // Write this model's name.
-                writer.WriteNullTerminatedString(Data.Models[i].Name);
+                writer.WriteNullTerminatedString(Data.Models[modelIndex].Name);
 
                 // Write this model's vertex count.
-                writer.Write(Data.Models[i].Vertices.Count);
+                writer.Write(Data.Models[modelIndex].Vertices.Count);
 
                 // Write each vertex in this model.
-                foreach (Vector3 vertex in Data.Models[i].Vertices)
+                foreach (Vector3 vertex in Data.Models[modelIndex].Vertices)
                     writer.Write(vertex);
 
                 // Write this model's face count.
-                writer.Write(Data.Models[i].Faces.Count);
+                writer.Write(Data.Models[modelIndex].Faces.Count);
 
                 // Write each of this model's face indices.
-                foreach (Face face in Data.Models[i].Faces)
+                foreach (Face face in Data.Models[modelIndex].Faces)
                 {
                     writer.Write(face.IndexA);
                     writer.Write(face.IndexB);
@@ -509,10 +509,10 @@
                 writer.Write(0x0EA30AC9);
 
                 // Write this model's first unknown value.
-                writer.Write(Data.Models[i].UnknownUInt32_1);
+                writer.Write(Data.Models[modelIndex].UnknownUInt32_1);
 
                 // Write this model's second unknown value.
-                writer.Write(Data.Models[i].UnknownUInt32_2);
+                writer.Write(Data.Models[modelIndex].UnknownUInt32_2);
             }
             
             // Write the single null byte that marks the end of the model table.
@@ -546,106 +546,106 @@
             writer.Write(new byte[] { 0x12, 0x22, 0x87, 0x04, 0xC2, 0xC2, 0x4C, 0x00, 0x25, 0xD0, 0xCD, 0x02, 0xCD, 0xCC, 0xCC, 0x3D, 0x99, 0x77, 0xE3, 0x03 });
 
             // Loop through and write the data for each instance in the subspace chunk.
-            for (int i = 0; i < Data.Subspace.Instances.Count; i++)
+            for (int instanceIndex = 0; instanceIndex < Data.Subspace.Instances.Count; instanceIndex++)
             {
                 // Write the first occurance of this instance's name.
-                writer.WriteNullTerminatedString(Data.Subspace.Instances[i].Name);
+                writer.WriteNullTerminatedString(Data.Subspace.Instances[instanceIndex].Name);
 
                 // Write an unknown value of 0x08C76EF9.
                 writer.Write(0x08C76EF9);
 
                 // Write this instance's first unknown floating point value.
-                writer.Write(Data.Subspace.Instances[i].UnknownFloat_1);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownFloat_1);
 
                 // Write an unknown value of 0x0055670E.
                 writer.Write(0x0055670E);
 
                 // Write this instance's second unknown floating point value.
-                writer.Write(Data.Subspace.Instances[i].UnknownFloat_2);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownFloat_2);
 
                 // Write an unknown value of 0x00C1A1AE.
                 writer.Write(0x00C1A1AE);
 
                 // Write this instance's second unknown floating point value a second time.
-                writer.Write(Data.Subspace.Instances[i].UnknownFloat_2);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownFloat_2);
 
                 // Write an unknown value of 0x0486894E.
                 writer.Write(0x0486894E);
 
                 // Write this instance's third unknown floating point value.
-                writer.Write(Data.Subspace.Instances[i].UnknownFloat_3);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownFloat_3);
 
                 // Write this instance's first unknown Vector3.
-                writer.Write(Data.Subspace.Instances[i].UnknownVector3_1);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownVector3_1);
 
                 // Write an unknown value of 0x085FEC0E.
                 writer.Write(0x085FEC0E);
 
                 // Write this instance's position value.
-                writer.Write(Data.Subspace.Instances[i].Position);
+                writer.Write(Data.Subspace.Instances[instanceIndex].Position);
 
                 // Write 0x14 bytes that are always the same.
                 writer.Write(new byte[] { 0xD9, 0x4A, 0xA5, 0x0C, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0xF9, 0x58, 0x11, 0x04 });
 
                 // Write this instance's second unknown Vector3.
-                writer.Write(Data.Subspace.Instances[i].UnknownVector3_2);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownVector3_2);
 
                 // Write eight bytes that are always the same.
                 writer.Write(new byte[] { 0x24, 0x0D, 0xF8, 0x08, 0x00, 0xA5, 0x8E, 0x58 });
 
                 // Write this instance's first unknown integer value.
-                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_1);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownUInt32_1);
 
                 // Write this instance's second unknown integer value.
-                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_2);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownUInt32_2);
 
                 // Write this instance's third unknown integer value.
-                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_3);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownUInt32_3);
 
                 // Write this instance's fourth unknown integer value.
-                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_4);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownUInt32_4);
 
                 // Write this instance's fifth unknown integer value.
-                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_5);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownUInt32_5);
 
                 // Write six bytes that are always the same.
                 writer.Write(new byte[] { 0xFA, 0x07, 0x85, 0x54, 0x73, 0x01 });
 
                 // Write the second occurance of this instance's name.
-                writer.WriteNullTerminatedString(Data.Subspace.Instances[i].Name);
+                writer.WriteNullTerminatedString(Data.Subspace.Instances[instanceIndex].Name);
 
                 // Write an unknown value of 0x00051683.
                 writer.Write(0x00051683);
 
                 // Write this instance's sixth unknown integer value.
-                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_6);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownUInt32_6);
 
                 // Write 0x18 bytes that are always the same.
                 writer.Write(new byte[] { 0x4E, 0x89, 0x86, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0E, 0xEC, 0x5F, 0x08 });
 
                 // Write this instance's third unknown Vector3.
-                writer.Write(Data.Subspace.Instances[i].UnknownVector3_3);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownVector3_3);
 
                 // Write 0x0C bytes that are always the same.
                 writer.Write(new byte[] { 0x1B, 0xF5, 0x34, 0x08, 0x00, 0x00, 0x00, 0x00, 0xC9, 0xAD, 0x41, 0x0A });
 
                 // Write the third occurance of this instance's name.
-                writer.WriteNullTerminatedString(Data.Subspace.Instances[i].Name);
+                writer.WriteNullTerminatedString(Data.Subspace.Instances[instanceIndex].Name);
 
                 // Write an unknown value of 0x04843AA8.
                 writer.Write(0x04843AA8);
 
                 // Write this instance's seventh unknown integer value.
-                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_7);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownUInt32_7);
 
                 // Write 0x0C bytes that are always the same.
                 writer.Write(new byte[] { 0x08, 0x00, 0xEF, 0xCD, 0xAB, 0x12, 0x85, 0xCB, 0x34, 0x08, 0x89, 0x1A });
 
                 // Write this instance's eighth unknown integer value.
-                writer.Write(Data.Subspace.Instances[i].UnknownUInt32_8);
+                writer.Write(Data.Subspace.Instances[instanceIndex].UnknownUInt32_8);
 
                 // If this instance's eighth unknown integer value is 0x77990F47, then write two bytes that are always the same.
-                if (Data.Subspace.Instances[i].UnknownUInt32_8 == 0x77990F47)
+                if (Data.Subspace.Instances[instanceIndex].UnknownUInt32_8 == 0x77990F47)
                     writer.Write((ushort)0x03E3);
                 
                 // If not, then continue to write some extra data.
@@ -655,10 +655,10 @@
                     writer.Write(new byte[] { 0xAB, 0x12, 0x8E, 0x06, 0x3B, 0x02 });
 
                     // Write this instance's ninth unknown integer value.
-                    writer.Write((uint)Data.Subspace.Instances[i].UnknownUInt32_9);
+                    writer.Write((uint)Data.Subspace.Instances[instanceIndex].UnknownUInt32_9);
 
                     // Write this instance's tenth unknown integer value.
-                    writer.Write((uint)Data.Subspace.Instances[i].UnknownUInt32_10);
+                    writer.Write((uint)Data.Subspace.Instances[instanceIndex].UnknownUInt32_10);
                 }
             }
 
@@ -680,15 +680,15 @@
             Directory.CreateDirectory(directory);
 
             // Loop through each model.
-            foreach (var model in Data.Models)
+            foreach (Model model in Data.Models)
             {
                 // Set up the instance index value for this model.
-                int instanceIndex = 0;
+                int modelInstanceIndex = 0;
 
                 // Loop through each instance to find the right one for this model.
-                for (int i = 0; i < Data.Subspace.Instances.Count; i++)
-                    if (Data.Subspace.Instances[i].Name == model.Name)
-                        instanceIndex = i;
+                for (int instanceIndex = 0; instanceIndex < Data.Subspace.Instances.Count; instanceIndex++)
+                    if (Data.Subspace.Instances[instanceIndex].Name == model.Name)
+                        modelInstanceIndex = instanceIndex;
 
                 // Create a StreamWriter for this model.
                 StreamWriter obj = new($@"{directory}\{model.Name}.obj");
@@ -697,15 +697,15 @@
                 Console.WriteLine($@"Exporting {directory}\{model.Name}.obj");
 
                 // Write each vertex with the position value from the instance added to it.
-                foreach (var vertex in model.Vertices)
-                    obj.WriteLine($"v {vertex.X + Data.Subspace.Instances[(int)instanceIndex].Position.X} {vertex.Y + Data.Subspace.Instances[(int)instanceIndex].Position.Y} {vertex.Z + Data.Subspace.Instances[(int)instanceIndex].Position.Z}");
+                foreach (Vector3 vertex in model.Vertices)
+                    obj.WriteLine($"v {vertex.X + Data.Subspace.Instances[(int)modelInstanceIndex].Position.X} {vertex.Y + Data.Subspace.Instances[(int)modelInstanceIndex].Position.Y} {vertex.Z + Data.Subspace.Instances[(int)modelInstanceIndex].Position.Z}");
 
                 // Write the object name for this model.
                 obj.WriteLine($"g {model.Name}");
                 obj.WriteLine($"o {model.Name}");
 
                 // Write each face for this model, with the indices incremented by 1 due to OBJ counting from 1 not 0.
-                foreach (var face in model.Faces)
+                foreach (Face face in model.Faces)
                     obj.WriteLine($"f {face.IndexA + 1} {face.IndexB + 1} {face.IndexC + 1}");
 
                 // Close the StreamWriter.

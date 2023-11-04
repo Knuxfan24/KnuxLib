@@ -87,7 +87,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
             reader.JumpAhead(0x04);
 
             // Loop through and read each of this file's animations.
-            for (int i = 0; i < animationCount; i++)
+            for (int animationIndex = 0; animationIndex < animationCount; animationIndex++)
             {
                 // Set up an animation entry.
                 Animation animation = new();
@@ -124,7 +124,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
             uint ushortCount = reader.ReadUInt32();
 
             // Loop through and read each ushort.
-            for (int i = 0; i < ushortCount; i++)
+            for (int ushortIndex = 0; ushortIndex < ushortCount; ushortIndex++)
                 TextureAnimation.UnknownUShortList_1.Add(reader.ReadUInt16());
 
             // Return the texture animation data.

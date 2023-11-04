@@ -31,7 +31,7 @@
             uint textureCount = reader.ReadUInt32();
 
             // Loop through each texture in this file.
-            for (int i = 0; i < textureCount; i++)
+            for (int textureIndex = 0; textureIndex < textureCount; textureIndex++)
             {
                 // Create a texture entry.
                 FileNode texture = new();
@@ -78,16 +78,16 @@
             writer.Write(Data.Count);
 
             // Loop through each texture to write the offset table.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Add an offset for this texture.
-                writer.AddOffset($"Texture{i}Offset");
+                writer.AddOffset($"Texture{dataIndex}Offset");
 
                 // Write this texture's size in bytes.
-                writer.Write(Data[i].Data.Length);
+                writer.Write(Data[dataIndex].Data.Length);
 
                 // Write this texture's name, padded to 0x20 bytes.
-                writer.WriteNullPaddedString(Data[i].Name, 0x20);
+                writer.WriteNullPaddedString(Data[dataIndex].Name, 0x20);
             }
 
             // Realign to 0x20.
@@ -95,13 +95,13 @@
             writer.FixPadding(0x20);
 
             // Loop through each texture to write their data.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill in this texture's offset.
-                writer.FillOffset($"Texture{i}Offset");
+                writer.FillOffset($"Texture{dataIndex}Offset");
 
                 // Write this texture's data.
-                writer.Write(Data[i].Data);
+                writer.Write(Data[dataIndex].Data);
             }
 
             // Close Marathon's BinaryWriter.

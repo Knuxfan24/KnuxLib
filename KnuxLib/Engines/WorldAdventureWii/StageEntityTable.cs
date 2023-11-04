@@ -85,7 +85,7 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 reader.IsBigEndian = true;
 
             // Loop through this SET's object table.
-            for (int i = 0; i < objectCount; i++)
+            for (int objectIndex = 0; objectIndex < objectCount; objectIndex++)
             {
                 // Read the offset to this object's data.
                 uint objectOffset = reader.ReadUInt32();
@@ -94,7 +94,7 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 uint objectLength = reader.ReadUInt32();
 
                 // Save our position in the table.
-                long pos = reader.BaseStream.Position;
+                long position = reader.BaseStream.Position;
 
                 // Jump to our object.
                 reader.JumpTo(objectOffset);
@@ -106,7 +106,7 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 SetObject obj = new();
 
                 // Read this object's type.
-                uint objType = reader.ReadUInt32();
+                uint objectType = reader.ReadUInt32();
 
                 // Read this object's position.
                 obj.Position = reader.ReadVector3();
@@ -115,28 +115,25 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 obj.Rotation = reader.ReadQuaternion();
 
                 // Check for this object in the template table.
-                if (templates.Data.Objects.ContainsKey($"0x{objType.ToString("X").PadLeft(8, '0')}"))
+                if (templates.Data.Objects.ContainsKey($"0x{objectType.ToString("X").PadLeft(8, '0')}"))
                 {
                     // Make a reference to the object's struct. Just nicer than repeating this abomination of a line three times.
-                    var objStruct = templates.Data.Structs[templates.Data.Objects[$"0x{objType.ToString("X").PadLeft(8, '0')}"].ObjectStruct];
+                    HSONTemplate.HSONStruct objStruct = templates.Data.Structs[templates.Data.Objects[$"0x{objectType.ToString("X").PadLeft(8, '0')}"].ObjectStruct];
 
                     // Set this object's type to the struct's name.
-                    obj.Type = templates.Data.Objects[$"0x{objType.ToString("X").PadLeft(8, '0')}"].ObjectStruct;
+                    obj.Type = templates.Data.Objects[$"0x{objectType.ToString("X").PadLeft(8, '0')}"].ObjectStruct;
 
                     // Check that this object actually has parameters.
                     if (objStruct.Fields != null)
                     {
                         // Loop through each parameter for this object.
-                        for (int p = 0; p < objStruct.Fields.Length; p++)
+                        for (int hsonParameterIndex = 0; hsonParameterIndex < objStruct.Fields.Length; hsonParameterIndex++)
                         {
                             // Set up a parameter entry with the name of the parameter in the template.
-                            SetParameter param = new()
-                            {
-                                Name = objStruct.Fields[p].Name
-                            };
+                            SetParameter param = new() { Name = objStruct.Fields[hsonParameterIndex].Name };
 
                             // Read this parameter's data depending on its type.
-                            switch (objStruct.Fields[p].Type)
+                            switch (objStruct.Fields[hsonParameterIndex].Type)
                             {
                                 case "float32":
                                     param.DataType = typeof(float);
@@ -150,7 +147,7 @@ namespace KnuxLib.Engines.WorldAdventureWii
                             }
 
                             // Don't save this parameter if it's a padding one and we've chosen to ignore them.
-                            if (!includePadding && objStruct.Fields[p].Name.Contains("Padding"))
+                            if (!includePadding && objStruct.Fields[hsonParameterIndex].Name.Contains("Padding"))
                                 continue;
 
                             // Save this parameter to the object.
@@ -163,10 +160,10 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 else
                 {
                     // Set this object's type to the hex value.
-                    obj.Type = $"0x{objType.ToString("X").PadLeft(8, '0')}";
+                    obj.Type = $"0x{objectType.ToString("X").PadLeft(8, '0')}";
 
                     // Loop through each byte in the parameter table and read them individually.
-                    for (int p = 0; p < (objectLength - 0x24); p++)
+                    for (int parameterIndex = 0; parameterIndex < (objectLength - 0x24); parameterIndex++)
                     {
                         SetParameter param = new()
                         {
@@ -181,7 +178,7 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 Data.Add(obj);
 
                 // Jump back to our saved position for the next object.
-                reader.JumpTo(pos);
+                reader.JumpTo(position);
             }
 
             // Close Marathon's BinaryReader.
@@ -219,17 +216,17 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 writer.IsBigEndian = true;
 
             // Loop through each object to write the offset table.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Add an offset for this object.
-                writer.AddOffset($"object{i}Offset");
+                writer.AddOffset($"object{dataIndex}Offset");
 
                 // Calculate and write this object's size.
                 // Check this object exists in the template.
-                if (templates.Data.Structs.ContainsKey(Data[i].Type))
+                if (templates.Data.Structs.ContainsKey(Data[dataIndex].Type))
                 {
                     // Find this object's struct.
-                    var objStruct = templates.Data.Structs[Data[i].Type];
+                    HSONTemplate.HSONStruct objStruct = templates.Data.Structs[Data[dataIndex].Type];
 
                     // If this object's struct has any fields, then multiply the amount of them by four and add 0x24, then write that.
                     if (objStruct.Fields != null)
@@ -243,22 +240,22 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 // If this object doesn't exist in the templates, then just write the amount of parameters plus 0x24.
                 else
                 {
-                    writer.Write(Data[i].Parameters.Count + 0x24);
+                    writer.Write(Data[dataIndex].Parameters.Count + 0x24);
                 }
             }
 
             // Loop through and write each object.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill in the offset for this object.
-                writer.FillOffset($"object{i}Offset");
+                writer.FillOffset($"object{dataIndex}Offset");
 
                 // Calculate and write this object's size.
                 // Check this object exists in the template.
-                if (templates.Data.Structs.ContainsKey(Data[i].Type))
+                if (templates.Data.Structs.ContainsKey(Data[dataIndex].Type))
                 {
                     // Find this object's struct.
-                    var objStruct = templates.Data.Structs[Data[i].Type];
+                    HSONTemplate.HSONStruct objStruct = templates.Data.Structs[Data[dataIndex].Type];
 
                     // If this object's struct has any fields, then multiply the amount of them by four and add 0x24, then write that.
                     if (objStruct.Fields != null)
@@ -272,20 +269,20 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 // If this object doesn't exist in the templates, then just write the amount of parameters plus 0x24.
                 else
                 {
-                    writer.Write(Data[i].Parameters.Count + 0x24);
+                    writer.Write(Data[dataIndex].Parameters.Count + 0x24);
                 }
 
                 // Determine this object's type.
                 int? objType = null;
 
                 // Try and convert the stored type to a base 16 integer.
-                try { objType = Convert.ToInt32(Data[i].Type, 16); }
+                try { objType = Convert.ToInt32(Data[dataIndex].Type, 16); }
 
                 // If that fails, then loop through the templates to look for it.
                 catch
                 {
-                    foreach (var obj in templates.Data.Objects)
-                        if (obj.Value.ObjectStruct == Data[i].Type)
+                    foreach (KeyValuePair<string, HSONTemplate.HSONObject> obj in templates.Data.Objects)
+                        if (obj.Value.ObjectStruct == Data[dataIndex].Type)
                             objType = Convert.ToInt32(obj.Key, 16);
                 }
 
@@ -297,37 +294,37 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 writer.Write((int)objType);
 
                 // Write this object's position.
-                writer.Write(Data[i].Position);
+                writer.Write(Data[dataIndex].Position);
 
                 // Write this object's rotation.
-                writer.Write(Data[i].Rotation);
+                writer.Write(Data[dataIndex].Rotation);
 
                 // Check for this object's type in the template sheet.
-                if (templates.Data.Structs.ContainsKey(Data[i].Type))
+                if (templates.Data.Structs.ContainsKey(Data[dataIndex].Type))
                 {
                     // Reference the object's type.
-                    var objStruct = templates.Data.Structs[Data[i].Type];
+                    HSONTemplate.HSONStruct objStruct = templates.Data.Structs[Data[dataIndex].Type];
 
                     // Check the object has any parameters to write.
                     if (objStruct.Fields != null)
                     {
                         // Loop through each parameter defined in the template.
-                        for (int p = 0; p < objStruct.Fields.Length; p++)
+                        for (int hsonParameterIndex = 0; hsonParameterIndex < objStruct.Fields.Length; hsonParameterIndex++)
                         {
                             // Set up a check for if this parameter was found in the object.
                             bool foundParam = false;
 
                             // Loop through each parameter in the object.
-                            foreach (var param in Data[i].Parameters)
+                            foreach (SetParameter param in Data[dataIndex].Parameters)
                             {
                                 // Check the parameter's name against the one in the template.
-                                if (param.Name == objStruct.Fields[p].Name)
+                                if (param.Name == objStruct.Fields[hsonParameterIndex].Name)
                                 {
                                     // Mark that this parameter has been found.
                                     foundParam = true;
 
                                     // Write this parameter's data depending on the type.
-                                    switch (objStruct.Fields[p].Type)
+                                    switch (objStruct.Fields[hsonParameterIndex].Type)
                                     {
                                         case "float32": writer.Write(Convert.ToSingle(param.Data)); break;
                                         case "uint32": writer.Write(Convert.ToInt32(param.Data)); break;
@@ -346,8 +343,8 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 // If this object wasn't in the parameter sheet, then write each parameter as an individual byte.
                 else
                 {
-                    for (int p = 0; p < Data[i].Parameters.Count; p++)
-                        writer.Write((byte)Data[i].Parameters[p].Data);
+                    for (int parameterIndex = 0; parameterIndex < Data[dataIndex].Parameters.Count; parameterIndex++)
+                        writer.Write((byte)Data[dataIndex].Parameters[parameterIndex].Data);
                 }
             }
 
@@ -377,31 +374,31 @@ namespace KnuxLib.Engines.WorldAdventureWii
             Project hsonProject = Helpers.CreateHSONProject(hsonName, hsonAuthor, hsonDescription);
 
             // Loop through each object in this file.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Create a new HSON Object from this object.
-                libHSON.Object hsonObject = Helpers.CreateHSONObject(Data[i].Type.ToString(), $"{Data[i].Type}{i}", Data[i].Position, Data[i].Rotation, false);
+                libHSON.Object hsonObject = Helpers.CreateHSONObject(Data[dataIndex].Type.ToString(), $"{Data[dataIndex].Type}{dataIndex}", Data[dataIndex].Position, Data[dataIndex].Rotation, false);
 
                 // Check for this object's type in the template sheet.
-                if (templates.Data.Structs.ContainsKey(Data[i].Type))
+                if (templates.Data.Structs.ContainsKey(Data[dataIndex].Type))
                 {
                     // Reference the object's type.
-                    var objStruct = templates.Data.Structs[Data[i].Type];
+                    HSONTemplate.HSONStruct objStruct = templates.Data.Structs[Data[dataIndex].Type];
 
                     // Check the object has any parameters to write.
                     if (objStruct.Fields != null)
                     {
                         // Loop through each parameter defined in the template.
-                        for (int p = 0; p < objStruct.Fields.Length; p++)
+                        for (int hsonParameterIndex = 0; hsonParameterIndex < objStruct.Fields.Length; hsonParameterIndex++)
                         {
                             // Loop through each parameter in the object.
-                            foreach (var param in Data[i].Parameters)
+                            foreach (SetParameter param in Data[dataIndex].Parameters)
                             {
                                 // Check the parameter's name against the one in the template.
-                                if (param.Name == objStruct.Fields[p].Name)
+                                if (param.Name == objStruct.Fields[hsonParameterIndex].Name)
                                 {
                                     // Write this parameter's data depending on the type.
-                                    switch (objStruct.Fields[p].Type)
+                                    switch (objStruct.Fields[hsonParameterIndex].Type)
                                     {
                                         case "float32": hsonObject.LocalParameters.Add(param.Name, new Parameter((float)param.Data)); break;
                                         case "uint32": hsonObject.LocalParameters.Add(param.Name, new Parameter((uint)param.Data)); break;
@@ -416,8 +413,8 @@ namespace KnuxLib.Engines.WorldAdventureWii
                 // If this object wasn't in the parameter sheet, then write each parameter as an individual byte.
                 else
                 {
-                    for (int p = 0; p < Data[i].Parameters.Count; p++)
-                        hsonObject.LocalParameters.Add($"Parameter{p}", new Parameter((byte)Data[i].Parameters[p].Data));
+                    for (int parameterIndex = 0; parameterIndex < Data[dataIndex].Parameters.Count; parameterIndex++)
+                        hsonObject.LocalParameters.Add($"Parameter{parameterIndex}", new Parameter((byte)Data[dataIndex].Parameters[parameterIndex].Data));
                 }
 
                 // Add this object to the HSON Project.

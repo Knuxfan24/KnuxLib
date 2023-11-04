@@ -33,7 +33,7 @@ namespace KnuxLib.Engines.Storybook
             reader.JumpAhead(0x0C); // Always 0x10 then an offset to the first file's binary data then either four nulls or four FF bytes.
 
             // Read each file.
-            for (int i = 0; i < fileCount; i++)
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
             {
                 // Set up a new node.
                 FileNode node = new();
@@ -42,7 +42,7 @@ namespace KnuxLib.Engines.Storybook
                 node.Name = reader.ReadNullPaddedString(0x20);
 
                 // Read this file's index.
-                uint fileIndex = reader.ReadUInt32();
+                uint nodeIndex = reader.ReadUInt32();
 
                 // Read the offset to this file's compressed data.
                 uint fileOffset = reader.ReadUInt32();
@@ -101,41 +101,41 @@ namespace KnuxLib.Engines.Storybook
             writer.WriteNulls(0x04);
 
             // Loop through each file's information.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Print the name of the file we're compressing.
-                Console.WriteLine($"Compressing {Data[i].Name}.");
+                Console.WriteLine($"Compressing {Data[dataIndex].Name}.");
 
                 // Compress this file's data.
-                CompressedData.Add(Prs.Compress(Data[i].Data));
+                CompressedData.Add(Prs.Compress(Data[dataIndex].Data));
 
                 // Write this file's name.
-                writer.WriteNullPaddedString(Data[i].Name, 0x20);
+                writer.WriteNullPaddedString(Data[dataIndex].Name, 0x20);
 
                 // Write this file's index.
-                writer.Write(i);
+                writer.Write(dataIndex);
 
                 // Add an offset for this file's compressed data.
-                writer.AddOffset($"File{i}Data");
+                writer.AddOffset($"File{dataIndex}Data");
 
                 // Write this file's compressed length.
-                writer.Write(CompressedData[i].Length);
+                writer.Write(CompressedData[dataIndex].Length);
 
                 // Write this file's decompressed length.
-                writer.Write(Data[i].Data.Length);
+                writer.Write(Data[dataIndex].Data.Length);
             }
 
             // Fill in the BinaryStart offset.
             writer.FillOffset("BinaryStart");
 
             // Loop through each file's data.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill this file's data offset
-                writer.FillOffset($"File{i}Data");
+                writer.FillOffset($"File{dataIndex}Data");
 
                 // Write this file's compressed data.
-                writer.Write(CompressedData[i]);
+                writer.Write(CompressedData[dataIndex]);
             }
 
             // Close Marathon's BinaryWriter.

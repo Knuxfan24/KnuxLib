@@ -59,7 +59,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
             uint entryCount = reader.ReadUInt32();
 
             // Loop through and read each entry.
-            for (int i = 0; i < entryCount; i++)
+            for (int entryIndex = 0; entryIndex < entryCount; entryIndex++)
             {
                 // Set up an entry.
                 SPECData entry = new();

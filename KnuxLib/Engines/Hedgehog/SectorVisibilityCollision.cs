@@ -108,7 +108,7 @@
             reader.JumpTo(shapeTableOffset, false);
 
             // Loop through and read each shape.
-            for (ulong i = 0; i < shapeCount; i++)
+            for (ulong shapeIndex = 0; shapeIndex < shapeCount; shapeIndex++)
             {
                 // Set up a new shape.
                 SectorVisibilityShape shape = new();
@@ -142,13 +142,13 @@
                 long sectorListOffset = reader.ReadInt64();
 
                 // Save our position to jump back for the next shape.
-                long pos = reader.BaseStream.Position;
+                long position = reader.BaseStream.Position;
 
                 // Jump to this shape's sector list.
                 reader.JumpTo(sectorListOffset, false);
 
                 // Loop through and read each of the sectors in this shape.
-                for (ulong s = 0; s < sectorCount; s++)
+                for (ulong sectorIndex = 0; sectorIndex < sectorCount; sectorIndex++)
                 {
                     // Set up a new sector entry.
                     SectorVisiblitySector sector = new();
@@ -164,7 +164,7 @@
                 }
 
                 // Jump back for the next shape.
-                reader.JumpTo(pos);
+                reader.JumpTo(position);
 
                 // Save this shape.
                 Data.Add(shape);
@@ -199,45 +199,45 @@
             writer.FillInOffset("shapeTableOffset", false, false);
 
             // Loop through and write each shape's data.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Add an offset for this shape's name.
-                writer.AddString($"shape{i}name", Data[i].Name, 0x08);
+                writer.AddString($"shape{dataIndex}name", Data[dataIndex].Name, 0x08);
 
                 // Write this shape's unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_1);
+                writer.Write(Data[dataIndex].UnknownUInt32_1);
 
                 // Write this shape's size value.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Size);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Size);
 
                 // Write this shape's position value.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Position);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Position);
 
                 // Write this shape's rotation value.
-                Helpers.WriteHedgeLibQuaternion(writer, Data[i].Rotation);
+                Helpers.WriteHedgeLibQuaternion(writer, Data[dataIndex].Rotation);
 
                 // Loop through and write the six values of this shape's Axis-Aligned Bounding Box.
                 for (int aabb = 0; aabb < 6; aabb++)
-                    writer.Write(Data[i].AABB[aabb]);
+                    writer.Write(Data[dataIndex].AABB[aabb]);
 
                 // Write an unknown value of 0.
                 writer.Write(0x00);
 
                 // Write the amount of sectors in this shape.
-                writer.Write((ulong)Data[i].Sectors.Count);
+                writer.Write((ulong)Data[dataIndex].Sectors.Count);
 
                 // Add an offset for this shape's sector table.
-                writer.AddOffset($"shape{i}SectorTableOffset", 0x08);
+                writer.AddOffset($"shape{dataIndex}SectorTableOffset", 0x08);
             }
 
             // Loop through and write each shape's sector table.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill in this shape's offset.
-                writer.FillInOffset($"shape{i}SectorTableOffset", false, false);
+                writer.FillInOffset($"shape{dataIndex}SectorTableOffset", false, false);
 
                 // Loop through each sector in this shape.
-                foreach (var sector in Data[i].Sectors)
+                foreach (SectorVisiblitySector sector in Data[dataIndex].Sectors)
                 {
                     // Write this sector's index.
                     writer.Write(sector.Index);

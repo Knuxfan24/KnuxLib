@@ -88,15 +88,15 @@ namespace KnuxLib.Engines.CarZ
             int FacePosition = 4 + int.Parse(sco[3][(sco[3].IndexOf(' ') + 1)..]);
 
             // Read this SCO's vertex coordinates.
-            for (int i = 4; i < FacePosition; i++)
-                Data.Vertices.Add(new Vector3(float.Parse(sco[i].Split(' ')[0]), float.Parse(sco[i].Split(' ')[1]), float.Parse(sco[i].Split(' ')[2])));
+            for (int lineIndex = 4; lineIndex < FacePosition; lineIndex++)
+                Data.Vertices.Add(new Vector3(float.Parse(sco[lineIndex].Split(' ')[0]), float.Parse(sco[lineIndex].Split(' ')[1]), float.Parse(sco[lineIndex].Split(' ')[2])));
 
             // Read this SCO's faces.
-            for (int i = FacePosition + 1; i < FacePosition + 1 + int.Parse(sco[FacePosition][(sco[FacePosition].IndexOf(' ') + 1)..]); i++)
+            for (int lineIndex = FacePosition + 1; lineIndex < FacePosition + 1 + int.Parse(sco[FacePosition][(sco[FacePosition].IndexOf(' ') + 1)..]); lineIndex++)
             {
                 // Split this face's line based on tab and space characters.
                 char[] delimiters = { '\t', ' ' };
-                string[] line = sco[i].Split(delimiters).Where(x => !string.IsNullOrEmpty(x)).ToArray();
+                string[] line = sco[lineIndex].Split(delimiters).Where(x => !string.IsNullOrEmpty(x)).ToArray();
 
                 // Create the face.
                 Face face = new();
@@ -180,6 +180,7 @@ namespace KnuxLib.Engines.CarZ
             {
                 obj.WriteLine($"mtllib {Path.GetFileNameWithoutExtension(matFileName)}.mtl");
             }
+
             // If an mtl wasn't specified, then look in the current directory for a mat file.
             else
             {
@@ -197,11 +198,11 @@ namespace KnuxLib.Engines.CarZ
 
             // Write the texture coordinates for this model, inverting both values.
             // Some models might not need the X value inverting?
-            for (int i = 0; i < Data.Faces.Count; i++)
+            for (int faceIndex = 0; faceIndex < Data.Faces.Count; faceIndex++)
             {
-                obj.WriteLine($"vt {-Data.Faces[i].TextureCoordinates[0]} {-Data.Faces[i].TextureCoordinates[1]}");
-                obj.WriteLine($"vt {-Data.Faces[i].TextureCoordinates[2]} {-Data.Faces[i].TextureCoordinates[3]}");
-                obj.WriteLine($"vt {-Data.Faces[i].TextureCoordinates[4]} {-Data.Faces[i].TextureCoordinates[5]}");
+                obj.WriteLine($"vt {-Data.Faces[faceIndex].TextureCoordinates[0]} {-Data.Faces[faceIndex].TextureCoordinates[1]}");
+                obj.WriteLine($"vt {-Data.Faces[faceIndex].TextureCoordinates[2]} {-Data.Faces[faceIndex].TextureCoordinates[3]}");
+                obj.WriteLine($"vt {-Data.Faces[faceIndex].TextureCoordinates[4]} {-Data.Faces[faceIndex].TextureCoordinates[5]}");
             }
 
             // Set up control stuff for materials and texture coordinates.
@@ -213,17 +214,17 @@ namespace KnuxLib.Engines.CarZ
             obj.WriteLine($"g {Data.Name}");
 
             // Write this model's faces.
-            for (int i = 0; i < Data.Faces.Count; i++)
+            for (int faceIndex = 0; faceIndex < Data.Faces.Count; faceIndex++)
             {
                 // If this face's material is not the one stored in the currentMaterial string, then write the material reference and update the string.
-                if (currentMaterial != Data.Faces[i].MaterialName)
+                if (currentMaterial != Data.Faces[faceIndex].MaterialName)
                 {
-                    obj.WriteLine($"usemtl {Data.Faces[i].MaterialName}");
-                    currentMaterial = Data.Faces[i].MaterialName;
+                    obj.WriteLine($"usemtl {Data.Faces[faceIndex].MaterialName}");
+                    currentMaterial = Data.Faces[faceIndex].MaterialName;
                 }
 
                 // Write this face's vertex indices plus 1 (as OBJ counts from 1 not 0) and texture coordinates.
-                obj.WriteLine($"f {Data.Faces[i].VertexIndices[0] + 1}/{currentTextureCoordinate} {Data.Faces[i].VertexIndices[1] + 1}/{currentTextureCoordinate + 1} {Data.Faces[i].VertexIndices[2] + 1}/{currentTextureCoordinate + 2}");
+                obj.WriteLine($"f {Data.Faces[faceIndex].VertexIndices[0] + 1}/{currentTextureCoordinate} {Data.Faces[faceIndex].VertexIndices[1] + 1}/{currentTextureCoordinate + 1} {Data.Faces[faceIndex].VertexIndices[2] + 1}/{currentTextureCoordinate + 2}");
                 
                 // Add 3 to the currentTextureCoordinates integer.
                 currentTextureCoordinate += 3;
@@ -253,23 +254,23 @@ namespace KnuxLib.Engines.CarZ
             int vertCount = 0;
 
             // Loop through all meshes in the imported file.
-            for (int i = 0; i < assimpModel.Meshes.Count; i++)
+            for (int meshIndex = 0; meshIndex < assimpModel.Meshes.Count; meshIndex++)
             {
                 // Add all the vertices for this mesh.
-                foreach (var vertex in assimpModel.Meshes[i].Vertices)
+                foreach (Vector3D vertex in assimpModel.Meshes[meshIndex].Vertices)
                     Data.Vertices.Add(new(vertex.X, vertex.Y, vertex.Z));
 
                 // Set up a count of the texture coordinates so we can keep track of which to use.
                 int textureCoordinate = 0;
 
                 // Loop through each face in this mesh.
-                foreach (var assimpFace in assimpModel.Meshes[i].Faces)
+                foreach (Assimp.Face? assimpFace in assimpModel.Meshes[meshIndex].Faces)
                 {
                     // Create a new face.
                     Face face = new();
 
                     // Set material name for this face.
-                    face.MaterialName = assimpModel.Materials[i].Name;
+                    face.MaterialName = assimpModel.Materials[meshIndex].Name;
 
                     // Set the vertex indices on this face.
                     face.VertexIndices[0] = (short)(assimpFace.Indices[0] + vertCount);
@@ -277,12 +278,12 @@ namespace KnuxLib.Engines.CarZ
                     face.VertexIndices[2] = (short)(assimpFace.Indices[2] + vertCount);
 
                     // Set the texture coordinates for this face.
-                    face.TextureCoordinates[0] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate].X;
-                    face.TextureCoordinates[1] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate].Y;
-                    face.TextureCoordinates[2] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate + 1].X;
-                    face.TextureCoordinates[3] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate + 1].Y;
-                    face.TextureCoordinates[4] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate + 2].X;
-                    face.TextureCoordinates[5] = -assimpModel.Meshes[i].TextureCoordinateChannels[0][textureCoordinate + 2].Y;
+                    face.TextureCoordinates[0] = -assimpModel.Meshes[meshIndex].TextureCoordinateChannels[0][textureCoordinate].X;
+                    face.TextureCoordinates[1] = -assimpModel.Meshes[meshIndex].TextureCoordinateChannels[0][textureCoordinate].Y;
+                    face.TextureCoordinates[2] = -assimpModel.Meshes[meshIndex].TextureCoordinateChannels[0][textureCoordinate + 1].X;
+                    face.TextureCoordinates[3] = -assimpModel.Meshes[meshIndex].TextureCoordinateChannels[0][textureCoordinate + 1].Y;
+                    face.TextureCoordinates[4] = -assimpModel.Meshes[meshIndex].TextureCoordinateChannels[0][textureCoordinate + 2].X;
+                    face.TextureCoordinates[5] = -assimpModel.Meshes[meshIndex].TextureCoordinateChannels[0][textureCoordinate + 2].Y;
 
                     // Save this face.
                     Data.Faces.Add(face);
@@ -292,7 +293,7 @@ namespace KnuxLib.Engines.CarZ
                 }
 
                 // Add this mesh's vertex count to the vertCount int.
-                vertCount += assimpModel.Meshes[i].Vertices.Count;
+                vertCount += assimpModel.Meshes[meshIndex].Vertices.Count;
             }
             
             // Set up list for the X, Y and Z coordinates for every vertex.
@@ -301,7 +302,7 @@ namespace KnuxLib.Engines.CarZ
             List<float> zValues = new();
 
             // Get every vertex's X, Y and Z coordinate.
-            foreach (var vertex in Data.Vertices)
+            foreach (Vector3 vertex in Data.Vertices)
             {
                 xValues.Add(vertex.X);
                 yValues.Add(vertex.Y);

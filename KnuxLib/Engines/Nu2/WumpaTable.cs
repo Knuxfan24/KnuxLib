@@ -40,7 +40,7 @@
             uint wumpaFruitCount = reader.ReadUInt32();
 
             // Read and save each Wumpa Fruit's coordinates.
-            for (int i = 0; i < wumpaFruitCount; i++)
+            for (int wumpaFruitIndex = 0; wumpaFruitIndex < wumpaFruitCount; wumpaFruitIndex++)
                 Data.Add(reader.ReadVector3());
 
             // Close Marathon's BinaryReader.
@@ -65,8 +65,8 @@
             writer.Write(Data.Count);
 
             // Write each Wumpa Fruit's coordinates.
-            for (int i = 0; i < Data.Count; i++)
-                writer.Write(Data[i]);
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.Write(Data[dataIndex]);
 
             // Close Marathon's BinaryWriter.
             writer.Close();

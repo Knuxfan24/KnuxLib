@@ -85,10 +85,10 @@
             reader.JumpTo(instanceTableOffset, false);
 
             // Loop through each instance.
-            for (ulong i = 0; i < instanceCount; i++)
+            for (ulong instanceIndex = 0; instanceIndex < instanceCount; instanceIndex++)
             {
                 // Set up a new instance.
-                Instance inst = new()
+                Instance instance = new()
                 {
                     // Read this instance's name.
                     InstanceName = Helpers.ReadNullTerminatedStringTableEntry(reader),
@@ -116,7 +116,7 @@
                 reader.FixPadding(0x08);
 
                 // Save this instance.
-                Data.Add(inst);
+                Data.Add(instance);
             }
 
             // Close HedgeLib#'s BINAReader.
@@ -148,31 +148,31 @@
             writer.FillInOffset("instanceOffset", false, false);
 
             // Loop through each instance.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Add the string for this instance's name.
-                writer.AddString($"instance{i}name", Data[i].InstanceName, 0x08);
+                writer.AddString($"instance{dataIndex}name", Data[dataIndex].InstanceName, 0x08);
 
                 // Add the string for this instance's asset.
-                writer.AddString($"instance{i}asset", Data[i].AssetName, 0x08);
+                writer.AddString($"instance{dataIndex}asset", Data[dataIndex].AssetName, 0x08);
 
                 // Write this instance's position.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Position);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Position);
 
                 // Write this instance's rotation.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Rotation);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Rotation);
 
                 // Write this instance's unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_1);
+                writer.Write(Data[dataIndex].UnknownUInt32_1);
 
                 // Write this instance's scale.
-                Helpers.WriteHedgeLibVector3(writer, Data[i].Scale);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].Scale);
 
                 // Write this instance's empty value.
                 writer.Write(0x00);
 
                 // All Data but the last one appear to be aligned, so if this isn't the last instance, align it.
-                if (i != Data.Count - 1)
+                if (dataIndex != Data.Count - 1)
                     writer.FixPadding(0x08);
             }
 

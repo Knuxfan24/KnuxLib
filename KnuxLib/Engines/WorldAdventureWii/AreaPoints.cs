@@ -78,7 +78,7 @@
             reader.FixPadding(0x10);
 
             // Loop through each area.
-            for (int i = 0; i < areaCount; i++)
+            for (int areaIndex = 0; areaIndex < areaCount; areaIndex++)
             {
                 // Set up a new area entry.
                 Area area = new();
@@ -98,13 +98,13 @@
             }
 
             // Loop through each area.
-            for (int i = 0; i < areaCount; i++)
+            for (int areaIndex = 0; areaIndex < areaCount; areaIndex++)
             {
                 // Skip an unknown value of 0.
                 reader.JumpAhead(0x04);
 
                 // Read this area's unknown floating point value.
-                Data[i].UnknownFloat_1 = reader.ReadSingle();
+                Data[areaIndex].UnknownFloat_1 = reader.ReadSingle();
 
                 // Skip two unknown values of 0.
                 reader.JumpAhead(0x08);
@@ -151,23 +151,23 @@
             writer.FixPadding(0x10);
 
             // Loop through and write each area's matrix, transposing it if it's a Wii version matrix.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 switch (version)
                 {
-                    case FormatVersion.PlayStation2: writer.Write(Data[i].Matrix); break;
-                    case FormatVersion.Wii: writer.Write(Matrix4x4.Transpose(Data[i].Matrix)); ; break;
+                    case FormatVersion.PlayStation2: writer.Write(Data[dataIndex].Matrix); break;
+                    case FormatVersion.Wii: writer.Write(Matrix4x4.Transpose(Data[dataIndex].Matrix)); ; break;
                 }
             }
 
             // Loop through each area again.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write an unknown value of 0.
                 writer.WriteNulls(0x4);
 
                 // Write this area's unknown floating point value.
-                writer.Write(Data[i].UnknownFloat_1);
+                writer.Write(Data[dataIndex].UnknownFloat_1);
 
                 // Write two unknown values of 0.
                 writer.WriteNulls(0x8);

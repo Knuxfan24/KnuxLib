@@ -86,7 +86,7 @@
             Data.Strings = new string[stringCount];
 
             // Loop through each object in this file.
-            for (int i = 0; i < objectCount; i++)
+            for (int objectIndex = 0; objectIndex < objectCount; objectIndex++)
             {
                 // Create a new entity.
                 Entity entity = new();
@@ -126,14 +126,14 @@
                 reader.JumpTo(position);
 
                 // Save this entity.
-                Data.Entities[i] = entity;
+                Data.Entities[objectIndex] = entity;
             }
 
             // Jump to this file's spline table.
             reader.JumpTo(splineTableOffset);
 
             // Loop through each spline in this file.
-            for (ulong i = 0; i < splineCount; i++)
+            for (ulong splineIndex = 0; splineIndex < splineCount; splineIndex++)
             {
                 // Create a new spline.
                 Spline spline = new();
@@ -159,14 +159,14 @@
                 reader.JumpTo(position);
 
                 // Save this spline.
-                Data.Splines[i] = spline;
+                Data.Splines[splineIndex] = spline;
             }
 
             // Jump to this file's string table.
             reader.JumpTo(stringTableOffset);
 
             // Loop through each string in this file.
-            for (ulong i = 0; i < stringCount; i++)
+            for (ulong stringIndex = 0; stringIndex < stringCount; stringIndex++)
             {
                 // Read this string's offset.
                 long stringOffset = reader.ReadInt64();
@@ -178,7 +178,7 @@
                 reader.JumpTo(stringOffset);
 
                 // Read this string, prefixed with its length.
-                Data.Strings[i] = reader.ReadNullPaddedString(reader.ReadInt32());
+                Data.Strings[stringIndex] = reader.ReadNullPaddedString(reader.ReadInt32());
 
                 // Jump back for our next string.
                 reader.JumpTo(position);

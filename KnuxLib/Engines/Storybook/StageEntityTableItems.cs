@@ -101,17 +101,17 @@
 
             // Read an unknown value in this file.
             // TODO: What is this value?
-            uint UnknownUInt32_1 = reader.ReadUInt32();
+            uint unknownUInt32_1 = reader.ReadUInt32();
 
             // Read an unknown value in this file.
             // TODO: What is this value?
-            uint UnknownUInt32_2 = reader.ReadUInt32();
+            uint unknownUInt32_2 = reader.ReadUInt32();
             
             // Read the offset to this file's object table.
             uint objectTableOffset = reader.ReadUInt32();
 
             // Loop through each stage entry.
-            for (int i = 0; i < stageCount; i++)
+            for (int stageIndex = 0; stageIndex < stageCount; stageIndex++)
             {
                 // Set up a stage entry.
                 StageEntry stage;
@@ -131,7 +131,7 @@
 
                     // Read multiple stage entries based on stageSubCount if this is a Black Knight file.
                     case FormatVersion.BlackKnight:
-                        for (int s = 0; s < stageSubCount; s++)
+                        for (int stageSubIndex = 0; stageSubIndex < stageSubCount; stageSubIndex++)
                         {
                             stage = new()
                             {
@@ -148,7 +148,7 @@
             reader.JumpTo(objectTableOffset);
 
             // Loop through each object in this file.
-            for (int i = 0; i < objectCount; i++)
+            for (int objectIndex = 0; objectIndex < objectCount; objectIndex++)
             {
                 // Set up a new object entry.
                 ObjectEntry obj = new();
@@ -185,7 +185,7 @@
                 }
 
                 // Convert each allowed stage value to binary and check if it's allowed to load.
-                foreach (var value in allowedStages)
+                foreach (uint value in allowedStages)
                 {
                     // Convert this value to a binary string.
                     string binary = Helpers.ToBinaryString(value);
@@ -219,7 +219,7 @@
             BinaryWriterEx writer = new(File.Create(filepath));
 
             // Set up the location of and write a placeholder size entry to fill in later.
-            long sizePos = writer.BaseStream.Position;
+            long sizePosition = writer.BaseStream.Position;
             writer.Write("SIZE");
 
             // Check the file version.
@@ -260,41 +260,41 @@
             writer.AddOffset("ObjectTable");
 
             // Loop through each stage entry.
-            for (int i = 0; i < Data.Stages.Count; i++)
+            for (int stageIndex = 0; stageIndex < Data.Stages.Count; stageIndex++)
             {
                 // Write this stage's name.
-                writer.WriteNullPaddedString(Data.Stages[i].Name, 0x10);
+                writer.WriteNullPaddedString(Data.Stages[stageIndex].Name, 0x10);
 
                 // Write this stage's index.
-                writer.Write(Data.Stages[i].Index);
+                writer.Write(Data.Stages[stageIndex].Index);
             }
 
             // Fill in the offset to the object table.
             writer.FillOffset("ObjectTable");
 
             // Loop through each object.
-            for (int i = 0; i < Data.Objects.Count; i++)
+            for (int objectIndex = 0; objectIndex < Data.Objects.Count; objectIndex++)
             {
                 // Write this object's name.
-                writer.WriteNullPaddedString(Data.Objects[i].Name, 0x20);
+                writer.WriteNullPaddedString(Data.Objects[objectIndex].Name, 0x20);
 
                 // Write this object's ID.
-                writer.Write(Data.Objects[i].ObjectID);
+                writer.Write(Data.Objects[objectIndex].ObjectID);
 
                 // Write this object's Table ID.
-                writer.Write(Data.Objects[i].TableID);
+                writer.Write(Data.Objects[objectIndex].TableID);
 
                 // Write the two bytes that are always 0xCD.
                 writer.Write((ushort)0xCDCD);
 
                 // Write the stage table for this object.
-                for (int stages = 0; stages < Data.Objects[i].AllowedStages.Count; stages += 32)
+                for (int allowedStageIndex = 0; allowedStageIndex < Data.Objects[objectIndex].AllowedStages.Count; allowedStageIndex += 32)
                 {
                     // Set up a temporary string.
                     string bits = "";
 
                     // Get the 32 values in these bits and flip them.
-                    List<bool> range = Data.Objects[i].AllowedStages.GetRange(stages, 32);
+                    List<bool> range = Data.Objects[objectIndex].AllowedStages.GetRange(allowedStageIndex, 32);
                     range.Reverse();
 
                     // Add this value to the string.
@@ -307,7 +307,7 @@
             }
 
             // Go back and fill in the file size.
-            writer.BaseStream.Position = sizePos;
+            writer.BaseStream.Position = sizePosition;
             writer.Write((uint)writer.BaseStream.Length);
 
             // Close Marathon's BinaryWriter.

@@ -109,7 +109,7 @@ namespace KnuxLib.Engines.Wayforward.MeshChunks
             uint dataSize = reader.ReadUInt32();
 
             // Loop through and read each vertex.
-            for (int i = 0; i < vertexCount; i++)
+            for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
             {
                 // Define a new vertex entry.
                 Vertex vertex = new();
@@ -142,7 +142,7 @@ namespace KnuxLib.Engines.Wayforward.MeshChunks
                     vertex.Flag8_UnknownBytes = reader.ReadBytes(0x04);
 
                 // Save this vertex.
-                vertexTable.Vertices[i] = vertex;
+                vertexTable.Vertices[vertexIndex] = vertex;
             }
 
             // Jump back to our saved position.
@@ -213,31 +213,31 @@ namespace KnuxLib.Engines.Wayforward.MeshChunks
             writer.Write(VertexSize * Vertices.Length);
 
             // Loop through and write each vertex.
-            for (int i = 0; i < Vertices.Length; i++)
+            for (int vertexIndex = 0; vertexIndex < Vertices.Length; vertexIndex++)
             {
                 // Write this vertex's position.
-                writer.Write(Vertices[i].Position);
+                writer.Write(Vertices[vertexIndex].Position);
 
                 // Write this vertex's weights.
-                writer.Write(Vertices[i].Weights);
+                writer.Write(Vertices[vertexIndex].Weights);
 
                 // Write this vertex's indices.
-                writer.Write(Vertices[i].Indices);
+                writer.Write(Vertices[vertexIndex].Indices);
 
                 // If this vertex has tangent values, then write them.
-                if (Vertices[i].Tangent != null)
+                if (Vertices[vertexIndex].Tangent != null)
                 {
-                    writer.Write(Vertices[i].Tangent[0]);
-                    writer.Write(Vertices[i].Tangent[1]);
+                    writer.Write(Vertices[vertexIndex].Tangent[0]);
+                    writer.Write(Vertices[vertexIndex].Tangent[1]);
                 }
 
                 // Write this vertex's UV Coordinates.
-                writer.Write((Half)Vertices[i].UVCoordinates[0]);
-                writer.Write((Half)Vertices[i].UVCoordinates[1]);
+                writer.Write((Half)Vertices[vertexIndex].UVCoordinates[0]);
+                writer.Write((Half)Vertices[vertexIndex].UVCoordinates[1]);
 
                 // If this vertex has the Flag 8 bytes, then write them.
-                if (Vertices[i].Flag8_UnknownBytes != null)
-                    writer.Write(Vertices[i].Flag8_UnknownBytes);
+                if (Vertices[vertexIndex].Flag8_UnknownBytes != null)
+                    writer.Write(Vertices[vertexIndex].Flag8_UnknownBytes);
             }
 
             // Realign to 0x08 bytes.

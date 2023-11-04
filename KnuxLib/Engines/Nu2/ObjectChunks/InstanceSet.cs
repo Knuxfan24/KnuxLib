@@ -93,7 +93,7 @@
             uint instanceCount = reader.ReadUInt32();
 
             // Loop through and read each instance.
-            for (int i = 0; i < instanceCount; i++)
+            for (int instanceIndex = 0; instanceIndex < instanceCount; instanceIndex++)
             {
                 // Set up an instance entry.
                 Instance instance = new();
@@ -130,7 +130,7 @@
                 Instances.UnknownInstances = new();
 
                 // Loop through and read each unknown instance.
-                for (int i = 0; i < instanceCount; i++)
+                for (int instanceIndex = 0; instanceIndex < instanceCount; instanceIndex++)
                 {
                     // Set up an instance entry.
                     UnknownInstance instance = new();

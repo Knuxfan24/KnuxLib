@@ -95,7 +95,7 @@
             reader.JumpAhead(0x3C);
 
             // Loop through each object.
-            for (int i = 0; i < objectCount; i++)
+            for (int objectIndex = 0; objectIndex < objectCount; objectIndex++)
             {
                 // Set up a new object entry.
                 SetObject obj = new();
@@ -122,7 +122,7 @@
                 obj.Type = reader.ReadNullPaddedString(0x08);
 
                 // Read this object's parameters.
-                for (int p = 0; p < 0x20; p++)
+                for (int parameterIndex = 0; parameterIndex < 0x20; parameterIndex++)
                 {
                     SetParameter param = new()
                     {
@@ -170,32 +170,32 @@
             writer.WriteNulls(0x3C);
 
             // Loop through each object.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write this object's rotation.
-                writer.Write(Data[i].Rotation);
+                writer.Write(Data[dataIndex].Rotation);
 
                 // Write an unknown value of 0.
                 writer.Write(0x00);
 
                 // Write this object's position.
-                writer.Write(Data[i].Position);
+                writer.Write(Data[dataIndex].Position);
 
                 // Write this object's first unknown value.
-                writer.Write(Data[i].UnknownUInt32_1);
+                writer.Write(Data[dataIndex].UnknownUInt32_1);
 
                 // Write this object's second unknown value.
-                writer.Write(Data[i].UnknownUInt32_2);
+                writer.Write(Data[dataIndex].UnknownUInt32_2);
 
                 // Write this object's third unknown value.
-                writer.Write(Data[i].UnknownUInt32_3);
+                writer.Write(Data[dataIndex].UnknownUInt32_3);
 
                 // Write this object's type string.
-                writer.WriteNullPaddedString(Data[i].Type, 0x08);
+                writer.WriteNullPaddedString(Data[dataIndex].Type, 0x08);
 
                 // Write each of this object's parameters.
-                for (int p = 0; p < Data[i].Parameters.Count; p++)
-                    writer.Write((byte)Data[i].Parameters[p].Data);
+                for (int parameterIndex = 0; parameterIndex < Data[dataIndex].Parameters.Count; parameterIndex++)
+                    writer.Write((byte)Data[dataIndex].Parameters[parameterIndex].Data);
             }
 
             // If this is a Legacy Collection SET, then calculate and write the data size.

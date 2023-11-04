@@ -243,20 +243,10 @@ namespace KnuxTools
                     case "gods_ninjabreadpc":
                     case "gods_ninjabreadplaystation2":
                     case "gods_ninjabreadps2":
-                        using (KnuxLib.Engines.Gods.WAD wad = new())
-                        {
-                            wad.Import(arg);
-                            wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_PCPS2);
-                        }
-                        break;
+                        throw new NotImplementedException();
                     case "gods_wii":
                     case "gods_ninjabreadwii":
-                        using (KnuxLib.Engines.Gods.WAD wad = new())
-                        {
-                            wad.Import(arg);
-                            wad.Save($@"{Path.GetDirectoryName(arg)}.wad", KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii);
-                        }
-                        break;
+                        throw new NotImplementedException();
 
                     // NiGHTS 2 Engine ONE Archives.
                     case "nights2_one":

@@ -87,46 +87,46 @@ namespace KnuxLib.Engines.CarZ
             Material material = new();
 
             // Loop through all the lines in the MAT file.
-            for (int i = 0; i < mat.Length; i++)
+            for (int lineIndex = 0; lineIndex < mat.Length; lineIndex++)
             {
                 // If this line is the [MaterialBegin] tag, then set up a new material.
-                if (mat[i] == "[MaterialBegin]")
+                if (mat[lineIndex] == "[MaterialBegin]")
                     material = new();
 
                 // If this line is the [MaterialEnd] tag, then save this material.
-                else if (mat[i] == "[MaterialEnd]")
+                else if (mat[lineIndex] == "[MaterialEnd]")
                     Data.Add(material);
 
                 // If this line is neither of those and isn't empty, then assume it's a material parameter.
-                else if (mat[i] != "")
+                else if (mat[lineIndex] != "")
                 {
-                    switch (mat[i])
+                    switch (mat[lineIndex])
                     {
-                        case string s when s.StartsWith("Name"): material.Name = mat[i][(mat[i].IndexOf(' ') + 1)..]; break;
+                        case string s when s.StartsWith("Name"): material.Name = mat[lineIndex][(mat[lineIndex].IndexOf(' ') + 1)..]; break;
 
-                        case string s when s.StartsWith("Flags"): material.Flags = mat[i][(mat[i].IndexOf(' ') + 1)..]; break;
+                        case string s when s.StartsWith("Flags"): material.Flags = mat[lineIndex][(mat[lineIndex].IndexOf(' ') + 1)..]; break;
 
-                        case string s when s.StartsWith("Opacity"): material.Opacity = byte.Parse(mat[i][(mat[i].IndexOf(' ') + 1)..]); break;
+                        case string s when s.StartsWith("Opacity"): material.Opacity = byte.Parse(mat[lineIndex][(mat[lineIndex].IndexOf(' ') + 1)..]); break;
 
-                        case string s when s.StartsWith("Texture"): material.Diffuse = mat[i][(mat[i].IndexOf(' ') + 1)..]; break;
+                        case string s when s.StartsWith("Texture"): material.Diffuse = mat[lineIndex][(mat[lineIndex].IndexOf(' ') + 1)..]; break;
 
-                        case string s when s.StartsWith("AlphaMask"): material.AlphaMask = mat[i][(mat[i].IndexOf(' ') + 1)..]; break;
+                        case string s when s.StartsWith("AlphaMask"): material.AlphaMask = mat[lineIndex][(mat[lineIndex].IndexOf(' ') + 1)..]; break;
 
-                        case string s when s.StartsWith("NormalMap"): material.NormalMap = mat[i][(mat[i].IndexOf(' ') + 1)..]; break;
+                        case string s when s.StartsWith("NormalMap"): material.NormalMap = mat[lineIndex][(mat[lineIndex].IndexOf(' ') + 1)..]; break;
 
-                        case string s when s.StartsWith("EnvMap"): material.EnvironmentMap = mat[i][(mat[i].IndexOf(' ') + 1)..]; break;
+                        case string s when s.StartsWith("EnvMap"): material.EnvironmentMap = mat[lineIndex][(mat[lineIndex].IndexOf(' ') + 1)..]; break;
 
-                        case string s when s.StartsWith("EnvPower"): material.EnvironmentMapPower = byte.Parse(mat[i][(mat[i].IndexOf(' ') + 1)..]); break;
+                        case string s when s.StartsWith("EnvPower"): material.EnvironmentMapPower = byte.Parse(mat[lineIndex][(mat[lineIndex].IndexOf(' ') + 1)..]); break;
 
                         case string s when s.StartsWith("Color24"):
-                            string[] colours = mat[i].Split(' ');
+                            string[] colours = mat[lineIndex].Split(' ');
                             material.Colours = new byte[3];
                             material.Colours[0] = byte.Parse(colours[1]);
                             material.Colours[1] = byte.Parse(colours[2]);
                             material.Colours[2] = byte.Parse(colours[3]);
                             break;
 
-                        default: throw new NotImplementedException($"Unknown material setting '{mat[i].Remove(mat[i].IndexOf('='))}'.");
+                        default: throw new NotImplementedException($"Unknown material setting '{mat[lineIndex].Remove(mat[lineIndex].IndexOf('='))}'.");
                     }
                 }
             }
@@ -142,37 +142,37 @@ namespace KnuxLib.Engines.CarZ
             StreamWriter mat = new(filepath);
 
             // Write each material.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write the [MaterialBegin] header.
                 mat.WriteLine("[MaterialBegin]");
 
                 // Write this material's name.
-                mat.WriteLine($"Name= {Data[i].Name}");
+                mat.WriteLine($"Name= {Data[dataIndex].Name}");
 
                 // Write this material's flags.
-                mat.WriteLine($"Flags= {Data[i].Flags}");
+                mat.WriteLine($"Flags= {Data[dataIndex].Flags}");
 
                 // Write this material's opacity value.
-                mat.WriteLine($"Opacity= {Data[i].Opacity}");
+                mat.WriteLine($"Opacity= {Data[dataIndex].Opacity}");
 
                 // Write this material's diffuse texture, if it has one.
-                if (Data[i].Diffuse != null) { mat.WriteLine($"Texture= {Data[i].Diffuse}"); }
+                if (Data[dataIndex].Diffuse != null) { mat.WriteLine($"Texture= {Data[dataIndex].Diffuse}"); }
 
                 // Write this material's alpha mask texture, if it has one.
-                if (Data[i].AlphaMask != null) { mat.WriteLine($"AlphaMask= {Data[i].AlphaMask}"); }
+                if (Data[dataIndex].AlphaMask != null) { mat.WriteLine($"AlphaMask= {Data[dataIndex].AlphaMask}"); }
 
                 // Write this material's normal map texture, if it has one.
-                if (Data[i].NormalMap != null) { mat.WriteLine($"NormalMap= {Data[i].NormalMap}"); }
+                if (Data[dataIndex].NormalMap != null) { mat.WriteLine($"NormalMap= {Data[dataIndex].NormalMap}"); }
 
                 // Write this material's environment map texture, if it has one.
-                if (Data[i].EnvironmentMap != null) { mat.WriteLine($"EnvMap= {Data[i].EnvironmentMap}"); }
+                if (Data[dataIndex].EnvironmentMap != null) { mat.WriteLine($"EnvMap= {Data[dataIndex].EnvironmentMap}"); }
 
                 // Write this material's reflection strength value, if it has one.
-                if (Data[i].EnvironmentMapPower != null) { mat.WriteLine($"EnvPower= {Data[i].EnvironmentMapPower}"); }
+                if (Data[dataIndex].EnvironmentMapPower != null) { mat.WriteLine($"EnvPower= {Data[dataIndex].EnvironmentMapPower}"); }
 
                 // Write this material's colours.
-                mat.WriteLine($"Color24= {Data[i].Colours[0]} {Data[i].Colours[1]} {Data[i].Colours[2]}");
+                mat.WriteLine($"Color24= {Data[dataIndex].Colours[0]} {Data[dataIndex].Colours[1]} {Data[dataIndex].Colours[2]}");
 
                 // Write the [MaterialEnd] footer and a spare empty line.
                 mat.WriteLine("[MaterialEnd]\n");
@@ -192,28 +192,28 @@ namespace KnuxLib.Engines.CarZ
             StreamWriter mtl = new(filepath);
 
             // Write each material.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write this material's name.
-                mtl.WriteLine($"newmtl {Data[i].Name}");
+                mtl.WriteLine($"newmtl {Data[dataIndex].Name}");
 
                 // Write this material's opacity.
-                mtl.WriteLine($"d {(float)Data[i].Opacity / 255}");
+                mtl.WriteLine($"d {(float)Data[dataIndex].Opacity / 255}");
 
                 // Write this material's colours.
-                mtl.WriteLine($"kd {(float)Data[i].Colours[0] / 255} {(float)Data[i].Colours[1] / 255} {(float)Data[i].Colours[2] / 255}");
+                mtl.WriteLine($"kd {(float)Data[dataIndex].Colours[0] / 255} {(float)Data[dataIndex].Colours[1] / 255} {(float)Data[dataIndex].Colours[2] / 255}");
 
                 // Write this material's diffuse texture, if it has one.
-                if (Data[i].Diffuse != null)
-                    mtl.WriteLine($"map_Kd {Data[i].Diffuse}");
+                if (Data[dataIndex].Diffuse != null)
+                    mtl.WriteLine($"map_Kd {Data[dataIndex].Diffuse}");
 
                 // Write this material's alpha mask texture, if it has one.
-                if (Data[i].AlphaMask != null)
-                    mtl.WriteLine($"map_d {Data[i].AlphaMask}");
+                if (Data[dataIndex].AlphaMask != null)
+                    mtl.WriteLine($"map_d {Data[dataIndex].AlphaMask}");
 
                 // Write this material's normal map texture, if it has one.
-                if (Data[i].NormalMap != null)
-                    mtl.WriteLine($"map_bump {Data[i].NormalMap}");
+                if (Data[dataIndex].NormalMap != null)
+                    mtl.WriteLine($"map_bump {Data[dataIndex].NormalMap}");
 
                 // Write the spare line break.
                 mtl.WriteLine();

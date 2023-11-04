@@ -96,7 +96,7 @@ namespace KnuxLib.Engines.Wayforward
             reader.JumpAhead(0x04);
 
             // Read the count of string datas in this file. 
-            uint StringDataCount = reader.ReadUInt32();
+            uint stringDataCount = reader.ReadUInt32();
 
             // Read the amount of string keys in this file.
             ulong keysCount = reader.ReadUInt64();
@@ -105,25 +105,25 @@ namespace KnuxLib.Engines.Wayforward
             reader.JumpAhead(0x08);
 
             // Read the string name count in this file.
-            ulong StringNamesCount = reader.ReadUInt64();
+            ulong stringNamesCount = reader.ReadUInt64();
 
             // Read the offset for the string name table.
-            long StringNamesOffset = reader.ReadInt64();
+            long stringNamesOffset = reader.ReadInt64();
 
             // Read this file's tag count.
-            ulong TagCount = reader.ReadUInt64();
+            ulong tagCount = reader.ReadUInt64();
 
             // Read the offset to this file's tags.
-            long TagOffset = reader.ReadInt64();
+            long tagOffset = reader.ReadInt64();
 
             // Jump to the offset for this file's tags.
-            reader.JumpTo(TagOffset);
+            reader.JumpTo(tagOffset);
 
             // Define the array of tags in this file.
-            Data.Tags = new List<Tag>[TagCount];
+            Data.Tags = new List<Tag>[tagCount];
 
             // Define the array of string names used in this file.
-            Data.Names = new List<StringName>[StringNamesCount];
+            Data.Names = new List<StringName>[stringNamesCount];
 
             // Set up a list of the tags for later usage.
             Dictionary<ulong, string> tags = new();
@@ -132,34 +132,34 @@ namespace KnuxLib.Engines.Wayforward
             ulong largestTagIndex = 0;
 
             // Loop through and read all the tags.
-            for (ulong i = 0; i < TagCount; i++)
+            for (ulong tagIndex = 0; tagIndex < tagCount; tagIndex++)
             {
                 // Read this tag's data offset.
-                long tagOffset = reader.ReadInt64();
+                long tagIndexOffset = reader.ReadInt64();
 
                 // Save our current position so we can jump back for the next tag.
                 long position = reader.BaseStream.Position;
 
                 // Jump to this tag's data.
-                reader.JumpTo(tagOffset);
+                reader.JumpTo(tagIndexOffset);
 
                 // Read this tag collection's tag count.
-                ulong tagCount = reader.ReadUInt64();
+                ulong tagIndexCount = reader.ReadUInt64();
 
                 // Skip an unknown value of 0x10.
                 reader.JumpAhead(0x08);
 
                 // Set up a new tag collection for this tag's linear index.
-                Data.Tags[i] = new();
+                Data.Tags[tagIndex] = new();
 
                 // Read the tags if there actually is any.
-                if (tagCount != 0)
+                if (tagIndexCount != 0)
                 {
                     // Skip a table of values that point to each tag's strings in an additive form.
-                    reader.JumpAhead(0x08 * (long)tagCount);
+                    reader.JumpAhead(0x08 * (long)tagIndexCount);
 
                     // Loop through and read this collection's tags.
-                    for (ulong t = 0; t < tagCount; t++)
+                    for (ulong tagIndexIndex = 0; tagIndexIndex < tagIndexCount; tagIndexIndex++)
                     {
                         // Define a new tag entry.
                         Tag tag = new();
@@ -174,7 +174,7 @@ namespace KnuxLib.Engines.Wayforward
                         tag.Name = reader.ReadNullTerminatedString();
 
                         // Save this tag.
-                        Data.Tags[i].Add(tag);
+                        Data.Tags[tagIndex].Add(tag);
 
                         // Add this tag to the dictonary.
                         tags.Add(tag.Index, tag.Name);
@@ -194,17 +194,17 @@ namespace KnuxLib.Engines.Wayforward
             reader.JumpTo(0x40);
 
             // Define the string data in this file.
-            Data.Entries = new EntryData[StringDataCount];
+            Data.Entries = new EntryData[stringDataCount];
 
             // Definie all the entries in the string data array.
-            for (int i = 0; i < StringDataCount; i++)
-                Data.Entries[i] = new();
+            for (int stringDataIndex = 0; stringDataIndex < stringDataCount; stringDataIndex++)
+                Data.Entries[stringDataIndex] = new();
 
             // Loop through each tag.
-            for (ulong i = 0; i <= largestTagIndex; i++)
+            for (ulong tagIndex = 0; tagIndex <= largestTagIndex; tagIndex++)
             {
                 // Loop through each string data entry.
-                for (int t = 0; t < StringDataCount; t++)
+                for (int stringDataIndex = 0; stringDataIndex < stringDataCount; stringDataIndex++)
                 {
                     // Read the null terminated string at the listed offset.
                     string? data = Helpers.ReadNullTerminatedStringTableEntry(reader, false, 0, true);
@@ -214,15 +214,15 @@ namespace KnuxLib.Engines.Wayforward
                         data = null;
 
                     // Add the read string to the string data alongside its tag.
-                    Data.Entries[t].Keys.Add(tags[i], data);
+                    Data.Entries[stringDataIndex].Keys.Add(tags[tagIndex], data);
                 }
             }
 
             // Jump to the offset of the string names table.
-            reader.JumpTo(StringNamesOffset);
+            reader.JumpTo(stringNamesOffset);
 
             // Loop through each string name.
-            for (ulong i = 0; i < StringNamesCount; i++)
+            for (ulong stringNamesIndex = 0; stringNamesIndex < stringNamesCount; stringNamesIndex++)
             {
                 // Read this name's data offset.
                 long nameOffset = reader.ReadInt64();
@@ -240,7 +240,7 @@ namespace KnuxLib.Engines.Wayforward
                 reader.JumpAhead(0x08);
 
                 // Set up a new name collection for this name's linear index.
-                Data.Names[i] = new();
+                Data.Names[stringNamesIndex] = new();
 
                 // Read the names if there actually are any.
                 if (entryCount != 0)
@@ -249,7 +249,7 @@ namespace KnuxLib.Engines.Wayforward
                     reader.JumpAhead(0x08 * (long)entryCount);
 
                     // Loop through and read this collection's names.
-                    for (ulong t = 0; t < entryCount; t++)
+                    for (ulong entryIndex = 0; entryIndex < entryCount; entryIndex++)
                     {
                         // Define a new name entry.
                         StringName name = new();
@@ -267,7 +267,7 @@ namespace KnuxLib.Engines.Wayforward
                         Data.Entries[name.Index].StringName = name.Name;
 
                         // Save this name.
-                        Data.Names[i].Add(name);
+                        Data.Names[stringNamesIndex].Add(name);
                     }
                 }
 
@@ -322,23 +322,23 @@ namespace KnuxLib.Engines.Wayforward
             if (Data.Entries.Length > 0)
             {
                 // Loop through each tag and each entry and add an offset for each one.
-                for (int i = 0; i < Data.Entries[0].Keys.Count; i++)
-                    for (int t = 0; t < Data.Entries.Length; t++)
-                        writer.AddOffset($"String{t}Key{i}", 0x08);
+                for (int keyIndex = 0; keyIndex < Data.Entries[0].Keys.Count; keyIndex++)
+                    for (int entryIndex = 0; entryIndex < Data.Entries.Length; entryIndex++)
+                        writer.AddOffset($"String{entryIndex}Key{keyIndex}", 0x08);
 
                 // Realign to 0x40 bytes.
                 writer.FixPadding(0x40);
 
                 // Loop through each tag and each entry to write their data.
-                for (int i = 0; i < Data.Entries[0].Keys.Count; i++)
+                for (int keyIndex = 0; keyIndex < Data.Entries[0].Keys.Count; keyIndex++)
                 {
-                    for (int t = 0; t < Data.Entries.Length; t++)
+                    for (int entryIndex = 0; entryIndex < Data.Entries.Length; entryIndex++)
                     {
                         // Fill in the offset for this string and this tag.
-                        writer.FillOffset($"String{t}Key{i}");
+                        writer.FillOffset($"String{entryIndex}Key{keyIndex}");
 
                         // Get the value of the tag.
-                        string? keyValue = Data.Entries[t].Keys.ElementAt(i).Value;
+                        string? keyValue = Data.Entries[entryIndex].Keys.ElementAt(keyIndex).Value;
 
                         // If the value is null, then replace it with an empty string.
                         keyValue ??= "";
@@ -359,20 +359,20 @@ namespace KnuxLib.Engines.Wayforward
             writer.FillOffset("StringNames");
 
             // Loop through and add an offset for each name entry.
-            for (int i = 0; i < Data.Names.Length; i++)
-                writer.AddOffset($"StringName{i}", 0x08);
+            for (int nameIndex = 0; nameIndex < Data.Names.Length; nameIndex++)
+                writer.AddOffset($"StringName{nameIndex}", 0x08);
 
             // Realign to 0x40 bytes.
             writer.FixPadding(0x40);
 
             // Loop through and write each name entry.
-            for (int i = 0; i < Data.Names.Length; i++)
+            for (int nameIndex = 0; nameIndex < Data.Names.Length; nameIndex++)
             {
                 // Fill in this name entry's offset.
-                writer.FillOffset($"StringName{i}");
+                writer.FillOffset($"StringName{nameIndex}");
 
                 // Write the count of names in this entry.
-                writer.Write((long)Data.Names[i].Count);
+                writer.Write((long)Data.Names[nameIndex].Count);
 
                 // Write an unknown value that is always 0x10.
                 writer.Write(0x10L);
@@ -381,38 +381,38 @@ namespace KnuxLib.Engines.Wayforward
                 Dictionary<long, int> stringOffsets = new();
 
                 // Loop through each name in this entry for the string offset table.
-                for (int n = 0; n < Data.Names[i].Count; n++)
+                for (int nameIndexIndex = 0; nameIndexIndex < Data.Names[nameIndex].Count; nameIndexIndex++)
                 {
                     // Add an entry to the dictonary consisting of our current position and the name's linear index.
-                    stringOffsets.Add(writer.BaseStream.Position, n);
+                    stringOffsets.Add(writer.BaseStream.Position, nameIndexIndex);
 
                     // Write a placeholder to fill in later.
                     writer.Write("==TEMP==");
                 }
 
                 // Loop through each name in this entry for writing.
-                for (int n = 0; n < Data.Names[i].Count; n++)
+                for (int nameIndexIndex = 0; nameIndexIndex < Data.Names[nameIndex].Count; nameIndexIndex++)
                 {
                     // Write this name's index.
-                    writer.Write((long)Data.Names[i][n].Index);
+                    writer.Write((long)Data.Names[nameIndex][nameIndexIndex].Index);
 
                     // Write an unknown value that is always 0x10.
                     writer.Write(0x10L);
 
                     // Save our position so we can jump back after calculating the string offset.
-                    long pos = writer.BaseStream.Position;
+                    long position = writer.BaseStream.Position;
 
                     // Jump to the stored position for this name.
-                    writer.BaseStream.Position = stringOffsets.ElementAt(n).Key;
+                    writer.BaseStream.Position = stringOffsets.ElementAt(nameIndexIndex).Key;
 
                     // Fill in the placeholder, calculating the gap between the start of the table and where this name's string should be.
-                    writer.Write(pos - (writer.BaseStream.Position - (0x08 * n)));
+                    writer.Write(position - (writer.BaseStream.Position - (0x08 * nameIndexIndex)));
 
                     // Jump back to our saved position.
-                    writer.BaseStream.Position = pos;
+                    writer.BaseStream.Position = position;
 
                     // Write this entry's name.
-                    writer.WriteNullTerminatedString(Data.Names[i][n].Name);
+                    writer.WriteNullTerminatedString(Data.Names[nameIndex][nameIndexIndex].Name);
                 }
 
                 // Realign to 0x08 bytes.
@@ -426,20 +426,20 @@ namespace KnuxLib.Engines.Wayforward
             writer.FillOffset("Tags");
 
             // Loop through and add an offset for each tag entry.
-            for (int i = 0; i < Data.Tags.Length; i++)
-                writer.AddOffset($"Tag{i}", 0x08);
+            for (int tagIndex = 0; tagIndex < Data.Tags.Length; tagIndex++)
+                writer.AddOffset($"Tag{tagIndex}", 0x08);
 
             // Realign to 0x40 bytes.
             writer.FixPadding(0x40);
 
             // Loop through and write each tag entry.
-            for (int i = 0; i < Data.Tags.Length; i++)
+            for (int tagIndex = 0; tagIndex < Data.Tags.Length; tagIndex++)
             {
                 // Fill in this tag entry's offset.
-                writer.FillOffset($"Tag{i}");
+                writer.FillOffset($"Tag{tagIndex}");
 
                 // Write the count of tags in this entry.
-                writer.Write((long)Data.Tags[i].Count);
+                writer.Write((long)Data.Tags[tagIndex].Count);
 
                 // Write an unknown value that is always 0x10.
                 writer.Write(0x10L);
@@ -448,38 +448,38 @@ namespace KnuxLib.Engines.Wayforward
                 Dictionary<long, int> stringOffsets = new();
 
                 // Loop through each tag in this entry for the string offset table.
-                for (int n = 0; n < Data.Tags[i].Count; n++)
+                for (int tagIndexIndex = 0; tagIndexIndex < Data.Tags[tagIndex].Count; tagIndexIndex++)
                 {
                     // Add an entry to the dictonary consisting of our current position and the tag's linear index.
-                    stringOffsets.Add(writer.BaseStream.Position, n);
+                    stringOffsets.Add(writer.BaseStream.Position, tagIndexIndex);
 
                     // Write a placeholder to fill in later.
                     writer.Write("==TEMP==");
                 }
 
                 // Loop through each tag in this entry for writing.
-                for (int n = 0; n < Data.Tags[i].Count; n++)
+                for (int tagIndexIndex = 0; tagIndexIndex < Data.Tags[tagIndex].Count; tagIndexIndex++)
                 {
                     // Write this tag's index.
-                    writer.Write((long)Data.Tags[i][n].Index);
+                    writer.Write((long)Data.Tags[tagIndex][tagIndexIndex].Index);
 
                     // Write an unknown value that is always 0x10.
                     writer.Write(0x10L);
 
                     // Save our position so we can jump back after calculating the string offset.
-                    long pos = writer.BaseStream.Position;
+                    long position = writer.BaseStream.Position;
 
                     // Jump to the stored position for this tag.
-                    writer.BaseStream.Position = stringOffsets.ElementAt(n).Key;
+                    writer.BaseStream.Position = stringOffsets.ElementAt(tagIndexIndex).Key;
 
                     // Fill in the placeholder, calculating the gap between the start of the table and where this name's string should be.
-                    writer.Write(pos - (writer.BaseStream.Position - (0x08 * n)));
+                    writer.Write(position - (writer.BaseStream.Position - (0x08 * tagIndexIndex)));
 
                     // Jump back to our saved position.
-                    writer.BaseStream.Position = pos;
+                    writer.BaseStream.Position = position;
 
                     // Write this tag's name.
-                    writer.WriteNullTerminatedString(Data.Tags[i][n].Name);
+                    writer.WriteNullTerminatedString(Data.Tags[tagIndex][tagIndexIndex].Name);
                 }
 
                 // Realign to 0x08 bytes.

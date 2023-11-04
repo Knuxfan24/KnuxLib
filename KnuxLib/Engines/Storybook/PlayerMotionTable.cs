@@ -93,7 +93,7 @@
             reader.JumpTo(motionTableOffset);
 
             // Loop through each motion.
-            for (int i = 0; i < motionCount; i++)
+            for (int motionIndex = 0; motionIndex < motionCount; motionIndex++)
             {
                 // Set up a new motion entry.
                 MotionEntry motion = new();
@@ -136,6 +136,7 @@
         /// <param name="filepath">The path to save to.</param>
         public void Save(string filepath)
         {
+            // Set up a value to store the string table's current length.
             int totalStringLength = 0;
 
             // Set up Marathon's BinaryWriter.
@@ -157,45 +158,45 @@
             writer.FillOffset("MotionTable");
 
             // Loop through each motion entry.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write this motion's first unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_1);
+                writer.Write(Data[dataIndex].UnknownUInt32_1);
 
                 // Write the current value of totalStringLength.
                 writer.Write(totalStringLength);
 
                 // Add the length of this motion's name (including the null terminator) to the totalStringLength.
-                totalStringLength += (Data[i].Name.Length + 1);
+                totalStringLength += Data[dataIndex].Name.Length + 1;
 
                 // Write an unknown value of 0xFFFFFFFF.
                 writer.Write(0xFFFFFFFF);
 
                 // Write this motion's second unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_2);
+                writer.Write(Data[dataIndex].UnknownUInt32_2);
 
                 // Write this motion's first unknown floating point value.
-                writer.Write(Data[i].UnknownFloat_1);
+                writer.Write(Data[dataIndex].UnknownFloat_1);
 
                 // Write this motion's second unknown floating point value.
-                writer.Write(Data[i].UnknownFloat_2);
+                writer.Write(Data[dataIndex].UnknownFloat_2);
 
                 // Write this motion's third unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_3);
+                writer.Write(Data[dataIndex].UnknownUInt32_3);
 
                 // Write this motion's third unknown floating point value.
-                writer.Write(Data[i].UnknownFloat_3);
+                writer.Write(Data[dataIndex].UnknownFloat_3);
 
                 // Write this motion's fourth unknown floating point value.
-                writer.Write(Data[i].UnknownFloat_4);
+                writer.Write(Data[dataIndex].UnknownFloat_4);
             }
 
             // Fill in the offset for this file's string table.
             writer.FillOffset("StringTable");
 
             // Loop through and write each motion entry's name.
-            for (int i = 0; i < Data.Count; i++)
-                writer.WriteNullTerminatedString(Data[i].Name);
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.WriteNullTerminatedString(Data[dataIndex].Name);
 
             // Write the file size.
             writer.BaseStream.Position = 0x00;

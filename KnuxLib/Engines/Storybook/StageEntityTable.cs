@@ -150,7 +150,7 @@ namespace KnuxLib.Engines.Storybook
             uint parameterDataTableOffset = parameterTableOffset + (parameterCount * 0x8);
 
             // Loop through this SET's object table.
-            for (int i = 0; i < objectCount; i++)
+            for (int objectIndex = 0; objectIndex < objectCount; objectIndex++)
             {
                 // Create a new object.
                 SetObject obj = new();
@@ -195,23 +195,18 @@ namespace KnuxLib.Engines.Storybook
                 obj.UnknownUInt32_2 = reader.ReadUInt32();
 
                 // Read the index of this object's parameters.
-                uint parameterIndex = reader.ReadUInt32();
+                uint parameterTableIndex = reader.ReadUInt32();
 
                 // String together the object ID and table into a type.
                 string objectType = $"0x{obj.ObjectID.ToString("X").PadLeft(2, '0')}{obj.TableID.ToString("X").PadLeft(2, '0')}";
 
-                // Check for this object's type in the template sheet.
+                // Check for this object's type in the template sheet and set it if it exists.
                 if (templates.Data.Objects.ContainsKey(objectType))
-                {
-                    // Set this object's type to the struct's name.
                     obj.Type = templates.Data.Objects[objectType].ObjectStruct;
-                }
 
                 // If the object isn't found, then set the type to the object id and table id.
                 else
-                {
                     obj.Type = objectType;
-                }
 
                 // If this object's first unknown byte value is NOT 0x01, then read this object's parameters.
                 if (obj.UnknownByte_1 != 0x01)
@@ -220,7 +215,7 @@ namespace KnuxLib.Engines.Storybook
                     obj.Parameters = new();
 
                     // Save our position in the object table.
-                    long pos = reader.BaseStream.Position;
+                    long position = reader.BaseStream.Position;
 
                     // Jump to the parameter table.
                     reader.JumpTo(parameterTableOffset);
@@ -229,7 +224,7 @@ namespace KnuxLib.Engines.Storybook
                     uint parameterOffset = 0;
 
                     // Loop through based on this object's parameter index.
-                    for (int index = 0; index < parameterIndex; index++)
+                    for (int parameterIndex = 0; parameterIndex < parameterTableIndex; parameterIndex++)
                     {
                         // Skip two bytes that are always 01 00.
                         // TODO: Verify.
@@ -257,22 +252,22 @@ namespace KnuxLib.Engines.Storybook
                     if (templates.Data.Objects.ContainsKey(objectType))
                     {
                         // Make a reference to the object's struct. Just nicer than repeating this abomination of a line three times.
-                        var objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
+                        HSONTemplate.HSONStruct objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
 
                         // Check that this object actually has parameters.
                         if (objStruct.Fields != null)
                         {
                             // Loop through each parameter for this object.
-                            for (int p = 0; p < objStruct.Fields.Length; p++)
+                            for (int hsonParameterIndex = 0; hsonParameterIndex < objStruct.Fields.Length; hsonParameterIndex++)
                             {
                                 // Set up a parameter entry with the name of the parameter in the template.
                                 SetParameter param = new()
                                 {
-                                    Name = objStruct.Fields[p].Name
+                                    Name = objStruct.Fields[hsonParameterIndex].Name
                                 };
 
                                 // Read this parameter's data depending on its type.
-                                switch (objStruct.Fields[p].Type)
+                                switch (objStruct.Fields[hsonParameterIndex].Type)
                                 {
                                     case "float32":
                                         param.DataType = typeof(float);
@@ -286,7 +281,7 @@ namespace KnuxLib.Engines.Storybook
                                 }
 
                                 // Don't save this parameter if it's a padding one and we've chosen to ignore them.
-                                if (!includePadding && objStruct.Fields[p].Name.Contains("Padding"))
+                                if (!includePadding && objStruct.Fields[hsonParameterIndex].Name.Contains("Padding"))
                                     continue;
 
                                 // Save this parameter to the object.
@@ -299,7 +294,7 @@ namespace KnuxLib.Engines.Storybook
                     else
                     {
                         // Loop through each byte in the parameter table and read them individually.
-                        for (byte parameter = 0; parameter < objectParameterLength; parameter++)
+                        for (byte parameterIndex = 0; parameterIndex < objectParameterLength; parameterIndex++)
                         {
                             SetParameter param = new()
                             {
@@ -311,7 +306,7 @@ namespace KnuxLib.Engines.Storybook
                     }
 
                     // Jump back to our saved position for the next object.
-                    reader.JumpTo(pos);
+                    reader.JumpTo(position);
                 }
 
                 // Save this object.
@@ -353,62 +348,62 @@ namespace KnuxLib.Engines.Storybook
             // Write a placeholder for this file's parameter data table length.
             writer.Write("SIZE");
 
-            // Set up the parameter index value.
-            uint parameterIndex = 0;
+            // Set up the file parameter count value.
+            uint fileParameterCount = 0;
 
             // Loop through each object.
-            for (int i = 0; i < Data.Objects.Count; i++)
+            for (int objectIndex = 0; objectIndex < Data.Objects.Count; objectIndex++)
             {
                 // Write this object's position.
-                writer.Write(Data.Objects[i].Position);
+                writer.Write(Data.Objects[objectIndex].Position);
 
                 // Write this object's X rotation, converted from Euler Angles to the Binary Angle Measurement System.
-                writer.Write(Helpers.CalculateBAMsValue(Data.Objects[i].Rotation.X));
+                writer.Write(Helpers.CalculateBAMsValue(Data.Objects[objectIndex].Rotation.X));
 
                 // Write this object's Y rotation, converted from Euler Angles to the Binary Angle Measurement System.
-                writer.Write(Helpers.CalculateBAMsValue(Data.Objects[i].Rotation.Y));
+                writer.Write(Helpers.CalculateBAMsValue(Data.Objects[objectIndex].Rotation.Y));
 
                 // Write this object's Z rotation, converted from Euler Angles to the Binary Angle Measurement System.
-                writer.Write(Helpers.CalculateBAMsValue(Data.Objects[i].Rotation.Z));
+                writer.Write(Helpers.CalculateBAMsValue(Data.Objects[objectIndex].Rotation.Z));
 
                 // Write this object's first unknown byte value.
-                writer.Write(Data.Objects[i].UnknownByte_1);
+                writer.Write(Data.Objects[objectIndex].UnknownByte_1);
 
                 // Write this object's second unknown byte value.
-                writer.Write(Data.Objects[i].UnknownByte_2);
+                writer.Write(Data.Objects[objectIndex].UnknownByte_2);
 
                 // Write this object's third unknown byte value.
-                writer.Write(Data.Objects[i].UnknownByte_3);
+                writer.Write(Data.Objects[objectIndex].UnknownByte_3);
 
                 // Write this object's fourth unknown byte value.
-                writer.Write(Data.Objects[i].UnknownByte_4);
+                writer.Write(Data.Objects[objectIndex].UnknownByte_4);
 
                 // Write this object's fifth unknown byte value.
-                writer.Write(Data.Objects[i].UnknownByte_5);
+                writer.Write(Data.Objects[objectIndex].UnknownByte_5);
 
                 // Write this object's draw distance.
-                writer.Write(Data.Objects[i].DrawDistance);
+                writer.Write(Data.Objects[objectIndex].DrawDistance);
 
                 // Write this object's ID in the item table.
-                writer.Write(Data.Objects[i].ObjectID);
+                writer.Write(Data.Objects[objectIndex].ObjectID);
 
                 // Write this object's table in the item table.
-                writer.Write(Data.Objects[i].TableID);
+                writer.Write(Data.Objects[objectIndex].TableID);
 
                 // Write this object's first unknown integer value.
-                writer.Write(Data.Objects[i].UnknownUInt32_1);
+                writer.Write(Data.Objects[objectIndex].UnknownUInt32_1);
 
                 // Write an unknown value of 0x00.
                 writer.Write(0x00);
 
                 // Write this object's second unknown integer value.
-                writer.Write(Data.Objects[i].UnknownUInt32_2);
+                writer.Write(Data.Objects[objectIndex].UnknownUInt32_2);
 
                 // If this object has parameters, then write the value of parameterIndex and increment it.
-                if (Data.Objects[i].Parameters != null)
+                if (Data.Objects[objectIndex].Parameters != null)
                 {
-                    writer.Write(parameterIndex);
-                    parameterIndex++;
+                    writer.Write(fileParameterCount);
+                    fileParameterCount++;
                 }
                 
                 // If not, then just write 0x00.
@@ -419,10 +414,10 @@ namespace KnuxLib.Engines.Storybook
             }
 
             // Fill in the parameter table.
-            for (int i = 0; i < Data.Objects.Count; i++)
+            for (int objectIndex = 0; objectIndex < Data.Objects.Count; objectIndex++)
             {
                 // Only write stuff here if this object actually has parameters.
-                if (Data.Objects[i].Parameters != null)
+                if (Data.Objects[objectIndex].Parameters != null)
                 {
                     // Write an unknown value of 0x01.
                     writer.Write((byte)0x01);
@@ -432,13 +427,13 @@ namespace KnuxLib.Engines.Storybook
 
                     // Write this object's parameter count.
                     // String together the object ID and table into a type.
-                    string objectType = $"0x{Data.Objects[i].ObjectID.ToString("X").PadLeft(2, '0')}{Data.Objects[i].TableID.ToString("X").PadLeft(2, '0')}";
+                    string objectType = $"0x{Data.Objects[objectIndex].ObjectID.ToString("X").PadLeft(2, '0')}{Data.Objects[objectIndex].TableID.ToString("X").PadLeft(2, '0')}";
 
                     // Check for this type in the template sheet.
                     if (templates.Data.Objects.ContainsKey(objectType))
                     {
                         // Make a reference to the object's struct. Just nicer than repeating this abomination of a line three times.
-                        var objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
+                        HSONTemplate.HSONStruct objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
 
                         // Check that this object actually has parameters and write the amount of them multiplied by 4.
                         if (objStruct.Fields != null)
@@ -450,7 +445,7 @@ namespace KnuxLib.Engines.Storybook
                     // If this object doesn't exist in the templates, then just write the amount of parameters.
                     else
                     {
-                        writer.Write((byte)Data.Objects[i].Parameters.Count);
+                        writer.Write((byte)Data.Objects[objectIndex].Parameters.Count);
                     }
 
                     // Write five null bytes.
@@ -463,39 +458,39 @@ namespace KnuxLib.Engines.Storybook
 
             // Write each object's parameters, assuming it has any.
             // TODO: Unhardcode this when parameter types are figured out.
-            for (int i = 0; i < Data.Objects.Count; i++)
+            for (int objectIndex = 0; objectIndex < Data.Objects.Count; objectIndex++)
             {
-                if (Data.Objects[i].Parameters != null)
+                if (Data.Objects[objectIndex].Parameters != null)
                 {
                     // String together the object ID and table into a type.
-                    string objectType = $"0x{Data.Objects[i].ObjectID.ToString("X").PadLeft(2, '0')}{Data.Objects[i].TableID.ToString("X").PadLeft(2, '0')}";
+                    string objectType = $"0x{Data.Objects[objectIndex].ObjectID.ToString("X").PadLeft(2, '0')}{Data.Objects[objectIndex].TableID.ToString("X").PadLeft(2, '0')}";
 
                     // Check for this type in the template sheet.
                     if (templates.Data.Objects.ContainsKey(objectType))
                     {
                         // Make a reference to the object's struct. Just nicer than repeating this abomination of a line three times.
-                        var objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
+                        HSONTemplate.HSONStruct objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
 
                         // Check that this object actually has parameters and write the amount of them multiplied by 4.
                         if (objStruct.Fields != null)
                         {
                             // Loop through each parameter defined in the template.
-                            for (int p = 0; p < objStruct.Fields.Length; p++)
+                            for (int hsonParameterIndex = 0; hsonParameterIndex < objStruct.Fields.Length; hsonParameterIndex++)
                             {
                                 // Set up a check for if this parameter was found in the object.
                                 bool foundParam = false;
 
                                 // Loop through each parameter in the object.
-                                foreach (var param in Data.Objects[i].Parameters)
+                                foreach (SetParameter param in Data.Objects[objectIndex].Parameters)
                                 {
                                     // Check the parameter's name against the one in the template.
-                                    if (param.Name == objStruct.Fields[p].Name)
+                                    if (param.Name == objStruct.Fields[hsonParameterIndex].Name)
                                     {
                                         // Mark that this parameter has been found.
                                         foundParam = true;
 
                                         // Write this parameter's data depending on the type.
-                                        switch (objStruct.Fields[p].Type)
+                                        switch (objStruct.Fields[hsonParameterIndex].Type)
                                         {
                                             case "float32": writer.Write(Convert.ToSingle(param.Data)); break;
                                             case "uint32": writer.Write(Convert.ToInt32(param.Data)); break;
@@ -512,8 +507,8 @@ namespace KnuxLib.Engines.Storybook
                     }
                     else
                     {
-                        for (int p = 0; p < Data.Objects[i].Parameters.Count; p++)
-                            writer.Write((byte)Data.Objects[i].Parameters[p].Data);
+                        for (int parameterIndex = 0; parameterIndex < Data.Objects[objectIndex].Parameters.Count; parameterIndex++)
+                            writer.Write((byte)Data.Objects[objectIndex].Parameters[parameterIndex].Data);
                     }
                 }
             }
@@ -549,31 +544,31 @@ namespace KnuxLib.Engines.Storybook
             Project hsonProject = Helpers.CreateHSONProject(hsonName, hsonAuthor, hsonDescription);
 
             // Loop through each object in this file.
-            for (int i = 0; i < Data.Objects.Count; i++)
+            for (int objectIndex = 0; objectIndex < Data.Objects.Count; objectIndex++)
             {
                 // Create a new HSON Object from this object.
-                libHSON.Object hsonObject = Helpers.CreateHSONObject(Data.Objects[i].Type.ToString(), $"{Data.Objects[i].Type}{i}", Data.Objects[i].Position, Helpers.EulerToQuat(Data.Objects[i].Rotation), false);
+                libHSON.Object hsonObject = Helpers.CreateHSONObject(Data.Objects[objectIndex].Type.ToString(), $"{Data.Objects[objectIndex].Type}{objectIndex}", Data.Objects[objectIndex].Position, Helpers.EulerToQuat(Data.Objects[objectIndex].Rotation), false);
 
                 // Check for this object's type in the template sheet.
-                if (templates.Data.Structs.ContainsKey(Data.Objects[i].Type))
+                if (templates.Data.Structs.ContainsKey(Data.Objects[objectIndex].Type))
                 {
                     // Reference the object's type.
-                    var objStruct = templates.Data.Structs[Data.Objects[i].Type];
+                    HSONTemplate.HSONStruct objStruct = templates.Data.Structs[Data.Objects[objectIndex].Type];
 
                     // Check the object has any parameters to write.
                     if (objStruct.Fields != null)
                     {
                         // Loop through each parameter defined in the template.
-                        for (int p = 0; p < objStruct.Fields.Length; p++)
+                        for (int hsonParameterIndex = 0; hsonParameterIndex < objStruct.Fields.Length; hsonParameterIndex++)
                         {
                             // Loop through each parameter in the object.
-                            foreach (var param in Data.Objects[i].Parameters)
+                            foreach (SetParameter param in Data.Objects[objectIndex].Parameters)
                             {
                                 // Check the parameter's name against the one in the template.
-                                if (param.Name == objStruct.Fields[p].Name)
+                                if (param.Name == objStruct.Fields[hsonParameterIndex].Name)
                                 {
                                     // Write this parameter's data depending on the type.
-                                    switch (objStruct.Fields[p].Type)
+                                    switch (objStruct.Fields[hsonParameterIndex].Type)
                                     {
                                         case "float32": hsonObject.LocalParameters.Add(param.Name, new Parameter((float)param.Data)); break;
                                         case "uint32": hsonObject.LocalParameters.Add(param.Name, new Parameter((uint)param.Data)); break;
@@ -588,9 +583,9 @@ namespace KnuxLib.Engines.Storybook
                 // If this object wasn't in the parameter sheet, then write each parameter as an individual byte.
                 else
                 {
-                    if (Data.Objects[i].Parameters != null)
-                        for (int p = 0; p < Data.Objects[i].Parameters.Count; p++)
-                            hsonObject.LocalParameters.Add($"Parameter{p}", new Parameter((byte)Data.Objects[i].Parameters[p].Data));
+                    if (Data.Objects[objectIndex].Parameters != null)
+                        for (int parameterIndex = 0; parameterIndex < Data.Objects[objectIndex].Parameters.Count; parameterIndex++)
+                            hsonObject.LocalParameters.Add($"Parameter{parameterIndex}", new Parameter((byte)Data.Objects[objectIndex].Parameters[parameterIndex].Data));
                 }
 
                 // Add this object to the HSON Project.
@@ -598,7 +593,7 @@ namespace KnuxLib.Engines.Storybook
             }
 
             // Save this HSON.
-            hsonProject.Save(filepath, jsonOptions: new JsonWriterOptions { Indented = true, });
+            hsonProject.Save(filepath, jsonOptions: new JsonWriterOptions { Indented = true });
         }
     }
 }

@@ -31,7 +31,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
             reader.JumpAhead(0x04);
 
             // Loop through and read each spline.
-            for (int i = 0; i < splineCount; i++)
+            for (int splineIndex = 0; splineIndex < splineCount; splineIndex++)
             {
                 // Set up a spline entry.
                 SplineData spline = new();
@@ -43,7 +43,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
                 spline.Name = Helpers.FindNu2SceneName(reader, reader.ReadUInt32(), version);
 
                 // Loop through and read each of this spline's vertices.
-                for (int v = 0; v < vertexCount; v++)
+                for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
                     spline.Vertices.Add(reader.ReadVector3());
 
                 // Save this spline.

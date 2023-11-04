@@ -34,11 +34,11 @@ namespace KnuxLib.Engines.NiGHTS2
 
             // Read an unknown value that is usually 0xCC, but can be 0xCA or 0xCB.
             // TODO: Does this value matter?
-            uint UnknownUInt32_1 = reader.ReadUInt32();
+            uint unknownUInt32_1 = reader.ReadUInt32();
 
             // Read this archive's identifier string, usually `Default`, but sometimes `landData`.
             // TODO: Does this value matter?
-            string ArchiveIdentifier = reader.ReadNullPaddedString(0x20);
+            string archiveIdentifier = reader.ReadNullPaddedString(0x20);
 
             // Read the amount of files in this archive.
             uint fileCount = reader.ReadUInt32();
@@ -47,7 +47,7 @@ namespace KnuxLib.Engines.NiGHTS2
             reader.JumpAhead(0x84);
 
             // Read each file.
-            for (int i = 0; i < fileCount; i++)
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
             {
                 // Set up a new node.
                 FileNode node = new();
@@ -59,7 +59,7 @@ namespace KnuxLib.Engines.NiGHTS2
                 int compressedSize = reader.ReadInt32();
 
                 // Read a value that determines if this file is compressed.
-                bool compressed = reader.ReadBoolean(0x04);
+                bool isCompressed = reader.ReadBoolean(0x04);
 
                 // Read this file's uncompressed size. This will be 0 if the file isn't compressed, in which case compressedSize is the actual size.
                 uint uncompressedSize = reader.ReadUInt32();
@@ -84,7 +84,7 @@ namespace KnuxLib.Engines.NiGHTS2
                 reader.JumpTo(fileOffset);
 
                 // Read this file's data, decompressing if needed.
-                if (compressed)
+                if (isCompressed)
                 {
                     // Print the name of the file we're deccompressing.
                     Console.WriteLine($"Decompressing {node.Name}.");
@@ -142,13 +142,13 @@ namespace KnuxLib.Engines.NiGHTS2
             writer.WriteNulls(0x80);
 
             // Loop through and write each file's information.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write this file's index.
-                writer.Write(i);
+                writer.Write(dataIndex);
 
                 // Write this file's length.
-                writer.Write(Data[i].Data.Length);
+                writer.Write(Data[dataIndex].Data.Length);
 
                 // Write this file's compressed flag.
                 writer.WriteBoolean32(false);
@@ -157,29 +157,29 @@ namespace KnuxLib.Engines.NiGHTS2
                 writer.Write(0);
 
                 // Write this file's index again.
-                writer.Write(i);
+                writer.Write(dataIndex);
 
                 // Add an offset for this file's data.
-                writer.AddOffset($"File{i}Offset");
+                writer.AddOffset($"File{dataIndex}Offset");
 
                 // Write this file's name.
-                writer.WriteNullPaddedString(Data[i].Name, 0x80);
+                writer.WriteNullPaddedString(Data[dataIndex].Name, 0x80);
 
                 // Write 0x40 null bytes.
                 writer.WriteNulls(0x40);
             }
 
             // Loop through and write each file's data.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Realign to 0x20 bytes.
                 writer.FixPadding(0x20);
 
                 // Fill in the offset for this file's data.
-                writer.FillOffset($"File{i}Offset");
+                writer.FillOffset($"File{dataIndex}Offset");
 
                 // Write this file's data.
-                writer.Write(Data[i].Data);
+                writer.Write(Data[dataIndex].Data);
             }
 
             // Close Marathon's BinaryWriter.

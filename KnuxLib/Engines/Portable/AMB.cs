@@ -46,7 +46,7 @@
             reader.JumpTo(fileTableOffset);
 
             // Read each file.
-            for (int i = 0; i < fileCount; i++)
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
             {
                 // Set up a new node.
                 FileNode node = new();
@@ -76,14 +76,14 @@
                 // If this archive has a string table, then get this file's name from it.
                 if (stringTableOffset != 0)
                 {
-                    reader.JumpTo(stringTableOffset + (0x20 * i));
+                    reader.JumpTo(stringTableOffset + (0x20 * fileIndex));
                     node.Name = reader.ReadNullPaddedString(0x20);
                 }
 
                 // If this archive doesn't have a string table (which only seems to happen in Episode 1's World Map), then just name this file sequentially.
                 else
                 {
-                    node.Name = $"file{i}";
+                    node.Name = $"file{fileIndex}";
                 }
 
                 // Jump back for the next file.
@@ -130,13 +130,13 @@
             writer.FillOffset("FileTable");
 
             // Loop through each file node.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Add an offset for this file's data.
-                writer.AddOffset($"File{i}Data");
+                writer.AddOffset($"File{dataIndex}Data");
 
                 // Write the length of this file's data.
-                writer.Write(Data[i].Data.Length);
+                writer.Write(Data[dataIndex].Data.Length);
 
                 // Write two consistent unknown values.
                 writer.Write(0xFFFFFFFF);
@@ -147,21 +147,21 @@
             writer.FillOffset("BinaryStart");
 
             // Loop through each file node.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill in this file's data offset.
-                writer.FillOffset($"File{i}Data");
+                writer.FillOffset($"File{dataIndex}Data");
 
                 // Write this file's data.
-                writer.Write(Data[i].Data);
+                writer.Write(Data[dataIndex].Data);
             }
 
             // Fill in the StringTable offset.
             writer.FillOffset("StringTable");
 
             // Write each file's name.
-            for (int i = 0; i < Data.Count; i++)
-                writer.WriteNullPaddedString(Data[i].Name, 0x20);
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.WriteNullPaddedString(Data[dataIndex].Name, 0x20);
 
             // Close Marathon's BinaryWriter.
             writer.Close();

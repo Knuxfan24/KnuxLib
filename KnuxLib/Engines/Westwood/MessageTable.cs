@@ -29,17 +29,17 @@
             ushort entryCount = reader.ReadUInt16();
 
             // Skip the Message Indices.
-            for (int i = 0; i < entryCount; i++)
+            for (int entryIndex = 0; entryIndex < entryCount; entryIndex++)
                 reader.JumpAhead(0x02);
 
             // Read the actual Message Text.
-            for (int i = 0; i < entryCount; i++)
+            for (int entryIndex = 0; entryIndex < entryCount; entryIndex++)
             {
                 // Read the offset to this message's text.
                 ushort offset = reader.ReadUInt16();
 
                 // Save our current position so we can jump back afterwards.
-                long pos = reader.BaseStream.Position;
+                long position = reader.BaseStream.Position;
 
                 // Jump to the offset of this message's text.
                 reader.JumpTo(offset);
@@ -48,7 +48,7 @@
                 Data.Add(reader.ReadNullTerminatedString());
 
                 // Jump back to where we were.
-                reader.JumpTo(pos);
+                reader.JumpTo(position);
             }
 
             // Close Marathon's BinaryReader.
@@ -68,33 +68,33 @@
             writer.Write((ushort)Data.Count);
 
             // Write the message index table.
-            for (int i = 0; i < Data.Count; i++)
-                writer.Write((ushort)i);
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.Write((ushort)dataIndex);
 
             // Write the string offset table.
-            for (int i = 0; i < Data.Count; i++)
-                writer.AddOffset($"Message{i}", 0x02);
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                writer.AddOffset($"Message{dataIndex}", 0x02);
 
             // Get a list of the offsets.
             List<uint> offsets = writer.GetOffsets();
 
             // Write the message strings.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Save our current position.
-                long pos = writer.BaseStream.Position;
+                long position = writer.BaseStream.Position;
 
                 // Jump back to this message's offset position.
-                writer.BaseStream.Position = offsets[i];
+                writer.BaseStream.Position = offsets[dataIndex];
 
                 // Fill in the offset.
-                writer.Write((ushort)pos);
+                writer.Write((ushort)position);
 
                 // Return to the message position.
-                writer.BaseStream.Position = pos;
+                writer.BaseStream.Position = position;
 
                 // Write the message.
-                writer.WriteNullTerminatedString(Data[i]);
+                writer.WriteNullTerminatedString(Data[dataIndex]);
             }
 
             // Close Marathon's BinaryWriter.

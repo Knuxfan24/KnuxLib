@@ -38,7 +38,7 @@
             reader.JumpAhead(0x04);
 
             // Loop through each layer.
-            for (ulong i = 0; i < layerCount; i++)
+            for (ulong layerIndex = 0; layerIndex < layerCount; layerIndex++)
             {
                 // Read this layer's name.
                 Data.Add(reader.ReadNullPaddedString(0x28));
@@ -75,14 +75,14 @@
             writer.Write(0x04);
 
             // Loop through each layer.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Throw an exception if this layer's name is too large.
-                if (Data[i].Length > 0x28)
-                    throw new Exception($"Layer Name '{Data[i]} is larger than 40 characters!");
+                if (Data[dataIndex].Length > 0x28)
+                    throw new Exception($"Layer Name '{Data[dataIndex]} is larger than 40 characters!");
 
                 // Write this layer's name.
-                writer.WriteNullPaddedString(Data[i], 0x28);
+                writer.WriteNullPaddedString(Data[dataIndex], 0x28);
 
                 // Write three unknown values. A float of 1, an integer of -1 and an integer of 0.
                 writer.Write(1f);

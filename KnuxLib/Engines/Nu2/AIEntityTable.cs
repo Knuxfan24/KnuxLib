@@ -21,8 +21,10 @@
 
         public class AIEntity
         {
+            // The type of entity this is.
             public string Type { get; set; } = "";
 
+            // The points in space this entity needs to reference.
             public List<Vector3> Positions { get; set; } = new();
 
             public override string ToString() => Type;
@@ -49,7 +51,7 @@
             uint entityCount = reader.ReadUInt32();
 
             // Loop through each entity in this file.
-            for (int i = 0; i < entityCount; i++)
+            for (int entityIndex = 0; entityIndex < entityCount; entityIndex++)
             {
                 // Set up a new entity entry.
                 AIEntity entity = new();
@@ -61,7 +63,7 @@
                 uint entityPositionCount = reader.ReadUInt32();
 
                 // Read each of this entity's position values.
-                for (int p = 0; p < entityPositionCount; p++)
+                for (int entityPositionIndex = 0; entityPositionIndex < entityPositionCount; entityPositionIndex++)
                     entity.Positions.Add(reader.ReadVector3());
 
                 // Save this entity.
@@ -90,16 +92,16 @@
             writer.Write(Data.Count);
 
             // Loop through each entity in this file.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write this entity's type.
-                writer.WriteNullPaddedString(Data[i].Type, 0x10);
+                writer.WriteNullPaddedString(Data[dataIndex].Type, 0x10);
 
                 // Write the amount of position values this entity uses.
-                writer.Write(Data[i].Positions.Count);
+                writer.Write(Data[dataIndex].Positions.Count);
                 
                 // Write each of this entity's position values.
-                foreach (Vector3 position in Data[i].Positions)
+                foreach (Vector3 position in Data[dataIndex].Positions)
                     writer.Write(position);
             }
 

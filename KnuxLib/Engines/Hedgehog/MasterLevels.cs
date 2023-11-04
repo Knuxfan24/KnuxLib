@@ -77,7 +77,7 @@
             reader.JumpTo(levelOffsetTable, false);
 
             // Loop through each level entry.
-            for (ulong i = 0; i < levelCount; i++)
+            for (ulong levelIndex = 0; levelIndex < levelCount; levelIndex++)
             {
                 // Set up a new level entry.
                 Level level = new();
@@ -125,7 +125,7 @@
                     reader.JumpTo(dependenciesOffset, false);
 
                     // Loop through this level's dependencies.
-                    for (int dependency = 0; dependency < dependencyCount; dependency++)
+                    for (int dependencyIndex = 0; dependencyIndex < dependencyCount; dependencyIndex++)
                     {
                         // Read this dependency's offset.
                         long dependencyOffset = reader.ReadInt64();
@@ -137,7 +137,7 @@
                         reader.JumpTo(dependencyOffset, false);
 
                         // Read this dependency.
-                        level.Dependencies[dependency] = Helpers.ReadNullTerminatedStringTableEntry(reader);
+                        level.Dependencies[dependencyIndex] = Helpers.ReadNullTerminatedStringTableEntry(reader);
 
                         // Skip an unknown value of 0.
                         reader.JumpAhead(0x08);
@@ -157,7 +157,7 @@
                     reader.JumpTo(filesOffset, false);
 
                     // Loop through and read each file.
-                    for (int file = 0; file < fileCount; file++)
+                    for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
                     {
                         // Read this file's offset.
                         long fileOffset = reader.ReadInt64();
@@ -169,7 +169,7 @@
                         reader.JumpTo(fileOffset, false);
 
                         // Read the name of this file.
-                        level.Files[file] = Helpers.ReadNullTerminatedStringTableEntry(reader);
+                        level.Files[fileIndex] = Helpers.ReadNullTerminatedStringTableEntry(reader);
 
                         // Skip an unknown offset that always points to a single null character in the string table.
                         reader.JumpAhead(0x08);
@@ -224,40 +224,40 @@
             writer.AddOffsetTable("level", (uint)Data.Count, 0x08);
 
             // Loop through each level entry.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write eight null bytes.
                 writer.WriteNulls(0x08);
 
                 // Fill in the offset for this level index.
-                writer.FillInOffset($"level_{i}", false);
+                writer.FillInOffset($"level_{dataIndex}", false);
 
                 // Add a string for this level's name.
-                writer.AddString($"level_{i}_name", Data[i].Name, 0x08);
+                writer.AddString($"level_{dataIndex}_name", Data[dataIndex].Name, 0x08);
 
                 // Write the amount of files this level has.
-                if (Data[i].Files != null)
-                    writer.Write(Data[i].Files.Length);
+                if (Data[dataIndex].Files != null)
+                    writer.Write(Data[dataIndex].Files.Length);
                 else
                     writer.WriteNulls(0x04);
 
                 // Write the amount of dependencies this level has.
-                if (Data[i].Dependencies != null)
-                    writer.Write(Data[i].Dependencies.Length);
+                if (Data[dataIndex].Dependencies != null)
+                    writer.Write(Data[dataIndex].Dependencies.Length);
                 else
                     writer.WriteNulls(0x04);
 
                 // Add an offset for this level's files.
-                writer.AddOffset($"level_{i}_files", 0x08);
+                writer.AddOffset($"level_{dataIndex}_files", 0x08);
 
                 // Add an offset for this level's dependencies.
-                writer.AddOffset($"level_{i}_dependencies", 0x08);
+                writer.AddOffset($"level_{dataIndex}_dependencies", 0x08);
 
                 // Write this level's unknown boolean.
-                writer.Write(Data[i].UnknownBoolean_1);
+                writer.Write(Data[dataIndex].UnknownBoolean_1);
 
                 // Write the HasFiles boolean.
-                if (Data[i].Files != null)
+                if (Data[dataIndex].Files != null)
                     writer.Write(true);
                 else
                     writer.Write(false);
@@ -270,25 +270,25 @@
             writer.WriteNulls(0x08);
 
             // Loop through each level.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill in the offset for this level's dependencies.
-                writer.FillInOffset($"level_{i}_dependencies", false);
+                writer.FillInOffset($"level_{dataIndex}_dependencies", false);
 
                 // Write this level's dependencies if it has any.
-                if (Data[i].Dependencies != null)
+                if (Data[dataIndex].Dependencies != null)
                 {
                     // Add an offset table for this level's dependencies.
-                    writer.AddOffsetTable($"level_{i}_dependencies", (uint)Data[i].Dependencies.Length, 0x08);
+                    writer.AddOffsetTable($"level_{dataIndex}_dependencies", (uint)Data[dataIndex].Dependencies.Length, 0x08);
 
                     // Loop through each dependency in this level.
-                    for (int o = 0; o < Data[i].Dependencies.Length; o++)
+                    for (int dependencyIndex = 0; dependencyIndex < Data[dataIndex].Dependencies.Length; dependencyIndex++)
                     {
                         // Fill in this dependency's offset.
-                        writer.FillInOffset($"level_{i}_dependencies_{o}", false);
+                        writer.FillInOffset($"level_{dataIndex}_dependencies_{dependencyIndex}", false);
 
                         // Write this dependency's name.
-                        writer.AddString($"level_{i}_dependencies_{o}_value", Data[i].Dependencies[o], 0x08);
+                        writer.AddString($"level_{dataIndex}_dependencies_{dependencyIndex}_value", Data[dataIndex].Dependencies[dependencyIndex], 0x08);
 
                         // Write an unknown value of 0.
                         writer.WriteNulls(0x08);
@@ -296,26 +296,26 @@
                 }
 
                 // Fill in the offset for this level's files.
-                writer.FillInOffset($"level_{i}_files", false);
+                writer.FillInOffset($"level_{dataIndex}_files", false);
 
                 // Write this level's files if it has any.
-                if (Data[i].Files != null)
+                if (Data[dataIndex].Files != null)
                 {
                     // Add an offset table for this level's files.
-                    writer.AddOffsetTable($"level_{i}_files", (uint)Data[i].Files.Length, 0x08);
+                    writer.AddOffsetTable($"level_{dataIndex}_files", (uint)Data[dataIndex].Files.Length, 0x08);
 
                     // Loop through each file in this level.
-                    for (int f = 0; f < Data[i].Files.Length; f++)
+                    for (int fileIndex = 0; fileIndex < Data[dataIndex].Files.Length; fileIndex++)
                     {
                         // Fill in this file's offset.
-                        writer.FillInOffset($"level_{i}_files_{f}", false);
+                        writer.FillInOffset($"level_{dataIndex}_files_{fileIndex}", false);
 
                         // Write this file's name.
-                        writer.AddString($"level_{i}_files_{f}_value", Data[i].Files[f], 0x08);
+                        writer.AddString($"level_{dataIndex}_files_{fileIndex}_value", Data[dataIndex].Files[fileIndex], 0x08);
 
                         // Write an empty string. This doesn't work right with HedgeLib# in its normal state, although the game doesn't seem to care.
                         // Lines 220-224 in BINA.cs need commenting out to make this accurate.
-                        writer.AddString($"level_{i}_files_{f}_pad", "", 0x08);
+                        writer.AddString($"level_{dataIndex}_files_{fileIndex}_pad", "", 0x08);
 
                         // Write an unknown value of 0.
                         writer.WriteNulls(0x08);

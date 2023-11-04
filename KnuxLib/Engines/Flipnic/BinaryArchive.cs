@@ -23,8 +23,14 @@
             /// </summary>
             public string Name { get; set; } = "";
 
+            /// <summary>
+            /// The offset to this file's data.
+            /// </summary>
             public uint Offset { get; set; }
 
+            /// <summary>
+            /// The binary data of this file.
+            /// </summary>
             public byte[]? Data { get; set; }
 
             public override string ToString() => Name;
@@ -64,7 +70,7 @@
                 uint entryOffset = reader.ReadUInt32() * 0x800;
 
                 // Save our position for the next entry.
-                long pos = reader.BaseStream.Position;
+                long position = reader.BaseStream.Position;
 
                 // Jump to this entry's offset.
                 reader.JumpTo(entryOffset);
@@ -99,24 +105,24 @@
                     uint folderDataEnd = reader.ReadUInt32() + entryOffset;
 
                     // Loop through all the placeholder entries.
-                    for (int i = 0; i < folderTOC.Count; i++)
+                    for (int folderTOCIndex = 0; folderTOCIndex < folderTOC.Count; folderTOCIndex++)
                     {
                         // Jump to this entry's offset.
-                        reader.JumpTo(folderTOC[i].Offset);
+                        reader.JumpTo(folderTOC[folderTOCIndex].Offset);
 
                         // If this isn't the last file, then read the next file's offset, subtract this file's offset and read that amount of bytes.
-                        if (i != folderTOC.Count - 1)
-                            folderTOC[i].Data = reader.ReadBytes((int)(folderTOC[i + 1].Offset - folderTOC[i].Offset));
+                        if (folderTOCIndex != folderTOC.Count - 1)
+                            folderTOC[folderTOCIndex].Data = reader.ReadBytes((int)(folderTOC[folderTOCIndex + 1].Offset - folderTOC[folderTOCIndex].Offset));
 
                         // If this is the last file, then read the folder data end, subtract this file's offset and read that amount of bytes.
                         else
-                            folderTOC[i].Data = reader.ReadBytes((int)(folderDataEnd - folderTOC[i].Offset));
+                            folderTOC[folderTOCIndex].Data = reader.ReadBytes((int)(folderDataEnd - folderTOC[folderTOCIndex].Offset));
 
                         // Save this file.
                         Data.Add(new()
                         {
-                            Name = folderTOC[i].Name,
-                            Data = folderTOC[i].Data
+                            Name = folderTOC[folderTOCIndex].Name,
+                            Data = folderTOC[folderTOCIndex].Data
                         });
                     }
                 }
@@ -131,31 +137,31 @@
                 }
 
                 // Jump back for the next entry.
-                reader.JumpTo(pos);
+                reader.JumpTo(position);
             }
 
             // Read the file size, still following the 0x800 rule.
             uint fileSize = reader.ReadUInt32() * 0x800;
 
             // Loop through all the placeholder entries.
-            for (int i = 0; i < cdTOC.Count; i++)
+            for (int cdTOCIndex = 0; cdTOCIndex < cdTOC.Count; cdTOCIndex++)
             {
                 // Jump to this entry's offset.
-                reader.JumpTo(cdTOC[i].Offset);
+                reader.JumpTo(cdTOC[cdTOCIndex].Offset);
 
                 // If this isn't the last file, then read the next file's offset, subtract this file's offset and read that amount of bytes.
-                if (i != cdTOC.Count - 1)
-                    cdTOC[i].Data = reader.ReadBytes((int)(cdTOC[i + 1].Offset - cdTOC[i].Offset));
+                if (cdTOCIndex != cdTOC.Count - 1)
+                    cdTOC[cdTOCIndex].Data = reader.ReadBytes((int)(cdTOC[cdTOCIndex + 1].Offset - cdTOC[cdTOCIndex].Offset));
 
                 // If this is the last file, then read the file size end, subtract this file's offset and read that amount of bytes.
                 else
-                    cdTOC[i].Data = reader.ReadBytes((int)(fileSize - cdTOC[i].Offset));
+                    cdTOC[cdTOCIndex].Data = reader.ReadBytes((int)(fileSize - cdTOC[cdTOCIndex].Offset));
 
                 // Save this file.
                 Data.Add(new()
                 {
-                    Name = cdTOC[i].Name,
-                    Data = cdTOC[i].Data
+                    Name = cdTOC[cdTOCIndex].Name,
+                    Data = cdTOC[cdTOCIndex].Data
                 });
             }
 

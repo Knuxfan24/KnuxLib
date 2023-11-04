@@ -135,7 +135,7 @@
             reader.JumpAhead(0x02);
 
             // Read the amount of categories in this file.
-            ushort CategoryCount = reader.ReadUInt16();
+            ushort categoryCount = reader.ReadUInt16();
 
             // Read the first unknown integer value.
             Data.UnknownUInt32_1 = reader.ReadUInt32();
@@ -150,19 +150,19 @@
             reader.JumpAhead(0x04);
 
             // Loop through and read each category.
-            for (int i = 0; i < CategoryCount; i++)
+            for (int categoryIndex = 0; categoryIndex < categoryCount; categoryIndex++)
             {
                 // Set up a new category.
                 Category category = new();
 
                 // Read the offset to this category's data.
-                uint CategoryDataOffset = reader.ReadUInt32();
+                uint categoryDataOffset = reader.ReadUInt32();
 
                 // Save our current position to jump back to once this category is read.
-                long pos = reader.BaseStream.Position;
+                long position = reader.BaseStream.Position;
 
                 // Jump to the category's data offset.
-                reader.JumpTo(CategoryDataOffset, false);
+                reader.JumpTo(categoryDataOffset, false);
 
                 // Read this category's name.
                 category.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false);
@@ -186,7 +186,7 @@
                 reader.JumpTo(messagesOffset, false);
 
                 // Loop through and read each message in this category.
-                for (int m = 0; m < messageCount; m++)
+                for (int messageIndex = 0; messageIndex < messageCount; messageIndex++)
                 {
                     // Set up a new message.
                     MessageEntry message = new();
@@ -195,7 +195,7 @@
                     uint dataOffset = reader.ReadUInt32();
 
                     // Save our current position so we can jump back for the next message.
-                    long currentPos = reader.BaseStream.Position;
+                    long currentPosition = reader.BaseStream.Position;
 
                     // Jump to this message's data.
                     reader.JumpTo(dataOffset, false);
@@ -207,10 +207,10 @@
                     message.Message = Helpers.ReadNullTerminatedStringTableEntry(reader, false, true, 0, true);
 
                     // Read the offset to this message's remap data.
-                    uint RemapOffset = reader.ReadUInt32();
+                    uint remapOffset = reader.ReadUInt32();
 
                     // Read this message's remap count, this is always 0 or 1, but the game might support multiple (assuming this is a count).
-                    uint RemapCount = reader.ReadUInt32();
+                    uint remapCount = reader.ReadUInt32();
 
                     // Read this message's first unknown integer value.
                     message.UnknownUInt32_1 = reader.ReadUInt32();
@@ -264,25 +264,25 @@
                     reader.JumpAhead(0x04);
 
                     // If this message has any remaps, then read them as well.
-                    if (RemapOffset != 0)
+                    if (remapOffset != 0)
                     {
                         // Define the remap list.
                         message.Remaps = new();
 
                         // Jump to the previously read remap offset.
-                        reader.JumpTo(RemapOffset, false);
+                        reader.JumpTo(remapOffset, false);
 
                         // Loop through each remap in this message.
-                        for (int r = 0; r < RemapCount; r++)
+                        for (int remapIndex = 0; remapIndex < remapCount; remapIndex++)
                         {
                             // Read the offset to this remap's data.
-                            uint RemapDataOffset = reader.ReadUInt32();
+                            uint remapDataOffset = reader.ReadUInt32();
 
                             // Save our current position to jump back for the next remap.
-                            long remapPos = reader.BaseStream.Position;
+                            long remapPosition = reader.BaseStream.Position;
 
                             // Jump to the remap offset.
-                            reader.JumpTo(RemapDataOffset, false);
+                            reader.JumpTo(remapDataOffset, false);
 
                             // Create a new remap.
                             RemapEntry remap = new();
@@ -307,7 +307,7 @@
                             message.Remaps.Add(remap);
 
                             // Jump back for the next remap entry.
-                            reader.JumpTo(remapPos);
+                            reader.JumpTo(remapPosition);
                         }
                     }
 
@@ -315,14 +315,14 @@
                     category.Messages.Add(message);
 
                     // Jump back for the next message.
-                    reader.JumpTo(currentPos);
+                    reader.JumpTo(currentPosition);
                 }
 
                 // Save this category.
                 Data.Categories.Add(category);
 
                 // Jump back for the next category.
-                reader.JumpTo(pos);
+                reader.JumpTo(position);
             }
 
             // Close HedgeLib#'s BINAReader.
@@ -361,56 +361,56 @@
             writer.AddOffsetTable($"Categories", (uint)Data.Categories.Count);
 
             // Loop through and write each category entry.
-            for (int i = 0; i < Data.Categories.Count; i++)
+            for (int categoryIndex = 0; categoryIndex < Data.Categories.Count; categoryIndex++)
             {
                 // Fill in this category's offset.
-                writer.FillInOffset($"Categories_{i}", false, false);
+                writer.FillInOffset($"Categories_{categoryIndex}", false, false);
 
                 // Add this category's name.
-                writer.AddString($"Category{i}Name", Data.Categories[i].Name);
+                writer.AddString($"Category{categoryIndex}Name", Data.Categories[categoryIndex].Name);
 
                 // Write this category's unknown integer value.
-                writer.Write(Data.Categories[i].UnknownUInt32_1);
+                writer.Write(Data.Categories[categoryIndex].UnknownUInt32_1);
 
                 // Add an offset to this category's message table.
-                writer.AddOffset($"Category{i}Messages");
+                writer.AddOffset($"Category{categoryIndex}Messages");
 
                 // Write this category's message count.
-                writer.Write(Data.Categories[i].Messages.Count);
+                writer.Write(Data.Categories[categoryIndex].Messages.Count);
 
                 // Write another copy of this category's message count.
-                writer.Write(Data.Categories[i].Messages.Count);
+                writer.Write(Data.Categories[categoryIndex].Messages.Count);
 
                 // Write an unknown value of 0.
                 writer.Write(0x00);
             }
 
             // Loop through and write each category's messages.
-            for (int i = 0; i < Data.Categories.Count; i++)
+            for (int categoryIndex = 0; categoryIndex < Data.Categories.Count; categoryIndex++)
             {
                 // Fill in the offset for this category's message table.
-                writer.FillInOffset($"Category{i}Messages", false, false);
+                writer.FillInOffset($"Category{categoryIndex}Messages", false, false);
 
                 // Add an offset table for this category's actual messages.
-                writer.AddOffsetTable($"Category{i}Messages", (uint)Data.Categories[i].Messages.Count);
+                writer.AddOffsetTable($"Category{categoryIndex}Messages", (uint)Data.Categories[categoryIndex].Messages.Count);
 
                 // Loop through and write each message in this category.
-                for (int m = 0; m < Data.Categories[i].Messages.Count; m++)
+                for (int messageIndex = 0; messageIndex < Data.Categories[categoryIndex].Messages.Count; messageIndex++)
                 {
                     // Fill in this message's offset.
-                    writer.FillInOffset($"Category{i}Messages_{m}", false, false);
+                    writer.FillInOffset($"Category{categoryIndex}Messages_{messageIndex}", false, false);
 
                     // Add this message's name.
-                    writer.AddString($"Category{i}Message{m}Name", Data.Categories[i].Messages[m].Name);
+                    writer.AddString($"Category{categoryIndex}Message{messageIndex}Name", Data.Categories[categoryIndex].Messages[messageIndex].Name);
 
                     // Add an offset for this message's UTF16 encoded text.
-                    writer.AddOffset($"Category{i}Message{m}Message");
+                    writer.AddOffset($"Category{categoryIndex}Message{messageIndex}Message");
 
                     // If this message has remaps, then add an offset and write the count of them.
-                    if (Data.Categories[i].Messages[m].Remaps != null)
+                    if (Data.Categories[categoryIndex].Messages[messageIndex].Remaps != null)
                     {
-                        writer.AddOffset($"Category{i}Message{m}Remaps");
-                        writer.Write(Data.Categories[i].Messages[m].Remaps.Count);
+                        writer.AddOffset($"Category{categoryIndex}Message{messageIndex}Remaps");
+                        writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].Remaps.Count);
                     }
 
                     // If not, then just write eight nulls.
@@ -420,37 +420,37 @@
                     }
 
                     // Write this message's first unknown integer value.
-                    writer.Write(Data.Categories[i].Messages[m].UnknownUInt32_1);
+                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].UnknownUInt32_1);
 
                     // Write 0x16 null bytes.
                     writer.WriteNulls(0x16);
 
                     // Write a value that is the length of the message minus 1.
-                    writer.Write((ushort)(Data.Categories[i].Messages[m].Message.Length - 1));
+                    writer.Write((ushort)(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length - 1));
 
                     // Write an unknown value of 0x02.
                     writer.Write(0x02);
 
                     // Write this message's second unknown integer value.
-                    writer.Write(Data.Categories[i].Messages[m].UnknownUInt32_2);
+                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].UnknownUInt32_2);
 
                     // Write two null bytes.
                     writer.WriteNulls(0x02);
 
                     // Write a value that is the length of the message minus 1.
-                    writer.Write((ushort)(Data.Categories[i].Messages[m].Message.Length - 1));
+                    writer.Write((ushort)(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length - 1));
 
                     // Write an unknown value of 0x01.
                     writer.Write(0x01);
 
                     // Write this message's third unknown integer value.
-                    writer.Write(Data.Categories[i].Messages[m].UnknownUInt32_3);
+                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].UnknownUInt32_3);
 
                     // Write two null bytes.
                     writer.WriteNulls(0x02);
 
                     // Write a value that is the length of the message minus 1.
-                    writer.Write((ushort)(Data.Categories[i].Messages[m].Message.Length - 1));
+                    writer.Write((ushort)(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length - 1));
 
                     // Write four null bytes.
                     writer.WriteNulls(0x04);
@@ -462,7 +462,7 @@
                     writer.WriteNulls(0x02);
 
                     // Write a value that is the length of the message minus 1.
-                    writer.Write((ushort)(Data.Categories[i].Messages[m].Message.Length - 1));
+                    writer.Write((ushort)(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length - 1));
 
                     // Write an unknown value of 0x03.
                     writer.Write(0x03);
@@ -473,41 +473,41 @@
             }
 
             // Loop through and write each remap entry.
-            for (int i = 0; i < Data.Categories.Count; i++)
+            for (int categoryIndex = 0; categoryIndex < Data.Categories.Count; categoryIndex++)
             {
-                for (int m = 0; m < Data.Categories[i].Messages.Count; m++)
+                for (int messageIndex = 0; messageIndex < Data.Categories[categoryIndex].Messages.Count; messageIndex++)
                 {
                     // Only do this if this message actually has a remap entry.
-                    if (Data.Categories[i].Messages[m].Remaps != null)
+                    if (Data.Categories[categoryIndex].Messages[messageIndex].Remaps != null)
                     {
                         // Fill in this message's remap offset.
-                        writer.FillInOffset($"Category{i}Message{m}Remaps", false, false);
+                        writer.FillInOffset($"Category{categoryIndex}Message{messageIndex}Remaps", false, false);
 
                         // Add an offset table for this message's remap entries.
-                        writer.AddOffsetTable($"Category{i}Message{m}RemapEntries", (uint)Data.Categories[i].Messages[m].Remaps.Count);
+                        writer.AddOffsetTable($"Category{categoryIndex}Message{messageIndex}RemapEntries", (uint)Data.Categories[categoryIndex].Messages[messageIndex].Remaps.Count);
 
                         // Loop through each of this message's remaps.
-                        for (int r = 0; r < Data.Categories[i].Messages[m].Remaps.Count; r++)
+                        for (int remapIndex = 0; remapIndex < Data.Categories[categoryIndex].Messages[messageIndex].Remaps.Count; remapIndex++)
                         {
                             // Fill in this remap entry's offset.
-                            writer.FillInOffset($"Category{i}Message{m}RemapEntries_{r}", false, false);
+                            writer.FillInOffset($"Category{categoryIndex}Message{messageIndex}RemapEntries_{remapIndex}", false, false);
 
                             // Write this remap's character index.
-                            writer.Write(Data.Categories[i].Messages[m].Remaps[r].CharacterIndex);
+                            writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].CharacterIndex);
 
                             // Write this remap's unknown short value.
-                            writer.Write(Data.Categories[i].Messages[m].Remaps[r].UnknownUShort_1);
+                            writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].UnknownUShort_1);
 
                             //Write the type index and data for this remap.
-                            if (Data.Categories[i].Messages[m].Remaps[r].RemapData.GetType() == typeof(byte[]))
+                            if (Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].RemapData.GetType() == typeof(byte[]))
                             {
                                 writer.Write(0x04);
-                                writer.Write((byte[])Data.Categories[i].Messages[m].Remaps[r].RemapData);
+                                writer.Write((byte[])Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].RemapData);
                             }
-                            if (Data.Categories[i].Messages[m].Remaps[r].RemapData.GetType() == typeof(uint))
+                            if (Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].RemapData.GetType() == typeof(uint))
                             {
                                 writer.Write(0x05);
-                                writer.Write((uint)Data.Categories[i].Messages[m].Remaps[r].RemapData);
+                                writer.Write((uint)Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].RemapData);
                             }
                         }
                     }
@@ -515,15 +515,15 @@
             }
 
             // Loop through and write each UTF16 encoded message.
-            for (int i = 0; i < Data.Categories.Count; i++)
+            for (int categoryIndex = 0; categoryIndex < Data.Categories.Count; categoryIndex++)
             {
-                for (int m = 0; m < Data.Categories[i].Messages.Count; m++)
+                for (int messageIndex = 0; messageIndex < Data.Categories[categoryIndex].Messages.Count; messageIndex++)
                 {
                     // Fill in this message's offset.
-                    writer.FillInOffset($"Category{i}Message{m}Message", false, false);
+                    writer.FillInOffset($"Category{categoryIndex}Message{messageIndex}Message", false, false);
 
                     // Write the UTF16 encoded text for this message.
-                    writer.WriteNullTerminatedStringUTF16(Data.Categories[i].Messages[m].Message);
+                    writer.WriteNullTerminatedStringUTF16(Data.Categories[categoryIndex].Messages[messageIndex].Message);
                 }
             }
 

@@ -61,7 +61,7 @@
             /// <summary>
             /// The rotation of this entity.
             /// </summary>
-            public Quaternion Rotation { get; set; }
+            public Quaternion Rotation { get; set; } = new(1f, 0f, 0f, 0f);
 
             /// <summary>
             /// The index of the layer (definied in the stage's LGB file) that this entity is part of.
@@ -110,7 +110,7 @@
             Data = new Entity[entityCount];
 
             // Loop through and read each entity.
-            for (ulong i = 0; i < entityCount; i++)
+            for (ulong entityIndex = 0; entityIndex < entityCount; entityIndex++)
             {
                 // Create a new entity entry.
                 Entity entity = new();
@@ -192,7 +192,7 @@
                 entity.ModelName = Helpers.ReadWayforwardLengthPrefixedString(reader, entityNameTableOffset, reader.ReadUInt32());
 
                 // Save this entity.
-                Data[i] = entity;
+                Data[entityIndex] = entity;
 
                 // Jump back for the next entity.
                 reader.JumpTo(position);
@@ -215,7 +215,7 @@
             List<string> names = new();
 
             // Loop through each entity.
-            foreach (var entity in Data)
+            foreach (Entity entity in Data)
             {
                 // Add this entity's name to the list if it isn't already there.
                 if (!names.Contains(entity.EntityName))
@@ -245,17 +245,17 @@
             writer.FixPadding(0x40);
 
             // Add offsets for all the entities.
-            for (int i = 0; i < Data.Length; i++)
-                writer.AddOffset($"Entity{i}Offset", 0x08);
+            for (int dataIndex = 0; dataIndex < Data.Length; dataIndex++)
+                writer.AddOffset($"Entity{dataIndex}Offset", 0x08);
 
             // Realign to 0x40 bytes.
             writer.FixPadding(0x40);
 
             // Loop through each entity.
-            for (int i = 0; i < Data.Length; i++)
+            for (int dataIndex = 0; dataIndex < Data.Length; dataIndex++)
             {
                 // Fill in this entity's offset.
-                writer.FillOffset($"Entity{i}Offset");
+                writer.FillOffset($"Entity{dataIndex}Offset");
 
                 // Write an unknown sequence of bytes that is always 00 00 00 00 10 01 0A 57 00 00 00 00
                 writer.Write(0);
@@ -263,7 +263,7 @@
                 writer.Write(0);
 
                 // Write the index of this entity's name.
-                writer.Write(names.IndexOf(Data[i].EntityName));
+                writer.Write(names.IndexOf(Data[dataIndex].EntityName));
 
                 // Write an unknown value of 0.
                 writer.Write(0);
@@ -274,20 +274,20 @@
                 writer.Write(0xFFFFFFFF);
 
                 // Write the first unknown integer value.
-                writer.Write(Data[i].UnknownUInt32_1);
+                writer.Write(Data[dataIndex].UnknownUInt32_1);
 
                 // Write an unknown boolean value.
-                writer.Write(Data[i].UnknownBoolean_1);
+                writer.Write(Data[dataIndex].UnknownBoolean_1);
                 writer.FixPadding(0x04);
 
                 // Write this entity's colour modifier.
-                writer.Write(Data[i].ColourModifier);
+                writer.Write(Data[dataIndex].ColourModifier);
 
                 // Write this entity's horizontal texture scroll speed value.
-                writer.Write(Data[i].HorizontalTextureScrollSpeed);
+                writer.Write(Data[dataIndex].HorizontalTextureScrollSpeed);
 
                 // Write this entity's vertical texture scroll speed value.
-                writer.Write(Data[i].VerticalTextureScrollSpeed);
+                writer.Write(Data[dataIndex].VerticalTextureScrollSpeed);
 
                 // Write three unknown floating point values that are always 0.5.
                 writer.Write(0.5f);
@@ -310,13 +310,13 @@
                 writer.Write(0x30);
 
                 // Write this entity's position.
-                writer.Write(Data[i].Position);
+                writer.Write(Data[dataIndex].Position);
 
                 // Write this entity's scale.
-                writer.Write(Data[i].Scale);
+                writer.Write(Data[dataIndex].Scale);
 
                 // Write this entity's rotation.
-                writer.Write(Data[i].Rotation);
+                writer.Write(Data[dataIndex].Rotation);
 
                 // Write an unknown sequenece of bytes that is always 0B 01 8A A1
                 writer.Write(0xA18A010B);
@@ -325,7 +325,7 @@
                 writer.Write(0x30);
 
                 // Write this entity's layer index.
-                writer.Write(Data[i].LayerIndex);
+                writer.Write(Data[dataIndex].LayerIndex);
 
                 // Write an unknown sequence of bytes that is always 00 00 00 00 1A 52 9A 1A 30 00 00 00
                 writer.Write(0);
@@ -333,7 +333,7 @@
                 writer.Write(0x30);
 
                 // Write the index of this entity's model name.
-                writer.Write(names.IndexOf(Data[i].ModelName));
+                writer.Write(names.IndexOf(Data[dataIndex].ModelName));
 
                 // Realign to 0x40 bytes.
                 writer.FixPadding(0x40);
@@ -346,23 +346,23 @@
             writer.FillOffset("EntityNameTableOffset");
 
             // Add offsets for all the names.
-            for (int i = 0; i < names.Count; i++)
-                writer.AddOffset($"Name{i}Offset", 0x08);
+            for (int nameIndex = 0; nameIndex < names.Count; nameIndex++)
+                writer.AddOffset($"Name{nameIndex}Offset", 0x08);
 
             // Realign to 0x40 bytes.
             writer.FixPadding(0x40);
 
             // Loop through each name.
-            for (int i = 0; i < names.Count; i++)
+            for (int nameIndex = 0; nameIndex < names.Count; nameIndex++)
             {
                 // Fill in this name's offset.
-                writer.FillOffset($"Name{i}Offset");
+                writer.FillOffset($"Name{nameIndex}Offset");
 
                 // Write the length of this name.
-                writer.Write(names[i].Length);
+                writer.Write(names[nameIndex].Length);
 
                 // Write this name's string.
-                writer.WriteNullTerminatedString(names[i]);
+                writer.WriteNullTerminatedString(names[nameIndex]);
 
                 // Realign to 0x08 bytes.
                 writer.FixPadding(0x08);

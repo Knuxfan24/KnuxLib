@@ -135,7 +135,7 @@
             uint materialCount = reader.ReadUInt32();
 
             // Loop through and read each material.
-            for (int i = 0; i < materialCount; i++)
+            for (int materialIndex = 0; materialIndex < materialCount; materialIndex++)
             {
                 MaterialData material = new()
                 {

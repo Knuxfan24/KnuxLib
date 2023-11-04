@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace KnuxLib.Engines.Hedgehog
+﻿namespace KnuxLib.Engines.Hedgehog
 {
     public class Collision_2010 : FileBase
     {
@@ -11,28 +9,38 @@ namespace KnuxLib.Engines.Hedgehog
             Load(filepath);
 
             if (export)
+            {
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.collision_2010.json", Data);
+                ExportOBJ($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.obj");
+            }
         }
 
         // Classes for this format.
         public class FormatData
         {
+            // An unknown set of values that are always eight bytes long.
+            // TODO: What are these?
             public List<ulong> UnknownValues { get; set; } = new();
 
+            // The set of three (by default) meshes that make up this collision file.
             public Mesh[] Meshes { get; set; } = new Mesh[3];
         }
 
         public class Mesh
         {
+            // This mesh's vertices.
             public List<Vector3> Vertices { get; set; } = new();
 
+            // This mesh's faces.
             public List<Face> Faces { get; set; } = new();
         }
 
         public class Face
         {
+            // The three vertex indices that make up this face.
             public ushort[] VertexIndices { get; set; } = new ushort[3];
 
+            // This face's tag(?).
             public ushort Tag { get; set; }
         }
 
@@ -56,55 +64,55 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Read an unknown value.
             // TODO: What is this?
-            uint UnknownUInt32_1 = reader.ReadUInt32();
+            uint unknownUInt32_1 = reader.ReadUInt32();
 
             // Read an unknown value.
             // TODO: What is this?
-            uint UnknownUInt32_2 = reader.ReadUInt32();
+            uint unknownUInt32_2 = reader.ReadUInt32();
 
             // Read the amount of entries in the unknown data chunk.
-            uint UnknownDataCount = reader.ReadUInt32();
+            uint unknownDataCount = reader.ReadUInt32();
 
             // Read an unknown value.
             // TODO: What is this?
-            uint UnknownUInt32_4 = reader.ReadUInt32();
+            uint unknownUInt32_4 = reader.ReadUInt32();
 
             // Read an unknown value.
             // TODO: What is this?
-            uint UnknownUInt32_5 = reader.ReadUInt32();
+            uint unknownUInt32_5 = reader.ReadUInt32();
 
             // Read an unknown value.
             // TODO: What is this?
-            uint UnknownUInt32_6 = reader.ReadUInt32();
+            uint unknownUInt32_6 = reader.ReadUInt32();
 
             // Read the offset to the unknown data chunk.
-            uint UnknownDataOffset = reader.ReadUInt32();
+            uint unknownDataOffset = reader.ReadUInt32();
 
             // Read the offset to the first mesh.
-            uint Mesh1Offset = reader.ReadUInt32();
+            uint mesh1Offset = reader.ReadUInt32();
 
             // Read the offset to the second mesh.
-            uint Mesh2Offset = reader.ReadUInt32();
+            uint mesh2Offset = reader.ReadUInt32();
 
             // Read the offset to the third mesh.
-            uint Mesh3Offset = reader.ReadUInt32();
+            uint mesh3Offset = reader.ReadUInt32();
 
             // Jump to the unknown data chunk.
-            reader.JumpTo(UnknownDataOffset, true);
+            reader.JumpTo(unknownDataOffset, true);
 
             // Loop through and read the values in the unknown data chunk.
-            for (int i = 0; i < UnknownDataCount; i++)
+            for (int unknownDataIndex = 0; unknownDataIndex < unknownDataCount; unknownDataIndex++)
             {
                 // TODO: What is this data? Each entry is eight bytes, first four are always 0.
                 Data.UnknownValues.Add(reader.ReadUInt64());
             }
 
             // Jump to and read the various meshes in this file.
-            reader.JumpTo(Mesh1Offset, true);
+            reader.JumpTo(mesh1Offset, true);
             ReadMesh(reader, 0);
-            reader.JumpTo(Mesh2Offset, true);
+            reader.JumpTo(mesh2Offset, true);
             ReadMesh(reader, 1);
-            reader.JumpTo(Mesh3Offset, true);
+            reader.JumpTo(mesh3Offset, true);
             ReadMesh(reader, 2);
 
             // Close Marathon's BinaryReader.
@@ -133,7 +141,6 @@ namespace KnuxLib.Engines.Hedgehog
             }
 
             // If we didn't read a 0 here, then jump back.
-            // TODO: Maybe check if we read an N?
             else
             {
                 reader.JumpBehind(0x01);
@@ -150,7 +157,7 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Read an unknown value.
             // TODO: What is this?
-            uint UnknownUInt32_1 = reader.ReadUInt32();
+            uint unknownUInt32_1 = reader.ReadUInt32();
 
             // Skip an unknown value of 0.001.
             reader.JumpAhead(0x04);
@@ -162,17 +169,17 @@ namespace KnuxLib.Engines.Hedgehog
             reader.JumpAhead(0x04);
 
             //Read this mesh's vertex count.
-            uint VertexCount = reader.ReadUInt32();
+            uint vertexCount = reader.ReadUInt32();
 
             // Read this mesh's face count.
-            uint FaceCount = reader.ReadUInt32();
+            uint faceCount = reader.ReadUInt32();
 
             // Loop through and read this mesh's vertices.
-            for (int i = 0; i < VertexCount; i++)
+            for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
                 Data.Meshes[meshIndex].Vertices.Add(reader.ReadVector3());
 
             // Loop through and read each face of this mesh.
-            for (int i = 0; i < FaceCount; i++)
+            for (int faceIndex = 0; faceIndex < faceCount; faceIndex++)
             {
                 // Set up a new face.
                 Face face = new();
@@ -199,12 +206,12 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Read each face's tag.
             // TODO: Is this right?
-            for (int i = 0; i < FaceCount; i++)
-                Data.Meshes[meshIndex].Faces[i].Tag = reader.ReadUInt16();
+            for (int faceIndex = 0; faceIndex < faceCount; faceIndex++)
+                Data.Meshes[meshIndex].Faces[faceIndex].Tag = reader.ReadUInt16();
 
             // TODO: Is this count always one lower than it should be? Every file I've checked seems to end up slightly off.
             // TODO: Does the data this is counting use the same byte vs ushort setup as the faces?
-            uint UnknownCount_1 = reader.ReadUInt32();
+            uint unknownCount_1 = reader.ReadUInt32();
 
             // TODO: Read the rest of this data.
 
@@ -225,25 +232,25 @@ namespace KnuxLib.Engines.Hedgehog
             int vertexCount = 0;
 
             // Loop through each mesh in the model.
-            for (int i = 0; i < Data.Meshes.Length; i++)
+            for (int meshIndex = 0; meshIndex < Data.Meshes.Length; meshIndex++)
             {
                 // Check that this mesh actually exists.
-                if (Data.Meshes[i] != null)
+                if (Data.Meshes[meshIndex] != null)
                 {
                     // Write this mesh's vertices.
-                    foreach (Vector3 vertex in Data.Meshes[i].Vertices)
+                    foreach (Vector3 vertex in Data.Meshes[meshIndex].Vertices)
                         obj.WriteLine($"v {vertex.X} {vertex.Y} {vertex.Z}");
 
                     // Write this mesh's name.
-                    obj.WriteLine($"o collisionmesh_{i}");
-                    obj.WriteLine($"g collisionmesh_{i}");
+                    obj.WriteLine($"o collisionmesh_{meshIndex}");
+                    obj.WriteLine($"g collisionmesh_{meshIndex}");
 
                     // Write this mesh's faces.
-                    foreach (Face face in Data.Meshes[i].Faces)
+                    foreach (Face face in Data.Meshes[meshIndex].Faces)
                         obj.WriteLine($"f {face.VertexIndices[0] + 1 + vertexCount} {face.VertexIndices[1] + 1 + vertexCount} {face.VertexIndices[2] + 1 + vertexCount}");
 
                     // Increment vertexCount.
-                    vertexCount += Data.Meshes[i].Vertices.Count;
+                    vertexCount += Data.Meshes[meshIndex].Vertices.Count;
                 }
             }
 

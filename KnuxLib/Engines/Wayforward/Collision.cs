@@ -129,7 +129,7 @@ namespace KnuxLib.Engines.Wayforward
             reader.JumpAhead(0x04);
 
             // Read the count of collision models in this file.
-            uint ModelCount = reader.ReadUInt32();
+            uint modelCount = reader.ReadUInt32();
 
             // Skip an unknown value that is always 0x40. Likely an offset to the collision model table.
             reader.JumpAhead(0x08);
@@ -139,42 +139,42 @@ namespace KnuxLib.Engines.Wayforward
 
             // Read an offset to data that I currently don't know. Seems to (in some way) control screen transitions.
             // Only exists in Seven Sirens.
-            long UnknownOffset_1 = reader.ReadInt64();
+            long unknownOffset_1 = reader.ReadInt64();
 
             // Realign to 0x40 bytes.
             reader.FixPadding(0x40);
 
             // Loop through and read each collision model in this file.
-            for (int i = 0; i < ModelCount; i++)
+            for (int modelIndex = 0; modelIndex < modelCount; modelIndex++)
             {
                 // Define a new model entry.
-                Model Model = new();
+                Model model = new();
 
                 // Loop through and read the two values of this model's Axis-Aligned Bounding Box.
                 for (int aabb = 0; aabb < 2; aabb++)
-                    Model.AABB[aabb] = reader.ReadVector3();
+                    model.AABB[aabb] = reader.ReadVector3();
 
                 // Read an unknown 64 bit integer.
-                Model.Behaviour = (Behaviour)reader.ReadUInt64();
+                model.Behaviour = (Behaviour)reader.ReadUInt64();
 
                 // Read an unknown 64 bit integer that only exists in Seven Sirens.
                 if (version == FormatVersion.sevensirens)
-                    Model.UnknownULong_1 = reader.ReadUInt64();
+                    model.UnknownULong_1 = reader.ReadUInt64();
 
                 // Read the offset to this model's vertex and face data.
-                long ModelDataOffset = reader.ReadInt64();
+                long modelDataOffset = reader.ReadInt64();
 
                 // Save our position to jump back for the next model.
                 long position = reader.BaseStream.Position;
 
                 // Jump to this model's data.
-                reader.JumpTo(ModelDataOffset);
+                reader.JumpTo(modelDataOffset);
 
                 // Skip an unknown value of 0.
                 reader.JumpAhead(0x04);
 
                 // Read this model's vertex count.
-                uint VertexCount = reader.ReadUInt32();
+                uint vertexCount = reader.ReadUInt32();
 
                 // Skip a value that is always 0x20. Likely an additive offset to the vertex table.
                 reader.JumpAhead(0x08);
@@ -183,23 +183,23 @@ namespace KnuxLib.Engines.Wayforward
                 reader.JumpAhead(0x04);
 
                 // Read this model's face count. The vanilla models have this value always match Vertex Count, but lets be safe.
-                uint FaceCount = reader.ReadUInt32();
+                uint faceCount = reader.ReadUInt32();
 
                 // Skip a value that appears to be an additive offset to the face table.
                 reader.JumpAhead(0x08);
 
                 // Define the sizes of the vertex and face arrays.
-                Model.Vertices = new Vector3[VertexCount];
-                Model.Faces = new Face[FaceCount];
+                model.Vertices = new Vector3[vertexCount];
+                model.Faces = new Face[faceCount];
 
                 // Read each vertex in this model.
-                for (int v = 0; v < VertexCount; v++)
-                    Model.Vertices[v] = reader.ReadVector3();
+                for (int vertexIndex = 0; vertexIndex < vertexCount; vertexIndex++)
+                    model.Vertices[vertexIndex] = reader.ReadVector3();
 
                 // Read each face in this model.
-                for (int v = 0; v < FaceCount; v++)
+                for (int faceIndex = 0; faceIndex < faceCount; faceIndex++)
                 {
-                    Model.Faces[v] = new()
+                    model.Faces[faceIndex] = new()
                     {
                         IndexA = reader.ReadUInt32(),
                         IndexB = reader.ReadUInt32(),
@@ -208,7 +208,7 @@ namespace KnuxLib.Engines.Wayforward
                 }
 
                 // Save this model.
-                Data.Models.Add(Model);
+                Data.Models.Add(model);
 
                 // Jump back for the next model.
                 reader.JumpTo(position);
@@ -218,7 +218,7 @@ namespace KnuxLib.Engines.Wayforward
             if (version == FormatVersion.sevensirens)
             {
                 // Jump to the offset of unknown data exclusive to Seven Sirens.
-                reader.JumpTo(UnknownOffset_1);
+                reader.JumpTo(unknownOffset_1);
 
                 // Define the UnknownData.
                 Data.UnknownData = new();
@@ -285,37 +285,37 @@ namespace KnuxLib.Engines.Wayforward
             writer.FixPadding(0x40);
 
             // Loop through and write the model table.
-            for (int i = 0; i < Data.Models.Count; i++)
+            for (int modelIndex = 0; modelIndex < Data.Models.Count; modelIndex++)
             {
                 // Write this model's AABB values.
-                writer.Write(Data.Models[i].AABB[0]);
-                writer.Write(Data.Models[i].AABB[1]);
+                writer.Write(Data.Models[modelIndex].AABB[0]);
+                writer.Write(Data.Models[modelIndex].AABB[1]);
 
                 // Write this model's behaviour tag.
-                writer.Write((ulong)Data.Models[i].Behaviour);
+                writer.Write((ulong)Data.Models[modelIndex].Behaviour);
 
                 // Write this model's unknown integer value.
                 if (version == FormatVersion.sevensirens)
-                    writer.Write((ulong)Data.Models[i].UnknownULong_1);
+                    writer.Write((ulong)Data.Models[modelIndex].UnknownULong_1);
 
                 // Add an offset for this model's data.
-                writer.AddOffset($"Model{i}Data", 0x08);
+                writer.AddOffset($"Model{modelIndex}Data", 0x08);
             }
 
             // Realign to 0x40 bytes.
             writer.FixPadding(0x40);
 
             // Loop through and write the table of model data.
-            for (int i = 0; i < Data.Models.Count; i++)
+            for (int modelIndex = 0; modelIndex < Data.Models.Count; modelIndex++)
             {
                 // Fill in the offset for this model's data.
-                writer.FillOffset($"Model{i}Data");
+                writer.FillOffset($"Model{modelIndex}Data");
 
                 // Write an unknown value that is always 0.
                 writer.Write(0);
 
                 // Write this model's vertex count.
-                writer.Write(Data.Models[i].Vertices.Length);
+                writer.Write(Data.Models[modelIndex].Vertices.Length);
 
                 // Write an additive offset value that is always 0x20.
                 writer.Write(0x20L);
@@ -324,17 +324,17 @@ namespace KnuxLib.Engines.Wayforward
                 writer.Write(0);
 
                 // Write this model's face count.
-                writer.Write(Data.Models[i].Faces.Length);
+                writer.Write(Data.Models[modelIndex].Faces.Length);
 
                 // Calculate and write an additive offset for this model's face table.
-                writer.Write((long)(Data.Models[i].Vertices.Length * 0x0C + 0x20));
+                writer.Write((long)(Data.Models[modelIndex].Vertices.Length * 0x0C + 0x20));
 
                 // Write each vertex's coordinates.
-                foreach (Vector3 vertex in Data.Models[i].Vertices)
+                foreach (Vector3 vertex in Data.Models[modelIndex].Vertices)
                     writer.Write(vertex);
 
                 // Write each face's data.
-                foreach (Face face in Data.Models[i].Faces)
+                foreach (Face face in Data.Models[modelIndex].Faces)
                 {
                     writer.Write(face.IndexA);
                     writer.Write(face.IndexB);
@@ -389,47 +389,47 @@ namespace KnuxLib.Engines.Wayforward
             StreamWriter obj = new(filepath);
 
             // Loop through each model.
-            for (int i = 0; i < Data.Models.Count; i++)
+            for (int modelIndex = 0; modelIndex < Data.Models.Count; modelIndex++)
             {
                 // Write the Vertex Comment for this model.
-                obj.WriteLine($"# Model {i} Vertices\r\n");
+                obj.WriteLine($"# Model {modelIndex} Vertices\r\n");
 
                 // Write each vertex.
-                foreach (Vector3 vertex in Data.Models[i].Vertices)
+                foreach (Vector3 vertex in Data.Models[modelIndex].Vertices)
                     obj.WriteLine($"v {vertex.X} {vertex.Y} {vertex.Z}");
 
                 // Write the Name/Behaviour Tags Comment for this model.
-                obj.WriteLine($"\r\n# Model {i} Name and Behaviour Tags\r\n");
+                obj.WriteLine($"\r\n# Model {modelIndex} Name and Behaviour Tags\r\n");
 
                 // Set up a list of the behaviour tags.
                 string tags = "";
 
                 // Populate the list with the tags from this model.
-                foreach (string tag in Data.Models[i].Behaviour.ToString().Split(", "))
+                foreach (string tag in Data.Models[modelIndex].Behaviour.ToString().Split(", "))
                     tags += $"@{tag}";
 
                 // Write the object name for this model.
-                if (Data.Models[i].UnknownULong_1 != null)
+                if (Data.Models[modelIndex].UnknownULong_1 != null)
                 {
-                    ulong value = (ulong)Data.Models[i].UnknownULong_1;
-                    obj.WriteLine($"g model{i}{tags}_unk1[0x{value.ToString("X").PadLeft(16, '0')}]");
-                    obj.WriteLine($"o model{i}{tags}_unk1[0x{value.ToString("X").PadLeft(16, '0')}]");
+                    ulong value = (ulong)Data.Models[modelIndex].UnknownULong_1;
+                    obj.WriteLine($"g model{modelIndex}{tags}_unk1[0x{value.ToString("X").PadLeft(16, '0')}]");
+                    obj.WriteLine($"o model{modelIndex}{tags}_unk1[0x{value.ToString("X").PadLeft(16, '0')}]");
                 }
                 else
                 {
-                    obj.WriteLine($"g model{i}{tags}");
-                    obj.WriteLine($"o model{i}{tags}");
+                    obj.WriteLine($"g model{modelIndex}{tags}");
+                    obj.WriteLine($"o model{modelIndex}{tags}");
                 }
 
                 // Write the Faces Comment for this model.
-                obj.WriteLine($"\r\n# Model {i} Faces\r\n");
+                obj.WriteLine($"\r\n# Model {modelIndex} Faces\r\n");
 
                 // Write each face for this model, with the indices incremented by 1 (and the current value of vertexCount) due to OBJ counting from 1 not 0.
-                foreach (Face face in Data.Models[i].Faces)
+                foreach (Face face in Data.Models[modelIndex].Faces)
                     obj.WriteLine($"f {face.IndexA + 1 + vertexCount} {face.IndexB + 1 + vertexCount} {face.IndexC + 1 + vertexCount}");
 
                 // Add the amount of vertices in this model to the count.
-                vertexCount += Data.Models[i].Vertices.Length;
+                vertexCount += Data.Models[modelIndex].Vertices.Length;
 
                 // Write an empty line for neatness.
                 obj.WriteLine();
@@ -453,37 +453,37 @@ namespace KnuxLib.Engines.Wayforward
             Scene assimpModel = assimpImporter.ImportFile(filepath, PostProcessSteps.PreTransformVertices | PostProcessSteps.JoinIdenticalVertices | PostProcessSteps.GenerateBoundingBoxes);
 
             // Loop through all meshes in the imported file.
-            for (int i = 0; i < assimpModel.Meshes.Count; i++)
+            for (int meshIndex = 0; meshIndex < assimpModel.Meshes.Count; meshIndex++)
             {
                 // Set up the model.
                 Model model = new();
 
                 // Create the vertex and face lists.
-                model.Vertices = new Vector3[assimpModel.Meshes[i].Vertices.Count];
-                model.Faces = new Face[assimpModel.Meshes[i].Faces.Count];
+                model.Vertices = new Vector3[assimpModel.Meshes[meshIndex].Vertices.Count];
+                model.Faces = new Face[assimpModel.Meshes[meshIndex].Faces.Count];
 
                 // Fill in the AABB.
-                model.AABB[0] = new(assimpModel.Meshes[i].BoundingBox.Min.X, assimpModel.Meshes[i].BoundingBox.Min.Y, assimpModel.Meshes[i].BoundingBox.Min.Z);
-                model.AABB[1] = new(assimpModel.Meshes[i].BoundingBox.Max.X, assimpModel.Meshes[i].BoundingBox.Max.Y, assimpModel.Meshes[i].BoundingBox.Max.Z);
+                model.AABB[0] = new(assimpModel.Meshes[meshIndex].BoundingBox.Min.X, assimpModel.Meshes[meshIndex].BoundingBox.Min.Y, assimpModel.Meshes[meshIndex].BoundingBox.Min.Z);
+                model.AABB[1] = new(assimpModel.Meshes[meshIndex].BoundingBox.Max.X, assimpModel.Meshes[meshIndex].BoundingBox.Max.Y, assimpModel.Meshes[meshIndex].BoundingBox.Max.Z);
 
                 // Add all the vertices for this mesh.
-                for (int v = 0; v < assimpModel.Meshes[i].Vertices.Count; v++)
-                    model.Vertices[v] = new(assimpModel.Meshes[i].Vertices[v].X, assimpModel.Meshes[i].Vertices[v].Y, assimpModel.Meshes[i].Vertices[v].Z);
+                for (int vertexIndex = 0; vertexIndex < assimpModel.Meshes[meshIndex].Vertices.Count; vertexIndex++)
+                    model.Vertices[vertexIndex] = new(assimpModel.Meshes[meshIndex].Vertices[vertexIndex].X, assimpModel.Meshes[meshIndex].Vertices[vertexIndex].Y, assimpModel.Meshes[meshIndex].Vertices[vertexIndex].Z);
 
                 // Add all the faces for this mesh.
-                for (int f = 0; f < assimpModel.Meshes[i].Faces.Count; f++)
-                    model.Faces[f] = new() { IndexA = (uint)assimpModel.Meshes[i].Faces[f].Indices[0], IndexB = (uint)assimpModel.Meshes[i].Faces[f].Indices[1], IndexC = (uint)assimpModel.Meshes[i].Faces[f].Indices[2] };
+                for (int faceIndex = 0; faceIndex < assimpModel.Meshes[meshIndex].Faces.Count; faceIndex++)
+                    model.Faces[faceIndex] = new() { IndexA = (uint)assimpModel.Meshes[meshIndex].Faces[faceIndex].Indices[0], IndexB = (uint)assimpModel.Meshes[meshIndex].Faces[faceIndex].Indices[1], IndexC = (uint)assimpModel.Meshes[meshIndex].Faces[faceIndex].Indices[2] };
 
                 // Add the behaviour tags for this mesh.
-                if (assimpModel.Meshes[i].Name.Contains('@'))
+                if (assimpModel.Meshes[meshIndex].Name.Contains('@'))
                 {
                     // Split the mesh name based on the @ character (hold over from old Sonic stuff).
-                    string[] nameSplit = assimpModel.Meshes[i].Name.Split('@');
+                    string[] nameSplit = assimpModel.Meshes[meshIndex].Name.Split('@');
 
                     // Loop through each split (ignoring the first) and apply the approriate tag.
-                    for (int s = 1; s < nameSplit.Length; s++)
+                    for (int splitIndex = 1; splitIndex < nameSplit.Length; splitIndex++)
                     {
-                        switch (nameSplit[s].ToLower())
+                        switch (nameSplit[splitIndex].ToLower())
                         {
                             case "solid":                         model.Behaviour |= Behaviour.Solid;          break;
                             case "topsolid":                      model.Behaviour |= Behaviour.TopSolid;       break;

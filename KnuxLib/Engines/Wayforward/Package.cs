@@ -32,10 +32,10 @@
             reader.Offset = reader.ReadUInt32();
 
             // Read this package's file count.
-            uint FileCount = reader.ReadUInt32();
+            uint fileCount = reader.ReadUInt32();
 
             // Loop through and read each file.
-            for (int i = 0; i < FileCount; i++)
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
             {
                 // Read the FILELINK_____END signature for this file's entry.
                 reader.ReadSignature(0x10, "FILELINK_____END");
@@ -47,7 +47,7 @@
                 int fileSize = reader.ReadInt32();
 
                 // Read this file's name.
-                // TODO: Is replacing the colons with backslashes the correct thing to do?
+                // TODO: Properly handle file names.
                 string fileName = reader.ReadNullTerminatedString().Replace(':', '\\');
 
                 // Dirty hack to skip past the many padding ? bytes, as the amount of padding seems inconsistent?
@@ -108,22 +108,23 @@
             writer.Write(Data.Count);
 
             // Loop through and write each file entry.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write the FILELINK_____END signature.
                 writer.Write("FILELINK_____END");
 
                 // Add an offset for this file's data.
-                writer.AddOffset($"File{i}Offset");
+                writer.AddOffset($"File{dataIndex}Offset");
 
                 // Write the size of this file.
-                writer.Write(Data[i].Data.Length);
+                writer.Write(Data[dataIndex].Data.Length);
 
                 // Write this file's name, replacing the divider of sub directories with a colon.
-                writer.WriteNullTerminatedString(Data[i].Name.Replace('\\', ':'));
+                // TODO: Figure out how this should actually be done.
+                writer.WriteNullTerminatedString(Data[dataIndex].Name.Replace('\\', ':'));
 
                 // Store our current position to figure out how many bytes we need.
-                var paddingCount = writer.BaseStream.Position;
+                long paddingCount = writer.BaseStream.Position;
 
                 // Realign the writer.
                 writer.FixPadding(0x8);
@@ -135,7 +136,7 @@
                 writer.BaseStream.Position -= paddingCount;
 
                 // Replace the padding bytes with question marks.
-                for (int f = 0; f < paddingCount; f++)
+                for (int paddingIndex = 0; paddingIndex < paddingCount; paddingIndex++)
                     writer.Write((byte)0x3F);
             }
 
@@ -149,19 +150,19 @@
             writer.Offset = (uint)writer.BaseStream.Position;
 
             // Loop through and write each file's data.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill in the offset for this file's data.
-                writer.FillOffset($"File{i}Offset", true);
+                writer.FillOffset($"File{dataIndex}Offset", true);
 
                 // Write the MANAGEDFILE_DATABLOCK_USED_IN_ENGINE_________________________END signature.
                 writer.Write("MANAGEDFILE_DATABLOCK_USED_IN_ENGINE_________________________END");
 
                 // Write this file's data.
-                writer.Write(Data[i].Data);
+                writer.Write(Data[dataIndex].Data);
 
                 // Store our current position to figure out how many bytes we need to pad by.
-                var paddingCount = writer.BaseStream.Position;
+                long paddingCount = writer.BaseStream.Position;
 
                 // Realign the writer.
                 writer.FixPadding(0x10);
@@ -173,12 +174,12 @@
                 writer.BaseStream.Position -= paddingCount;
 
                 // Replace the padding bytes with question marks.
-                for (int f = 0; f < paddingCount; f++)
+                for (int paddingIndex = 0; paddingIndex < paddingCount; paddingIndex++)
                     writer.Write((byte)0x3F);
             }
 
             // Store our current position to figure out how many bytes we need to pad by.
-            var finalPaddingCount = writer.BaseStream.Position;
+            long finalPaddingCount = writer.BaseStream.Position;
 
             // Realign the writer.
             writer.FixPadding(0x40);
@@ -190,7 +191,7 @@
             writer.BaseStream.Position -= finalPaddingCount;
 
             // Replace the padding bytes with question marks.
-            for (int f = 0; f < finalPaddingCount; f++)
+            for (int paddingIndex = 0; paddingIndex < finalPaddingCount; paddingIndex++)
                 writer.Write((byte)0x3F);
 
             // Close Marathon's BinaryWriter.

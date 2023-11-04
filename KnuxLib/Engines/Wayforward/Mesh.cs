@@ -76,7 +76,7 @@ namespace KnuxLib.Engines.Wayforward
             reader.JumpTo(nodeOffsetTable);
 
             // Loop through and read each node.
-            for (int i = 0; i < nodeCount; i++)
+            for (int nodeIndex = 0; nodeIndex < nodeCount; nodeIndex++)
                 ReadNode(reader, Data);
 
             // Close Marathon's BinaryReader.
@@ -133,7 +133,7 @@ namespace KnuxLib.Engines.Wayforward
                 reader.JumpTo(nodeSubEntryOffsetTable);
 
                 // Loop through and read each sub node based on ther type of their parent.
-                for (int i = 0; i < nodeSubEntryCount; i++)
+                for (int nodeSubEntryIndex = 0; nodeSubEntryIndex < nodeSubEntryCount; nodeSubEntryIndex++)
                 {
                     switch (nodeType)
                     {
@@ -180,32 +180,32 @@ namespace KnuxLib.Engines.Wayforward
             writer.AddOffset("RootNodeOffsetTable", 0x08);
 
             // Loop through each node for the main writing.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Add an offset for this node.
                 Offsets.Add(writer.BaseStream.Position);
 
                 // Write the node based on its type.
-                switch (Data[i].GetType().Name)
+                switch (Data[dataIndex].GetType().Name)
                 {
-                    case "Texture":     (Data[i] as Texture).Write(writer, i);     break;
-                    case "VertexTable": (Data[i] as VertexTable).Write(writer, i); break;
-                    case "FaceTable":   (Data[i] as FaceTable).Write(writer, i);   break;
-                    case "TextureMap":  (Data[i] as TextureMap).Write(writer);     break;
-                    case "Group":       (Data[i] as Group).Write(writer, i);       break;
-                    case "ObjectMap":   (Data[i] as ObjectMap).Write(writer);      break;
+                    case "Texture":     (Data[dataIndex] as Texture).Write(writer, dataIndex);     break;
+                    case "VertexTable": (Data[dataIndex] as VertexTable).Write(writer, dataIndex); break;
+                    case "FaceTable":   (Data[dataIndex] as FaceTable).Write(writer, dataIndex);   break;
+                    case "TextureMap":  (Data[dataIndex] as TextureMap).Write(writer);     break;
+                    case "Group":       (Data[dataIndex] as Group).Write(writer, dataIndex);       break;
+                    case "ObjectMap":   (Data[dataIndex] as ObjectMap).Write(writer);      break;
 
-                    default: Console.WriteLine($"Writing of node type '{Data[i].GetType().Name}' not yet implemented."); break;
+                    default: Console.WriteLine($"Writing of node type '{Data[dataIndex].GetType().Name}' not yet implemented."); break;
                 }
             }
 
             // Loop through each node for the sub nodes.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write the sub nodes based on the parent node's type.
-                switch (Data[i].GetType().Name)
+                switch (Data[dataIndex].GetType().Name)
                 {
-                    case "Group": (Data[i] as Group).WriteSubNodes(writer, i); break;
+                    case "Group": (Data[dataIndex] as Group).WriteSubNodes(writer, dataIndex); break;
                 }
             }
 
@@ -220,25 +220,25 @@ namespace KnuxLib.Engines.Wayforward
             writer.FillOffset("FirstDataChunk");
 
             // Loop through each node for their names.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write the node name based on the type.
-                switch (Data[i].GetType().Name)
+                switch (Data[dataIndex].GetType().Name)
                 {
-                    case "Texture": (Data[i] as Texture).WriteName(writer, i); break;
-                    case "Group":   (Data[i] as Group).WriteName(writer, i);   break;
+                    case "Texture": (Data[dataIndex] as Texture).WriteName(writer, dataIndex); break;
+                    case "Group":   (Data[dataIndex] as Group).WriteName(writer, dataIndex);   break;
                 }
             }
 
             // Loop through each node for their extra data chunks.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Write the extra data based on the node type.
-                switch (Data[i].GetType().Name)
+                switch (Data[dataIndex].GetType().Name)
                 {
-                    case "Texture":     (Data[i] as Texture).WriteData(writer, i);     break;
-                    case "VertexTable": (Data[i] as VertexTable).WriteData(writer, i); break;
-                    case "FaceTable":   (Data[i] as FaceTable).WriteData(writer, i);   break;
+                    case "Texture":     (Data[dataIndex] as Texture).WriteData(writer, dataIndex);     break;
+                    case "VertexTable": (Data[dataIndex] as VertexTable).WriteData(writer, dataIndex); break;
+                    case "FaceTable":   (Data[dataIndex] as FaceTable).WriteData(writer, dataIndex);   break;
                 }
             }
 
@@ -271,23 +271,23 @@ namespace KnuxLib.Engines.Wayforward
             Load(gpuInject);
 
             // Loop through each mesh to write their vertex tables.
-            for (int i = 0; i < assimpModel.Meshes.Count; i++)
+            for (int meshIndex = 0; meshIndex < assimpModel.Meshes.Count; meshIndex++)
             {
                 // Create a vertex table entry.
                 VertexTable vertTable = new()
                 {
                     Hash = vertTableHash,
-                    Vertices = new VertexTable.Vertex[assimpModel.Meshes[i].Vertices.Count]
+                    Vertices = new VertexTable.Vertex[assimpModel.Meshes[meshIndex].Vertices.Count]
                 };
 
                 // Loop through each vertex and add it to our table.
-                for (int v = 0; v < assimpModel.Meshes[i].Vertices.Count; v++)
+                for (int vertexIndex = 0; vertexIndex < assimpModel.Meshes[meshIndex].Vertices.Count; vertexIndex++)
                 {
                     VertexTable.Vertex vert = new();
-                    vert.Position = new(assimpModel.Meshes[i].Vertices[v].X, assimpModel.Meshes[i].Vertices[v].Y, -assimpModel.Meshes[i].Vertices[v].Z);
-                    vert.UVCoordinates[0] = assimpModel.Meshes[i].TextureCoordinateChannels[0][v].X;
-                    vert.UVCoordinates[1] = assimpModel.Meshes[i].TextureCoordinateChannels[0][v].Y;
-                    vertTable.Vertices[v] = vert;
+                    vert.Position = new(assimpModel.Meshes[meshIndex].Vertices[vertexIndex].X, assimpModel.Meshes[meshIndex].Vertices[vertexIndex].Y, -assimpModel.Meshes[meshIndex].Vertices[vertexIndex].Z);
+                    vert.UVCoordinates[0] = assimpModel.Meshes[meshIndex].TextureCoordinateChannels[0][vertexIndex].X;
+                    vert.UVCoordinates[1] = assimpModel.Meshes[meshIndex].TextureCoordinateChannels[0][vertexIndex].Y;
+                    vertTable.Vertices[vertexIndex] = vert;
                 }
 
                 // Add our vertex table to the gpu file.
@@ -298,26 +298,26 @@ namespace KnuxLib.Engines.Wayforward
             }
 
             // Loop through each mesh to write their face tables.
-            for (int i = 0; i < assimpModel.Meshes.Count; i++)
+            for (int meshIndex = 0; meshIndex < assimpModel.Meshes.Count; meshIndex++)
             {
                 // Create a face table entry.
                 FaceTable faceTable = new()
                 {
                     Hash = faceTableHash,
-                    Faces = new Face[assimpModel.Meshes[i].Faces.Count]
+                    Faces = new Face[assimpModel.Meshes[meshIndex].Faces.Count]
                 };
 
                 // Loop through each face and add it to our table.
-                for (int f = 0; f < assimpModel.Meshes[i].Faces.Count; f++)
+                for (int faceInex = 0; faceInex < assimpModel.Meshes[meshIndex].Faces.Count; faceInex++)
                 {
                     Face face = new()
                     {
-                        IndexA = (uint)assimpModel.Meshes[i].Faces[f].Indices[0],
-                        IndexB = (uint)assimpModel.Meshes[i].Faces[f].Indices[1],
-                        IndexC = (uint)assimpModel.Meshes[i].Faces[f].Indices[2]
+                        IndexA = (uint)assimpModel.Meshes[meshIndex].Faces[faceInex].Indices[0],
+                        IndexB = (uint)assimpModel.Meshes[meshIndex].Faces[faceInex].Indices[1],
+                        IndexC = (uint)assimpModel.Meshes[meshIndex].Faces[faceInex].Indices[2]
                     };
 
-                    faceTable.Faces[f] = face;
+                    faceTable.Faces[faceInex] = face;
                 }
 
                 // Add our face table to the gpu file.
@@ -338,14 +338,14 @@ namespace KnuxLib.Engines.Wayforward
             faceTableHash = origFaceTableHash;
 
             // Loop through each material in our model.
-            for (int i = 0; i < assimpModel.Materials.Count; i++)
+            for (int materialIndex = 0; materialIndex < assimpModel.Materials.Count; materialIndex++)
             {
                 // Create a texture map entry for this material.
                 // TODO: The object hash might end up wrong here.
                 // TODO: This texture hash is hardcoded to level_1_1_burning_env.gpu's version of the blockout texture.
                 TextureMap textureMap = new()
                 {
-                    ObjectHash = (ulong)(0x24242424000000 + i),
+                    ObjectHash = (ulong)(0x24242424000000 + materialIndex),
                     TextureHash = 0x545FB4B4E41CCA95
                 };
                 
@@ -363,18 +363,18 @@ namespace KnuxLib.Engines.Wayforward
             };
 
             // Loop through each mesh.
-            for (int i = 0; i < assimpModel.Meshes.Count; i++)
+            for (int meshIndex = 0; meshIndex < assimpModel.Meshes.Count; meshIndex++)
             {
                 // Create an object map for this mesh.
                 ObjectMap objectMap = new()
                 {
                     UnknownHash = 0x7608AF45F703132C,
-                    Hash = (ulong)(0x24242424000000 + i),
+                    Hash = (ulong)(0x24242424000000 + meshIndex),
                     VertexHash = vertTableHash,
                     FaceHash = faceTableHash
                 };
-                objectMap.AABB[0] = new(assimpModel.Meshes[i].BoundingBox.Min.X, assimpModel.Meshes[i].BoundingBox.Min.Y, assimpModel.Meshes[i].BoundingBox.Min.Z);
-                objectMap.AABB[1] = new(assimpModel.Meshes[i].BoundingBox.Max.X, assimpModel.Meshes[i].BoundingBox.Max.Y, assimpModel.Meshes[i].BoundingBox.Max.Z);
+                objectMap.AABB[0] = new(assimpModel.Meshes[meshIndex].BoundingBox.Min.X, assimpModel.Meshes[meshIndex].BoundingBox.Min.Y, assimpModel.Meshes[meshIndex].BoundingBox.Min.Z);
+                objectMap.AABB[1] = new(assimpModel.Meshes[meshIndex].BoundingBox.Max.X, assimpModel.Meshes[meshIndex].BoundingBox.Max.Y, assimpModel.Meshes[meshIndex].BoundingBox.Max.Z);
 
                 // Increment the vertex table and face table hashes for the next mesh.
                 vertTableHash++;
@@ -515,14 +515,14 @@ namespace KnuxLib.Engines.Wayforward
                 obj.WriteLine($"# ObjectMap 0x{objectMap.Hash.ToString("X").PadLeft(16, '0')} Vertices\r\n");
 
                 // Write each vertex for this model, flipping the Z Axis coordinate.
-                foreach (var vertex in vertexTable.Vertices)
+                foreach (VertexTable.Vertex vertex in vertexTable.Vertices)
                     obj.WriteLine($"v {vertex.Position.X} {vertex.Position.Y} {-vertex.Position.Z}");
 
                 // Write the UV Coordinates Comment for this model.
                 obj.WriteLine($"# ObjectMap 0x{objectMap.Hash.ToString("X").PadLeft(16, '0')} UV Coordinates\r\n");
 
                 // Write each UV Coordinate for this model.
-                foreach (var vertex in vertexTable.Vertices)
+                foreach (VertexTable.Vertex vertex in vertexTable.Vertices)
                     obj.WriteLine($"vt {vertex.UVCoordinates[0]} {vertex.UVCoordinates[1]}");
 
                 // Write the Object Name Comment for this model.
@@ -545,7 +545,7 @@ namespace KnuxLib.Engines.Wayforward
                 obj.WriteLine($"\r\n# ObjectMap 0x{objectMap.Hash.ToString("X").PadLeft(16, '0')} Faces\r\n");
 
                 // Write each face for this model, with the indices incremented by 1 (and the current value of vertexCount) due to OBJ counting from 1 not 0.
-                foreach (var face in faceTable.Faces)
+                foreach (Face face in faceTable.Faces)
                     obj.WriteLine($"f {face.IndexA + 1 + vertexCount}/{face.IndexA + 1 + vertexCount} {face.IndexB + 1 + vertexCount}/{face.IndexB + 1 + vertexCount} {face.IndexC + 1 + vertexCount}/{face.IndexC + 1 + vertexCount}");
 
                 // Add the amount of vertices in this model to the count.

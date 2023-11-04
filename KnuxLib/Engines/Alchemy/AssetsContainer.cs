@@ -86,8 +86,9 @@
         /// <param name="filepath">The path to the file to load and parse.</param>
         public override void Load(string filepath)
         {
-            List<BlockEntry> Blocks = new();
-            List<FileEntry> Files = new();
+            // Set up lists of blocks and files.
+            List<BlockEntry> blocks = new();
+            List<FileEntry> files = new();
 
             // Set up Marathon's BinaryReader for the GFC file.
             BinaryReaderEx reader = new(File.OpenRead(filepath), true);
@@ -105,7 +106,7 @@
             uint fileCount = reader.ReadUInt32();
             
             // Loop through the block table and store each entry.
-            for (int i = 0; i < blockCount; i++)
+            for (int blockIndex = 0; blockIndex < blockCount; blockIndex++)
             {
                 BlockEntry block = new()
                 {
@@ -113,17 +114,15 @@
                     DataOffset = reader.ReadUInt32(),
                     NextBlock = reader.ReadUInt32(),
                 };
-                Blocks.Add(block);
+                blocks.Add(block);
             }
 
             // Read the CRC Hashes for each block.
-            for (int i = 0; i < blockCount; i++)
-            {
-                Blocks[i].CRCHash = reader.ReadUInt32();
-            }
+            for (int blockIndex = 0; blockIndex < blockCount; blockIndex++)
+                blocks[blockIndex].CRCHash = reader.ReadUInt32();
 
             // Loop through the file table and store each entry.
-            for (int i = 0; i < fileCount; i++)
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
             {
                 FileEntry file = new()
                 {
@@ -131,14 +130,14 @@
                     DecompressedFileSize = reader.ReadUInt32(),
                     BlockIndex = reader.ReadUInt32()
                 };
-                Files.Add(file);
+                files.Add(file);
             }
 
             // Read the file name and unknown bytes for each file.
-            for (int i = 0; i < fileCount; i++)
+            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
             {
-                Files[i].Name = reader.ReadNullTerminatedString();
-                Files[i].UnknownBytes = reader.ReadBytes(0x48 - (Files[i].Name.Length + 1));
+                files[fileIndex].Name = reader.ReadNullTerminatedString();
+                files[fileIndex].UnknownBytes = reader.ReadBytes(0x48 - (files[fileIndex].Name.Length + 1));
             }
 
             // Close Marathon's BinaryReader for the GFC file.
@@ -148,37 +147,37 @@
             reader = new(File.OpenRead($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.gob"), true);
 
             // Loop through each block defined in the GFC file.
-            for (int i = 0; i < Blocks.Count; i++)
+            for (int blockIndex = 0; blockIndex < blocks.Count; blockIndex++)
             {
                 //Jump to this block's data offset.
-                reader.JumpTo(Blocks[i].DataOffset);
+                reader.JumpTo(blocks[blockIndex].DataOffset);
 
                 // Read this block's STBL header.
                 reader.ReadSignature(0x04, "STBL");
 
                 // Read this block's data compression byte.
-                byte Compression = reader.ReadByte();
+                byte compressionFlag = reader.ReadByte();
 
                 // If the byte is 0x7A (a lowercase z), then decompress the ZLib data, ignoring the STBL header and ENBL footer.
-                if (Compression == 0x7A)
-                    Blocks[i].Data = ZlibStream.Decompress(reader.ReadBytes((int)Blocks[i].CompressedFileSize - 0x9));
+                if (compressionFlag == 0x7A)
+                    blocks[blockIndex].Data = ZlibStream.Decompress(reader.ReadBytes((int)blocks[blockIndex].CompressedFileSize - 0x9));
 
                 // If the byte is not 0x7A, then simply read the bytes as they are.
                 else
-                    Blocks[i].Data = reader.ReadBytes((int)Blocks[i].CompressedFileSize - 0x9);
+                    blocks[blockIndex].Data = reader.ReadBytes((int)blocks[blockIndex].CompressedFileSize - 0x9);
             }
 
             // Loop through each file defined in the GFC file.
-            foreach (FileEntry file in Files)
+            foreach (FileEntry file in files)
             {
                 // Setup an array of arrays to store each block's data.
                 byte[][] fileData = new byte[1][];
 
                 // Set the first entry in the array to this file's initial block index.
-                fileData[0] = Blocks[(int)file.BlockIndex].Data;
+                fileData[0] = blocks[(int)file.BlockIndex].Data;
 
                 // Calculate the next block index.
-                uint nextBlockIndex = Blocks[(int)file.BlockIndex].NextBlock;
+                uint nextBlockIndex = blocks[(int)file.BlockIndex].NextBlock;
 
                 // Loop as long as the next block index isn't 0x00007FFF.
                 while (nextBlockIndex != 0x00007FFF)
@@ -187,10 +186,10 @@
                     Array.Resize(ref fileData, fileData.Length + 1);
 
                     // Add the next block's data to the new slot in the array.
-                    fileData[^1] = Blocks[(int)nextBlockIndex].Data;
+                    fileData[^1] = blocks[(int)nextBlockIndex].Data;
 
                     // Caluclate the next block index.
-                    nextBlockIndex = Blocks[(int)nextBlockIndex].NextBlock;
+                    nextBlockIndex = blocks[(int)nextBlockIndex].NextBlock;
                 }
 
                 // Create a Node based on this data.
@@ -207,13 +206,6 @@
             // Close Marathon's BinaryReader for the GOB file.
             reader.Close();
         }
-
-        /// <summary>
-        /// Saves this format's file.
-        /// TODO: Implement.
-        /// </summary>
-        /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath) => throw new NotImplementedException();
 
         /// <summary>
         /// Extracts the files in this format to disc.

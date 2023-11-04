@@ -91,7 +91,7 @@ namespace KnuxLib.Engines.Storybook
                 uint stringOffset = reader.ReadUInt32();
 
                 // Save our current position so we can jump back for the next message.
-                long pos = reader.BaseStream.Position;
+                long position = reader.BaseStream.Position;
 
                 // Jump to this message's string offset.
                 reader.JumpTo(stringOffset);
@@ -110,7 +110,7 @@ namespace KnuxLib.Engines.Storybook
                 message.Message = encoding.GetString(reader.ReadBytes(length));
 
                 // Jump back for the next message.
-                reader.JumpTo(pos);
+                reader.JumpTo(position);
 
                 // Save this message.
                 Data.Add(message);
@@ -146,32 +146,32 @@ namespace KnuxLib.Engines.Storybook
             writer.AddOffset("MessageTableOffset");
 
             // Loop through each message and add an offset for the extra offset table if the extra offset value is set.
-            for (int i = 0; i < Data.Count; i++)
-                if (Data[i].HasExtraOffset)
-                    writer.AddOffset($"Message{i}ExtraOffset");
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+                if (Data[dataIndex].HasExtraOffset)
+                    writer.AddOffset($"Message{dataIndex}ExtraOffset");
 
             // Fill in the offset for the message table.
             writer.FillOffset("MessageTableOffset");
 
             // Loop through each message.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // If this message has the extra offset value set, then fill the previously made offset in.
-                if (Data[i].HasExtraOffset)
-                    writer.FillOffset($"Message{i}ExtraOffset");
+                if (Data[dataIndex].HasExtraOffset)
+                    writer.FillOffset($"Message{dataIndex}ExtraOffset");
 
                 // Add an offset for this message's string.
-                writer.AddOffset($"Message{i}String");
+                writer.AddOffset($"Message{dataIndex}String");
             }
 
             // Loop through each message to actually write the message strings.
-            for (int i = 0; i < Data.Count; i++)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
                 // Fill in the offset for this message's string.
-                writer.FillOffset($"Message{i}String");         
+                writer.FillOffset($"Message{dataIndex}String");         
                 
                 // Write this message's string, encoded into shift-jis bytes.
-                writer.Write(encoding.GetBytes(Data[i].Message));
+                writer.Write(encoding.GetBytes(Data[dataIndex].Message));
 
                 // Write a null terminator for this string.
                 writer.WriteNull();
