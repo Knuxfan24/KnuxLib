@@ -6,9 +6,9 @@ A repository for me to push various bits of C# code for random file formats in r
 
 - KnuxLib - The actual C# library itself. For fully supported formats see the [Supported_Formats.md](Supported_Formats.md) file. For formats that need work see either the Issues Tab or the [Experimental_Formats.md](Experimental_Formats.md) file.
 
-- KnuxTools - A CLI program intended for use by the end user. For formats this supports see the [Supported_Formats.md](Supported_Formats.md) file.
-
 - KnuxTest - A template CLI program designed for me to use when writing test code, should be left unedited with commits.
+
+- KnuxTools - A CLI program intended for use by the end user. For formats this supports see the [Supported_Formats.md](Supported_Formats.md) file.
 
 ## Building
 
