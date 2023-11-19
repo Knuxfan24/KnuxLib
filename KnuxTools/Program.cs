@@ -292,7 +292,7 @@ namespace KnuxTools
                         KnuxLib.Engines.Hedgehog.InstanceInfo.ConvertDirectoryToPointCloud(arg);
                         break;
 
-                    // If a command line argument without a corrosponding format has been passed, then inform the user.
+                    // If a command line argument without a corresponding format has been passed, then inform the user.
                     default:
                         Console.WriteLine($"\n\nFormat identifer {version} is not valid for any currently supported archive types.\nPress any key to continue.");
                         Console.ReadKey();
@@ -1188,6 +1188,12 @@ namespace KnuxTools
                     }
                     break;
                 #endregion
+
+                // If a command line argument without a corresponding format has been passed, then inform the user.
+                default:
+                    Console.WriteLine($"\n\nFormat extension {KnuxLib.Helpers.GetExtension(arg).ToLower()} is not valid for any currently supported file formats.\nPress any key to continue.");
+                    Console.ReadKey();
+                    break;
             }
         }
     }
