@@ -117,6 +117,7 @@ namespace KnuxTools
                                   "ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
 
                 Console.WriteLine("Wayforward Engine:\n" +
+                                  "Collision (.clb) - Converts to an OBJ format and imports (Half-Genie Hero only) from an Assimp compatible model." +
                                   "Environment (.env)\n" +
                                   "Layer List (.lgb)\n" +
                                   "List Table (.ltb)\n" +
