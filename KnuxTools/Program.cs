@@ -41,7 +41,7 @@ namespace KnuxTools
                     if (Directory.Exists(arg))
                     {
                         // Print the directory name.
-                        Console.WriteLine($"Directory: {arg}\n");
+                        Console.WriteLine($"Directory: {arg} \n");
 
                         // Pass the argument and version onto the SaveArchives function.
                         HandleDirectory(arg, version);
@@ -51,7 +51,7 @@ namespace KnuxTools
                     if (File.Exists(arg))
                     {
                         // Print the file name.
-                        Console.WriteLine($"File: {arg}\n");
+                        Console.WriteLine($"File: {arg} \n");
 
                         // Pass the argument, extension and version onto the HandleFile function.
                         HandleFile(arg, extension, version);
@@ -62,73 +62,73 @@ namespace KnuxTools
             // If there are no arguments, then inform the user.
             else
             {
-                Console.WriteLine("Command line tool used to convert the following supported file types to various other formats.\n" +
-                                  "Each format converts to and from a JSON file unless otherwise specified.\n");
+                Console.WriteLine("Command line tool used to convert the following supported file types to various other formats. \n" +
+                                  "Each format converts to and from a JSON file unless otherwise specified. \n");
 
-                Console.WriteLine("Alchemy Engine:\n" +
-                                  "Assets Container Archive Pair (.gfc/gob) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+                Console.WriteLine("Alchemy Engine: \n" +
+                                  "Assets Container Archive Pair (.gfc/gob) - Extracts to a directory of the same name as the input archive (importing not yet possible). \n");
 
-                Console.WriteLine("CarZ Engine:\n" +
-                                  "Material Library (.mat) - Exports to the MTL material library standard and imports from an Assimp compatible model.\n" +
-                                  "3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model.\n");
+                Console.WriteLine("CarZ Engine: \n" +
+                                  "Material Library (.mat) - Exports to the MTL material library standard and imports from an Assimp compatible model. \n" +
+                                  "3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model. \n");
 
-                Console.WriteLine("Gods Engine:\n" +
-                                  "WAD Archive (.wad) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+                Console.WriteLine("Gods Engine: \n" +
+                                  "WAD Archive (.wad) - Extracts to a directory of the same name as the input archive (importing not yet possible). \n");
 
-                Console.WriteLine("Hedgehog Engine:\n" +
-                                  "Archive Info (.arcinfo)\n" +
-                                  "Bullet Skeleton (.skl.pxd)\n" +
-                                  "Gismo V3 (.gismod/.gismop)\n" +
+                Console.WriteLine("Hedgehog Engine: \n" +
+                                  "Archive Info (.arcinfo) \n" +
+                                  "Bullet Skeleton (.skl.pxd) \n" +
+                                  "Gismo V3 (.gismod/.gismop) \n" +
                                   "Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file. \n" +
-                                  "Light Field (Rangers) (.lf)\n" +
-                                  "Master Level Table (.mlevel)\n" +
-                                  "Message Table (sonic2010/blueblur/william) (.xtb)\n" +
-                                  "Message Table (sonic2013) (.xtb2)\n" +
-                                  "Point Cloud (.pccol/.pcmodel/.pcrt)\n" +
-                                  "Sector Visibility Collision (.bin.svcol)\n");
+                                  "Light Field (Rangers) (.lf) \n" +
+                                  "Master Level Table (.mlevel) \n" +
+                                  "Message Table (sonic2010/blueblur/william) (.xtb) \n" +
+                                  "Message Table (sonic2013) (.xtb2) \n" +
+                                  "Point Cloud (.pccol/.pcmodel/.pcrt) \n" +
+                                  "Sector Visibility Collision (.bin.svcol) \n");
 
-                Console.WriteLine("NiGHTS 2 Engine:\n" +
-                                  "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+                Console.WriteLine("NiGHTS 2 Engine: \n" +
+                                  "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory. \n");
 
-                Console.WriteLine("Nu2 Engine:\n" +
-                                  "AI Entity Table (.ai)\n" +
-                                  "Wumpa Fruit Table (.wmp)\n");
+                Console.WriteLine("Nu2 Engine: \n" +
+                                  "AI Entity Table (.ai) \n" +
+                                  "Wumpa Fruit Table (.wmp) \n");
 
-                Console.WriteLine("Project M Engine:\n" +
-                                  "Message Table (.dat)\n");
+                Console.WriteLine("Project M Engine: \n" +
+                                  "Message Table (.dat) \n");
 
-                Console.WriteLine("Rockman X7 Engine:\n" +
-                                  "Stage Entity Table (.328f438b/.osd)\n");
+                Console.WriteLine("Rockman X7 Engine: \n" +
+                                  "Stage Entity Table (.328f438b/.osd) \n");
 
-                Console.WriteLine("Rockman X8 Engine:\n" +
-                                  "Stage Entity Table (.31bf570e/.set)\n");
+                Console.WriteLine("Rockman X8 Engine: \n" +
+                                  "Stage Entity Table (.31bf570e/.set) \n");
 
-                Console.WriteLine("Sonic Storybook Engine:\n" +
-                                  "Message Table (Secret Rings) (.mtx)\n" +
-                                  "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n" +
-                                  "Stage Entity Table Object Table (.bin)\n" +
-                                  "Texture Directory (.txd) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+                Console.WriteLine("Sonic Storybook Engine: \n" +
+                                  "Message Table (Secret Rings) (.mtx) \n" +
+                                  "ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory. \n" +
+                                  "Stage Entity Table Object Table (.bin) \n" +
+                                  "Texture Directory (.txd) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory. \n");
 
-                Console.WriteLine("Sonic The Portable Engine:\n" +
-                                  "AMB Archive (.amb) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+                Console.WriteLine("Sonic The Portable Engine: \n" +
+                                  "AMB Archive (.amb) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory. \n");
 
-                Console.WriteLine("Sonic World Adventure Wii Engine:\n" +
-                                  "Area Points Table (.wap)\n" +
-                                  "ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+                Console.WriteLine("Sonic World Adventure Wii Engine: \n" +
+                                  "Area Points Table (.wap) \n" +
+                                  "ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory. \n");
 
-                Console.WriteLine("Wayforward Engine:\n" +
+                Console.WriteLine("Wayforward Engine: \n" +
                                   "Collision (.clb) - Converts to an OBJ format and imports (Half-Genie Hero only) from an Assimp compatible model." +
-                                  "Environment (.env)\n" +
-                                  "Layer List (.lgb)\n" +
-                                  "List Table (.ltb)\n" +
-                                  "Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.\n");
+                                  "Environment (.env) \n" +
+                                  "Layer List (.lgb) \n" +
+                                  "List Table (.ltb) \n" +
+                                  "Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory. \n");
 
-                Console.WriteLine("Westwood Engine:\n" +
-                                  "Message Table (.tru)\n");
+                Console.WriteLine("Westwood Engine: \n" +
+                                  "Message Table (.tru) \n");
 
-                Console.WriteLine("Usage:\n" +
-                                  "KnuxTools.exe \"path\\to\\supported\\file\"\n" +
-                                  "Alternatively, simply drag a supported file onto this application in Windows Explorer.\n\n" +
+                Console.WriteLine("Usage: \n" +
+                                  "KnuxTools.exe \"path\\to\\supported\\file\" \n" +
+                                  "Alternatively, simply drag a supported file onto this application in Windows Explorer. \n \n" +
                                   "Press any key to continue.");
                 Console.ReadKey();
             }
