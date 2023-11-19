@@ -79,7 +79,7 @@ namespace KnuxTools
                                   "Archive Info (.arcinfo)\n" +
                                   "Bullet Skeleton (.skl.pxd)\n" +
                                   "Gismo V3 (.gismod/.gismop)\n" +
-                                  "Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file.\n" +
+                                  "Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file. \n" +
                                   "Light Field (Rangers) (.lf)\n" +
                                   "Master Level Table (.mlevel)\n" +
                                   "Message Table (sonic2010/blueblur/william) (.xtb)\n" +
