@@ -1,6 +1,5 @@
 ﻿namespace KnuxLib.Engines.Westwood
 {
-    // TODO: The message indices sometimes skip values. Is this a problem?
     public class MessageTable : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -13,8 +12,22 @@
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.westwood.messagetable.json", Data);
         }
 
+        // Classes for this format.
+        public class Message
+        {
+            /// <summary>
+            /// The index of this message, stored because some files skip values.
+            /// </summary>
+            public ushort MessageIndex { get; set; }
+
+            /// <summary>
+            /// The actual string of this message.
+            /// </summary>
+            public string MessageValue { get; set; } = "";
+        }
+
         // Actual data presented to the end user.
-        public List<string> Data = new();
+        public List<Message> Data = new();
 
         /// <summary>
         /// Loads and parses this format's file.
@@ -28,9 +41,18 @@
             // Read the amount of messages this file has.
             ushort entryCount = reader.ReadUInt16();
 
-            // Skip the Message Indices.
+            // Read the Message Indices.
             for (int entryIndex = 0; entryIndex < entryCount; entryIndex++)
-                reader.JumpAhead(0x02);
+            {
+                // Set up a new message.
+                Message message = new();
+
+                // Read this message's index.
+                message.MessageIndex = reader.ReadUInt16();
+
+                // Save this message.
+                Data.Add(message);
+            }
 
             // Read the actual Message Text.
             for (int entryIndex = 0; entryIndex < entryCount; entryIndex++)
@@ -45,7 +67,7 @@
                 reader.JumpTo(offset);
 
                 // Read this message's text.
-                Data.Add(reader.ReadNullTerminatedString());
+                Data[entryIndex].MessageValue = reader.ReadNullTerminatedString();
 
                 // Jump back to where we were.
                 reader.JumpTo(position);
@@ -69,7 +91,7 @@
 
             // Write the message index table.
             for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
-                writer.Write((ushort)dataIndex);
+                writer.Write(Data[dataIndex].MessageIndex);
 
             // Write the string offset table.
             for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
@@ -94,7 +116,7 @@
                 writer.BaseStream.Position = position;
 
                 // Write the message.
-                writer.WriteNullTerminatedString(Data[dataIndex]);
+                writer.WriteNullTerminatedString(Data[dataIndex].MessageValue);
             }
 
             // Close Marathon's BinaryWriter.

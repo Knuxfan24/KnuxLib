@@ -1182,7 +1182,7 @@ namespace KnuxTools
                     {
                         using (KnuxLib.Engines.Westwood.MessageTable messageTable = new())
                         {
-                            messageTable.Data = messageTable.JsonDeserialise<List<string>>(arg);
+                            messageTable.Data = messageTable.JsonDeserialise<List<KnuxLib.Engines.Westwood.MessageTable.Message>>(arg);
                             messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.{extension}");
                         }
                     }
