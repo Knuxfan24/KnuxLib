@@ -146,55 +146,32 @@ namespace KnuxTools
                 Console.WriteLine
                 (
                     "Please specify the archive type to pack this directory into;\n" +
-                    "1. Alchemy Engine GFC/GOB File Pair\n" +
-                    "2. Gods Engine WAD File\n" +
-                    "3. NiGHTS 2 Engine ONE File\n" +
-                    "4. Sonic The Portable Engine AMB File\n" +
-                    "5. Sonic Storybook Engine ONE File\n" +
-                    "6. Sonic Storybook Engine TXD File\n" +
-                    "7. Sonic World Adventure Wii ONE File.\n" +
-                    "8. Wayforward Engine PAK File.\n" +
+                    "1. NiGHTS 2 Engine ONE File\n" +
+                    "2. Sonic The Portable Engine AMB File\n" +
+                    "3. Sonic Storybook Engine ONE File\n" +
+                    "4. Sonic Storybook Engine TXD File\n" +
+                    "5. Sonic World Adventure Wii ONE File.\n" +
+                    "6. Wayforward Engine PAK File.\n" +
                     "R. Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud."
                 );
 
                 // Wait for the user to input an option.
                 switch (Console.ReadKey().KeyChar)
                 {
-                    // Alchemy Engine Asset Containers.
-                    case '1': version = "alchemy_gfcgob"; break;
-
-                    // GODS Engine WAD Archives.
-                    case '2':
-                        // List our supported versions for the GODS Engine WAD format.
-                        Console.WriteLine
-                        (
-                            "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
-                            "1. Ninjabread Man PC/PS2\n" +
-                            "2. Ninjabread Man Wii"
-                        );
-
-                        // Set the version to either gods_ninjabreadpc or gods_ninjabreadwii depending on the user's selection.
-                        switch (Console.ReadKey().KeyChar)
-                        {
-                            case '1': version = "gods_ninjabreadpc"; break;
-                            case '2': version = "gods_ninjabreadwii"; break;
-                        }
-                        break;
-
                     // NiGHTS 2 Engine ONE Archives.
-                    case '3': version = "nights2_one"; break;
+                    case '1': version = "nights2_one"; break;
 
                     // Sonic The Portable Engine AMB Archives.
-                    case '4': version = "portable_amb"; break;
+                    case '2': version = "portable_amb"; break;
 
                     // Sonic Storybook Series Engine ONE Archives.
-                    case '5': version = "storybook_one"; break;
+                    case '3': version = "storybook_one"; break;
 
                     // Sonic Storybook Series Engine Texture Directories.
-                    case '6': version = "storybook_txd"; break;
+                    case '4': version = "storybook_txd"; break;
 
                     // Sonic World Adventure Wii Engine ONE Archives.
-                    case '7':
+                    case '5':
                         // List our supported versions for the Sonic World Adventure Wii ONE format.
                         Console.WriteLine
                         (
@@ -212,7 +189,7 @@ namespace KnuxTools
                         break;
 
                     // Wayforward Engine Packages.
-                    case '8': version = "wayforward_pak"; break;
+                    case '6': version = "wayforward_pak"; break;
 
                     // Hedgehog Engine Terrain Instance Conversion.
                     case 'r': version = "hedgehog_terrain2pointcloud"; break;
@@ -224,29 +201,6 @@ namespace KnuxTools
             {
                 switch (version)
                 {
-                    // Alchemy Engine Asset Containers.
-                    case "alchemy_gfc":
-                    case "alchemy_gob":
-                    case "alchemy_gfcgob":
-                        using (KnuxLib.Engines.Alchemy.AssetsContainer assetsContainer = new())
-                        {
-                            assetsContainer.Import(arg);
-                            assetsContainer.Save($@"{arg}");
-                        }
-                        break;
-
-                    // GODS Engine WAD Archives.
-                    case "gods_pc":
-                    case "gods_playstation2":
-                    case "gods_ps2":
-                    case "gods_ninjabreadpc":
-                    case "gods_ninjabreadplaystation2":
-                    case "gods_ninjabreadps2":
-                        throw new NotImplementedException();
-                    case "gods_wii":
-                    case "gods_ninjabreadwii":
-                        throw new NotImplementedException();
-
                     // NiGHTS 2 Engine ONE Archives.
                     case "nights2_one":
                         using (KnuxLib.Engines.NiGHTS2.ONE one = new())
