@@ -122,7 +122,7 @@ namespace KnuxTools
                                   "Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory. \n");
 
                 Console.WriteLine("Westwood Engine: \n" +
-                                  "Message Table (.tru) \n");
+                                  "Message Table (.tre/.tru) \n");
 
                 Console.WriteLine("Usage: \n" +
                                   "KnuxTools.exe \"path\\to\\supported\\file\" \n" +
@@ -1153,12 +1153,38 @@ namespace KnuxTools
                 #endregion
 
                 #region Westwood Engine Formats.
-                case ".tru": using (KnuxLib.Engines.Westwood.MessageTable messageTable = new(arg, true)) break;
+                case ".tre":
+                case ".tru":
+                    using (KnuxLib.Engines.Westwood.MessageTable messageTable = new(arg, true))
+                    break;
                 case ".westwood.messagetable.json":
-                    using (KnuxLib.Engines.Westwood.MessageTable messageTable = new())
+                    // If an extension isn't specified, then ask the user what to save as.
+                    if (extension == null)
                     {
-                        messageTable.Data = messageTable.JsonDeserialise<List<string>>(arg);
-                        messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.tru");
+                        // List our supported extension options.
+                        Console.WriteLine
+                        (
+                            "This file has multiple file extension options, please specifiy the extension to save with;\n" +
+                            "1. .tre (USA)\n" +
+                            "2. .tru (UK)"
+                        );
+
+                        // Wait for the user to input an option.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': extension = "tre"; break;
+                            case '2': extension = "tru"; break;
+                        }
+                    }
+
+                    // Sanity check that extension actually has a value.
+                    if (extension != null)
+                    {
+                        using (KnuxLib.Engines.Westwood.MessageTable messageTable = new())
+                        {
+                            messageTable.Data = messageTable.JsonDeserialise<List<string>>(arg);
+                            messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.{extension}");
+                        }
                     }
                     break;
                 #endregion

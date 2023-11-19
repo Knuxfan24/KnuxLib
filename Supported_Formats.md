@@ -322,7 +322,7 @@ Known games:
 
 Supported formats:
 
-- [Message Table (.tru)](KnuxLib/Engines/Westwood/MessageTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Message Table (.tre/.tru)](KnuxLib/Engines/Westwood/MessageTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 Notes:
 
