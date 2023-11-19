@@ -4,9 +4,7 @@ using System.Text;
 
 namespace KnuxTools
 {
-    // TODO: Test all the formats following the rewrite.
-    // TOOO: Settle on consistent version options.
-    // TODO: List all the version options.
+    // TOOO: Settle on consistent version options and list them somewhere (Wiki page or a seperate MD file?).
     internal class Program
     {
         static void Main(string[] args)
