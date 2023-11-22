@@ -4,7 +4,10 @@ using System.Text;
 
 namespace KnuxTools
 {
-    // TODO: Finish adding a few formats.
+    // TODO: Implement:
+    //       Storybook SET -> HSON
+    //       World Adventure Wii SET -> HSON
+    //       Wayforward Model Importing
     // TODO: Tidy up duplicated comments and parts where they are sorely lacking.
     internal class Program
     {
@@ -133,6 +136,7 @@ namespace KnuxTools
 
                 Console.WriteLine("Rockman X8 Engine:");
                 ColourConsole("Stage Entity Table (.31bf570e/.set)");
+                ColourConsole("    Version Flag - rockx8", true, ConsoleColor.Yellow);
                 ColourConsole("    Extension Flag (Original) - SET", true, ConsoleColor.Yellow);
                 ColourConsole("    Extension Flag (Legacy Collection 2) - 31BF570E\n", true, ConsoleColor.Yellow);
 
@@ -146,8 +150,12 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (Sonic and the Secret Rings) - secretrings", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Sonic and the Black Knight) - blackknight", true, ConsoleColor.Yellow);
                 ColourConsole("Player Motion Table (.bin)");
+                ColourConsole("    Version Flag - storybook_motion", true, ConsoleColor.Yellow);
                 ColourConsole("Stage Entity Table (.bin) - Converts to a HSON with the same name as the input file (importing and saving not yet possible).");
+                ColourConsole("    Version Flag - storybook_set", true, ConsoleColor.Yellow);
                 Console.WriteLine("Stage Entity Table Object Table (.bin)");
+                ColourConsole("    Version Flag (Sonic and the Secret Rings) - storybook_setitems_sr", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Sonic and the Black Knight) - storybook_setitems_bk", true, ConsoleColor.Yellow);
                 Console.WriteLine("Texture Directory (.txd) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
                 ColourConsole("    Version Flag - storybook_texture\n", true, ConsoleColor.Yellow);
 
@@ -162,7 +170,7 @@ namespace KnuxTools
                 Console.WriteLine("ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
                 ColourConsole("    Version Flag (.one) - swawii", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (.onz) - swawii_compressed", true, ConsoleColor.Yellow);
-                ColourConsole("Stage Entity Table (.bin) - Converts to a HSON with the same name as the input file (importing and saving not yet possible).");
+                ColourConsole("Stage Entity Table (.set) - Converts to a HSON with the same name as the input file (importing and saving not yet possible).");
                 ColourConsole("    Version Flag (PlayStation 2) - ps2", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Wii) - wii\n", true, ConsoleColor.Yellow);
 
@@ -414,7 +422,7 @@ namespace KnuxTools
                             break;
 
                         case "wayforward":
-                            // TODO: Figure this out a little later.
+                            // TODO: Figure this out later.
                             break;
 
                         case "wayforward_collision_hgh":
@@ -447,12 +455,67 @@ namespace KnuxTools
 
                 #region Generic File Formats.
                 case ".bin":
-                    Console.WriteLine("Extracting Flipnic Engine binary archive.");
-                    using (KnuxLib.Engines.Flipnic.BinaryArchive bin = new(arg, true))
+                    // If a version isn't specified, then ask the user which ONE format this is.
+                    if (string.IsNullOrEmpty(version))
+                    {
+                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
+                        ColourConsole("    flipnic\t\t\t(Flipnic Binary Archive File)");
+                        ColourConsole("    storybook_motion\t\t\t(Sonic Storybook Engine Player Motion File)");
+                        ColourConsole("    storybook_set\t\t\t(Sonic Storybook Engine Stage Entity Table File)");
+                        Console.WriteLine("    storybook_setitems_sr\t\t\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))");
+                        Console.WriteLine("    storybook_setitems_bk\t\t\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))");
+
+                        // Ask for the user's input.
+                        Console.Write("\nFormat Type: ");
+
+                        // Wait for the user's input.
+                        version = Console.ReadLine().ToLower();
+
+                        // Sanity check the input, abort if its still null or empty.
+                        if (string.IsNullOrEmpty(version))
+                        {
+                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                        }
+
+                        // Add a line break.
+                        Console.WriteLine();
+                    }
+
+                    switch (version.ToLower())
+                    {
+                        case "flipnic":
+                            Console.WriteLine("Extracting Flipnic Engine binary archive.");
+                            using (KnuxLib.Engines.Flipnic.BinaryArchive bin = new(arg, true))
+                            break;
+
+                        case "storybook_motion":
+                            Console.WriteLine("Converting Sonic Storybook Engine Player Motion Table to JSON.");
+                            using (KnuxLib.Engines.Storybook.PlayerMotionTable playerMotion = new(arg, true))
+                            break;
+
+                        case "storybook_set":
+                            // TODO: Figure this out later.
+                            break;
+
+                        case "storybook_setitems_sr":
+                            Console.WriteLine("Converting Sonic Storybook Engine Stage Entity Table Object Table to JSON.");
+                            using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings, true))
+                            break;
+
+                        case "storybook_setitems_bk":
+                            Console.WriteLine("Converting Sonic Storybook Engine Stage Entity Table Object Table to JSON.");
+                            using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight, true))
+                            break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
                     break;
-                // TODO: Storybook Player Motion Table
-                // TODO: Storybook SETs
-                // TODO: Storybook SET Items.
 
                 case ".one":
                     // If a version isn't specified, then ask the user which ONE format this is.
@@ -507,10 +570,49 @@ namespace KnuxTools
                     break;
 
                 case ".set":
-                    Console.WriteLine("Converting Rockman X8 Engine Stage Entity Table to JSON.");
-                    using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original, true))
-                        break;
-                // TODO: SWA Wii SETs
+                    // If a version isn't specified, then ask the user which ONE format this is.
+                    if (string.IsNullOrEmpty(version))
+                    {
+                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
+                        Console.WriteLine("    rockx8\t\t\t(Rockman X8 Engine Stage Entity Table File)");
+                        Console.WriteLine("    swa\t\t\t(Sonic World Adventure Wii Stage Entity Table File)");
+
+                        // Ask for the user's input.
+                        Console.Write("\nFormat Type: ");
+
+                        // Wait for the user's input.
+                        version = Console.ReadLine().ToLower();
+
+                        // Sanity check the input, abort if its still null or empty.
+                        if (string.IsNullOrEmpty(version))
+                        {
+                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                        }
+
+                        // Add a line break.
+                        Console.WriteLine();
+                    }
+
+                    switch (version.ToLower())
+                    {
+                        case "rockmanx8":
+                            Console.WriteLine("Converting Rockman X8 Engine Stage Entity Table to JSON.");
+                            using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original, true))
+                            break;
+
+                        case "swawii":
+                            // TODO: Figure this out later.
+                            break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
+                    break;
                 #endregion
 
                 #region Alchemy Engine formats.
@@ -1332,6 +1434,68 @@ namespace KnuxTools
 
                         case "blackknight":
                             using (KnuxLib.Engines.Storybook.PathSpline pathSpline = new(arg, KnuxLib.Engines.Storybook.PathSpline.FormatVersion.BlackKnight, true))
+                            break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
+                    break;
+
+                case ".storybook.playermotion.json":
+                    Console.WriteLine("Converting JSON to Sonic Storybook Engine Player Motion Table.");
+                    using (KnuxLib.Engines.Storybook.PlayerMotionTable playerMotion = new())
+                    {
+                        playerMotion.Data = playerMotion.JsonDeserialise<List<KnuxLib.Engines.Storybook.PlayerMotionTable.MotionEntry>>(arg);
+                        playerMotion.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin");
+                    }
+                    break;
+
+                case ".storybook.stageentitytableitems.json":
+                    // If a version isn't specified, then ask the user which path format this is.
+                    if (string.IsNullOrEmpty(version))
+                    {
+                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
+                        Console.WriteLine("    secretrings\t\t\t(Sonic and the Secret Rings)");
+                        Console.WriteLine("    blackknight\t\t\t(Sonic and the Black Knight)");
+
+                        // Ask for the user's input.
+                        Console.Write("\nFormat Type: ");
+
+                        // Wait for the user's input.
+                        version = Console.ReadLine().ToLower();
+
+                        // Sanity check the input, abort if its still null or empty.
+                        if (string.IsNullOrEmpty(version))
+                        {
+                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                        }
+
+                        // Add a line break.
+                        Console.WriteLine();
+                    }
+
+                    Console.WriteLine("Converting JSON to Sonic Storybook Engine Secret Rings Stage Entity Table Object Table.");
+                    switch (version.ToLower())
+                    {
+                        case "secretrings":
+                            using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
+                            {
+                                setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
+                                setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings);
+                            }
+                            break;
+
+                        case "blackknight":
+                            using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new())
+                            {
+                                setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
+                                setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight);
+                            }
                             break;
 
                         // If a command line argument without a corresponding format has been passed, then inform the user.
