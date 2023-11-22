@@ -1,4 +1,4 @@
-The following formats are only partially supported,  either due to missing functionality or just being unfinished (files consisting almost entirely of unknown values also fall into this category, even if they can be saved in a binary identical fashion to their original versions).
+The following formats are only partially supported, either due to missing functionality or just being unfinished (files consisting almost entirely of unknown values also fall into this category, even if they can be saved in a binary identical fashion to their original versions).
 
 ## Alchemy Engine
 
