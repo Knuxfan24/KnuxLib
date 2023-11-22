@@ -92,7 +92,7 @@ Supported formats:
 > **Note**
 > Has an unknown value.
 
-- [Sector Visibility Collision (.bin.svcol)](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Sector Visibility Collision (.svcol.bin)](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 > **Note**
 > Has an unknown value.
@@ -147,40 +147,6 @@ Known games:
 Supported formats:
 
 - [Message Table (.dat)](KnuxLib/Engines/ProjectM/MessageTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
-
-Notes:
-
-- Uncertain if this is the engine's name.
-
-## Rockman X7 Engine
-
-Known games:
-
-- Megaman X7 (PC, PS2)
-
-Supported formats:
-
-- [Stage Entity Table (.328f438b/.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs) basic reading, writing, JSON serialisation and JSON deserialisation.
-
-> **Note**
-> Almost entirely unknowns.
-
-Notes:
-
-- Uncertain if this is the engine's name.
-
-## Rockman X8 Engine
-
-Known games:
-
-- Megaman X8 (PC, PS2)
-
-Supported formats:
-
-- [Stage Entity Table (.31bf570e/.set)](KnuxLib/Engines/RockmanX8/StageEntityTable.cs) basic reading, writing, JSON serialisation and JSON deserialisation.
-
-> **Note**
-> Almost entirely unknowns.
 
 Notes:
 
