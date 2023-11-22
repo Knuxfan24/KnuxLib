@@ -140,165 +140,137 @@ namespace KnuxTools
         private static void HandleDirectory(string arg, string? version)
         {
             // If a version isn't specified, then ask the user which archive to save as.
-            if (version == null)
+            if (string.IsNullOrEmpty(version))
             {
-                // List our supported archive types.
-                Console.WriteLine
-                (
-                    "Please specify the archive type to pack this directory into;\n" +
-                    "1. NiGHTS 2 Engine ONE File\n" +
-                    "2. Sonic The Portable Engine AMB File\n" +
-                    "3. Sonic Storybook Engine ONE File\n" +
-                    "4. Sonic Storybook Engine TXD File\n" +
-                    "5. Sonic World Adventure Wii ONE File.\n" +
-                    "6. Wayforward Engine PAK File.\n" +
-                    "R. Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud."
-                );
+                // List the supported archive types.
+                Console.WriteLine("Please specify the archive type to pack this directory into, valid options are:");
+                Console.WriteLine("    nights2\t\t\t(NiGHTS 2 Engine ONE File)");
+                Console.WriteLine("    hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)");
+                Console.WriteLine("    storybook\t\t\t(Sonic Storybook Engine ONE File)");
+                Console.WriteLine("    storybook_texture\t\t(Sonic Storybook Engine TXD File)");
+                Console.WriteLine("    portable\t\t\t(Sonic The Portable Engine AMB File)");
+                Console.WriteLine("    swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)");
+                Console.WriteLine("    swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)");
+                Console.WriteLine("    wayforward\t\t\t(Wayforward Engine PAK File)");
 
-                // Wait for the user to input an option.
-                switch (Console.ReadKey().KeyChar)
+                // Ask for the user's input.
+                Console.Write("\nArchive Type: ");
+
+                // Wait for the user's input.
+                version = Console.ReadLine().ToLower();
+
+                // Sanity check the input, abort if its still null or empty.
+                if (string.IsNullOrEmpty(version))
                 {
-                    // NiGHTS 2 Engine ONE Archives.
-                    case '1': version = "nights2_one"; break;
-
-                    // Sonic The Portable Engine AMB Archives.
-                    case '2': version = "portable_amb"; break;
-
-                    // Sonic Storybook Series Engine ONE Archives.
-                    case '3': version = "storybook_one"; break;
-
-                    // Sonic Storybook Series Engine Texture Directories.
-                    case '4': version = "storybook_txd"; break;
-
-                    // Sonic World Adventure Wii Engine ONE Archives.
-                    case '5':
-                        // List our supported versions for the Sonic World Adventure Wii ONE format.
-                        Console.WriteLine
-                        (
-                            "\n\nThis file has multiple file version options, please specifiy the version to save with;\n" +
-                            "1. Uncompressed ONE Archive.\n" +
-                            "2. Compressed ONZ Archive"
-                        );
-
-                        // Set the version to either swawii_one or swawii_onz depending on the user's selection.
-                        switch (Console.ReadKey().KeyChar)
-                        {
-                            case '1': version = "swawii_one"; break;
-                            case '2': version = "swawii_onz"; break;
-                        }
-                        break;
-
-                    // Wayforward Engine Packages.
-                    case '6': version = "wayforward_pak"; break;
-
-                    // Hedgehog Engine Terrain Instance Conversion.
-                    case 'r': version = "hedgehog_terrain2pointcloud"; break;
+                    Console.WriteLine("\nNo archive type specified! Aborting...\nPress any key to continue.");
+                    Console.ReadKey();
+                    return;
                 }
+
+                // Add a line break.
+                Console.WriteLine();
             }
 
-            // Sanity check that version actually has a value.
-            if (version != null)
+            // Decide what to do based on the version value.
+            // In most cases this will be writing a line for user feedback then running the ImportAndSaveArchive with the right type and extension.
+            switch (version.ToLower())
             {
-                switch (version)
-                {
-                    // NiGHTS 2 Engine ONE Archives.
-                    case "nights2_one":
-                        using (KnuxLib.Engines.NiGHTS2.ONE one = new())
-                        {
-                            Console.WriteLine("\n");
-                            one.Import(arg);
-                            one.Save($@"{arg}.one");
-                        }
-                        break;
+                // NiGHTS 2 Engine ONE Archives.
+                case "nights2":
+                    Console.WriteLine("Packing directory for NiGHTS 2 Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.NiGHTS2.ONE), arg, "one");
+                    break;
 
-                    // Sonic The Portable Engine AMB Archives.
-                    case "portable_amb":
-                        using (KnuxLib.Engines.Portable.AMB amb = new())
-                        {
-                            Console.WriteLine("\n");
-                            amb.Import(arg);
-                            amb.Save($@"{arg}.amb");
-                        }
-                        break;
+                // Hedgehog Engine Terrain Instance Conversion.
+                case "hh_instance2pointcloud":
+                    Console.WriteLine("Converting Hedgehog Engine Terrain Instance Info files to Hedgehog Engine Point Cloud files.");
+                    KnuxLib.Engines.Hedgehog.InstanceInfo.ConvertDirectoryToPointCloud(arg);
+                    break;
 
-                    // Sonic Storybook Series ONE Archives.
-                    case "storybook_one":
-                        using (KnuxLib.Engines.Storybook.ONE one = new())
-                        {
-                            Console.WriteLine("\n");
-                            one.Import(arg);
-                            one.Save($@"{arg}.one");
-                        }
-                        break;
+                // Sonic Storybook Series ONE Archives.
+                case "storybook":
+                    Console.WriteLine("Packing directory for Sonic Storybook Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.Storybook.ONE), arg, "one");
+                    break;
 
-                    // Sonic Storybook Series Texture Directories.
-                    case "storybook_txd":
-                        using (KnuxLib.Engines.Storybook.TextureDirectory textureDirectory = new())
-                        {
-                            Console.WriteLine("\n");
-                            textureDirectory.Import(arg);
-                            textureDirectory.Save($@"{arg}.txd");
-                        }
-                        break;
+                // Sonic Storybook Series Texture Directories.
+                case "storybook_texture":
+                    Console.WriteLine("Packing directory for Sonic Storybook Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.Storybook.TextureDirectory), arg, "txd");
+                    break;
 
-                    // Sonic World Adventure Wii ONE Archives.
-                    case "swawii_one":
-                    case "swawii_onz":
-                        using (KnuxLib.Engines.WorldAdventureWii.ONE one = new())
-                        {
-                            Console.WriteLine("\n");
-                            one.Import(arg);
-                            one.Save($@"{arg}.one");
-                        }
+                // Sonic The Portable Engine AMB Archives.
+                case "portable":
+                    Console.WriteLine("Packing directory for Sonic The Portable Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.Portable.AMB), arg, "amb");
+                    break;
 
-                        // If the version indicates that the archive needs to be compressed, then compress it.
-                        if (version == "swawii_onz")
-                        {
-                            // Set up a buffer.
-                            MemoryStream buffer = new();
+                // Sonic World Adventure Wii ONE Archives.
+                case "swawii":
+                case "swawii_compressed":
+                    Console.WriteLine("Packing directory for Sonic World Adventure Wii Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.WorldAdventureWii.ONE), arg, "one");
 
-                            // Set up PuyoTools' LZ11 Compression.
-                            PuyoTools.Core.Compression.Lz11Compression lz11 = new();
+                    // If the version indicates that the archive needs to be compressed, then compress it.
+                    if (version == "swawii_compressed")
+                    {
+                        // Inform the user of the compression.
+                        Console.WriteLine("Compressing generated archive for Sonic World Adventure Wii Engine.");
 
-                            // Set up a file stream of the uncompressed archive.
-                            var stream = File.OpenRead($@"{arg}.one");
+                        // Set up PuyoTools' LZ11 Compression.
+                        PuyoTools.Core.Compression.Lz11Compression lz11 = new();
 
-                            // Compress the previously saved ONE archive into the buffer.
-                            buffer = lz11.Compress(stream);
+                        // Set up a file stream of the uncompressed archive.
+                        var stream = File.OpenRead($@"{arg}.one");
 
-                            // Write the buffer to disk.
-                            buffer.WriteTo(File.Create($@"{arg}.onz"));
+                        // Compress the previously saved ONE archive into a buffer.
+                        MemoryStream buffer = lz11.Compress(stream);
 
-                            // Close the file stream so the uncompressed archive can be deleted.
-                            stream.Close();
+                        // Write the buffer to disk.
+                        buffer.WriteTo(File.Create($@"{arg}.onz"));
 
-                            // Delete the temporary uncompressed file.
-                            File.Delete($@"{arg}.one");
-                        }
-                        break;
+                        // Close the file stream so the uncompressed archive can be deleted.
+                        stream.Close();
 
-                    // Wayforward Engine Packages.
-                    case "wayforward_pak":
-                        using (KnuxLib.Engines.Wayforward.Package pak = new())
-                        {
-                            Console.WriteLine("\n");
-                            pak.Import(arg);
-                            pak.Save($@"{arg}.pak");
-                        }
-                        break;
+                        // Delete the temporary uncompressed file.
+                        File.Delete($@"{arg}.one");
+                    }
+                    break;
 
-                    // Hedgehog Engine Terrain Instance Conversion.
-                    case "hedgehog_terrain2pointcloud":
-                        KnuxLib.Engines.Hedgehog.InstanceInfo.ConvertDirectoryToPointCloud(arg);
-                        break;
+                // Wayforward Engine Packages.
+                case "wayforward":
+                    Console.WriteLine("Packing directory for Wayforward Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.Wayforward.Package), arg, "pak");
+                    break;
 
-                    // If a command line argument without a corresponding format has been passed, then inform the user.
-                    default:
-                        Console.WriteLine($"\n\nFormat identifer {version} is not valid for any currently supported archive types.\nPress any key to continue.");
-                        Console.ReadKey();
-                        break;
-                }
+                // If a command line argument without a corresponding format has been passed, then inform the user.
+                default:
+                    Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported archive types.\nPress any key to continue.");
+                    Console.ReadKey();
+                    return;
             }
+
+            // Tell the user we're done (for if the cmd window is left open).
+            Console.WriteLine("Done!");
+        }
+
+        /// <summary>
+        /// Handles importing files to an archive class and saving it.
+        /// </summary>
+        /// <param name="type">The type of archive to use</param>
+        /// <param name="path">The path to the directory we're packing.</param>
+        /// <param name="extension">The extension to save the packaged archive with.</param>
+        private static void ImportAndSaveArchive(Type type, string path, string extension)
+        {
+            // Create an object for the specified archive type.
+            object archive = Activator.CreateInstance(type);
+
+            // Invoke this archive's import method with the specified directory as an argument.
+            type.GetMethod("Import").Invoke(archive, new string[1] { path });
+
+            // Invoke this archive's save method with the specified directory and extension as arguments.
+            type.GetMethod("Save", new[] {typeof(string)}).Invoke(archive, new string[1] { $@"{path}.{extension}" });
+            
         }
 
         /// <summary>
