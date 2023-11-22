@@ -1,4 +1,6 @@
-﻿namespace KnuxLib.Engines.Gods
+﻿using System.Diagnostics;
+
+namespace KnuxLib.Engines.Gods
 {
     // TODO: Get samples of the WAD files from other Data Design Interactive games that run on their GODS engine. Add new FormatVersions as approriate.
     // TODO: The folder structure of this is ugly, but I don't see how else to do it.
@@ -210,8 +212,8 @@
                 Console.WriteLine($"Extracting {node.Name}.");
 
                 // The GODS Engine can use sub directories in its archives. Create the directory if needed.
-                if (!Directory.Exists($@"{directory}\{Path.GetDirectoryName(node.Name)}"))
-                    Directory.CreateDirectory($@"{directory}\{Path.GetDirectoryName(node.Name)}");
+                if (!Directory.Exists($@"{directory}\{Path.GetDirectoryName(node.Name[2..])}"))
+                    Directory.CreateDirectory($@"{directory}\{Path.GetDirectoryName(node.Name[2..])}");
 
                 // Extract the file.
                 File.WriteAllBytes($@"{directory}\{node.Name}", node.Data);

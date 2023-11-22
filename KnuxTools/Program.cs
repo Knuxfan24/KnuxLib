@@ -460,10 +460,10 @@ namespace KnuxTools
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
                         ColourConsole("    flipnic\t\t\t(Flipnic Binary Archive File)");
-                        ColourConsole("    storybook_motion\t\t\t(Sonic Storybook Engine Player Motion File)");
-                        ColourConsole("    storybook_set\t\t\t(Sonic Storybook Engine Stage Entity Table File)");
-                        Console.WriteLine("    storybook_setitems_sr\t\t\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))");
-                        Console.WriteLine("    storybook_setitems_bk\t\t\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))");
+                        ColourConsole("    storybook_motion\t\t(Sonic Storybook Engine Player Motion File)");
+                        ColourConsole("    storybook_set\t\t(Sonic Storybook Engine Stage Entity Table File)");
+                        Console.WriteLine("    storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))");
+                        Console.WriteLine("    storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))");
 
                         // Ask for the user's input.
                         Console.Write("\nFormat Type: ");
@@ -597,7 +597,7 @@ namespace KnuxTools
 
                     switch (version.ToLower())
                     {
-                        case "rockmanx8":
+                        case "rockx8":
                             Console.WriteLine("Converting Rockman X8 Engine Stage Entity Table to JSON.");
                             using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original, true))
                             break;
@@ -686,12 +686,12 @@ namespace KnuxTools
                     switch (version.ToLower())
                     {
                         case "ninjabread_pc":
-                            Console.WriteLine("Extracting PC/PS2 Ninjabread Man archive.");
+                            Console.WriteLine("Extracting GODS Engine WAD archive.");
                             using (KnuxLib.Engines.Gods.WAD wad = new(arg, KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_PCPS2, true))
                             break;
 
                         case "ninjabread_wii":
-                            Console.WriteLine("Extracting PC/PS2 Ninjabread Man archive.");
+                            Console.WriteLine("Extracting GODS Engine WAD archive.");
                             using (KnuxLib.Engines.Gods.WAD wad = new(arg, KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii, true))
                             break;
 
@@ -1306,7 +1306,7 @@ namespace KnuxTools
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    international\t\t\t(English and other languages)");
+                        Console.WriteLine("    international\t\t(English and other languages)");
                         Console.WriteLine("    japanese\t\t\t(Japanese)");
 
                         // Ask for the user's input.
