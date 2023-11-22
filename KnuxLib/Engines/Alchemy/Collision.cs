@@ -14,10 +14,7 @@
             Load(filepath);
 
             if (export)
-            {
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.alchemy.collision.json", Data);
                 ExportOBJTemp($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}");
-            }
         }
 
         // Classes for this format.

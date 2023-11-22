@@ -9,10 +9,7 @@
             Load(filepath);
 
             if (export)
-            {
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.collision_2010.json", Data);
                 ExportOBJ($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.obj");
-            }
         }
 
         // Classes for this format.

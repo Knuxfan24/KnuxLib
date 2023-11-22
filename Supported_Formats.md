@@ -1,22 +1,5 @@
 A list of file formats fully supported by KnuxLib, organised by engine. Formats listed here are supported by the KnuxTools project.
 
-## Alchemy Engine
-
-Known games:
-
-- Crash Nitro Kart (PS2, GCN, Xbox)
-
-Supported formats:
-
-- [Assets Container (.gfc/gob)](KnuxLib/Engines/Alchemy/AssetsContainer.cs) reading and data extraction.
-
-> **Note**
-> Has an unknown chunk of data.
-
-Notes:
-
-- Definitely used by other Vicarious Visions games, but I have yet to obtain and look at them myself.
-
 ## CarZ Engine
 
 Known games:
@@ -36,23 +19,6 @@ Notes:
 - The meaning of the SCO extension is unknown. Something Something Object?
 
 - Definitely used by other Stellar Stone games, but I have yet to obtain and look at them myself.
-
-## Gods Engine
-
-Known games:
-
-- Ninjabread Man (PC, PS2, Wii)
-
-Supported formats:
-
-- [WAD Archive (.wad)](KnuxLib/Engines/Gods/WAD.cs) reading and data extraction.
-
-> **Note**
-> Has a few unknown values.
-
-Notes:
-
-- Definitely used by other Data Design Interactive games, but I have yet to obtain and look at them myself.
 
 ## Hedgehog Engine
 

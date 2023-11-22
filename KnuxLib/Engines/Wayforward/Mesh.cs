@@ -395,7 +395,7 @@ namespace KnuxLib.Engines.Wayforward
         /// Exports this mesh to an OBJ.
         /// TODO: OBJ won't be suitable for this long term.
         /// </summary>
-        /// <param name="filepath">The directory to export to.</param>
+        /// <param name="filepath">The OBJ file to export to.</param>
         public void ExportOBJTemp(string filepath, string? gpuFile = null)
         {
             // Set up a GPU file.
