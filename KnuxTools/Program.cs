@@ -168,8 +168,8 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (PlayStation 2) - ps2", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Wii) - wii", true, ConsoleColor.Yellow);
                 Console.WriteLine("ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
-                ColourConsole("    Version Flag (.one) - swawii", true, ConsoleColor.Yellow);
-                ColourConsole("    Version Flag (.onz) - swawii_compressed", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Importing as .one) - swawii", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Importing as .onz) - swawii_compressed", true, ConsoleColor.Yellow);
                 ColourConsole("Stage Entity Table (.set) - Converts to a HSON with the same name as the input file (importing and saving not yet possible).");
                 ColourConsole("    Version Flag (PlayStation 2) - ps2", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Wii) - wii\n", true, ConsoleColor.Yellow);
@@ -1648,6 +1648,11 @@ namespace KnuxTools
                             Console.ReadKey();
                             return;
                     }
+                    break;
+
+                case ".onz":
+                    Console.WriteLine("Extracting Sonic World Adventure Wii Engine archive.");
+                    using (KnuxLib.Engines.WorldAdventureWii.ONE onz = new(arg, true))
                     break;
                 #endregion
 

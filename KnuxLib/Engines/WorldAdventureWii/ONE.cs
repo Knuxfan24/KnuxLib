@@ -1,5 +1,6 @@
 ﻿namespace KnuxLib.Engines.WorldAdventureWii
 {
+    // TODO: Some ONZ files seem to fail to decompress? Check if I'm doing something wrong or if its a PuyoTools problem.
     public class ONE : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
