@@ -5,7 +5,6 @@ using System.Text;
 namespace KnuxTools
 {
     // TODO: Implement:
-    //       Storybook SET -> HSON
     //       World Adventure Wii SET -> HSON
     //       Wayforward Model Importing
     // TODO: Tidy up duplicated comments and parts where they are sorely lacking.
@@ -152,7 +151,8 @@ namespace KnuxTools
                 ColourConsole("Player Motion Table (.bin)");
                 ColourConsole("    Version Flag - storybook_motion", true, ConsoleColor.Yellow);
                 ColourConsole("Stage Entity Table (.bin) - Converts to a HSON with the same name as the input file (importing and saving not yet possible).");
-                ColourConsole("    Version Flag - storybook_set", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Sonic and the Secret Rings) - storybook_set_sr", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Sonic and the Black Knight) - storybook_set_bk", true, ConsoleColor.Yellow);
                 Console.WriteLine("Stage Entity Table Object Table (.bin)");
                 ColourConsole("    Version Flag (Sonic and the Secret Rings) - storybook_setitems_sr", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Sonic and the Black Knight) - storybook_setitems_bk", true, ConsoleColor.Yellow);
@@ -461,7 +461,8 @@ namespace KnuxTools
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
                         ColourConsole("    flipnic\t\t\t(Flipnic Binary Archive File)");
                         ColourConsole("    storybook_motion\t\t(Sonic Storybook Engine Player Motion File)");
-                        ColourConsole("    storybook_set\t\t(Sonic Storybook Engine Stage Entity Table File)");
+                        ColourConsole("    storybook_set_sr\t\t(Sonic Storybook Engine Stage Entity Table File (Secret Rings))");
+                        ColourConsole("    storybook_set_bk\t\t(Sonic Storybook Engine Stage Entity Table File (Black Knight))");
                         Console.WriteLine("    storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))");
                         Console.WriteLine("    storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))");
 
@@ -495,8 +496,44 @@ namespace KnuxTools
                             using (KnuxLib.Engines.Storybook.PlayerMotionTable playerMotion = new(arg, true))
                             break;
 
-                        case "storybook_set":
-                            // TODO: Figure this out later.
+                        case "storybook_set_sr":
+                            // Check that the template sheet exists.
+                            if (!File.Exists($@"{Environment.CurrentDirectory}\HSON Templates\secret_rings.json"))
+                            {
+                                Console.WriteLine("\nsecret_rings.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
+                                Console.ReadKey();
+                                return;
+                            }
+
+                            Console.WriteLine("Converting Sonic Storybook Engine Stage Entity Table to HSON.");
+                            using (KnuxLib.Engines.Storybook.StageEntityTable set = new(arg, $@"{Environment.CurrentDirectory}\HSON Templates\secret_rings.json"))
+                            {
+                                set.ExportHSON(Path.ChangeExtension(arg, ".hson"),
+                                               $@"{Environment.CurrentDirectory}\HSON Templates\secret_rings.json",
+                                               Path.GetFileNameWithoutExtension(arg),
+                                               Environment.UserName,
+                                               $"Sonic and the Secret Rings set file {Path.GetFileName(arg)} converted to the HSON format.");
+                            }
+                            break;
+
+                        case "storybook_set_bk":
+                            // Check that the template sheet exists.
+                            if (!File.Exists($@"{Environment.CurrentDirectory}\HSON Templates\black_knight.json"))
+                            {
+                                Console.WriteLine("\nblack_knight.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
+                                Console.ReadKey();
+                                return;
+                            }
+
+                            Console.WriteLine("Converting Sonic Storybook Engine Stage Entity Table to HSON.");
+                            using (KnuxLib.Engines.Storybook.StageEntityTable set = new(arg, $@"{Environment.CurrentDirectory}\HSON Templates\black_knight.json"))
+                            {
+                                set.ExportHSON(Path.ChangeExtension(arg, ".hson"),
+                                               $@"{Environment.CurrentDirectory}\HSON Templates\black_knight.json",
+                                               Path.GetFileNameWithoutExtension(arg),
+                                               Environment.UserName,
+                                               $"Sonic and the Black Knight set file {Path.GetFileName(arg)} converted to the HSON format.");
+                            }
                             break;
 
                         case "storybook_setitems_sr":
