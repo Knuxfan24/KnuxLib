@@ -339,7 +339,7 @@ namespace KnuxTools
                     return;
             }
 
-            // Tell the user we're done (for if the cmd window is left open).
+            // Tell the user we're done (for if the cmd window is left open or if we're handling multiple files).
             Console.WriteLine("Done!");
         }
 
@@ -1805,7 +1805,16 @@ namespace KnuxTools
                     }
                     break;
                 #endregion
+
+                // If a command line argument without a corresponding format has been passed, then inform the user.
+                default:
+                    Console.WriteLine($"Format extension {KnuxLib.Helpers.GetExtension(arg).ToLower()} is not valid for any currently supported formats.\nPress any key to continue.");
+                    Console.ReadKey();
+                    return;
             }
+
+            // Tell the user we're done (for if the cmd window is left open or if we're handling multiple files).
+            Console.WriteLine("Done!");
         }
     }
 }
