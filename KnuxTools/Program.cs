@@ -97,6 +97,7 @@ namespace KnuxTools
                 Console.WriteLine("Archive Info (.arcinfo)");
                 Console.WriteLine("Bullet Skeleton (.skl.pxd)");
                 ColourConsole("2010 Collision (.orc) - Converts to an OBJ with the same name as the input file (importing and saving not yet possible).");
+                Console.WriteLine("Density Point Cloud (.densitypointcloud)");
                 Console.WriteLine("Gismo V3 (.gismod/.gismop)");
                 Console.WriteLine("Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file.");
                 ColourConsole("    Version Flag (point cloud conversion) - hh_instance2pointcloud", true, ConsoleColor.Yellow);
@@ -785,6 +786,20 @@ namespace KnuxTools
                 case ".orc":
                     Console.WriteLine("Converting Hedgehog Engine 2010 Collision to OBJ.");
                     using (KnuxLib.Engines.Hedgehog.Collision_2010 collision = new(arg, true))
+                    break;
+
+                case ".densitypointcloud":
+                    Console.WriteLine("Converting Hedgehog Engine Density Point Cloud to JSON.");
+                    using (KnuxLib.Engines.Hedgehog.DensityPointCloud densityPointCloud = new(arg, true))
+                    break;
+
+                case ".hedgehog.densitypointcloud.json":
+                    Console.WriteLine("Converting JSON to Hedgehog Engine Density Point Cloud.");
+                    using (KnuxLib.Engines.Hedgehog.DensityPointCloud densityPointCloud = new())
+                    {
+                        densityPointCloud.Data = densityPointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.DensityPointCloud.Instance>>(arg);
+                        densityPointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.densitypointcloud");
+                    }
                     break;
 
                 case ".gismod":

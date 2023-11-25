@@ -63,6 +63,11 @@ Supported formats:
 
 - [Bullet Skeleton (.skl.pxd)](KnuxLib/Engines/Hedgehog/BulletSkeleton.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+- [Density Point Cloud (.densitypointcloud)](KnuxLib/Engines/Hedgehog/DensityPointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Has a few unknown values.
+
 - [Gismo (Rangers) (.gismod/.gismop)](KnuxLib/Engines/Hedgehog/Gismo_Rangers.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Instance Info (.terrain-instanceinfo)](KnuxLib/Engines/Hedgehog/InstanceInfo.cs) reading, writing, JSON serialisation and JSON deserialisation. Also included is a function to convert a folder of terrain-instanceinfo files into a Sonic Frontiers pcmodel Point Cloud file.
