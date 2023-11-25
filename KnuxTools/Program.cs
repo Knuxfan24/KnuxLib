@@ -102,6 +102,7 @@ namespace KnuxTools
                 Console.WriteLine("Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file.");
                 ColourConsole("    Version Flag (point cloud conversion) - hh_instance2pointcloud", true, ConsoleColor.Yellow);
                 Console.WriteLine("Light Field (Rangers) (.lf)");
+                Console.WriteLine("2010 Map (.map.bin)");
                 Console.WriteLine("Master Level Table (.mlevel)");
                 Console.WriteLine("Message Table (sonic2010/blueblur/william) (.xtb)");
                 ColourConsole("    Version Flag (Sonic Colours) - sonic2010", true, ConsoleColor.Yellow);
@@ -849,10 +850,24 @@ namespace KnuxTools
                     }
                     break;
 
+                case ".map.bin":
+                    Console.WriteLine("Converting Hedgehog Engine 2010 Map to JSON.");
+                    using (KnuxLib.Engines.Hedgehog.Map_2010 map = new(arg, true))
+                    break;
+
+                case ".hedgehog.map_2010.json":
+                    Console.WriteLine("Converting JSON to Hedgehog Engine 2010 Map Table.");
+                    using (KnuxLib.Engines.Hedgehog.Map_2010 map = new())
+                    {
+                        map.Data = map.JsonDeserialise<KnuxLib.Engines.Hedgehog.Map_2010.FormatData>(arg);
+                        map.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.map.bin");
+                    }
+                    break;
+
                 case ".mlevel":
                     Console.WriteLine("Converting Hedgehog Engine Master Levels Table to JSON.");
                     using (KnuxLib.Engines.Hedgehog.MasterLevels mlevel = new(arg, true))
-                        break;
+                    break;
 
                 case ".hedgehog.masterlevels.json":
                     Console.WriteLine("Converting JSON to Hedgehog Engine Master Levels Table.");

@@ -74,6 +74,11 @@ Supported formats:
 
 - [Light Field (Rangers) (.lf)](KnuxLib/Engines/Hedgehog/LightField_Rangers.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
+- [Map (2010) (.map.bin)](KnuxLib/Engines/Hedgehog/Map_2010.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Has an unknown value and has a slightly inaccurate BINA Footer on written files.
+
 - [Master Level Table (.mlevel)](KnuxLib/Engines/Hedgehog/MasterLevels.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 > **Note**
