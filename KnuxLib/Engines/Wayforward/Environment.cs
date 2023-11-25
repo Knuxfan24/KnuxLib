@@ -12,6 +12,7 @@
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.wayforward.environment.json", Data);
         }
 
+        // Classes for this format.
         public class Entity
         {
             /// <summary>

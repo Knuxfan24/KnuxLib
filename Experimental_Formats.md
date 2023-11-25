@@ -56,8 +56,8 @@ The following formats are only partially supported, either due to missing functi
 
 ## Wayforward Engine
 
-- [Collision (.clb)](KnuxLib/Engines/Wayforward/Collision.cs). Reads and writes fine, but Seven Sirens has a massive chunk of Unknown Data added on to the end that is completely alien to me and needs to be properly reverse engineered. Also has a (potentially temporary) OBJ exporter and Assimp importer.
+- [Collision (.clb)](KnuxLib/Engines/Wayforward/Collision.cs). Reads and writes fine, but Seven Sirens has a massive chunk of Unknown Data added on to the end that is completely alien to me and needs to be properly reverse engineered. Ducktales Remastered also handles some of the data slightly differently, which isn't properly handled right now. Also has a (potentially temporary?) OBJ exporter and Assimp importer.
 
-- [Level Binary (.lvb)](KnuxLib/Engines/Wayforward/LevelBinary.cs). Really, REALLY unfinished reading. Honestly this format has pushed me to my limit I hate it. Left out of KnuxTools because it has next to no functionality in its current state.
+- [Level Binary (.lvb)](KnuxLib/Engines/Wayforward/LevelBinary.cs). Really, REALLY unfinished reading that barely gets anywhere. Honestly this format has pushed me to my limit I hate it. Left out of KnuxTools because it has next to no functionality in its current state.
 
 - [Mesh (.wf3d/.gpu)](KnuxLib/Engines/Wayforward/Mesh.cs) and the chunks that make them up. This code currently reads MOST of the data (although a lot of chunks have unknown bits that I am yet to successfully read), but a lot of the data is a mystery. This format also has some (slightly messy) unfinished functionality for Saving, Exporting to OBJ (which is intended to be temporary due to it not supporting things I've yet to reverse engineer) and Assimp Importing.

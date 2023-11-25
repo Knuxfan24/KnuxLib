@@ -8,6 +8,7 @@ namespace KnuxTools
     //       World Adventure Wii SET -> HSON
     //       Wayforward Model Importing
     // TODO: Tidy up duplicated comments and parts where they are sorely lacking.
+    // TODO: Make the indents for version/extension flags consistent.
     internal class Program
     {
         static void Main(string[] args)
@@ -176,6 +177,7 @@ namespace KnuxTools
 
                 Console.WriteLine("Wayforward Engine:");
                 ColourConsole("Collision (.clb) - Converts to an OBJ format and imports from an Assimp compatible model.");
+                ColourConsole("    Version Flag (Ducktales Remastered) - wayforward_collision_duck", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Half-Genie Hero) - wayforward_collision_hgh", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Seven Sirens) - wayforward_collision_ss", true, ConsoleColor.Yellow);
                 Console.WriteLine("Environment (.env)");
@@ -382,6 +384,7 @@ namespace KnuxTools
                         Console.WriteLine("This file is a generic model, please specifiy what format to import and save it as:");
                         Console.WriteLine("    carz\t\t\t(CarZ Engine SCO model & MAT material library)");
                         ColourConsole("    wayforward\t\t\t(Wayforward Engine WF3D Mesh)");
+                        ColourConsole("    wayforward_collision_duck\t(Wayforward Engine Collision for Ducktales Remastered)");
                         ColourConsole("    wayforward_collision_hgh\t(Wayforward Engine Collision for Half-Genie Hero)");
                         ColourConsole("    wayforward_collision_ss\t(Wayforward Engine Collision for Seven Sirens)");
 
@@ -423,6 +426,15 @@ namespace KnuxTools
 
                         case "wayforward":
                             // TODO: Figure this out later.
+                            break;
+
+                        case "wayforward_collision_duck":
+                            Console.WriteLine("Converting model to a Wayforward Engine collision file.");
+                            using (KnuxLib.Engines.Wayforward.Collision collision = new())
+                            {
+                                collision.ImportAssimp(arg);
+                                collision.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.clb", KnuxLib.Engines.Wayforward.Collision.FormatVersion.duck);
+                            }
                             break;
 
                         case "wayforward_collision_hgh":
@@ -1662,6 +1674,7 @@ namespace KnuxTools
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
+                        Console.WriteLine("    duck\t\t(Ducktales Remastered)");
                         Console.WriteLine("    hgh\t\t\t(Half-Genie Hero)");
                         Console.WriteLine("    ss\t\t\t(Seven Sirens)");
 
@@ -1686,6 +1699,7 @@ namespace KnuxTools
                     Console.WriteLine("Converting Wayforward Engine collision to OBJ.");
                     switch (version.ToLower())
                     {
+                        case "duck": using (KnuxLib.Engines.Wayforward.Collision clb = new(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.duck, true)) break;
                         case "hgh": using (KnuxLib.Engines.Wayforward.Collision clb = new(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.hero, true)) break;
                         case "ss": using (KnuxLib.Engines.Wayforward.Collision clb = new(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.sevensirens, true)) break;
 

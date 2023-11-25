@@ -221,6 +221,8 @@ Known games:
 
 - Shantae Risky's Revenge (DSi, iOS, PC, PS4, Wii U, NSW, XB1, PS5)
 
+- Ducktales Remastered (PS3, Wii U, PC, X360, Android, iOS, WP)
+
 - Shantae Half-Genie Hero (PS4, PSV, Wii U, PC, XB1, NSW, PS5)
 
 - Shantae and the Seven Sirens (iOS, NSW, PS4, PC, XB1, PS5)
@@ -235,14 +237,14 @@ Supported formats:
 - [Layer List (.lgb)](KnuxLib/Engines/Wayforward/Layers.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 > **Note**
-> Unsure on the length of the strings within this file, 40 characters seems to work, but I'm not confident that all 40 can be used. Needs testing.
+> String lengths are definitely wrong if the garbage data presented by the Ducktales Remastered format is anything to go by.
 
 - [List Table (.ltb)](KnuxLib/Engines/Wayforward/ListTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 - [Package Archive (.pak)](KnuxLib/Engines/Wayforward/Package.cs) reading, writing, data extraction and data importing.
 
 > **Note**
-> The Package Archive code produces incorrect results for some files in Half-Genie Hero due to an incorrect assumption that needs revising. Risky's Revenge resaving has not been tested.
+> The Package Archive code produces incorrect results for some files in Half-Genie Hero due to an incorrect assumption that needs revising. Risky's Revenge and Ducktales resaving has not been tested.
 
 - Definitely used by other Wayforward games, but I have yet to obtain and look at them myself.
 

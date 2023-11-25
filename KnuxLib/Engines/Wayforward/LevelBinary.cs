@@ -13,6 +13,7 @@
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.wayforward.levelbinary.json", Data);
         }
 
+        // Classes for this format.
         public class FormatData
         {
             public Entity[] Entities { get; set; } = Array.Empty<Entity>();
@@ -45,6 +46,7 @@
             public override string ToString() => Name;
         }
 
+        // Actual data presented to the end user.
         public FormatData Data = new();
 
         /// <summary>

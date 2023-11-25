@@ -20,8 +20,9 @@ namespace KnuxLib.Engines.Wayforward
         // Classes for this format.
         public enum FormatVersion
         {
-            hero = 0,
-            sevensirens = 1
+            duck = 0,
+            hero = 1,
+            sevensirens = 2
         }
 
         [Flags]
@@ -72,8 +73,21 @@ namespace KnuxLib.Engines.Wayforward
         {
             /// <summary>
             /// This model's Axis-Aligned Bounding Box.
+            /// Doesn't seem to exist in the Ducktales Remastered version of the format?
             /// </summary>
-            public Vector3[] AABB { get; set; } = new Vector3[2];
+            public Vector3[]? AABB { get; set; }
+
+            /// <summary>
+            /// An unknown Vector3 value that is only present in Ducktales Remastered.
+            /// TODO: What is this?
+            /// </summary>
+            public Vector3? UnknownVector3_1 { get; set; }
+
+            /// <summary>
+            /// An unknown integer value that is only present in Ducktales Remastered.
+            /// TODO: What is this?
+            /// </summary>
+            public uint? UnknownUInt32_1 { get; set; }
 
             /// <summary>
             /// How this model behaves.
@@ -150,16 +164,33 @@ namespace KnuxLib.Engines.Wayforward
                 // Define a new model entry.
                 Model model = new();
 
-                // Loop through and read the two values of this model's Axis-Aligned Bounding Box.
-                for (int aabb = 0; aabb < 2; aabb++)
-                    model.AABB[aabb] = reader.ReadVector3();
+                if (version != FormatVersion.duck)
+                {
+                    // Initialise the AABB values.
+                    model.AABB = new Vector3[2];
 
-                // Read an unknown 64 bit integer.
-                model.Behaviour = (Behaviour)reader.ReadUInt64();
+                    // Loop through and read the two values of this model's Axis-Aligned Bounding Box.
+                    for (int aabb = 0; aabb < 2; aabb++)
+                        model.AABB[aabb] = reader.ReadVector3();
 
-                // Read an unknown 64 bit integer that only exists in Seven Sirens.
-                if (version == FormatVersion.sevensirens)
-                    model.UnknownULong_1 = reader.ReadUInt64();
+                    // Read an this model's behaviour flags.
+                    model.Behaviour = (Behaviour)reader.ReadUInt64();
+
+                    // Read an unknown 64 bit integer that only exists in Seven Sirens.
+                    if (version == FormatVersion.sevensirens)
+                        model.UnknownULong_1 = reader.ReadUInt64();
+                }
+                else
+                {
+                    // Read the unknown Vector3 that only exists in Ducktales Remastered.
+                    model.UnknownVector3_1 = reader.ReadVector3();
+
+                    // Read the unknown integer value that only exists in Ducktales Remastered.
+                    model.UnknownUInt32_1 = reader.ReadUInt32();
+
+                    // Read an this model's behaviour flags.
+                    model.Behaviour = (Behaviour)reader.ReadUInt64();
+                }
 
                 // Read the offset to this model's vertex and face data.
                 long modelDataOffset = reader.ReadInt64();
@@ -287,16 +318,30 @@ namespace KnuxLib.Engines.Wayforward
             // Loop through and write the model table.
             for (int modelIndex = 0; modelIndex < Data.Models.Count; modelIndex++)
             {
-                // Write this model's AABB values.
-                writer.Write(Data.Models[modelIndex].AABB[0]);
-                writer.Write(Data.Models[modelIndex].AABB[1]);
+                if (version != FormatVersion.duck)
+                {
+                    // Write this model's AABB values.
+                    writer.Write(Data.Models[modelIndex].AABB[0]);
+                    writer.Write(Data.Models[modelIndex].AABB[1]);
 
-                // Write this model's behaviour tag.
-                writer.Write((ulong)Data.Models[modelIndex].Behaviour);
+                    // Write this model's behaviour tag.
+                    writer.Write((ulong)Data.Models[modelIndex].Behaviour);
 
-                // Write this model's unknown integer value.
-                if (version == FormatVersion.sevensirens)
-                    writer.Write((ulong)Data.Models[modelIndex].UnknownULong_1);
+                    // Write this model's unknown integer value that only exists in Seven Sirens.
+                    if (version == FormatVersion.sevensirens)
+                        writer.Write((ulong)Data.Models[modelIndex].UnknownULong_1);
+                }
+                else
+                {
+                    // Write the unknown Vector3 that only exists in Ducktales Remastered.
+                    writer.Write((Vector3)Data.Models[modelIndex].UnknownVector3_1);
+
+                    // Write the unknown integer value that only exists in Ducktales Remastered.
+                    writer.Write((uint)Data.Models[modelIndex].UnknownUInt32_1);
+
+                    // Write this model's behaviour tag.
+                    writer.Write((ulong)Data.Models[modelIndex].Behaviour);
+                }
 
                 // Add an offset for this model's data.
                 writer.AddOffset($"Model{modelIndex}Data", 0x08);
