@@ -5,7 +5,6 @@ using System.Text;
 
 namespace KnuxTools
 {
-    // TODO: Implement Wayforward Model Importing
     // TODO: Tidy up duplicated comments and parts where they are sorely lacking.
     // TODO: Make the indents for version/extension flags consistent.
     internal class Program
@@ -426,7 +425,55 @@ namespace KnuxTools
                             break;
 
                         case "wayforward":
-                            // TODO: Figure this out later.
+                            // Tell the user about the need for a .gpu file.
+                            Console.WriteLine("Wayforward Meshes need a level .gpu file.\nPlease specify the filepath for the desired .gpu file to inject this model's data into.");
+                            
+                            // Ask for the user's input.
+                            Console.Write("\n.gpu file path: ");
+
+                            // Read the gpu path from the user's input.
+                            string gpuPath = Console.ReadLine().Replace("\"", "");
+
+                            // Check if the .gpu file exists.
+                            if (File.Exists(gpuPath))
+                            {
+                                // Tell the user about the need for a vertex table index.
+                                Console.WriteLine("Wayforward Meshes need a vertex table index.\nPlease specify a numerical value for this mesh's vertex table(s).\nIf none is provided then 155225170944 (0x2424242400) will be used as a default.");
+
+                                // Ask for the user's input.
+                                Console.Write("\nVertex Table Index: ");
+
+                                // Read the vertex table index from the user's input.
+                                ulong vertexTableIndex = 0;
+                                if (!ulong.TryParse(Console.ReadLine(), out vertexTableIndex))
+                                    vertexTableIndex = 0x2424242400;
+
+                                // Tell the user about the need for a face table index.
+                                Console.WriteLine("\nWayforward Meshes need a face table index.\nPlease specify a numerical value for this mesh's face table(s).\nIf none is provided then 39737643761664 (0x242424240000) will be used as a default.");
+
+                                // Ask for the user's input.
+                                Console.Write("\nFace Table Index: ");
+
+                                // Read the vertex table index from the user's input.
+                                ulong faceTableIndex = 0;
+                                if (!ulong.TryParse(Console.ReadLine(), out faceTableIndex))
+                                    faceTableIndex = 0x242424240000;
+
+                                // Backup the original gpu file.
+                                File.Copy(gpuPath, $"{gpuPath}.original", true);
+
+                                // Create the wf3d file and inject the data into the gpu file.
+                                using (KnuxLib.Engines.Wayforward.Mesh mesh = new())
+                                {
+                                    mesh.ImportAssimp(arg, Path.ChangeExtension(arg, ".wf3d"), gpuPath, vertexTableIndex, faceTableIndex);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Couldn't find {gpuPath}! Aborting...\nPress any key to continue.");
+                                Console.ReadKey();
+                                return;
+                            }
                             break;
 
                         case "wayforward_collision_duck":
@@ -1826,10 +1873,14 @@ namespace KnuxTools
                     // Ask for the user's input.
                     Console.Write("\n.gpu file: ");
 
+                    string? gpuFile = Console.ReadLine().Replace("\"", "");
+                    if (gpuFile == "")
+                        gpuFile = null;
+
                     using (KnuxLib.Engines.Wayforward.Mesh mesh = new())
                     {
                         mesh.Load(arg);
-                        mesh.ExportOBJTemp($@"{Path.ChangeExtension(arg, ".obj")}", Console.ReadLine().Replace("\"", ""));
+                        mesh.ExportOBJTemp($@"{Path.ChangeExtension(arg, ".obj")}", gpuFile);
                     }
                     break;
 
