@@ -5,8 +5,8 @@ using System.Text;
 
 namespace KnuxTools
 {
-    // TODO: Tidy up duplicated comments and parts where they are sorely lacking.
     // TODO: Make the indents for version/extension flags consistent.
+    // TODO: Potentially convert the "file has multiple variants" check into a function so I stop copy and pasting so much.
     internal class Program
     {
         static void Main(string[] args)
@@ -57,6 +57,9 @@ namespace KnuxTools
                         HandleFile(arg, extension, version);
                     }
                 }
+
+                // Tell the user we're done.
+                Console.WriteLine("Done!");
             }
 
             // If there are no arguments, then inform the user.
@@ -250,7 +253,7 @@ namespace KnuxTools
                 // Wait for the user's input.
                 version = Console.ReadLine().ToLower();
 
-                // Sanity check the input, abort if its still null or empty.
+                // Sanity check the input, inform the user and abort if its still null or empty.
                 if (string.IsNullOrEmpty(version))
                 {
                     Console.WriteLine("\nNo archive type specified! Aborting...\nPress any key to continue.");
@@ -334,15 +337,12 @@ namespace KnuxTools
                     ImportAndSaveArchive(typeof(KnuxLib.Engines.Wayforward.Package), arg, "pak");
                     break;
 
-                // If a command line argument without a corresponding format has been passed, then inform the user.
+                // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                 default:
                     Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported archive types.\nPress any key to continue.");
                     Console.ReadKey();
                     return;
             }
-
-            // Tell the user we're done (for if the cmd window is left open or if we're handling multiple files).
-            Console.WriteLine("Done!");
         }
 
         /// <summary>
@@ -372,6 +372,7 @@ namespace KnuxTools
         /// <param name="version">The version parameter to use.</param>
         private static void HandleFile(string arg, string? extension, string? version)
         {
+            // Determine the file type that the user has passed.
             switch (KnuxLib.Helpers.GetExtension(arg).ToLower())
             {
                 #region Generic Seralised Models.
@@ -394,7 +395,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -424,6 +425,8 @@ namespace KnuxTools
                             }
                             break;
 
+                        // Wayforward Engine Meshes.
+                        // TODO: I really don't like this code, but it'll do for now.
                         case "wayforward":
                             // Tell the user about the need for a .gpu file.
                             Console.WriteLine("Wayforward Meshes need a level .gpu file.\nPlease specify the filepath for the desired .gpu file to inject this model's data into.");
@@ -444,8 +447,7 @@ namespace KnuxTools
                                 Console.Write("\nVertex Table Index: ");
 
                                 // Read the vertex table index from the user's input.
-                                ulong vertexTableIndex = 0;
-                                if (!ulong.TryParse(Console.ReadLine(), out vertexTableIndex))
+                                if (!ulong.TryParse(Console.ReadLine(), out ulong vertexTableIndex))
                                     vertexTableIndex = 0x2424242400;
 
                                 // Tell the user about the need for a face table index.
@@ -454,9 +456,8 @@ namespace KnuxTools
                                 // Ask for the user's input.
                                 Console.Write("\nFace Table Index: ");
 
-                                // Read the vertex table index from the user's input.
-                                ulong faceTableIndex = 0;
-                                if (!ulong.TryParse(Console.ReadLine(), out faceTableIndex))
+                                // Read the face table index from the user's input.
+                                if (!ulong.TryParse(Console.ReadLine(), out ulong faceTableIndex))
                                     faceTableIndex = 0x242424240000;
 
                                 // Backup the original gpu file.
@@ -468,6 +469,8 @@ namespace KnuxTools
                                     mesh.ImportAssimp(arg, Path.ChangeExtension(arg, ".wf3d"), gpuPath, vertexTableIndex, faceTableIndex);
                                 }
                             }
+
+                            // If the .gpu file doesn't exist, then inform the user and abort.
                             else
                             {
                                 Console.WriteLine($"Couldn't find {gpuPath}! Aborting...\nPress any key to continue.");
@@ -476,6 +479,7 @@ namespace KnuxTools
                             }
                             break;
 
+                        // Wayforward Engine Collision (Ducktales Remastered Version).
                         case "wayforward_collision_duck":
                             Console.WriteLine("Converting model to a Wayforward Engine collision file.");
                             using (KnuxLib.Engines.Wayforward.Collision collision = new())
@@ -485,6 +489,7 @@ namespace KnuxTools
                             }
                             break;
 
+                        // Wayforward Engine Collision (Shantae: Half-Genie Hero Version).
                         case "wayforward_collision_hgh":
                             Console.WriteLine("Converting model to a Wayforward Engine collision file.");
                             using (KnuxLib.Engines.Wayforward.Collision collision = new())
@@ -494,6 +499,7 @@ namespace KnuxTools
                             }
                             break;
 
+                        // Wayforward Engine Collision (Shantae and the Seven Sirens Version).
                         case "wayforward_collision_ss":
                             Console.WriteLine("Converting model to a Wayforward Engine collision file.");
                             using (KnuxLib.Engines.Wayforward.Collision collision = new())
@@ -503,7 +509,7 @@ namespace KnuxTools
                             }
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
                             Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported model types.\nPress any key to continue.");
                             Console.ReadKey();
@@ -515,7 +521,7 @@ namespace KnuxTools
 
                 #region Generic File Formats.
                 case ".bin":
-                    // If a version isn't specified, then ask the user which ONE format this is.
+                    // If a version isn't specified, then ask the user which format this .bin file is.
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
@@ -532,7 +538,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -544,20 +550,24 @@ namespace KnuxTools
                         Console.WriteLine();
                     }
 
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
+                        // Flipnic Engine Binary Archives.
                         case "flipnic":
                             Console.WriteLine("Extracting Flipnic Engine binary archive.");
                             using (KnuxLib.Engines.Flipnic.BinaryArchive bin = new(arg, true))
                             break;
 
+                        // Sonic Storybook Engine Player Motion Tables.
                         case "storybook_motion":
                             Console.WriteLine("Converting Sonic Storybook Engine Player Motion Table to JSON.");
                             using (KnuxLib.Engines.Storybook.PlayerMotionTable playerMotion = new(arg, true))
                             break;
 
+                        // Sonic Storybook Stage Entity Tables (Sonic and the Secret Rings Version).
                         case "storybook_set_sr":
-                            // Check that the template sheet exists.
+                            // Check that the template sheet exists. Inform the user and abort if its missing.
                             if (!File.Exists($@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\secret_rings.json"))
                             {
                                 Console.WriteLine("\nsecret_rings.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
@@ -576,8 +586,9 @@ namespace KnuxTools
                             }
                             break;
 
+                        // Sonic Storybook Stage Entity Tables (Sonic and the Black Knight Version).
                         case "storybook_set_bk":
-                            // Check that the template sheet exists.
+                            // Check that the template sheet exists. Inform the user and abort if its missing.
                             if (!File.Exists($@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\black_knight.json"))
                             {
                                 Console.WriteLine("\nblack_knight.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
@@ -596,19 +607,21 @@ namespace KnuxTools
                             }
                             break;
 
+                        // Sonic Storybook Stage Entity Table Items Tables (Sonic and the Secret Rings Version).
                         case "storybook_setitems_sr":
                             Console.WriteLine("Converting Sonic Storybook Engine Stage Entity Table Object Table to JSON.");
                             using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.SecretRings, true))
                             break;
 
+                        // Sonic Storybook Stage Entity Table Items Tables (Sonic and the Black Knight Version).
                         case "storybook_setitems_bk":
                             Console.WriteLine("Converting Sonic Storybook Engine Stage Entity Table Object Table to JSON.");
                             using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight, true))
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported .bin file types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -629,7 +642,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -641,26 +654,30 @@ namespace KnuxTools
                         Console.WriteLine();
                     }
 
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
+                        // NiGHTS 2 Engine Archives.
                         case "nights2":
                             Console.WriteLine("Extracting NiGHTS2 Engine archive.");
                             using (KnuxLib.Engines.NiGHTS2.ONE one = new(arg, true))
                             break;
 
+                        // Sonic Storybook Engine Archives.
                         case "storybook":
                             Console.WriteLine("Extracting Sonic Storybook Engine archive.");
                             using (KnuxLib.Engines.Storybook.ONE one = new(arg, true))
                             break;
 
+                        // Sonic World Adventure Wii Engine Archives.
                         case "swawii":
                             Console.WriteLine("Extracting Sonic World Adventure Wii Engine archive.");
                             using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true))
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported .one archive types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -681,7 +698,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -693,15 +710,18 @@ namespace KnuxTools
                         Console.WriteLine();
                     }
 
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
+                        // Rockman X8 Engine Stage Entity Tables.
                         case "rockx8":
                             Console.WriteLine("Converting Rockman X8 Engine Stage Entity Table to JSON.");
                             using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original, true))
                             break;
 
+                        // Sonic World Adventure Wii Stage Entity Tables (Wii Version).
                         case "swa_wii":
-                            // Check that the template sheet exists.
+                            // Check that the template sheet exists. Inform the user and abort if its missing.
                             if (!File.Exists($@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\swa_wii.json"))
                             {
                                 Console.WriteLine("\nswa_wii.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
@@ -720,8 +740,9 @@ namespace KnuxTools
                             }
                             break;
 
+                        // Sonic World Adventure Wii Stage Entity Tables (PS2 Version).
                         case "swa_ps2":
-                            // Check that the template sheet exists.
+                            // Check that the template sheet exists. Inform the user and abort if its missing.
                             if (!File.Exists($@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\swa_wii.json"))
                             {
                                 Console.WriteLine("\nswa_wii.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
@@ -740,9 +761,9 @@ namespace KnuxTools
                             }
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported .set file types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -805,7 +826,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -817,6 +838,7 @@ namespace KnuxTools
                         Console.WriteLine();
                     }
 
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "ninjabread_pc":
@@ -829,9 +851,9 @@ namespace KnuxTools
                             using (KnuxLib.Engines.Gods.WAD wad = new(arg, KnuxLib.Engines.Gods.WAD.FormatVersion.NinjabreadMan_Wii, true))
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported .wad archive types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -976,7 +998,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -989,15 +1011,17 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting Hedgehog Engine 2010 Message Table to JSON.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "sonic2010": using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.sonic_2010, true)) break;
                         case "blueblur": using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.blueblur, true)) break;
                         case "william": using (KnuxLib.Engines.Hedgehog.MessageTable_2010 messageTable_2010 = new(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.william, true)) break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported message table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Hedgehog Engine 2010 Message Table types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1018,7 +1042,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1031,6 +1055,8 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting JSON to Hedgehog Engine 2010 Message Table.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "sonic2010":
@@ -1055,9 +1081,9 @@ namespace KnuxTools
                             }
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported message table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Hedgehog Engine 2010 Message Table types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1097,7 +1123,7 @@ namespace KnuxTools
                             "3. .pcrt (Lighting Instance)"
                         );
 
-                        // Wait for the user to input an option.
+                        // Wait for the user to input an option from the list.
                         switch (Console.ReadKey().KeyChar)
                         {
                             case '1': extension = "pccol"; break;
@@ -1105,7 +1131,7 @@ namespace KnuxTools
                             case '3': extension = "pcrt"; break;
                         }
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(extension))
                         {
                             Console.WriteLine("\nNo format extension specified! Aborting...\nPress any key to continue.");
@@ -1156,7 +1182,7 @@ namespace KnuxTools
 
                 #region Nu2 Engine formats.
                 case ".ai":
-                    // If a version isn't specified, then ask the user which message table format this is.
+                    // If a version isn't specified, then ask the user which AI entity table format this is.
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
@@ -1169,7 +1195,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1182,6 +1208,8 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting Nu2 Engine AI Entity Table to JSON.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "gcn": using (KnuxLib.Engines.Nu2.AIEntityTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.AIEntityTable.FormatVersion.GameCube, true)) break;
@@ -1189,14 +1217,14 @@ namespace KnuxTools
                         
                         // If a command line argument without a corresponding format has been passed, then inform the user.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported message table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine Ai Entity Table types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
                     break;
 
                 case ".nu2.aientitytable.json":
-                    // If a version isn't specified, then ask the user which message table format this is.
+                    // If a version isn't specified, then ask the user which AI entity table format this is.
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
@@ -1209,7 +1237,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1222,6 +1250,8 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting JSON to Nu2 Engine AI Entity Table.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "gcn":
@@ -1241,14 +1271,14 @@ namespace KnuxTools
 
                         // If a command line argument without a corresponding format has been passed, then inform the user.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported message table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine Ai Entity Table types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
                     break;
 
                 case ".wmp":
-                    // If a version isn't specified, then ask the user which message table format this is.
+                    // If a version isn't specified, then ask the user which Wumpa Fruit table format this is.
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
@@ -1261,7 +1291,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1274,21 +1304,23 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting Nu2 Engine Wumpa Fruit Table to JSON.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "gcn": using (KnuxLib.Engines.Nu2.WumpaTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.GameCube, true)) break;
                         case "ps2": using (KnuxLib.Engines.Nu2.WumpaTable aiEntityTable = new(arg, KnuxLib.Engines.Nu2.WumpaTable.FormatVersion.PlayStation2Xbox, true)) break;
-                        
+
                         // If a command line argument without a corresponding format has been passed, then inform the user.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported message table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine Wumpa Fruit Table types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
                     break;
 
                 case ".nu2.wumpatable.json":
-                    // If a version isn't specified, then ask the user which message table format this is.
+                    // If a version isn't specified, then ask the user which Wumpa Fruit table format this is.
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
@@ -1301,7 +1333,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1314,6 +1346,8 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting JSON to Nu2 Engine Wumpa Fruit Table.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "gcn":
@@ -1333,7 +1367,7 @@ namespace KnuxTools
 
                         // If a command line argument without a corresponding format has been passed, then inform the user.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported message table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine Wumpa Fruit Table types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1375,14 +1409,14 @@ namespace KnuxTools
                             "2. .328F438B (Legacy Collection 2)"
                         );
 
-                        // Wait for the user to input an option.
+                        // Wait for the user to input an option from the list.
                         switch (Console.ReadKey().KeyChar)
                         {
                             case '1': extension = "OSD"; break;
                             case '2': extension = "328F438B"; break;
                         }
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(extension))
                         {
                             Console.WriteLine("\nNo format extension specified! Aborting...\nPress any key to continue.");
@@ -1421,14 +1455,14 @@ namespace KnuxTools
                             "2. .31BF570E (Legacy Collection 2)"
                         );
 
-                        // Wait for the user to input an option.
+                        // Wait for the user to input an option from the list.
                         switch (Console.ReadKey().KeyChar)
                         {
                             case '1': extension = "SET"; break;
                             case '2': extension = "31BF570E"; break;
                         }
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(extension))
                         {
                             Console.WriteLine("\nNo format extension specified! Aborting...\nPress any key to continue.");
@@ -1442,6 +1476,7 @@ namespace KnuxTools
 
                     Console.WriteLine("Converting JSON to Rockman X8 Engine Stage Entity Table.");
 
+                    // Decide what to do based on the extension value.
                     switch (extension)
                     {
                         case "SET":
@@ -1464,7 +1499,7 @@ namespace KnuxTools
 
                 #region Sonic Storybook Engine formats.
                 case ".mtx":
-                    // If a version isn't specified, then ask the user which path format this is.
+                    // If a version isn't specified, then ask the user which message table format this is.
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
@@ -1477,7 +1512,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1490,6 +1525,8 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting Sonic Storybook Engine Secret Rings Message Table to JSON.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "international":
@@ -1500,16 +1537,16 @@ namespace KnuxTools
                             using (KnuxLib.Engines.Storybook.MessageTable_SecretRings messageTable = new(arg, true, true))
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Sonic Storybook Engine Message Table (Secret Rings) types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
                     break;
 
                 case ".storybook.messagetable_secretrings.json":
-                    // If a version isn't specified, then ask the user which path format this is.
+                    // If a version isn't specified, then ask the user which message table format this is.
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
@@ -1522,7 +1559,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1535,6 +1572,8 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting JSON to Sonic Storybook Engine Secret Rings Message Table.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "international":
@@ -1553,9 +1592,9 @@ namespace KnuxTools
                             }
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Sonic Storybook Engine Message Table (Secret Rings) types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1575,7 +1614,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1588,6 +1627,8 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting Sonic Storybook Engine Path Spline to OBJ.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "secretrings":
@@ -1598,9 +1639,9 @@ namespace KnuxTools
                             using (KnuxLib.Engines.Storybook.PathSpline pathSpline = new(arg, KnuxLib.Engines.Storybook.PathSpline.FormatVersion.BlackKnight, true))
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Sonic Storybook Engine path types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1616,7 +1657,7 @@ namespace KnuxTools
                     break;
 
                 case ".storybook.stageentitytableitems.json":
-                    // If a version isn't specified, then ask the user which path format this is.
+                    // If a version isn't specified, then ask the user which set format this is.
                     if (string.IsNullOrEmpty(version))
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
@@ -1629,7 +1670,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1642,6 +1683,8 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting JSON to Sonic Storybook Engine Secret Rings Stage Entity Table Object Table.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "secretrings":
@@ -1660,9 +1703,9 @@ namespace KnuxTools
                             }
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported wad archive types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Sonic Storybook Engine Stage Entity Table types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1696,7 +1739,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1709,14 +1752,16 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting Sonic World Adventure Wii Engine Area Points Table to JSON.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "ps2": using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new(arg, KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.PlayStation2, true)) break;
                         case "wii": using (KnuxLib.Engines.WorldAdventureWii.AreaPoints areaPoints = new(arg, KnuxLib.Engines.WorldAdventureWii.AreaPoints.FormatVersion.Wii, true)) break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported message table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Sonic World Adventure Wii Engine Area Point types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1736,7 +1781,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1749,6 +1794,8 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting JSON to Sonic World Adventure Wii Engine Area Points Table.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "ps2":
@@ -1767,9 +1814,9 @@ namespace KnuxTools
                             }
                             break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported message table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Sonic World Adventure Wii Engine Area Point types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1797,7 +1844,7 @@ namespace KnuxTools
                         // Wait for the user's input.
                         version = Console.ReadLine().ToLower();
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(version))
                         {
                             Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
@@ -1810,15 +1857,17 @@ namespace KnuxTools
                     }
 
                     Console.WriteLine("Converting Wayforward Engine collision to OBJ.");
+
+                    // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
                         case "duck": using (KnuxLib.Engines.Wayforward.Collision clb = new(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.duck, true)) break;
                         case "hgh": using (KnuxLib.Engines.Wayforward.Collision clb = new(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.hero, true)) break;
                         case "ss": using (KnuxLib.Engines.Wayforward.Collision clb = new(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.sevensirens, true)) break;
 
-                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported message table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Wayforward Engine collision types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1873,6 +1922,7 @@ namespace KnuxTools
                     // Ask for the user's input.
                     Console.Write("\n.gpu file: ");
 
+                    // Read the user's input. If there's nothing, then set gpuFile to null.
                     string? gpuFile = Console.ReadLine().Replace("\"", "");
                     if (gpuFile == "")
                         gpuFile = null;
@@ -1898,7 +1948,7 @@ namespace KnuxTools
                     break;
 
                 case ".westwood.messagetable.json":
-                    // If an extension isn't specified, then ask the user which point cloud extension to save with.
+                    // If an extension isn't specified, then ask the user which message table extension to save with.
                     if (string.IsNullOrEmpty(extension))
                     {
                         // List our supported extension options.
@@ -1909,14 +1959,14 @@ namespace KnuxTools
                             "2. .tru (UK)"
                         );
 
-                        // Wait for the user to input an option.
+                        // Wait for the user to input an option from the list.
                         switch (Console.ReadKey().KeyChar)
                         {
                             case '1': extension = "tre"; break;
                             case '2': extension = "tru"; break;
                         }
 
-                        // Sanity check the input, abort if its still null or empty.
+                        // Sanity check the input, inform the user and abort if its still null or empty.
                         if (string.IsNullOrEmpty(extension))
                         {
                             Console.WriteLine("\nNo format extension specified! Aborting...\nPress any key to continue.");
@@ -1937,15 +1987,12 @@ namespace KnuxTools
                     break;
                 #endregion
 
-                // If a command line argument without a corresponding format has been passed, then inform the user.
+                // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                 default:
                     Console.WriteLine($"Format extension {KnuxLib.Helpers.GetExtension(arg).ToLower()} is not valid for any currently supported formats.\nPress any key to continue.");
                     Console.ReadKey();
                     return;
             }
-
-            // Tell the user we're done (for if the cmd window is left open or if we're handling multiple files).
-            Console.WriteLine("Done!");
         }
     }
 }
