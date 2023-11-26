@@ -5,8 +5,8 @@ using System.Text;
 
 namespace KnuxTools
 {
-    // TODO: Make the indents for version/extension flags consistent.
-    // TODO: Potentially convert the "file has multiple variants" check into a function so I stop copy and pasting so much.
+    // TODO: Properly test everything, have been VERY lazy.
+    // TODO: Make a version of the NoVersionChecker function for extensions so I stop duping it?
     internal class Program
     {
         static void Main(string[] args)
@@ -233,37 +233,23 @@ namespace KnuxTools
         /// <param name="version">The version parameter to use.</param>
         private static void HandleDirectory(string arg, string? version)
         {
-            // If a version isn't specified, then ask the user which archive to save as.
+            // Carry out a version check.
+            version = NoVersionChecker(version,
+                                       "Please specify the archive type to pack this directory into, valid options are:",
+                                       new List<string> { "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)",
+                                                          "nights2\t\t\t(NiGHTS 2 Engine ONE File)",
+                                                          "storybook\t\t\t(Sonic Storybook Engine ONE File)",
+                                                          "storybook_texture\t\t(Sonic Storybook Engine TXD File)",
+                                                          "portable\t\t\t(Sonic The Portable Engine AMB File)",
+                                                          "swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)",
+                                                          "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)",
+                                                          "wayforward\t\t\t(Wayforward Engine PAK File)"},
+                                       new List<bool> { false, false, false, false, false, false, false, false },
+                                       "Archive Type");
+
+            // If the version is still null or empty, then abort.
             if (string.IsNullOrEmpty(version))
-            {
-                // List the supported archive types.
-                Console.WriteLine("Please specify the archive type to pack this directory into, valid options are:");
-                Console.WriteLine("    hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)");
-                Console.WriteLine("    nights2\t\t\t(NiGHTS 2 Engine ONE File)");
-                Console.WriteLine("    storybook\t\t\t(Sonic Storybook Engine ONE File)");
-                Console.WriteLine("    storybook_texture\t\t(Sonic Storybook Engine TXD File)");
-                Console.WriteLine("    portable\t\t\t(Sonic The Portable Engine AMB File)");
-                Console.WriteLine("    swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)");
-                Console.WriteLine("    swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)");
-                Console.WriteLine("    wayforward\t\t\t(Wayforward Engine PAK File)");
-
-                // Ask for the user's input.
-                Console.Write("\nArchive Type: ");
-
-                // Wait for the user's input.
-                version = Console.ReadLine().ToLower();
-
-                // Sanity check the input, inform the user and abort if its still null or empty.
-                if (string.IsNullOrEmpty(version))
-                {
-                    Console.WriteLine("\nNo archive type specified! Aborting...\nPress any key to continue.");
-                    Console.ReadKey();
-                    return;
-                }
-
-                // Add a line break.
-                Console.WriteLine();
-            }
+                return;
 
             // Decide what to do based on the version value.
             // In most cases this will be writing a line for user feedback then running the ImportAndSaveArchive with the right type and extension.
@@ -379,33 +365,19 @@ namespace KnuxTools
                 case ".fbx":
                 case ".dae":
                 case ".obj":
-                    // If a version isn't specified, then ask the user which format to import for.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file is a generic model, please specifiy what format to import and save it as:",
+                                               new List<string> { "carz\t\t\t(CarZ Engine SCO model & MAT material library)",
+                                                                  "wayforward\t\t\t(Wayforward Engine WF3D Mesh)",
+                                                                  "wayforward_collision_duck\t(Wayforward Engine Collision for Ducktales Remastered)",
+                                                                  "wayforward_collision_hgh\t(Wayforward Engine Collision for Half-Genie Hero)",
+                                                                  "wayforward_collision_ss\t(Wayforward Engine Collision for Seven Sirens)"},
+                                               new List<bool> { false, true, true, true, true });
+                    
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file is a generic model, please specifiy what format to import and save it as:");
-                        Console.WriteLine("    carz\t\t\t(CarZ Engine SCO model & MAT material library)");
-                        ColourConsole("    wayforward\t\t\t(Wayforward Engine WF3D Mesh)");
-                        ColourConsole("    wayforward_collision_duck\t(Wayforward Engine Collision for Ducktales Remastered)");
-                        ColourConsole("    wayforward_collision_hgh\t(Wayforward Engine Collision for Half-Genie Hero)");
-                        ColourConsole("    wayforward_collision_ss\t(Wayforward Engine Collision for Seven Sirens)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     // Decide what to do based on the version value.
                     switch (version.ToLower())
@@ -521,34 +493,20 @@ namespace KnuxTools
 
                 #region Generic File Formats.
                 case ".bin":
-                    // If a version isn't specified, then ask the user which format this .bin file is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "flipnic\t\t\t(Flipnic Binary Archive File)",
+                                                                  "storybook_motion\t\t(Sonic Storybook Engine Player Motion File)",
+                                                                  "storybook_set_sr\t\t(Sonic Storybook Engine Stage Entity Table File (Secret Rings)",
+                                                                  "storybook_set_bk\t\t(Sonic Storybook Engine Stage Entity Table File (Black Knight)",
+                                                                  "storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))",
+                                                                  "storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))"},
+                                               new List<bool> { true, true, true, true, false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        ColourConsole("    flipnic\t\t\t(Flipnic Binary Archive File)");
-                        ColourConsole("    storybook_motion\t\t(Sonic Storybook Engine Player Motion File)");
-                        ColourConsole("    storybook_set_sr\t\t(Sonic Storybook Engine Stage Entity Table File (Secret Rings))");
-                        ColourConsole("    storybook_set_bk\t\t(Sonic Storybook Engine Stage Entity Table File (Black Knight))");
-                        Console.WriteLine("    storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))");
-                        Console.WriteLine("    storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     // Decide what to do based on the version value.
                     switch (version.ToLower())
@@ -628,31 +586,17 @@ namespace KnuxTools
                     break;
 
                 case ".one":
-                    // If a version isn't specified, then ask the user which ONE format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "nights2\t\t(NiGHTS 2 Engine ONE File)",
+                                                                  "storybook\t\t(Sonic Storybook Engine ONE File)",
+                                                                  "swawii\t\t(Sonic World Adventure Wii Engine ONE File)"},
+                                               new List<bool> { false, false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    nights2\t\t\t(NiGHTS 2 Engine ONE File)");
-                        Console.WriteLine("    storybook\t\t\t(Sonic Storybook Engine ONE File)");
-                        Console.WriteLine("    swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     // Decide what to do based on the version value.
                     switch (version.ToLower())
@@ -684,31 +628,17 @@ namespace KnuxTools
                     break;
 
                 case ".set":
-                    // If a version isn't specified, then ask the user which ONE format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "rockx8\t(Rockman X8 Engine Stage Entity Table File)",
+                                                                  "swa_wii\t(Sonic World Adventure Wii Stage Entity Table File (Wii))",
+                                                                  "swa_ps2\t(Sonic World Adventure Wii Stage Entity Table File (PS2))"},
+                                               new List<bool> { true, true, true });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    rockx8\t\t\t(Rockman X8 Engine Stage Entity Table File)");
-                        Console.WriteLine("    swa_wii\t\t\t(Sonic World Adventure Wii Stage Entity Table File (Wii))");
-                        Console.WriteLine("    swa_ps2\t\t\t(Sonic World Adventure Wii Stage Entity Table File (PS2))");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     // Decide what to do based on the version value.
                     switch (version.ToLower())
@@ -813,30 +743,16 @@ namespace KnuxTools
 
                 #region GODS Engine formats.
                 case ".wad":
-                    // If a version isn't specified, then ask the user which WAD format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "ninjabread_pc\t(Ninjabread Man (PC/PS2))",
+                                                                  "ninjabread_wii\t(Ninjabread Man (Wii))"},
+                                               new List<bool> { true, true });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    ninjabread_pc\t\t\t(Ninjabread Man (PC/PS2))");
-                        Console.WriteLine("    ninjabread_wii\t\t\t(Ninjabread Man (Wii))");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     // Decide what to do based on the version value.
                     switch (version.ToLower())
@@ -984,31 +900,17 @@ namespace KnuxTools
                     break;
 
                 case ".xtb":
-                    // If a version isn't specified, then ask the user which message table format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "sonic2010\t(Sonic Colours)",
+                                                                  "blueblur\t(Sonic Generations)",
+                                                                  "william\t(Mario and Sonic at the London 2012 Olympic Games)"},
+                                               new List<bool> { false, false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    sonic2010\t\t\t(Sonic Colours)");
-                        Console.WriteLine("    blueblur\t\t\t(Sonic Generations)");
-                        Console.WriteLine("    william\t\t\t(Mario and Sonic at the London 2012 Olympic Games)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting Hedgehog Engine 2010 Message Table to JSON.");
 
@@ -1028,31 +930,17 @@ namespace KnuxTools
                     break;
 
                 case ".hedgehog.messagetable_2010.json":
-                    // If a version isn't specified, then ask the user which message table format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant to save with:",
+                                               new List<string> { "sonic2010\t(Sonic Colours)",
+                                                                  "blueblur\t(Sonic Generations)",
+                                                                  "william\t(Mario and Sonic at the London 2012 Olympic Games)"},
+                                               new List<bool> { false, false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants, please specifiy the variant to save with:");
-                        Console.WriteLine("    sonic2010\t\t\t(Sonic Colours)");
-                        Console.WriteLine("    blueblur\t\t\t(Sonic Generations)");
-                        Console.WriteLine("    william\t\t\t(Mario and Sonic at the London 2012 Olympic Games)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting JSON to Hedgehog Engine 2010 Message Table.");
 
@@ -1182,30 +1070,16 @@ namespace KnuxTools
 
                 #region Nu2 Engine formats.
                 case ".ai":
-                    // If a version isn't specified, then ask the user which AI entity table format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "gcn\t\t(GameCube)",
+                                                                  "ps2\t\t(PlayStation 2/Xbox)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    gcn\t\t\t(GameCube)");
-                        Console.WriteLine("    ps2\t\t\t(PlayStation 2/Xbox)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting Nu2 Engine AI Entity Table to JSON.");
 
@@ -1224,30 +1098,16 @@ namespace KnuxTools
                     break;
 
                 case ".nu2.aientitytable.json":
-                    // If a version isn't specified, then ask the user which AI entity table format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant to save with:",
+                                               new List<string> { "gcn\t\t(GameCube)",
+                                                                  "ps2\t\t(PlayStation 2/Xbox)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    gcn\t\t\t(GameCube)");
-                        Console.WriteLine("    ps2\t\t\t(PlayStation 2/Xbox)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting JSON to Nu2 Engine AI Entity Table.");
 
@@ -1278,30 +1138,16 @@ namespace KnuxTools
                     break;
 
                 case ".wmp":
-                    // If a version isn't specified, then ask the user which Wumpa Fruit table format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "gcn\t\t(GameCube)",
+                                                                  "ps2\t\t(PlayStation 2/Xbox)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    gcn\t\t\t(GameCube)");
-                        Console.WriteLine("    ps2\t\t\t(PlayStation 2/Xbox)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting Nu2 Engine Wumpa Fruit Table to JSON.");
 
@@ -1320,30 +1166,16 @@ namespace KnuxTools
                     break;
 
                 case ".nu2.wumpatable.json":
-                    // If a version isn't specified, then ask the user which Wumpa Fruit table format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant to save with:",
+                                               new List<string> { "gcn\t\t(GameCube)",
+                                                                  "ps2\t\t(PlayStation 2/Xbox)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    gcn\t\t\t(GameCube)");
-                        Console.WriteLine("    ps2\t\t\t(PlayStation 2/Xbox)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting JSON to Nu2 Engine Wumpa Fruit Table.");
 
@@ -1499,30 +1331,16 @@ namespace KnuxTools
 
                 #region Sonic Storybook Engine formats.
                 case ".mtx":
-                    // If a version isn't specified, then ask the user which message table format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "international\t(English and other languages)",
+                                                                  "japanese\t\t(Japanese)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    international\t\t(English and other languages)");
-                        Console.WriteLine("    japanese\t\t\t(Japanese)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting Sonic Storybook Engine Secret Rings Message Table to JSON.");
 
@@ -1546,30 +1364,16 @@ namespace KnuxTools
                     break;
 
                 case ".storybook.messagetable_secretrings.json":
-                    // If a version isn't specified, then ask the user which message table format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant to save with:",
+                                               new List<string> { "international\t(English and other languages)",
+                                                                  "japanese\t\t(Japanese)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    international\t\t\t(English and other languages)");
-                        Console.WriteLine("    japanese\t\t\t(Japanese)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting JSON to Sonic Storybook Engine Secret Rings Message Table.");
 
@@ -1601,30 +1405,16 @@ namespace KnuxTools
                     break;
 
                 case ".pth":
-                    // If a version isn't specified, then ask the user which path format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "secretrings\t\t(Sonic and the Secret Rings)",
+                                                                  "blackknight\t\t(Sonic and the Black Knight)"},
+                                               new List<bool> { true, true });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    secretrings\t\t\t(Sonic and the Secret Rings)");
-                        Console.WriteLine("    blackknight\t\t\t(Sonic and the Black Knight)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting Sonic Storybook Engine Path Spline to OBJ.");
 
@@ -1657,30 +1447,16 @@ namespace KnuxTools
                     break;
 
                 case ".storybook.stageentitytableitems.json":
-                    // If a version isn't specified, then ask the user which set format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "secretrings\t\t(Sonic and the Secret Rings)",
+                                                                  "blackknight\t\t(Sonic and the Black Knight)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    secretrings\t\t\t(Sonic and the Secret Rings)");
-                        Console.WriteLine("    blackknight\t\t\t(Sonic and the Black Knight)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting JSON to Sonic Storybook Engine Secret Rings Stage Entity Table Object Table.");
 
@@ -1726,30 +1502,16 @@ namespace KnuxTools
 
                 #region Sonic World Adventure Wii Engine formats.
                 case ".wap":
-                    // If a version isn't specified, then ask the user which area points format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "ps2\t\t(PlayStation 2)",
+                                                                  "wii\t\t(Wii)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    ps2\t\t\t(PlayStation 2)");
-                        Console.WriteLine("    wii\t\t\t(Wii)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting Sonic World Adventure Wii Engine Area Points Table to JSON.");
 
@@ -1768,30 +1530,16 @@ namespace KnuxTools
                     break;
 
                 case ".worldadventurewii.areapoints.json":
-                    // If a version isn't specified, then ask the user which area points format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant to save with:",
+                                               new List<string> { "ps2\t\t(PlayStation 2)",
+                                                                  "wii\t\t(Wii)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    ps2\t\t\t(PlayStation 2)");
-                        Console.WriteLine("    wii\t\t\t(Wii)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting JSON to Sonic World Adventure Wii Engine Area Points Table.");
 
@@ -1830,31 +1578,17 @@ namespace KnuxTools
 
                 #region Wayforward Engine formats.
                 case ".clb":
-                    // If a version isn't specified, then ask the user which collision format this is.
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "duck\t(Ducktales Remastered)",
+                                                                  "hgh\t\t(Half-Genie Hero)",
+                                                                  "ss\t\t(Seven Sirens)"},
+                                               new List<bool> { true, false, true });
+
+                    // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
-                    {
-                        Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
-                        Console.WriteLine("    duck\t\t(Ducktales Remastered)");
-                        Console.WriteLine("    hgh\t\t\t(Half-Genie Hero)");
-                        Console.WriteLine("    ss\t\t\t(Seven Sirens)");
-
-                        // Ask for the user's input.
-                        Console.Write("\nFormat Type: ");
-
-                        // Wait for the user's input.
-                        version = Console.ReadLine().ToLower();
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(version))
-                        {
-                            Console.WriteLine("\nNo format type specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                        return;
 
                     Console.WriteLine("Converting Wayforward Engine collision to OBJ.");
 
@@ -1993,6 +1727,54 @@ namespace KnuxTools
                     Console.ReadKey();
                     return;
             }
+        }
+    
+        /// <summary>
+        /// Asks the user for a version type for formats that need it.
+        /// </summary>
+        /// <param name="version">The version argument.</param>
+        /// <param name="noticeLine">What should be printed to inform the user.</param>
+        /// <param name="formats">The list of valid values for this version check.</param>
+        /// <param name="redColours">Whether or not to colour each value red.</param>
+        /// <param name="userInput">What to write in the section where the user should type.</param>
+        /// <returns></returns>
+        private static string? NoVersionChecker(string? version, string noticeLine, List<string> formats, List<bool> redColours, string userInput = "Format Type")
+        {
+            // Only do all the console stuff if the user hasn't already passed in a version value.
+            if (string.IsNullOrEmpty(version))
+            {
+                // Inform the user of the need for a version value.
+                Console.WriteLine(noticeLine);
+
+                // Loop through each value and write it, either using the ColourConsole function or the normal WriteLine one.
+                for (int format = 0; format < formats.Count; format++)
+                {
+                    if (redColours[format])
+                        ColourConsole($"    {formats[format]}");
+                    else
+                        Console.WriteLine($"    {formats[format]}");
+                }
+
+                // Ask for the user's input.
+                Console.Write($"\n{userInput}: ");
+
+                // Wait for the user's input.
+                version = Console.ReadLine().ToLower();
+
+                // Sanity check the input, inform the user if its still empty or null. If not, add a line break.
+                if (string.IsNullOrEmpty(version))
+                {
+                    Console.WriteLine($"\nNo {userInput.ToLower()} specified! Aborting...\nPress any key to continue.");
+                    Console.ReadKey();
+                }
+                else
+                {
+                    Console.WriteLine();
+                }
+            }
+
+            // Return the (hopefully updated) version value.
+            return version;
         }
     }
 }
