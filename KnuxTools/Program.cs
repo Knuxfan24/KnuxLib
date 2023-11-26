@@ -1,12 +1,11 @@
 ﻿using System.Globalization;
 using System.Numerics;
+using System.Reflection;
 using System.Text;
 
 namespace KnuxTools
 {
-    // TODO: Implement:
-    //       World Adventure Wii SET -> HSON
-    //       Wayforward Model Importing
+    // TODO: Implement Wayforward Model Importing
     // TODO: Tidy up duplicated comments and parts where they are sorely lacking.
     // TODO: Make the indents for version/extension flags consistent.
     internal class Program
@@ -512,7 +511,7 @@ namespace KnuxTools
 
                         case "storybook_set_sr":
                             // Check that the template sheet exists.
-                            if (!File.Exists($@"{Environment.CurrentDirectory}\HSON Templates\secret_rings.json"))
+                            if (!File.Exists($@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\secret_rings.json"))
                             {
                                 Console.WriteLine("\nsecret_rings.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
                                 Console.ReadKey();
@@ -520,10 +519,10 @@ namespace KnuxTools
                             }
 
                             Console.WriteLine("Converting Sonic Storybook Engine Stage Entity Table to HSON.");
-                            using (KnuxLib.Engines.Storybook.StageEntityTable set = new(arg, $@"{Environment.CurrentDirectory}\HSON Templates\secret_rings.json"))
+                            using (KnuxLib.Engines.Storybook.StageEntityTable set = new(arg, $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\secret_rings.json"))
                             {
                                 set.ExportHSON(Path.ChangeExtension(arg, ".hson"),
-                                               $@"{Environment.CurrentDirectory}\HSON Templates\secret_rings.json",
+                                               $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\secret_rings.json",
                                                Path.GetFileNameWithoutExtension(arg),
                                                Environment.UserName,
                                                $"Sonic and the Secret Rings set file {Path.GetFileName(arg)} converted to the HSON format.");
@@ -532,7 +531,7 @@ namespace KnuxTools
 
                         case "storybook_set_bk":
                             // Check that the template sheet exists.
-                            if (!File.Exists($@"{Environment.CurrentDirectory}\HSON Templates\black_knight.json"))
+                            if (!File.Exists($@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\black_knight.json"))
                             {
                                 Console.WriteLine("\nblack_knight.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
                                 Console.ReadKey();
@@ -540,10 +539,10 @@ namespace KnuxTools
                             }
 
                             Console.WriteLine("Converting Sonic Storybook Engine Stage Entity Table to HSON.");
-                            using (KnuxLib.Engines.Storybook.StageEntityTable set = new(arg, $@"{Environment.CurrentDirectory}\HSON Templates\black_knight.json"))
+                            using (KnuxLib.Engines.Storybook.StageEntityTable set = new(arg, $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\black_knight.json"))
                             {
                                 set.ExportHSON(Path.ChangeExtension(arg, ".hson"),
-                                               $@"{Environment.CurrentDirectory}\HSON Templates\black_knight.json",
+                                               $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\black_knight.json",
                                                Path.GetFileNameWithoutExtension(arg),
                                                Environment.UserName,
                                                $"Sonic and the Black Knight set file {Path.GetFileName(arg)} converted to the HSON format.");
@@ -626,7 +625,8 @@ namespace KnuxTools
                     {
                         Console.WriteLine("This file has multiple variants that can't be auto detected, please specifiy the variant:");
                         Console.WriteLine("    rockx8\t\t\t(Rockman X8 Engine Stage Entity Table File)");
-                        Console.WriteLine("    swa\t\t\t(Sonic World Adventure Wii Stage Entity Table File)");
+                        Console.WriteLine("    swa_wii\t\t\t(Sonic World Adventure Wii Stage Entity Table File (Wii))");
+                        Console.WriteLine("    swa_ps2\t\t\t(Sonic World Adventure Wii Stage Entity Table File (PS2))");
 
                         // Ask for the user's input.
                         Console.Write("\nFormat Type: ");
@@ -653,8 +653,44 @@ namespace KnuxTools
                             using (KnuxLib.Engines.RockmanX8.StageEntityTable stageEntityTable = new(arg, KnuxLib.Engines.RockmanX8.StageEntityTable.FormatVersion.Original, true))
                             break;
 
-                        case "swawii":
-                            // TODO: Figure this out later.
+                        case "swa_wii":
+                            // Check that the template sheet exists.
+                            if (!File.Exists($@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\swa_wii.json"))
+                            {
+                                Console.WriteLine("\nswa_wii.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
+                                Console.ReadKey();
+                                return;
+                            }
+
+                            Console.WriteLine("Converting Sonic World Adventure Wii Engine Stage Entity Table to HSON.");
+                            using (KnuxLib.Engines.WorldAdventureWii.StageEntityTable set = new(arg, $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\swa_wii.json", KnuxLib.Engines.WorldAdventureWii.StageEntityTable.FormatVersion.Wii))
+                            {
+                                set.ExportHSON(Path.ChangeExtension(arg, ".hson"),
+                                               $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\swa_wii.json",
+                                               Path.GetFileNameWithoutExtension(arg),
+                                               Environment.UserName,
+                                               $"Sonic Unleashed (Wii) set file {Path.GetFileName(arg)} converted to the HSON format.");
+                            }
+                            break;
+
+                        case "swa_ps2":
+                            // Check that the template sheet exists.
+                            if (!File.Exists($@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\swa_wii.json"))
+                            {
+                                Console.WriteLine("\nswa_wii.json not found in the HSON Templates directory! Aborting...\nPress any key to continue.");
+                                Console.ReadKey();
+                                return;
+                            }
+
+                            Console.WriteLine("Converting Sonic World Adventure Wii Engine Stage Entity Table to HSON.");
+                            using (KnuxLib.Engines.WorldAdventureWii.StageEntityTable set = new(arg, $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\swa_wii.json", KnuxLib.Engines.WorldAdventureWii.StageEntityTable.FormatVersion.PlayStation2))
+                            {
+                                set.ExportHSON(Path.ChangeExtension(arg, ".hson"),
+                                               $@"{Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)}\HSON Templates\swa_wii.json",
+                                               Path.GetFileNameWithoutExtension(arg),
+                                               Environment.UserName,
+                                               $"Sonic Unleashed (PS2) set file {Path.GetFileName(arg)} converted to the HSON format.");
+                            }
                             break;
 
                         // If a command line argument without a corresponding format has been passed, then inform the user.
