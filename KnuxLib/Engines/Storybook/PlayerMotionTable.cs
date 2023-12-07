@@ -128,6 +128,9 @@
                 // Save this motion entry.
                 Data.Add(motion);
             }
+
+            // Close Marathon's BinaryReader.
+            reader.Close();
         }
 
         /// <summary>

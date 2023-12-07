@@ -36,6 +36,8 @@ The following formats are only partially supported, either due to missing functi
 
 - [Stage Entity Table (.328f438b/.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs). Entirely functional besides basically every value being an unknown.
 
+- [SLD Spline (.6ae91701/.sld)](KnuxLib/Engines/RockmanX7/SLDSpline.cs). Has very basic reading, but half of the file is an unknown placeholder that clearly interacts with the spline points in some ways. Can also export to a basic OBJ.
+
 ## Rockman X8 Engine
 
 - [Stage Entity Table (.31bf570e/.set)](KnuxLib/Engines/RockmanX8/StageEntityTable.cs). Entirely functional besides basically every value being an unknown.

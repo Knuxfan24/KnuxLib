@@ -135,7 +135,8 @@ namespace KnuxTools
                 Console.WriteLine("Rockman X7 Engine:");
                 ColourConsole("Stage Entity Table (.328f438b/.osd)");
                 ColourConsole("    Extension Flag (Original) - OSD", true, ConsoleColor.Yellow);
-                ColourConsole("    Extension Flag (Legacy Collection 2) - 328F438B\n", true, ConsoleColor.Yellow);
+                ColourConsole("    Extension Flag (Legacy Collection 2) - 328F438B", true, ConsoleColor.Yellow);
+                ColourConsole("SLD Spline (.6ae91701/.sld)\n");
 
                 Console.WriteLine("Rockman X8 Engine:");
                 ColourConsole("Stage Entity Table (.31bf570e/.set)");
@@ -1227,6 +1228,12 @@ namespace KnuxTools
                 case ".osd":
                     Console.WriteLine("Converting Rockman X7 Engine Stage Entity Table to JSON.");
                     using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true))
+                        break;
+
+                case ".6ae91701":
+                case ".sld":
+                    Console.WriteLine("Converting Rockman X7 Engine SLD Spline to OBJ.");
+                    using (KnuxLib.Engines.RockmanX7.SLDSpline sldSpline = new(arg, true))
                         break;
 
                 case ".rockmanx7.stageentitytable.json":
