@@ -22,7 +22,20 @@
             { 0x23D4C76D, ".tam" },
             { 0x3AE9C67F, ".red" },
             { 0x4FA96078, ".cl2" },
-            { 0x5B9EA119, ".dem" }
+            { 0x5B9EA119, ".dem" },
+            { 0x724DF879, ".wav" },
+            { 0x241F5DEB, ".tex" }, // Not In OG
+            { 0x1BCC4966, ".srq" }, // Not In OG
+            { 0x15D782FB, ".sbk" }, // Not In OG
+            { 0x167DBBFF, ".stg" }, // Not In OG
+            { 0x185365EA, ".emp" }, // Not In OG
+            { 0x7808EA10, ".rtx" }, // Not In OG
+            { 0x7772787E, ".evt" },
+            { 0x0589CBA3, ".mcb" },
+            { 0x311E683F, ".rl" },
+            { 0x31BF570E, ".set" },
+            { 0x1E3EE6FB, ".wsx" },
+            { 0x1C7858A2, ".lpk" }
         };
 
         // Actual data presented to the end user.
