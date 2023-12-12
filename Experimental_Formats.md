@@ -12,6 +12,10 @@ The following formats are only partially supported, either due to missing functi
 
 - [Volume Blob (.vol)](KnuxLib/Engines/Black/VolumeBlob.cs). Currently reads, decompresses (in the case of the 3DS version) and exports data from the vol files found in Shantae and the Pirate's Curse (although the GOG version has a different header which causes problems?).
 
+## Capcom MT Framework Engine
+
+- [Archive (.arc)](KnuxLib/Engines/CapcomMT/Archive.cs). Reads and extracts from the Megaman X Legacy Collection 2, but saving is currently broken. Also only has a few X7 file extensions.
+
 ## Flipnic Engine
 
 - [Binary Archive (.bin)](KnuxLib/Engines/Flipnic/BinaryArchive.cs). Currently reads and exports data, but doesn't have any functionality for importing or saving, as testing it would be a pain in the ass.
@@ -34,7 +38,7 @@ The following formats are only partially supported, either due to missing functi
 
 ## Rockman X7 Engine
 
-- [Stage Entity Table (.328f438b/.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs). Entirely functional besides basically every value being an unknown.
+- [Stage Entity Table (.328f438b/.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs). Entirely functional besides basically every value being an unknown. Slowly working through and figuring out what each object type is.
 
 - [SLD Spline (.6ae91701/.sld)](KnuxLib/Engines/RockmanX7/SLDSpline.cs). Has very basic reading, but half of the file is an unknown placeholder that clearly interacts with the spline points in some ways. Can also export to a basic OBJ.
 

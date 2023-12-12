@@ -81,6 +81,9 @@ namespace KnuxTools
                 ColourConsole("Data Archive (.data) - Extracts to a directory of the same name as the input archive (importing not yet possible).");
                 ColourConsole("Volume Blob (.vol) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
 
+                Console.WriteLine("Capcom MT Framework Engine:");
+                ColourConsole("Archive (.arc) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+
                 Console.WriteLine("CarZ Engine:");
                 Console.WriteLine("Material Library (.mat) - Exports to the MTL material library standard and imports from an Assimp compatible model.");
                 Console.WriteLine("3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model.");
@@ -727,6 +730,13 @@ namespace KnuxTools
                 case ".vol":
                     Console.WriteLine("Extracting Engine Black volume blob.");
                     using (KnuxLib.Engines.Black.VolumeBlob vol = new(arg, true))
+                    break;
+                #endregion
+
+                #region Capcom MT Framework Engine formats.
+                case ".arc":
+                    Console.WriteLine("Extracting Capcom MT Framework Engine archive.");
+                    using (KnuxLib.Engines.CapcomMT.Archive arc = new(arg, true))
                     break;
                 #endregion
 
