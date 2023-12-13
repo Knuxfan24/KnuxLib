@@ -1,5 +1,6 @@
 ﻿namespace KnuxLib.Engines.CapcomMT
 {
+    // TODO: Determine if file order actually matters, didn't in X7's stage01_01_cmn.arc file.
     public class Archive : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -124,9 +125,8 @@
                 // Read this file's compressed size.
                 int compressedSize = reader.ReadInt32();
 
-                // Read an unknown floating point value.
-                // TODO: What is this? Some sort of compression ratio read out maybe? Is important in some way. Skyth thinks this could be a CRC32 hash of some sort.
-                float unknownFloat = reader.ReadSingle();
+                // Read this file's decompressed size, subtracting 0x40000000 to deal with the random extra nibble.
+                uint decompressedSize = reader.ReadUInt32() - 0x40000000;
 
                 // Read the offset to this file's data.
                 uint dataOffset = reader.ReadUInt32();
@@ -216,9 +216,8 @@
                 // Write the compressed size of this file.
                 writer.Write(CompressedData[dataIndex].Length);
 
-                // Write a placeholder for the unknown floating point value.
-                // TODO: What is this and how do we calculate it?
-                writer.Write(0f);
+                // Write the uncompressed size of this file, adding 0x40000000 to handle the extra nibble.
+                writer.Write(Data[dataIndex].Data.Length + 0x40000000);
 
                 // Add an offset to this file's data.
                 writer.AddOffset($"File{dataIndex}Data");

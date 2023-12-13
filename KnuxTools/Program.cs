@@ -82,7 +82,8 @@ namespace KnuxTools
                 ColourConsole("Volume Blob (.vol) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
 
                 Console.WriteLine("Capcom MT Framework Engine:");
-                ColourConsole("Archive (.arc) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+                Console.WriteLine("Archive (.arc) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
+                ColourConsole("    Version Flag (importing) - capcom\n", true, ConsoleColor.Yellow);
 
                 Console.WriteLine("CarZ Engine:");
                 Console.WriteLine("Material Library (.mat) - Exports to the MTL material library standard and imports from an Assimp compatible model.");
@@ -240,7 +241,8 @@ namespace KnuxTools
             // Carry out a version check.
             version = NoVersionChecker(version,
                                        "Please specify the archive type to pack this directory into, valid options are:",
-                                       new List<string> { "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)",
+                                       new List<string> { "capcom\t\t\t(Capcom MT Framework Engine)",
+                                                          "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)",
                                                           "nights2\t\t\t(NiGHTS 2 Engine ONE File)",
                                                           "storybook\t\t\t(Sonic Storybook Engine ONE File)",
                                                           "storybook_texture\t\t(Sonic Storybook Engine TXD File)",
@@ -248,7 +250,7 @@ namespace KnuxTools
                                                           "swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)",
                                                           "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)",
                                                           "wayforward\t\t\t(Wayforward Engine PAK File)"},
-                                       new List<bool> { false, false, false, false, false, false, false, false },
+                                       new List<bool> { false, false, false, false, false, false, false, false, false },
                                        "Archive Type");
 
             // If the version is still null or empty, then abort.
@@ -259,16 +261,22 @@ namespace KnuxTools
             // In most cases this will be writing a line for user feedback then running the ImportAndSaveArchive with the right type and extension.
             switch (version.ToLower())
             {
-                // NiGHTS 2 Engine ONE Archives.
-                case "nights2":
-                    Console.WriteLine("Packing directory for NiGHTS 2 Engine.");
-                    ImportAndSaveArchive(typeof(KnuxLib.Engines.NiGHTS2.ONE), arg, "one");
+                // Capcom MT Framework Arc Archives.
+                case "capcom":
+                    Console.WriteLine("Packing directory for Capcom MT Framework Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.CapcomMT.Archive), arg, "one");
                     break;
 
                 // Hedgehog Engine Terrain Instance Conversion.
                 case "hh_instance2pointcloud":
                     Console.WriteLine("Converting Hedgehog Engine Terrain Instance Info files to Hedgehog Engine Point Cloud files.");
                     KnuxLib.Engines.Hedgehog.InstanceInfo.ConvertDirectoryToPointCloud(arg);
+                    break;
+
+                // NiGHTS 2 Engine ONE Archives.
+                case "nights2":
+                    Console.WriteLine("Packing directory for NiGHTS 2 Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.NiGHTS2.ONE), arg, "one");
                     break;
 
                 // Sonic Storybook Series ONE Archives.

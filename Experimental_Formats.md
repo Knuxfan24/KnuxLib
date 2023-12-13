@@ -12,10 +12,6 @@ The following formats are only partially supported, either due to missing functi
 
 - [Volume Blob (.vol)](KnuxLib/Engines/Black/VolumeBlob.cs). Currently reads, decompresses (in the case of the 3DS version) and exports data from the vol files found in Shantae and the Pirate's Curse (although the GOG version has a different header which causes problems?).
 
-## Capcom MT Framework Engine
-
-- [Archive (.arc)](KnuxLib/Engines/CapcomMT/Archive.cs). Reads and extracts from the Megaman X Legacy Collection 2, but saving is currently broken. Also only has a few X7 file extensions.
-
 ## Flipnic Engine
 
 - [Binary Archive (.bin)](KnuxLib/Engines/Flipnic/BinaryArchive.cs). Currently reads and exports data, but doesn't have any functionality for importing or saving, as testing it would be a pain in the ass.

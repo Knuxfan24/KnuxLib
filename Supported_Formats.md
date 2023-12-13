@@ -1,5 +1,12 @@
 A list of file formats fully supported by KnuxLib, organised by engine. Formats listed here are supported by the KnuxTools project.
 
+## Capcom MT Framework Engine
+
+- [Archive (.arc)](KnuxLib/Engines/CapcomMT/Archive.cs) reading, writing, data extraction and data importing.
+
+> **Note**
+> Needs to be tested more in depth.
+
 ## CarZ Engine
 
 Known games:
