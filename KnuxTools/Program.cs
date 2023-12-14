@@ -264,7 +264,7 @@ namespace KnuxTools
                 // Capcom MT Framework Arc Archives.
                 case "capcom":
                     Console.WriteLine("Packing directory for Capcom MT Framework Engine.");
-                    ImportAndSaveArchive(typeof(KnuxLib.Engines.CapcomMT.Archive), arg, "one");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.CapcomMT.Archive), arg, "arc");
                     break;
 
                 // Hedgehog Engine Terrain Instance Conversion.
