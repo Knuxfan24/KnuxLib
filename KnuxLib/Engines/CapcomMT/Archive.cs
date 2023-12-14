@@ -181,10 +181,12 @@
 
         /// <summary>
         /// Saves this format's file.
-        /// TODO: Handle saving V9 archives.
+        /// TODO: Properly test V9 saving.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath)
+        /// <param name="version">The version to save as.</param>
+        /// <param name="compressed">Whether the files in this archive need to be compressed (if applicable).</param>
+        public void Save(string filepath, ushort version = 0x07, bool compressed = true)
         {
             // Set up a list of compressed data.
             List<byte[]> CompressedData = new();
@@ -206,11 +208,17 @@
             writer.WriteNullPaddedString("ARC", 0x04);
 
             // Write this file's version.
-            // TODO: Unhardcode if I end up supporting versions other than 7.
-            writer.Write((ushort)0x07);
+            writer.Write(version);
 
             // Write the amount of files in this archive.
             writer.Write((ushort)Data.Count);
+
+            // Write version 9's compression flag.
+            if (version == 0x09)
+                if (compressed)
+                    writer.Write(0);
+                else
+                    writer.Write(1);
 
             // Loop through each file's information.
             for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
@@ -232,8 +240,25 @@
                 else
                     writer.Write((uint)fileType);
 
-                // Write the compressed size of this file.
-                writer.Write(CompressedData[dataIndex].Length);
+                // Determine how to write the file sizes based on the version.
+                switch (version)
+                {
+                    case 0x07:
+                        // Write the compressed size of this file.
+                        writer.Write(CompressedData[dataIndex].Length);
+                        break;
+
+                    case 0x09:
+                        // Write the compressed size of this file.
+                        if (compressed)
+                            writer.Write(CompressedData[dataIndex].Length);
+
+                        // Write the uncompressed size of this file.
+                        else
+                            writer.Write(Data[dataIndex].Data.Length);
+
+                        break;
+                }
 
                 // Write the uncompressed size of this file, adding 0x40000000 to handle the extra nibble.
                 writer.Write(Data[dataIndex].Data.Length + 0x40000000);
@@ -252,8 +277,25 @@
                 // Fill in the offset for this file's data.
                 writer.FillOffset($"File{dataIndex}Data");
 
-                // Write this file's compressed data.
-                writer.Write(CompressedData[dataIndex]);
+                // Determine how to write the file data based on the version.
+                switch (version)
+                {
+                    case 0x07:
+                        // Write this file's compressed data.
+                        writer.Write(CompressedData[dataIndex]);
+                        break;
+
+                    case 0x09:
+                        // Write this file's compressed data.
+                        if (compressed)
+                            writer.Write(CompressedData[dataIndex]);
+
+                        // Write this file's uncompressed data.
+                        else
+                            writer.Write(Data[dataIndex].Data);
+
+                        break;
+                }
             }
 
             // Close Marathon's BinaryWriter.

@@ -83,7 +83,9 @@ namespace KnuxTools
 
                 Console.WriteLine("Capcom MT Framework Engine:");
                 Console.WriteLine("Archive (.arc) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
-                ColourConsole("    Version Flag (importing) - capcom\n", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (importing) - capcomv7", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (importing) - capcomv9", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (importing) - capcomv9_uncompressed\n", true, ConsoleColor.Yellow);
 
                 Console.WriteLine("CarZ Engine:");
                 Console.WriteLine("Material Library (.mat) - Exports to the MTL material library standard and imports from an Assimp compatible model.");
@@ -241,7 +243,9 @@ namespace KnuxTools
             // Carry out a version check.
             version = NoVersionChecker(version,
                                        "Please specify the archive type to pack this directory into, valid options are:",
-                                       new List<string> { "capcom\t\t\t(Capcom MT Framework Engine)",
+                                       new List<string> { "capcomv7\t\t\t(Capcom MT Framework Engine (Version 7))",
+                                                          "capcomV9\t\t\t(Capcom MT Framework Engine (Version 9))",
+                                                          "capcomV9_uncompressed\t(Capcom MT Framework Engine (Version 9, No Compression))",
                                                           "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)",
                                                           "nights2\t\t\t(NiGHTS 2 Engine ONE File)",
                                                           "storybook\t\t\t(Sonic Storybook Engine ONE File)",
@@ -250,7 +254,7 @@ namespace KnuxTools
                                                           "swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)",
                                                           "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)",
                                                           "wayforward\t\t\t(Wayforward Engine PAK File)"},
-                                       new List<bool> { false, false, false, false, false, false, false, false, false },
+                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false },
                                        "Archive Type");
 
             // If the version is still null or empty, then abort.
@@ -262,9 +266,29 @@ namespace KnuxTools
             switch (version.ToLower())
             {
                 // Capcom MT Framework Arc Archives.
-                case "capcom":
+                case "capcomv7":
                     Console.WriteLine("Packing directory for Capcom MT Framework Engine.");
-                    ImportAndSaveArchive(typeof(KnuxLib.Engines.CapcomMT.Archive), arg, "arc");
+                    using (KnuxLib.Engines.CapcomMT.Archive arc = new())
+                    {
+                        arc.Import(arg);
+                        arc.Save($@"{arg}.arc", 0x07, true);
+                    }
+                    break;
+                case "capcomv9":
+                    Console.WriteLine("Packing directory for Capcom MT Framework Engine.");
+                    using (KnuxLib.Engines.CapcomMT.Archive arc = new())
+                    {
+                        arc.Import(arg);
+                        arc.Save($@"{arg}.arc", 0x09, true);
+                    }
+                    break;
+                case "capcomv9_uncompressed":
+                    Console.WriteLine("Packing directory for Capcom MT Framework Engine.");
+                    using (KnuxLib.Engines.CapcomMT.Archive arc = new())
+                    {
+                        arc.Import(arg);
+                        arc.Save($@"{arg}.arc", 0x09, false);
+                    }
                     break;
 
                 // Hedgehog Engine Terrain Instance Conversion.

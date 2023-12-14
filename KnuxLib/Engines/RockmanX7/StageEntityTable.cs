@@ -32,14 +32,14 @@ namespace KnuxLib.Engines.RockmanX7
             Wall_Blaster = 0x09,
             Background_Bee_Blader = 0x0A,
             Wall_Jump_Crusher = 0x0C,
-            Unknown_1 = 0x0D, //Crashes the XLC2 a lot? ARCTool problem maybe?
-            Unknown_2 = 0x0E, //Crashes the XLC2 a lot? ARCTool problem maybe?
-            Unknown_3 = 0x0F, //Crashes the XLC2 a lot? ARCTool problem maybe?
+            Unknown_1 = 0x0D, //Crashed the game, presumably invalid other values?
+            Unknown_2 = 0x0E, //Crashed the game, presumably invalid other values?
+            Unknown_3 = 0x0F, //Crashed the game, presumably invalid other values?
             Flyer = 0x10,
             Runnerbomb = 0x11,
             Skelebat = 0x12,
-            Unknown_4 = 0x13, // Only in Tornado Tonion's stage's second act, which is crashing upon repacking?
-            Unknown_5 = 0x14, // Only in Tornado Tonion's stage's second act, which is crashing upon repacking?
+            Unknown_4 = 0x13, // Only in Tornado Tonion's stage's second act, which is crashing upon repacking, presumably invalid other values?
+            Unknown_5 = 0x14, // Only in Tornado Tonion's stage's second act, which is crashing upon repacking, presumably invalid other values?
             Large_Mine = 0x15,
             Mega_Tortoise = 0x16,
             Unknown_6 = 0x17, // Only in Crimson Palace, which I don't have a save in.
@@ -62,6 +62,16 @@ namespace KnuxLib.Engines.RockmanX7
             Metall_S = 0x39,
             Unknown_13 = 0x3A, // Cone Metall?
             Unknown_14 = 0x3C, // Only found once in Air Force Act 3, crashed upon swapping everything.
+            Hostage = 0x3E,    // Haven't tested in game (crashed), but TCRF says o020000.osd only contains six hostages, and all six objects in it have this value.
+            Unknown_15 = 0x42, // Only in Palace Road, which I don't have a save in.
+            Proto_Ride = 0x43,
+            Unknown_16 = 0x45, // Only in Palace Road and Crimson Palace, which I don't have a save in.
+            Explosive_Container = 0x4C,
+            Unknown_17 = 0x53, // Only object in part of Tunnel Base, only other usage is in Palace Road and Crimson Palace, which I don't have a save in. Kill target controller maybe?
+            Unknown_18 = 0x55, // Only found once in the Central Highway, crashed upon swapping everything.
+            Unknown_19 = 0x56, // Only found in the Central Highway, crashed upon swapping everything.
+            Scrap_Metall = 0x57,
+            Gun_Volt = 0x59,
             Dr_Light_Capsule = 0x5F,
         }
 
