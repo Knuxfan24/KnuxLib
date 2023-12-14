@@ -24,12 +24,14 @@
             { 0x06DEC69C, ".fuv" },  // Unconfirmed, assumed from file header signature.
             { 0x07F768AF, ".gii" },  // Unconfirmed, assumed from file header signature.
             { 0x11320E86, ".omp" },  // Unconfirmed, assumed from file header signature.
+            { 0x14B5C8E6, ".sndb" }, // Unconfirmed, assumed from file header signature.
             { 0x15D782FB, ".sbk" },  // Unconfirmed, assumed from file header signature.
             { 0x15E8853F, ".emi" },  // Sourced from old PC version of Megaman X7.
             { 0x167DBBFF, ".stgr" }, // Unconfirmed, assumed from file header signature.
             { 0x185365EA, ".emp" },  // Unconfirmed, assumed from file header signature.
             { 0x1BCC4966, ".srq" },  // Unconfirmed, assumed from file header signature.
             { 0x1C7858A2, ".lpk" },  // Sourced from old PC version of Megaman X8.
+            { 0x1C9AA587, ".emb" },  // Unconfirmed, assumed from file header signature, contains a # before the signature itself.
             { 0x1E3EE6FB, ".wsx" },  // Sourced from old PC version of Megaman X8.
             { 0x1EC24743, ".ctex" }, // Unconfirmed, assumed from file header signature.
             { 0x1EF7D5BD, ".fst" },  // Unconfirmed, assumed from file header signature.
@@ -40,8 +42,11 @@
             { 0x241F5DEB, ".tex" },  // Unconfirmed, assumed from file header signature.
             { 0x242BB29A, ".gmd" },  // Unconfirmed, assumed from file header signature.
             { 0x255D51CD, ".sngw" }, // Unconfirmed, assumed from file header signature.
+            { 0x25AF5760, ".bvs" },  // Unconfirmed, assumed from file header signature.
             { 0x2609378F, ".cof" },  // Unconfirmed, assumed from file header signature.
+            { 0x2618DE3F, ".sreq" }, // Unconfirmed, assumed from file header signature.
             { 0x2749C8A8, ".mrl" },  // Unconfirmed, assumed from file header signature.
+            { 0x28B3BA4D, ".bcm" },  // Unconfirmed, assumed from file header signature, contains a # before the signature itself.
             { 0x2D462600, ".gfd" },  // Unconfirmed, assumed from file header signature.
             { 0x311E683F, ".rl" },   // Sourced from old PC version of Megaman X8.
             { 0x31BF570E, ".set" },  // Sourced from old PC version of Megaman X8.
@@ -69,6 +74,8 @@
             { 0x59633D17, ".xbgm" }, // Unconfirmed, assumed from file header signature.
             { 0x5B9EA119, ".dem" },  // Sourced from old PC version of Megaman X7.
             { 0x619CF7E7, ".col" },  // Unconfirmed, assumed from file header signature.
+            { 0x67195A2E, ".madp" }, // Unconfirmed, assumed from file header signature.
+            { 0x68C6C984, ".bac" },  // Unconfirmed, assumed from file header signature, contains a # before the signature itself.
             { 0x6AE91701, ".sld" },  // Sourced from old PC version of Megaman X7.
             { 0x6B685B4E, ".dfc" },  // Unconfirmed, assumed from file header signature.
             { 0x6BC1BAC7, ".ocl" },  // Unconfirmed, assumed from file header signature.
@@ -76,6 +83,8 @@
             { 0x710B8A11, ".scrl" }, // Unconfirmed, assumed from file header signature.
             { 0x724DF879, ".wav" },  // Unconfirmed, assumed from formatting.
             { 0x74D08E45, ".gdsi" }, // Unconfirmed, assumed from file header signature.
+            { 0x734B8585, ".ecm" },  // Unconfirmed, assumed from file header signature, contains a # before the signature itself.
+            { 0x76820D81, ".lmt" },  // Unconfirmed, assumed from file header signature.
             { 0x7772787E, ".evt" },  // Sourced from old PC version of Megaman X8.
             { 0x7808EA10, ".rtx" },  // Unconfirmed, assumed from file header signature.
             { 0x7C322EDC, ".medl" }, // Unconfirmed, assumed from file header signature.
@@ -101,13 +110,20 @@
             reader.FixPadding(0x04);
 
             // Check this file's version.
-            // TODO: Handle versions other than V7?
+            // TODO: Handle versions other than V7 and V9?
             ushort version = reader.ReadUInt16();
-            if (version != 0x07)
+            if (version != 0x07 && version != 0x09)
                 throw new NotImplementedException($"Capcom MT Framework Archive with version identifier of 0x{version.ToString("X").PadLeft(4, '0')} not supported.");
 
             // Read the amount of files in this archive.
             ushort fileCount = reader.ReadUInt16();
+
+            // Set up a bool to determine if compression if used.
+            bool isNotCompressed = false;
+
+            // If this is a version 9 archive, then read the not compressed flag.
+            if (version == 0x09)
+                isNotCompressed = reader.ReadBoolean(0x04);
 
             // Loop through and read each file.
             for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
@@ -137,8 +153,11 @@
                 // Jump to this file's data offset.
                 reader.JumpTo(dataOffset);
 
-                // Read and decompress this file's data.
-                node.Data = ZlibStream.Decompress(reader.ReadBytes(compressedSize));
+                // Read and decompress (if required) this file's data.
+                if (!isNotCompressed)
+                    node.Data = ZlibStream.Decompress(reader.ReadBytes(compressedSize));
+                else
+                    node.Data = reader.ReadBytes(compressedSize);
 
                 // Jump back for the next file.
                 reader.JumpTo(position);
@@ -162,7 +181,7 @@
 
         /// <summary>
         /// Saves this format's file.
-        /// TODO: Do these archives require strict file orders?
+        /// TODO: Handle saving V9 archives.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
         public void Save(string filepath)
