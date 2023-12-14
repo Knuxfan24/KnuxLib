@@ -8,9 +8,9 @@ namespace KnuxLib.Engines.RockmanX7
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public StageEntityTable() { }
-        public StageEntityTable(string filepath, bool export = false)
+        public StageEntityTable(string filepath, bool previewSet = false, bool export = false)
         {
-            Load(filepath);
+            Load(filepath, previewSet);
 
             if (export)
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.rockmanx7.stageentitytable.json", Data);
@@ -42,6 +42,26 @@ namespace KnuxLib.Engines.RockmanX7
             Unknown_5 = 0x14, // Only in Tornado Tonion's stage's second act, which is crashing upon repacking?
             Large_Mine = 0x15,
             Mega_Tortoise = 0x16,
+            Unknown_6 = 0x17, // Only in Crimson Palace, which I don't have a save in.
+            Rolling_Stone = 0x18,
+            Pastegunner = 0x19,
+            Ape_Stone = 0x1A,
+            Unknown_7 = 0x1B, // Only in Crimson Palace, which I don't have a save in.
+            Yoku_Block = 0x1C,
+            Unknown_8 = 0x1D, // Found in Wind Crowrang's stage, crashed the game, presumably invalid other values?
+            Bounding = 0x1E,
+            Blockape = 0x1F,
+            Ruinsman = 0x20,
+            Unknown_9 = 0x26, // Might be the mini boss version of the Ape Stone?
+            Bomb = 0x29, // Crashed when changing every object to this, but the bomb counter did show up with a much higher value.
+            Blue_Plane = 0x2b,
+            Unknown_11 = 0x2f, // Cyber Stone?
+            Mushadroyd = 0x30,
+            Big_Ray = 0x31,
+            Unknown_12 = 0x33, // Wind Crowrang stage spawners?
+            Metall_S = 0x39,
+            Unknown_13 = 0x3A, // Cone Metall?
+            Unknown_14 = 0x3C, // Only found once in Air Force Act 3, crashed upon swapping everything.
             Dr_Light_Capsule = 0x5F,
         }
 
@@ -182,9 +202,9 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this?
+            /// TODO: What is this? It doesn't exist in the Rockman X7 Preview.
             /// </summary>
-            public uint UnknownUInt32_6 { get; set; }
+            public uint? UnknownUInt32_6 { get; set; }
 
             /// <summary>
             /// The object's position in 3D space.
@@ -205,7 +225,8 @@ namespace KnuxLib.Engines.RockmanX7
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        public override void Load(string filepath)
+        /// <param name="previewSet">Whether this file is from the Rockman X7 Preview</param>
+        public void Load(string filepath, bool previewSet = false)
         {
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath));
@@ -217,34 +238,32 @@ namespace KnuxLib.Engines.RockmanX7
             for (int objectIndex = 0; objectIndex < objectCount - 1; objectIndex++)
             {
                 // Create a new object and read its data.
-                SetObject obj = new()
-                {
-                    UnknownUInt32_1 = reader.ReadUInt32(),
-                    ObjectType = (ObjectType)reader.ReadUInt32(),
-                    Behaviour = reader.ReadUInt32(),
-                    UnknownUInt32_2 = reader.ReadUInt32(),
-                    UnknownFloat_1 = reader.ReadSingle(),
-                    UnknownFloat_2 = reader.ReadSingle(),
-                    UnknownFloat_3 = reader.ReadSingle(),
-                    UnknownUInt32_3 = reader.ReadUInt32(),
-                    UnknownUInt32_4 = reader.ReadUInt32(),
-                    UnknownFloat_4 = reader.ReadSingle(),
-                    UnknownUInt32_5 = reader.ReadUInt32(),
-                    UnknownFloat_5 = reader.ReadSingle(),
-                    UnknownFloat_6 = reader.ReadSingle(),
-                    UnknownFloat_7 = reader.ReadSingle(),
-                    UnknownFloat_8 = reader.ReadSingle(),
-                    UnknownFloat_9 = reader.ReadSingle(),
-                    UnknownFloat_10 = reader.ReadSingle(),
-                    UnknownFloat_11 = reader.ReadSingle(),
-                    UnknownFloat_12 = reader.ReadSingle(),
-                    UnknownFloat_13 = reader.ReadSingle(),
-                    UnknownFloat_14 = reader.ReadSingle(),
-                    UnknownFloat_15 = reader.ReadSingle(),
-                    UnknownUInt32_6 = reader.ReadUInt32(),
-                    Position = reader.ReadVector3(),
-                    UnknownFloat_16 = reader.ReadSingle()
-                };
+                SetObject obj = new();
+                obj.UnknownUInt32_1 = reader.ReadUInt32();
+                obj.ObjectType = (ObjectType)reader.ReadUInt32();
+                obj.Behaviour = reader.ReadUInt32();
+                obj.UnknownUInt32_2 = reader.ReadUInt32();
+                obj.UnknownFloat_1 = reader.ReadSingle();
+                obj.UnknownFloat_2 = reader.ReadSingle();
+                obj.UnknownFloat_3 = reader.ReadSingle();
+                obj.UnknownUInt32_3 = reader.ReadUInt32();
+                obj.UnknownUInt32_4 = reader.ReadUInt32();
+                obj.UnknownFloat_4 = reader.ReadSingle();
+                obj.UnknownUInt32_5 = reader.ReadUInt32();
+                obj.UnknownFloat_5 = reader.ReadSingle();
+                obj.UnknownFloat_6 = reader.ReadSingle();
+                obj.UnknownFloat_7 = reader.ReadSingle();
+                obj.UnknownFloat_8 = reader.ReadSingle();
+                obj.UnknownFloat_9 = reader.ReadSingle();
+                obj.UnknownFloat_10 = reader.ReadSingle();
+                obj.UnknownFloat_11 = reader.ReadSingle();
+                obj.UnknownFloat_12 = reader.ReadSingle();
+                obj.UnknownFloat_13 = reader.ReadSingle();
+                obj.UnknownFloat_14 = reader.ReadSingle();
+                obj.UnknownFloat_15 = reader.ReadSingle();
+                if (!previewSet) obj.UnknownUInt32_6 = reader.ReadUInt32();
+                obj.Position = reader.ReadVector3();
+                obj.UnknownFloat_16 = reader.ReadSingle();
 
                 // Save this object.
                 Data.Add(obj);
@@ -258,7 +277,8 @@ namespace KnuxLib.Engines.RockmanX7
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath)
+        /// <param name="previewSet">Whether this file is from the Rockman X7 Preview</param>
+        public void Save(string filepath, bool previewSet = false)
         {
             // Set up Marathon's BinaryWriter.
             BinaryWriterEx writer = new(File.Create(filepath));
@@ -291,7 +311,7 @@ namespace KnuxLib.Engines.RockmanX7
                 writer.Write(obj.UnknownFloat_13);
                 writer.Write(obj.UnknownFloat_14);
                 writer.Write(obj.UnknownFloat_15);
-                writer.Write(obj.UnknownUInt32_6);
+                if (!previewSet) writer.Write((uint)obj.UnknownUInt32_6);
                 writer.Write(obj.Position);
                 writer.Write(obj.UnknownFloat_16);
             }

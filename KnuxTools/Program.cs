@@ -1245,7 +1245,7 @@ namespace KnuxTools
                 case ".328f438b":
                 case ".osd":
                     Console.WriteLine("Converting Rockman X7 Engine Stage Entity Table to JSON.");
-                    using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true))
+                    using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, false, true))
                         break;
 
                 case ".6ae91701":
