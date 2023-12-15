@@ -72,7 +72,17 @@ namespace KnuxLib.Engines.RockmanX7
             Unknown_19 = 0x56, // Only found in the Central Highway, crashed upon swapping everything.
             Scrap_Metall = 0x57,
             Gun_Volt = 0x59,
+            Unknown_20 = 0x5A, // Only found in Lava Factory and Cyber Field, crashed upon swapping everything.
+            Unknown_21 = 0x5C, // Only found in Soul Asylum, which I don't have a save in. Probably the boss rush warps, as there is eight of them?
+            Unknown_22 = 0x5E, // Only found in Soul Asylum, which I don't have a save in.
             Dr_Light_Capsule = 0x5F,
+            Tunnel_Base_Gate = 0x60,
+            Tunnel_Base_Door = 0x61,
+            Unknown_23 = 0x63, // Only in Crimson Palace, which I don't have a save in.
+            Unknown_24 = 0x64, // Only in whatever Stage 14 is, Sigma?
+            Unknown_25 = 0x65, // Only in whatever Stage 14 is, Sigma?
+            Unknown_26 = 0x66, // Found in nearly every stage, crashed upon swapping everything.
+            Null = 0xFFFFFFFF // Assumed, as every SET ends with one of these, though some have one in the actual object table itself?
         }
 
         // Classes for this format.
@@ -104,7 +114,8 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this, seems to have some impact on spawning?
+            /// TODO: Determine if this is actually a float.
             /// </summary>
             public float UnknownFloat_1 { get; set; }
 
@@ -163,6 +174,11 @@ namespace KnuxLib.Engines.RockmanX7
             public float UnknownFloat_7 { get; set; }
 
             /// <summary>
+            /// This object's rotation in 3D space.
+            /// </summary>
+            public Vector3 Rotation { get; set; }
+
+            /// <summary>
             /// An unknown floating point value.
             /// TODO: What is this?
             /// </summary>
@@ -191,24 +207,6 @@ namespace KnuxLib.Engines.RockmanX7
             /// TODO: What is this?
             /// </summary>
             public float UnknownFloat_12 { get; set; }
-
-            /// <summary>
-            /// An unknown floating point value.
-            /// TODO: What is this?
-            /// </summary>
-            public float UnknownFloat_13 { get; set; }
-
-            /// <summary>
-            /// An unknown floating point value.
-            /// TODO: What is this?
-            /// </summary>
-            public float UnknownFloat_14 { get; set; }
-
-            /// <summary>
-            /// An unknown floating point value.
-            /// TODO: What is this?
-            /// </summary>
-            public float UnknownFloat_15 { get; set; }
 
             /// <summary>
             /// An unknown integer value.
@@ -263,14 +261,12 @@ namespace KnuxLib.Engines.RockmanX7
                 obj.UnknownFloat_5 = reader.ReadSingle();
                 obj.UnknownFloat_6 = reader.ReadSingle();
                 obj.UnknownFloat_7 = reader.ReadSingle();
+                obj.Rotation = reader.ReadVector3();
                 obj.UnknownFloat_8 = reader.ReadSingle();
                 obj.UnknownFloat_9 = reader.ReadSingle();
                 obj.UnknownFloat_10 = reader.ReadSingle();
                 obj.UnknownFloat_11 = reader.ReadSingle();
                 obj.UnknownFloat_12 = reader.ReadSingle();
-                obj.UnknownFloat_13 = reader.ReadSingle();
-                obj.UnknownFloat_14 = reader.ReadSingle();
-                obj.UnknownFloat_15 = reader.ReadSingle();
                 if (!previewSet) obj.UnknownUInt32_6 = reader.ReadUInt32();
                 obj.Position = reader.ReadVector3();
                 obj.UnknownFloat_16 = reader.ReadSingle();
@@ -313,22 +309,24 @@ namespace KnuxLib.Engines.RockmanX7
                 writer.Write(obj.UnknownFloat_5);
                 writer.Write(obj.UnknownFloat_6);
                 writer.Write(obj.UnknownFloat_7);
+                writer.Write(obj.Rotation);
                 writer.Write(obj.UnknownFloat_8);
                 writer.Write(obj.UnknownFloat_9);
                 writer.Write(obj.UnknownFloat_10);
                 writer.Write(obj.UnknownFloat_11);
                 writer.Write(obj.UnknownFloat_12);
-                writer.Write(obj.UnknownFloat_13);
-                writer.Write(obj.UnknownFloat_14);
-                writer.Write(obj.UnknownFloat_15);
                 if (!previewSet) writer.Write((uint)obj.UnknownUInt32_6);
                 writer.Write(obj.Position);
                 writer.Write(obj.UnknownFloat_16);
             }
 
             // Write the terminator(?) object.
-            for (int i = 0; i < 0x6C; i++)
-                writer.Write((byte)0xFF);
+            if (!previewSet)
+                for (int i = 0; i < 0x6C; i++)
+                    writer.Write((byte)0xFF);
+            else
+                for (int i = 0; i < 0x68; i++)
+                    writer.Write((byte)0xFF);
 
             // Close Marathon's BinaryWriter.
             writer.Close();
