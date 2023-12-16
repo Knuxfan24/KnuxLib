@@ -18,6 +18,7 @@ namespace KnuxLib.Engines.RockmanX7
         }
 
         // Classes for this format.
+        // TODO: Find any objects from the Preview that work in the final (like the beta Wind Crowrang doors).
         [JsonConverter(typeof(StringEnumConverter))]
         public enum ObjectType : uint
         {
@@ -55,7 +56,7 @@ namespace KnuxLib.Engines.RockmanX7
             Ruinsman = 0x20,
             Unknown_9 = 0x26, // Might be the mini boss version of the Ape Stone?
             Bomb = 0x29, // Crashed when changing every object to this, but the bomb counter did show up with a much higher value.
-            Blue_Plane = 0x2b,
+            Plane = 0x2b,
             Unknown_11 = 0x2f, // Cyber Stone?
             Mushadroyd = 0x30,
             Big_Ray = 0x31,
