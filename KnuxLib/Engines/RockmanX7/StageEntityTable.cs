@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Diagnostics;
 
 namespace KnuxLib.Engines.RockmanX7
 {
@@ -96,7 +97,6 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// The type of this object.
-            /// TODO: Find out what each number corresponds to.
             /// </summary>
             public ObjectType ObjectType { get; set; }
 
@@ -209,12 +209,6 @@ namespace KnuxLib.Engines.RockmanX7
             public float UnknownFloat_12 { get; set; }
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this? It doesn't exist in the Rockman X7 Preview.
-            /// </summary>
-            public uint? UnknownUInt32_6 { get; set; }
-
-            /// <summary>
             /// The object's position in 3D space.
             /// </summary>
             public Vector3 Position { get; set; }
@@ -223,7 +217,7 @@ namespace KnuxLib.Engines.RockmanX7
             /// An unknown floating point value.
             /// TODO: What is this?
             /// </summary>
-            public float UnknownFloat_16 { get; set; }
+            public float UnknownFloat_13 { get; set; }
         }
 
         // Actual data presented to the end user.
@@ -267,9 +261,13 @@ namespace KnuxLib.Engines.RockmanX7
                 obj.UnknownFloat_10 = reader.ReadSingle();
                 obj.UnknownFloat_11 = reader.ReadSingle();
                 obj.UnknownFloat_12 = reader.ReadSingle();
-                if (!previewSet) obj.UnknownUInt32_6 = reader.ReadUInt32();
+
+                if (!previewSet)
+                    if (reader.ReadUInt32() != obj.UnknownUInt32_2)
+                        Debugger.Break();
+
                 obj.Position = reader.ReadVector3();
-                obj.UnknownFloat_16 = reader.ReadSingle();
+                obj.UnknownFloat_13 = reader.ReadSingle();
 
                 // Save this object.
                 Data.Add(obj);
@@ -315,9 +313,9 @@ namespace KnuxLib.Engines.RockmanX7
                 writer.Write(obj.UnknownFloat_10);
                 writer.Write(obj.UnknownFloat_11);
                 writer.Write(obj.UnknownFloat_12);
-                if (!previewSet) writer.Write((uint)obj.UnknownUInt32_6);
+                if (!previewSet) writer.Write(obj.UnknownUInt32_2);
                 writer.Write(obj.Position);
-                writer.Write(obj.UnknownFloat_16);
+                writer.Write(obj.UnknownFloat_13);
             }
 
             // Write the terminator(?) object.
