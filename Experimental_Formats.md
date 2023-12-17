@@ -34,6 +34,8 @@ The following formats are only partially supported, either due to missing functi
 
 ## Rockman X7 Engine
 
+- [Math Table (.emi)](KnuxLib/Engines/RockmanX7/MathTable.cs). Most basic of reading that simply splits the chunks out into their own files. No actual reverse engineering work on the chunks themselves has been done yet.
+
 - [Stage Entity Table (.328f438b/.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs). Entirely functional besides basically every value being an unknown. Slowly working through and figuring out what each object type is.
 
 - [SLD Spline (.6ae91701/.sld)](KnuxLib/Engines/RockmanX7/SLDSpline.cs). Has very basic reading, but half of the file is an unknown placeholder that clearly interacts with the spline points in some ways. Can also export to a basic OBJ.
