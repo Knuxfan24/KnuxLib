@@ -95,12 +95,32 @@ namespace KnuxLib.Engines.RockmanX7
             Null = 0xFFFFFFFF // Assumed, as every SET ends with one of these, though some have one in the actual object table itself?
         }
 
+        public enum SpawnBehaviour : byte
+        {
+            Unknown_1 = 0x01, // Seems to differ based on the object type?
+            Unknown_2 = 0x02,
+            Unknown_3 = 0x03,
+            Unknown_4 = 0x04,
+            Unknown_5 = 0x05,
+            Unknown_6 = 0x06,
+            Unknown_7 = 0x07,
+            Unknown_8 = 0x08
+        }
+
         // Classes for this format.
         public class SetObject
         {
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this?
+            /// TODO: What is this? Used values are:
+                /// 0x00000000
+                /// 0xffffff00
+                /// 0x00000002
+                /// 0xffffff03
+                /// 0x00000003
+                /// 0xffffff01
+                /// 0x00000001
+                /// 0xffffff05
             /// </summary>
             public uint UnknownUInt32_1 { get; set; }
 
@@ -122,9 +142,19 @@ namespace KnuxLib.Engines.RockmanX7
             public uint UnknownUInt32_2 { get; set; }
 
             /// <summary>
+            /// Controls spawn distance in some way.
+            /// TODO: Figure out how the values affect spawning.
+            /// </summary>
+            public SpawnBehaviour SpawnBehaviour { get; set; }
+
+            /// <summary>
+            /// Unknown, either 0 or 0xCC.
+            /// </summary>
+            public byte UnknownByte_1 { get; set; }
+
+            /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this, seems to have some impact on spawning?
-            /// TODO: Determine if this is actually a float.
+            /// TODO: What is this?
             /// </summary>
             public float UnknownFloat_1 { get; set; }
 
@@ -133,12 +163,6 @@ namespace KnuxLib.Engines.RockmanX7
             /// TODO: What is this?
             /// </summary>
             public float UnknownFloat_2 { get; set; }
-
-            /// <summary>
-            /// An unknown floating point value.
-            /// TODO: What is this?
-            /// </summary>
-            public float UnknownFloat_3 { get; set; }
 
             /// <summary>
             /// An unknown integer value.
@@ -156,13 +180,19 @@ namespace KnuxLib.Engines.RockmanX7
             /// An unknown floating point value.
             /// TODO: What is this?
             /// </summary>
-            public float UnknownFloat_4 { get; set; }
+            public float UnknownFloat_3 { get; set; }
 
             /// <summary>
             /// An unknown integer value.
             /// TODO: What is this?
             /// </summary>
             public uint UnknownUInt32_5 { get; set; }
+
+            /// <summary>
+            /// An unknown floating point value.
+            /// TODO: What is this?
+            /// </summary>
+            public float UnknownFloat_4 { get; set; }
 
             /// <summary>
             /// An unknown floating point value.
@@ -177,15 +207,15 @@ namespace KnuxLib.Engines.RockmanX7
             public float UnknownFloat_6 { get; set; }
 
             /// <summary>
+            /// This object's rotation in 3D space.
+            /// </summary>
+            public Vector3 Rotation { get; set; }
+
+            /// <summary>
             /// An unknown floating point value.
             /// TODO: What is this?
             /// </summary>
             public float UnknownFloat_7 { get; set; }
-
-            /// <summary>
-            /// This object's rotation in 3D space.
-            /// </summary>
-            public Vector3 Rotation { get; set; }
 
             /// <summary>
             /// An unknown floating point value.
@@ -212,12 +242,6 @@ namespace KnuxLib.Engines.RockmanX7
             public float UnknownFloat_11 { get; set; }
 
             /// <summary>
-            /// An unknown floating point value.
-            /// TODO: What is this?
-            /// </summary>
-            public float UnknownFloat_12 { get; set; }
-
-            /// <summary>
             /// The object's position in 3D space.
             /// </summary>
             public Vector3 Position { get; set; }
@@ -226,7 +250,9 @@ namespace KnuxLib.Engines.RockmanX7
             /// An unknown floating point value.
             /// TODO: What is this?
             /// </summary>
-            public float UnknownFloat_13 { get; set; }
+            public float UnknownFloat_12 { get; set; }
+
+            public override string ToString() => ObjectType.ToString();
         }
 
         // Actual data presented to the end user.
@@ -248,35 +274,88 @@ namespace KnuxLib.Engines.RockmanX7
             // Read each object except for the last one, which has every value set to 0xFFFFFFFF.
             for (int objectIndex = 0; objectIndex < objectCount - 1; objectIndex++)
             {
-                // Create a new object and read its data.
+                // Create a new object.
                 SetObject obj = new();
-                obj.UnknownUInt32_1 = reader.ReadUInt32();
-                obj.ObjectType = (ObjectType)reader.ReadUInt32();
-                obj.Behaviour = reader.ReadUInt32();
-                obj.UnknownUInt32_2 = reader.ReadUInt32();
-                obj.UnknownFloat_1 = reader.ReadSingle();
-                obj.UnknownFloat_2 = reader.ReadSingle();
-                obj.UnknownFloat_3 = reader.ReadSingle();
-                obj.UnknownUInt32_3 = reader.ReadUInt32();
-                obj.UnknownUInt32_4 = reader.ReadUInt32();
-                obj.UnknownFloat_4 = reader.ReadSingle();
-                obj.UnknownUInt32_5 = reader.ReadUInt32();
-                obj.UnknownFloat_5 = reader.ReadSingle();
-                obj.UnknownFloat_6 = reader.ReadSingle();
-                obj.UnknownFloat_7 = reader.ReadSingle();
-                obj.Rotation = reader.ReadVector3();
-                obj.UnknownFloat_8 = reader.ReadSingle();
-                obj.UnknownFloat_9 = reader.ReadSingle();
-                obj.UnknownFloat_10 = reader.ReadSingle();
-                obj.UnknownFloat_11 = reader.ReadSingle();
-                obj.UnknownFloat_12 = reader.ReadSingle();
 
+                // Read this object's first unknown integer value.
+                obj.UnknownUInt32_1 = reader.ReadUInt32();
+
+                // Read this object's type.
+                obj.ObjectType = (ObjectType)reader.ReadUInt32();
+
+                // Read this object's behaviour value.
+                obj.Behaviour = reader.ReadUInt32();
+
+                // Read this object's second unknown integer value.
+                obj.UnknownUInt32_2 = reader.ReadUInt32();
+
+                // Check this object's index to make sure it matches my assumption (that this value is i + 7).
+                if (reader.ReadByte() != objectIndex + 7) Debugger.Break();
+
+                // Read this object's spwaning behaviour.
+                obj.SpawnBehaviour = (SpawnBehaviour)reader.ReadByte();
+
+                // Read this object's unknown byte.
+                obj.UnknownByte_1 = reader.ReadByte();
+
+                // Check this object's extra unknown byte to make sure it matches my assumption (that this value always matches UnknownByte_1).
+                if (reader.ReadByte() != obj.UnknownByte_1) Debugger.Break();
+
+                // Read this object's first unknown floating point value.
+                obj.UnknownFloat_1 = reader.ReadSingle();
+
+                // Read this object's second unknown floating point value.
+                obj.UnknownFloat_2 = reader.ReadSingle();
+
+                // Read this object's third unknown integer value.
+                obj.UnknownUInt32_3 = reader.ReadUInt32();
+
+                // Read this object's fourth unknown integer value.
+                obj.UnknownUInt32_4 = reader.ReadUInt32();
+
+                // Read this object's third unknown floating point value.
+                obj.UnknownFloat_3 = reader.ReadSingle();
+
+                // Read this object's fifth unknown integer value.
+                obj.UnknownUInt32_5 = reader.ReadUInt32();
+
+                // Read this object's fourth unknown floating point value.
+                obj.UnknownFloat_4 = reader.ReadSingle();
+
+                // Read this object's fifth unknown floating point value.
+                obj.UnknownFloat_5 = reader.ReadSingle();
+
+                // Read this object's sixth unknown floating point value.
+                obj.UnknownFloat_6 = reader.ReadSingle();
+
+                // Read this object's rotation.
+                obj.Rotation = reader.ReadVector3();
+
+                // Read this object's seventh unknown floating point value.
+                obj.UnknownFloat_7 = reader.ReadSingle();
+
+                // Read this object's eighth unknown floating point value.
+                obj.UnknownFloat_8 = reader.ReadSingle();
+
+                // Read this object's ninth unknown floating point value.
+                obj.UnknownFloat_9 = reader.ReadSingle();
+
+                // Read this object's tenth unknown floating point value.
+                obj.UnknownFloat_10 = reader.ReadSingle();
+
+                // Read this object's eleventh unknown floating point value.
+                obj.UnknownFloat_11 = reader.ReadSingle();
+
+                // If this SET isn't from the Rockman X7 Preview Trial, then check the extra value here to make sure it matches my assumption (that this value always matches UnknownUInt32_2).
                 if (!previewSet)
                     if (reader.ReadUInt32() != obj.UnknownUInt32_2)
                         Debugger.Break();
 
+                // Read this object's position.
                 obj.Position = reader.ReadVector3();
-                obj.UnknownFloat_13 = reader.ReadSingle();
+
+                // Read this object's twelveth unknown floating point value.
+                obj.UnknownFloat_12 = reader.ReadSingle();
 
                 // Save this object.
                 Data.Add(obj);
@@ -298,33 +377,85 @@ namespace KnuxLib.Engines.RockmanX7
 
             // Write this file's object count (including the terminator(?) object)
             writer.Write(Data.Count + 1);
-            
+
             // Write each object's data.
-            foreach (SetObject obj in Data)
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
-                writer.Write(obj.UnknownUInt32_1);
-                writer.Write((uint)obj.ObjectType);
-                writer.Write(obj.Behaviour);
-                writer.Write(obj.UnknownUInt32_2);
-                writer.Write(obj.UnknownFloat_1);
-                writer.Write(obj.UnknownFloat_2);
-                writer.Write(obj.UnknownFloat_3);
-                writer.Write(obj.UnknownUInt32_3);
-                writer.Write(obj.UnknownUInt32_4);
-                writer.Write(obj.UnknownFloat_4);
-                writer.Write(obj.UnknownUInt32_5);
-                writer.Write(obj.UnknownFloat_5);
-                writer.Write(obj.UnknownFloat_6);
-                writer.Write(obj.UnknownFloat_7);
-                writer.Write(obj.Rotation);
-                writer.Write(obj.UnknownFloat_8);
-                writer.Write(obj.UnknownFloat_9);
-                writer.Write(obj.UnknownFloat_10);
-                writer.Write(obj.UnknownFloat_11);
-                writer.Write(obj.UnknownFloat_12);
-                if (!previewSet) writer.Write(obj.UnknownUInt32_2);
-                writer.Write(obj.Position);
-                writer.Write(obj.UnknownFloat_13);
+                // Write this object's first unknown integer value.
+                writer.Write(Data[dataIndex].UnknownUInt32_1);
+
+                // Write this object's type.
+                writer.Write((uint)Data[dataIndex].ObjectType);
+
+                // Write this object's behaviour value.
+                writer.Write(Data[dataIndex].Behaviour);
+
+                // Write this object's second unknown integer value.
+                writer.Write(Data[dataIndex].UnknownUInt32_2);
+
+                // Write this object's index.
+                writer.Write((byte)(dataIndex + 7));
+
+                // Write this object's spwaning behaviour.
+                writer.Write((byte)Data[dataIndex].SpawnBehaviour);
+
+                // Write two copies of this object's unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_1);
+                writer.Write(Data[dataIndex].UnknownByte_1);
+
+                // Write this object's first unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_1);
+
+                // Write this object's second unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_2);
+
+                // Write this object's third unknown integer value.
+                writer.Write(Data[dataIndex].UnknownUInt32_3);
+
+                // Write this object's fourth unknown integer value.
+                writer.Write(Data[dataIndex].UnknownUInt32_4);
+
+                // Write this object's third unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_3);
+
+                // Write this object's fifth unknown integer value.
+                writer.Write(Data[dataIndex].UnknownUInt32_5);
+
+                // Write this object's fourth unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_4);
+
+                // Write this object's fifth unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_5);
+
+                // Write this object's sixth unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_6);
+
+                // Write this object's rotation.
+                writer.Write(Data[dataIndex].Rotation);
+
+                // Write this object's seventh unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_7);
+
+                // Write this object's eighth unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_8);
+
+                // Write this object's ninth unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_9);
+
+                // Write this object's tenth unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_10);
+
+                // Write this object's eleventh unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_11);
+
+                // If this SET isn't from the Rockman X7 Preview Trial, then write another copy of UnknownUInt32_2.
+                if (!previewSet) writer.Write(Data[dataIndex].UnknownUInt32_2);
+
+                // Write this object's position.
+                writer.Write(Data[dataIndex].Position);
+
+                // Write this object's twelveth unknown floating point value.
+                writer.Write(Data[dataIndex].UnknownFloat_12);
             }
 
             // Write the terminator(?) object.
