@@ -4,7 +4,7 @@ using System.Diagnostics;
 
 namespace KnuxLib.Engines.RockmanX7
 {
-    // TODO: This is basically all unknown, mess around and find out what the values are.
+    // TODO: Figure out how the objects use the various values and make a HSON solution.
     public class StageEntityTable : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -19,6 +19,7 @@ namespace KnuxLib.Engines.RockmanX7
 
         // Classes for this format.
         // TODO: Find any objects from the Preview that work in the final (like the beta Wind Crowrang doors).
+        // TODO: Confirm all the assumptions.
         [JsonConverter(typeof(StringEnumConverter))]
         public enum ObjectType : uint
         {
@@ -48,48 +49,48 @@ namespace KnuxLib.Engines.RockmanX7
             Rolling_Stone = 0x18,
             Pastegunner = 0x19,
             Ape_Stone = 0x1A,
-            Unknown_2 = 0x1B, // Only in Crimson Palace, which I don't have a save in.
+            Ape_Sting = 0x1B, // Unconfirmed, assumed based on placement.
             Yoku_Block = 0x1C,
             Aperoid = 0x1D, // Unconfirmed, assumed based on placement.
             Bounding = 0x1E,
             Blockape = 0x1F,
             Ruinsman = 0x20,
-            Unknown_3 = 0x26, // Might be the mini boss version of the Ape Stone?
+            Ape_Stone_Miniboss = 0x26, // Unconfirmed, assumed based on placement.
             Bomb = 0x29, // Crashed when changing every object to this, but the bomb counter did show up with a much higher value.
             Plane = 0x2B,
             Flame_Hyenard = 0x2E, // Unconfirmed, assumed from Preview SET.
-            Unknown_4 = 0x2f, // Cyber Stone?
+            Cyber_Stone = 0x2F, // Unconfirmed, assumed based on placement.
             Mushadroyd = 0x30,
             Big_Ray = 0x31,
-            Unknown_5 = 0x33, // Wind Crowrang stage spawners or a door?
+            Air_Force_Spawner_Door = 0x33,
             Soldier_Stonekong = 0x38, // Unconfirmed, assumed from Preview SET.
             Metall_S = 0x39,
-            Unknown_6 = 0x3A, // Cone Metall?
-            Air_Force_End_Door = 0x3C, // Unconfirmed, assumed based on placement.
-            Hostage = 0x3E,    // Haven't tested in game (crashed), but TCRF says o020000.osd only contains six hostages, and all six objects in it have this value.
+            Cone_Metall = 0x3A, // Unconfirmed, assumed based on placement.
+            Air_Force_End_Door = 0x3C,
+            Hostage = 0x3E,
             Tornado_Tonion = 0x41, // Unconfirmed, assumed from Preview SET.
-            Unknown_7 = 0x42, // Only in Palace Road, which I don't have a save in.
+            Crash_Roadster = 0x42, // Unconfirmed, assumed based on placement.
             Proto_Ride = 0x43,
-            Unknown_8 = 0x45, // Only in Palace Road and Crimson Palace, which I don't have a save in.
+            Crimson_Palace_Platform = 0x45, // Unconfirmed, assumed based on placement.
             Splash_Warfly = 0x4B,
             Explosive_Container = 0x4C,
             Wind_Crowrang = 0x50, // Unconfirmed, assumed from Preview SET.
             Ride_Borski = 0x52, // Unconfirmed, assumed from Preview SET.
-            Unknown_9 = 0x53, // Only object in part of Tunnel Base, only other usage is in Palace Road and Crimson Palace, which I don't have a save in. Kill target controller maybe?
+            Hellguarder = 0x53, // Unconfirmed, assumed based on placement.
             Vanishing_Gungaroo = 0x54, // Unconfirmed, assumed from Preview SET.
-            Unknown_10 = 0x55, // Only found once in the Central Highway, crashed upon swapping everything.
-            Unknown_11 = 0x56, // Only found in the Central Highway, crashed upon swapping everything.
+            Unknown_2 = 0x55, // Central Highway Enemy Wave Spawner? Only used once in O010000 and never again.
+            Spotlight = 0x56,
             Scrap_Metall = 0x57,
             Gun_Volt = 0x59,
             Teleporter = 0x5A, // Unconfirmed, assumed based on placement.
-            Unknown_12 = 0x5C, // Only found in Soul Asylum, which I don't have a save in. Probably the boss rush warps, as there is eight of them?
-            Unknown_13 = 0x5E, // Only found in Soul Asylum, which I don't have a save in.
+            Boss_Rush_Warp = 0x5C, // Unconfirmed, assumed based on placement.
+            Unknown_3 = 0x5E, // Only found in Soul Asylum, which I don't have a save in.
             Dr_Light_Capsule = 0x5F,
             Tunnel_Base_Gate = 0x60,
             Tunnel_Base_Door = 0x61,
-            Unknown_14 = 0x63, // Only in Crimson Palace, which I don't have a save in.
-            Unknown_15 = 0x64, // Only in whatever Stage 14 is, Sigma?
-            Unknown_16 = 0x65, // Only in whatever Stage 14 is, Sigma?
+            Crimson_Palace_Teleporter = 0x63, // Unconfirmed, assumed based on placement.
+            Unknown_4 = 0x64, // Only in whatever Stage 14 is, Sigma?
+            Unknown_5 = 0x65, // Only in whatever Stage 14 is, Sigma?
             Item = 0x66, // Unconfirmed, assumed based on placement.
             Null = 0xFFFFFFFF // Assumed, as every SET ends with one of these, though some have one in the actual object table itself?
         }
