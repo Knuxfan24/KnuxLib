@@ -18,7 +18,7 @@ namespace KnuxLib.Engines.RockmanX7
         }
 
         // Classes for this format.
-        // TODO: Find any objects from the Preview that work in the final (like the beta Wind Crowrang doors).
+        // TODO: Identify the unknown objects.
         // TODO: Confirm all the assumptions.
         [JsonConverter(typeof(StringEnumConverter))]
         public enum ObjectType : uint
@@ -57,30 +57,41 @@ namespace KnuxLib.Engines.RockmanX7
             Ruinsman = 0x20,
             Ape_Stone_Miniboss = 0x26, // Unconfirmed, assumed based on placement.
             Bomb = 0x29, // Crashed when changing every object to this, but the bomb counter did show up with a much higher value.
+            Birdy = 0x2A, // Only actually placed in a Preview SET, spawned by other means in the final.
             Plane = 0x2B,
             Flame_Hyenard = 0x2E, // Unconfirmed, assumed from Preview SET.
             Cyber_Stone = 0x2F, // Unconfirmed, assumed based on placement.
             Mushadroyd = 0x30,
             Big_Ray = 0x31,
+            Unknown_Preview_1 = 0x32,
             Air_Force_Spawner_Door = 0x33,
+            Air_Force_Door = 0x34, // Only exists in the Preview SET, works in final.
+            Air_Force_Destructable_Door = 0x35, // Only exists in the Preview SET, works in final.
             Soldier_Stonekong = 0x38, // Unconfirmed, assumed from Preview SET.
             Metall_S = 0x39,
             Cone_Metall = 0x3A, // Unconfirmed, assumed based on placement.
             Air_Force_End_Door = 0x3C,
             Hostage = 0x3E,
+            Unknown_Preview_2 = 0x3F,
+            Unknown_Preview_3 = 0x40,
             Tornado_Tonion = 0x41, // Unconfirmed, assumed from Preview SET.
             Crash_Roadster = 0x42, // Unconfirmed, assumed based on placement.
             Proto_Ride = 0x43,
             Crimson_Palace_Platform = 0x45, // Unconfirmed, assumed based on placement.
+            Unknown_Preview_4 = 0x47,
+            Unknown_Preview_5 = 0x49,
+            Unknown_Preview_6 = 0x4A,
+            Unknown_Preview_7 = 0x4D,
             Splash_Warfly = 0x4B,
             Explosive_Container = 0x4C,
             Wind_Crowrang = 0x50, // Unconfirmed, assumed from Preview SET.
-            Ride_Borski = 0x52, // Unconfirmed, assumed from Preview SET.
+            Ride_Boarski = 0x52, // Unconfirmed, assumed from Preview SET.
             Hellguarder = 0x53, // Unconfirmed, assumed based on placement.
             Vanishing_Gungaroo = 0x54, // Unconfirmed, assumed from Preview SET.
             Unknown_2 = 0x55, // Central Highway Enemy Wave Spawner? Only used once in O010000 and never again.
             Spotlight = 0x56,
             Scrap_Metall = 0x57,
+            Unknown_Preview_8 = 0x58,
             Gun_Volt = 0x59,
             Teleporter = 0x5A, // Unconfirmed, assumed based on placement.
             Boss_Rush_Warp = 0x5C, // Unconfirmed, assumed based on placement.
