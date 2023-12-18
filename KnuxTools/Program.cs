@@ -1271,7 +1271,7 @@ namespace KnuxTools
                     version = NoVersionChecker(version,
                                                "This file has multiple variants that can't be auto detected, please specifiy the variant:",
                                                new List<string> { "final\t(Final Retail Release)",
-                                                                  "preview\t\t(Preview Trial Demo)"},
+                                                                  "preview\t(Preview Trial Demo)"},
                                                new List<bool> { false, false });
 
                     // If the version is still null or empty, then abort.
@@ -1309,7 +1309,7 @@ namespace KnuxTools
                     version = NoVersionChecker(version,
                                                "This file has multiple variants that can't be auto detected, please specifiy the variant to save with:",
                                                new List<string> { "final\t(Final Retail Release)",
-                                                                  "preview\t\t(Preview Trial Demo)"},
+                                                                  "preview\t(Preview Trial Demo)"},
                                                new List<bool> { false, false });
 
                     // If the version is still null or empty, then abort.
