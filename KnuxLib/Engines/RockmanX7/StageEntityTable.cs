@@ -91,8 +91,8 @@ namespace KnuxLib.Engines.RockmanX7
             Crimson_Palace_Teleporter = 0x63, // Unconfirmed, assumed based on placement.
             Unknown_4 = 0x64, // Only in whatever Stage 14 is, Sigma?
             Unknown_5 = 0x65, // Only in whatever Stage 14 is, Sigma?
-            Item = 0x66, // Unconfirmed, assumed based on placement.
-            Null = 0xFFFFFFFF // Assumed, as every SET ends with one of these, though some have one in the actual object table itself?
+            Item = 0x66,
+            Ride_Armour = 0xFFFFFFFF
         }
 
         public enum SpawnBehaviour : byte
@@ -121,6 +121,7 @@ namespace KnuxLib.Engines.RockmanX7
                 /// 0xffffff01
                 /// 0x00000001
                 /// 0xffffff05
+            /// Four seperate bytes maybe?
             /// </summary>
             public uint UnknownUInt32_1 { get; set; }
 
@@ -137,7 +138,7 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this?
+            /// TODO: What is this? Only ever 0x000000FF or 0xFFFF00FF. Four seperate bytes maybe?
             /// </summary>
             public uint UnknownUInt32_2 { get; set; }
 
@@ -148,7 +149,8 @@ namespace KnuxLib.Engines.RockmanX7
             public SpawnBehaviour SpawnBehaviour { get; set; }
 
             /// <summary>
-            /// Unknown, either 0 or 0xCC.
+            /// An unknown byte value.
+            /// TODO: What is this? Only ever either 0 or 0xCC.
             /// </summary>
             public byte UnknownByte_1 { get; set; }
 

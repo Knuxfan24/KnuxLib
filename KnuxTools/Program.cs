@@ -140,9 +140,9 @@ namespace KnuxTools
 
                 Console.WriteLine("Rockman X7 Engine:");
                 ColourConsole("Stage Entity Table (.328f438b/.osd)");
-                ColourConsole("    Extension Flag (Original) - OSD", true, ConsoleColor.Yellow);
-                ColourConsole("    Extension Flag (Legacy Collection 2) - 328F438B", true, ConsoleColor.Yellow);
-                ColourConsole("SLD Spline (.6ae91701/.sld)\n");
+                ColourConsole("    Version Flag (Final) - final", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Preview Trial) - preview", true, ConsoleColor.Yellow);
+                ColourConsole("SLD Spline (.sld)\n");
 
                 Console.WriteLine("Rockman X8 Engine:");
                 ColourConsole("Stage Entity Table (.31bf570e/.set)");
@@ -1266,54 +1266,82 @@ namespace KnuxTools
                 #endregion
 
                 #region Rockman X7 Engine Formats.
-                case ".328f438b":
                 case ".osd":
-                    Console.WriteLine("Converting Rockman X7 Engine Stage Entity Table to JSON.");
-                    using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, false, true))
-                        break;
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "final\t(Final Retail Release)",
+                                                                  "preview\t\t(Preview Trial Demo)"},
+                                               new List<bool> { false, false });
 
-                case ".6ae91701":
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
+
+                    Console.WriteLine("Converting Rockman X7 Engine Stage Entity Table to JSON.");
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
+                    {
+                        case "final":
+                            using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, false, true))
+                                break;
+
+                        case "preview":
+                            using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new(arg, true, true))
+                                break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Rockman X7 Engine Stage Entity Table types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
+                    break;
+
                 case ".sld":
                     Console.WriteLine("Converting Rockman X7 Engine SLD Spline to OBJ.");
                     using (KnuxLib.Engines.RockmanX7.SLDSpline sldSpline = new(arg, true))
                         break;
 
                 case ".rockmanx7.stageentitytable.json":
-                    // If an extension isn't specified, then ask the user which stage entity table extension to save with.
-                    if (string.IsNullOrEmpty(extension))
-                    {
-                        // List our supported extension options.
-                        Console.WriteLine
-                        (
-                            "This file has multiple file extension options, please select the extension to save with:\n" +
-                            "1. .OSD (Original)\n" +
-                            "2. .328F438B (Legacy Collection 2)"
-                        );
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant to save with:",
+                                               new List<string> { "final\t(Final Retail Release)",
+                                                                  "preview\t\t(Preview Trial Demo)"},
+                                               new List<bool> { false, false });
 
-                        // Wait for the user to input an option from the list.
-                        switch (Console.ReadKey().KeyChar)
-                        {
-                            case '1': extension = "OSD"; break;
-                            case '2': extension = "328F438B"; break;
-                        }
-
-                        // Sanity check the input, inform the user and abort if its still null or empty.
-                        if (string.IsNullOrEmpty(extension))
-                        {
-                            Console.WriteLine("\nNo format extension specified! Aborting...\nPress any key to continue.");
-                            Console.ReadKey();
-                            return;
-                        }
-
-                        // Add a line break.
-                        Console.WriteLine();
-                    }
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
 
                     Console.WriteLine("Converting JSON to Rockman X7 Engine Stage Entity Table.");
-                    using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
                     {
-                        stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
-                        stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.{extension}");
+                        case "final":
+                            using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
+                            {
+                                stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
+                                stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.osd", false);
+                            }
+                            break;
+
+                        case "preview":
+                            using (KnuxLib.Engines.RockmanX7.StageEntityTable stageEntityTable = new())
+                            {
+                                stageEntityTable.Data = stageEntityTable.JsonDeserialise<List<KnuxLib.Engines.RockmanX7.StageEntityTable.SetObject>>(arg);
+                                stageEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.osd", true);
+                            }
+                            break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Rockman X7 Engine Stage Entity Table types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
                     }
                     break;
                 #endregion
