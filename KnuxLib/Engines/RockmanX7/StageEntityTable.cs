@@ -122,19 +122,16 @@ namespace KnuxLib.Engines.RockmanX7
         public class SetObject
         {
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this? Used values are:
-                /// 0x00000000
-                /// 0xffffff00
-                /// 0x00000002
-                /// 0xffffff03
-                /// 0x00000003
-                /// 0xffffff01
-                /// 0x00000001
-                /// 0xffffff05
-            /// Four seperate bytes maybe?
+            /// An unknown byte value.
+            /// TODO: What is this? Used values are 0, 1, 2 or 5. Fiddling with this can crash the game.
             /// </summary>
-            public uint UnknownUInt32_1 { get; set; }
+            public byte UnknownByte_1 { get; set; }
+
+            /// <summary>
+            /// An unknown byte value.
+            /// TODO: What is this? Only ever either 0 or 0xFF. The next two bytes match this value.
+            /// </summary>
+            public byte UnknownByte_2 { get; set; }
 
             /// <summary>
             /// The type of this object.
@@ -163,7 +160,7 @@ namespace KnuxLib.Engines.RockmanX7
             /// An unknown byte value.
             /// TODO: What is this? Only ever either 0 or 0xCC.
             /// </summary>
-            public byte UnknownByte_1 { get; set; }
+            public byte UnknownByte_3 { get; set; }
 
             /// <summary>
             /// An unknown floating point value.
@@ -290,8 +287,15 @@ namespace KnuxLib.Engines.RockmanX7
                 // Create a new object.
                 SetObject obj = new();
 
-                // Read this object's first unknown integer value.
-                obj.UnknownUInt32_1 = reader.ReadUInt32();
+                // Read this object's first unknown byte.
+                obj.UnknownByte_1 = reader.ReadByte();
+
+                // Read this object's second unknown byte.
+                obj.UnknownByte_2 = reader.ReadByte();
+
+                // Check my assumption that the next two bytes match the second.
+                if (reader.ReadByte() != obj.UnknownByte_2) Debugger.Break();
+                if (reader.ReadByte() != obj.UnknownByte_2) Debugger.Break();
 
                 // Read this object's type.
                 obj.ObjectType = (ObjectType)reader.ReadUInt32();
@@ -308,11 +312,11 @@ namespace KnuxLib.Engines.RockmanX7
                 // Read this object's spwaning behaviour.
                 obj.SpawnBehaviour = (SpawnBehaviour)reader.ReadByte();
 
-                // Read this object's unknown byte.
-                obj.UnknownByte_1 = reader.ReadByte();
+                // Read this object's third unknown byte.
+                obj.UnknownByte_3 = reader.ReadByte();
 
                 // Check this object's extra unknown byte to make sure it matches my assumption (that this value always matches UnknownByte_1).
-                if (reader.ReadByte() != obj.UnknownByte_1) Debugger.Break();
+                if (reader.ReadByte() != obj.UnknownByte_3) Debugger.Break();
 
                 // Read this object's first unknown floating point value.
                 obj.UnknownFloat_1 = reader.ReadSingle();
@@ -394,8 +398,13 @@ namespace KnuxLib.Engines.RockmanX7
             // Write each object's data.
             for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
-                // Write this object's first unknown integer value.
-                writer.Write(Data[dataIndex].UnknownUInt32_1);
+                // Write this object's first unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_1);
+
+                // Write three copies of this object's first unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_2);
+                writer.Write(Data[dataIndex].UnknownByte_2);
+                writer.Write(Data[dataIndex].UnknownByte_2);
 
                 // Write this object's type.
                 writer.Write((uint)Data[dataIndex].ObjectType);
@@ -412,9 +421,9 @@ namespace KnuxLib.Engines.RockmanX7
                 // Write this object's spwaning behaviour.
                 writer.Write((byte)Data[dataIndex].SpawnBehaviour);
 
-                // Write two copies of this object's unknown byte.
-                writer.Write(Data[dataIndex].UnknownByte_1);
-                writer.Write(Data[dataIndex].UnknownByte_1);
+                // Write two copies of this object's third unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_3);
+                writer.Write(Data[dataIndex].UnknownByte_3);
 
                 // Write this object's first unknown floating point value.
                 writer.Write(Data[dataIndex].UnknownFloat_1);
