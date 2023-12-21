@@ -146,10 +146,16 @@ namespace KnuxLib.Engines.RockmanX7
             public uint Behaviour { get; set; }
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this? Only ever 0x000000FF or 0xFFFF00FF. Four seperate bytes maybe? Potentially split this into two values (considering byte 2 seems to match byte 1 and byte 3 seems to always be 0).
+            /// An unknown byte value.
+            /// TODO: What is this? Only ever either 0 or 0xFF.
             /// </summary>
-            public uint UnknownUInt32_1 { get; set; }
+            public byte UnknownByte_3 { get; set; }
+
+            /// <summary>
+            /// An unknown byte value.
+            /// TODO: What is this? Only ever either 0 or 0xFF. The next byte matches this value.
+            /// </summary>
+            public byte UnknownByte_4 { get; set; }
 
             /// <summary>
             /// Controls spawn distance in some way.
@@ -161,7 +167,7 @@ namespace KnuxLib.Engines.RockmanX7
             /// An unknown byte value.
             /// TODO: What is this? Only ever either 0 or 0xCC.
             /// </summary>
-            public byte UnknownByte_3 { get; set; }
+            public byte UnknownByte_5 { get; set; }
 
             /// <summary>
             /// The radius from this object that the player must be in for it to spawn.
@@ -172,51 +178,116 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this? Usually set to 10, but a few objects (listed below) can have it set to various different values instead.
+                /// Ball_De_Voux_Normal_Type
+                /// Ball_De_Voux_Shot_Type
+                /// Blockape
+                /// Cone_Metall
+                /// Crimson_Palace_Teleporter
+                /// Cyber_Stone
+                /// Dragon_Blaster
+                /// Explosive_Container
+                /// Guard_Door
+                /// Guard_Fan
+                /// Hellguarder
+                /// Hostage
+                /// Item
+                /// Large_Mine
+                /// Mega_Tortoise
+                /// Metall_S
+                /// Pastegunner
+                /// Plane
+                /// Proto_Ride
+                /// Red_Guardian
+                /// Ride_Armour
+                /// Rolling_Stone
+                /// Ruinsman
+                /// Runnerbomb
+                /// Scrap_Metall
+                /// Tunnel_Base_Door
+                /// Tunnel_Base_Gate
+                /// Unknown_1
+                /// Unknown_5
+                /// Wall_Blaster
+                /// Yellow_Guardian
             /// </summary>
-            public float UnknownFloat_1 { get; set; }
+            public float UnknownFloat_1 { get; set; } = 10f;
 
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this?
+            /// TODO: What is this? Usually set to 1200, but a few objects (listed below) can have it set to various different values instead.
+                /// Boss_Rush_Warp
+                /// Mushadroyd
+                /// Runnerbomb
+                /// Unknown_3
+                /// Unknown_4
+                /// Wall_Blaster
             /// </summary>
-            public uint UnknownUInt32_2 { get; set; }
+            public uint UnknownUInt32_2 { get; set; } = 1200;
 
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this?
+            /// TODO: What is this? Usually set to 0, but a few objects (listed below) can have it set to various different values instead.
+                /// Antenna_Shield
+                /// Ape_Stone
+                /// Ball_De_Voux_Shot_Type
+                /// Bee_Blader
+                /// Bomb
+                /// Bounding
+                /// Crimson_Palace_Teleporter
+                /// Dr_Light_Capsule
+                /// Gun_Volt
+                /// Hostage
+                /// Item
+                /// Pastegunner
+                /// Runnerbomb
+                /// Unknown_1
+                /// Yellow_Guardian
             /// </summary>
-            public uint UnknownUInt32_3 { get; set; }
-
-            /// <summary>
-            /// An unknown floating point value.
-            /// TODO: What is this?
-            /// </summary>
-            public float UnknownFloat_2 { get; set; }
+            public uint UnknownUInt32_3 { get; set; } = 0;
 
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this?
+            /// TODO: What is this? Usually set to 0, but a few objects (listed below) can have it set to various different values instead.
+                /// Bee_Blader
+                /// Bomb
+                /// Crimson_Palace_Teleporter
+                /// Dr_Light_Capsule
+                /// Hostage
+                /// Runnerbomb
+                /// Tunnel_Base_Gate
+                /// Unknown_1
+                /// Unknown_2
             /// </summary>
-            public uint UnknownUInt32_4 { get; set; }
+            public uint UnknownUInt32_4 { get; set; } = 0;
+
+            /// <summary>
+            /// An unknown integer value.
+            /// TODO: What is this? Usually set to 0, but a few Ball_De_Voux_Normal_Types use 1, Proto_Rides can also use 1, 3 and 4, and Wall_Blasters can use 1, 2, 3 and 99(?!).
+            /// </summary>
+            public uint UnknownUInt32_5 { get; set; } = 0;
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this? Various objects set this to a variety of values.
             /// </summary>
-            public float UnknownFloat_3 { get; set; }
+            public float UnknownFloat_3 { get; set; } = 0f;
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this? Usually set to 0, but a few objects (listed below) have different values instead.
+                /// Crimson_Palace_Teleporter (can use 0.12)
+                /// Large_Mine (can use 90)
+                /// Pastegunner (can use -90, 90 and 180)
+                /// Spotlight (can use a variety of different values)
             /// </summary>
-            public float UnknownFloat_4 { get; set; }
+            public float UnknownFloat_4 { get; set; } = 0f;
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this? It's always set to 0, except for a few Pastegunners (which use -80 or -90) and the Spotlights (which use a range of values up to and including 0.5).
             /// </summary>
-            public float UnknownFloat_5 { get; set; }
+            public float UnknownFloat_5 { get; set; } = 0f;
 
             /// <summary>
             /// This object's rotation in 3D space.
@@ -225,9 +296,21 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this? Usually set to 0, but a few objects (listed below) have it set to 1 instead.
+                /// Air_Force_Door (may or may not be always?)
+                /// Air_Force_End_Door
+                /// Air_Force_Spawner_Door
+                /// Big_Ray
+                /// Bomb
+                /// Dr_Light_Capsule (not always)
+                /// Plane
+                /// Runnerbomb (not always)
+                /// Spotlight
+                /// Tunnel_Base_Door
+                /// Tunnel_Base_Gate
+                /// Unknown_Preview_5 (may or may not be always?)
             /// </summary>
-            public float UnknownFloat_6 { get; set; }
+            public float UnknownFloat_6 { get; set; } = 0f;
 
             /// <summary>
             /// An unknown Vector3.
@@ -237,9 +320,9 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this? It's always set to 0, except for a single Bee Blader in Central Highway and some Planes in Air Force Act 1 using 1 instead.
             /// </summary>
-            public float UnknownFloat_7 { get; set; }
+            public float UnknownFloat_7 { get; set; } = 0f;
 
             /// <summary>
             /// The object's position in 3D space.
@@ -248,9 +331,9 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this? It's always set to 1, except for a single Big Ray in Air Force Act 2 using 180 instead.
             /// </summary>
-            public float UnknownFloat_8 { get; set; }
+            public float UnknownFloat_8 { get; set; } = 1f;
 
             public override string ToString() => ObjectType.ToString();
         }
@@ -293,8 +376,17 @@ namespace KnuxLib.Engines.RockmanX7
                 // Read this object's behaviour value.
                 obj.Behaviour = reader.ReadUInt32();
 
-                // Read this object's first unknown integer value.
-                obj.UnknownUInt32_1 = reader.ReadUInt32();
+                // Read this object's third unknown byte.
+                obj.UnknownByte_3 = reader.ReadByte();
+                
+                // Check the next byte to make sure it matches my assumption that it's always 0.
+                if (reader.ReadByte() != 0) Debugger.Break();
+
+                // Read this object's fourth unknown byte.
+                obj.UnknownByte_4 = reader.ReadByte();
+
+                // Check the next byte to make sure it matches my assumption that it matches UnknownByte_4.
+                if (reader.ReadByte() != obj.UnknownByte_4) Debugger.Break();
 
                 // Check this object's index to make sure it matches my assumption (that this value is i + 7).
                 if (reader.ReadByte() != objectIndex + 7) Debugger.Break();
@@ -302,11 +394,11 @@ namespace KnuxLib.Engines.RockmanX7
                 // Read this object's spwaning behaviour.
                 obj.SpawnBehaviour = (SpawnBehaviour)reader.ReadByte();
 
-                // Read this object's third unknown byte.
-                obj.UnknownByte_3 = reader.ReadByte();
+                // Read this object's fifth unknown byte.
+                obj.UnknownByte_5 = reader.ReadByte();
 
                 // Check this object's extra unknown byte to make sure it matches my assumption (that this value always matches UnknownByte_1).
-                if (reader.ReadByte() != obj.UnknownByte_3) Debugger.Break();
+                if (reader.ReadByte() != obj.UnknownByte_5) Debugger.Break();
 
                 // Read this object's spawn radius.
                 obj.SpawnRadius = reader.ReadSingle();
@@ -320,11 +412,11 @@ namespace KnuxLib.Engines.RockmanX7
                 // Read this object's third unknown integer value.
                 obj.UnknownUInt32_3 = reader.ReadUInt32();
 
-                // Read this object's second unknown floating point value.
-                obj.UnknownFloat_2 = reader.ReadSingle();
-
                 // Read this object's fourth unknown integer value.
                 obj.UnknownUInt32_4 = reader.ReadUInt32();
+
+                // Read this object's fifth unknown integer value.
+                obj.UnknownUInt32_5 = reader.ReadUInt32();
 
                 // Read this object's third unknown floating point value.
                 obj.UnknownFloat_3 = reader.ReadSingle();
@@ -347,10 +439,14 @@ namespace KnuxLib.Engines.RockmanX7
                 // Read this object's seventh unknown floating point value.
                 obj.UnknownFloat_7 = reader.ReadSingle();
 
-                // If this SET isn't from the Rockman X7 Preview Trial, then check the extra value here to make sure it matches my assumption (that this value always matches UnknownUInt32_1).
+                // If this SET isn't from the Rockman X7 Preview Trial, then check the extra bytes here to make sure it matches my assumption (that these bytes always match UnknownByte_3 and UnknownByte_4 and the two other values around it).
                 if (!previewSet)
-                    if (reader.ReadUInt32() != obj.UnknownUInt32_1)
-                        Debugger.Break();
+                {
+                    if (reader.ReadByte() != obj.UnknownByte_3) Debugger.Break();
+                    if (reader.ReadByte() != 0) Debugger.Break();
+                    if (reader.ReadByte() != obj.UnknownByte_4) Debugger.Break();
+                    if (reader.ReadByte() != obj.UnknownByte_4) Debugger.Break();
+                }
 
                 // Read this object's position.
                 obj.Position = reader.ReadVector3();
@@ -385,7 +481,7 @@ namespace KnuxLib.Engines.RockmanX7
                 // Write this object's first unknown byte.
                 writer.Write(Data[dataIndex].UnknownByte_1);
 
-                // Write three copies of this object's first unknown byte.
+                // Write three copies of this object's second unknown byte.
                 writer.Write(Data[dataIndex].UnknownByte_2);
                 writer.Write(Data[dataIndex].UnknownByte_2);
                 writer.Write(Data[dataIndex].UnknownByte_2);
@@ -396,8 +492,15 @@ namespace KnuxLib.Engines.RockmanX7
                 // Write this object's behaviour value.
                 writer.Write(Data[dataIndex].Behaviour);
 
-                // Write this object's first unknown integer value.
-                writer.Write(Data[dataIndex].UnknownUInt32_1);
+                // Write this object's third unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_3);
+
+                // Write a 0 byte.
+                writer.Write((byte)0);
+
+                // Write two copies of this object's fourth unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_4);
+                writer.Write(Data[dataIndex].UnknownByte_4);
 
                 // Write this object's index.
                 writer.Write((byte)(dataIndex + 7));
@@ -405,9 +508,9 @@ namespace KnuxLib.Engines.RockmanX7
                 // Write this object's spwaning behaviour.
                 writer.Write((byte)Data[dataIndex].SpawnBehaviour);
 
-                // Write two copies of this object's third unknown byte.
-                writer.Write(Data[dataIndex].UnknownByte_3);
-                writer.Write(Data[dataIndex].UnknownByte_3);
+                // Write two copies of this object's fifth unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_5);
+                writer.Write(Data[dataIndex].UnknownByte_5);
 
                 // Write this object's spawn radius.
                 writer.Write(Data[dataIndex].SpawnRadius);
@@ -421,11 +524,11 @@ namespace KnuxLib.Engines.RockmanX7
                 // Write this object's third unknown integer value.
                 writer.Write(Data[dataIndex].UnknownUInt32_3);
 
-                // Write this object's second unknown floating point value.
-                writer.Write(Data[dataIndex].UnknownFloat_2);
-
                 // Write this object's fourth unknown integer value.
                 writer.Write(Data[dataIndex].UnknownUInt32_4);
+
+                // Write this object's fifth unknown integer value.
+                writer.Write(Data[dataIndex].UnknownUInt32_5);
 
                 // Write this object's third unknown floating point value.
                 writer.Write(Data[dataIndex].UnknownFloat_3);
@@ -448,8 +551,14 @@ namespace KnuxLib.Engines.RockmanX7
                 // Write this object's seventh unknown floating point value.
                 writer.Write(Data[dataIndex].UnknownFloat_7);
 
-                // If this SET isn't from the Rockman X7 Preview Trial, then write another copy of UnknownUInt32_1.
-                if (!previewSet) writer.Write(Data[dataIndex].UnknownUInt32_1);
+                // If this SET isn't from the Rockman X7 Preview Trial, then write another copy of UnknownByte_3, a 0, and two copies of UnknownByte_4.
+                if (!previewSet)
+                {
+                    writer.Write(Data[dataIndex].UnknownByte_3);
+                    writer.Write((byte)0);
+                    writer.Write(Data[dataIndex].UnknownByte_4);
+                    writer.Write(Data[dataIndex].UnknownByte_4);
+                }
 
                 // Write this object's position.
                 writer.Write(Data[dataIndex].Position);
