@@ -147,15 +147,21 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown byte value.
-            /// TODO: What is this? Only ever either 0 or 0xFF.
+            /// TODO: What is this? Only ever either 0 or 0xFF in the final game's SETs.
             /// </summary>
             public byte UnknownByte_3 { get; set; }
 
             /// <summary>
             /// An unknown byte value.
-            /// TODO: What is this? Only ever either 0 or 0xFF. The next byte matches this value.
+            /// TODO: What is this? Only ever 0 in the final game's SETs.
             /// </summary>
             public byte UnknownByte_4 { get; set; }
+
+            /// <summary>
+            /// An unknown byte value.
+            /// TODO: What is this? Only ever either 0 or 0xFF. The next byte matches this value.
+            /// </summary>
+            public byte UnknownByte_5 { get; set; }
 
             /// <summary>
             /// Controls spawn distance in some way.
@@ -167,7 +173,7 @@ namespace KnuxLib.Engines.RockmanX7
             /// An unknown byte value.
             /// TODO: What is this? Only ever either 0 or 0xCC.
             /// </summary>
-            public byte UnknownByte_5 { get; set; }
+            public byte UnknownByte_6 { get; set; }
 
             /// <summary>
             /// The radius from this object that the player must be in for it to spawn.
@@ -378,15 +384,15 @@ namespace KnuxLib.Engines.RockmanX7
 
                 // Read this object's third unknown byte.
                 obj.UnknownByte_3 = reader.ReadByte();
-                
-                // Check the next byte to make sure it matches my assumption that it's always 0.
-                if (reader.ReadByte() != 0) Debugger.Break();
 
                 // Read this object's fourth unknown byte.
                 obj.UnknownByte_4 = reader.ReadByte();
 
-                // Check the next byte to make sure it matches my assumption that it matches UnknownByte_4.
-                if (reader.ReadByte() != obj.UnknownByte_4) Debugger.Break();
+                // Read this object's fifth unknown byte.
+                obj.UnknownByte_5 = reader.ReadByte();
+
+                // Check the next byte to make sure it matches my assumption that it matches UnknownByte_5.
+                if (reader.ReadByte() != obj.UnknownByte_5) Debugger.Break();
 
                 // Check this object's index to make sure it matches my assumption (that this value is i + 7).
                 if (reader.ReadByte() != objectIndex + 7) Debugger.Break();
@@ -394,11 +400,11 @@ namespace KnuxLib.Engines.RockmanX7
                 // Read this object's spwaning behaviour.
                 obj.SpawnBehaviour = (SpawnBehaviour)reader.ReadByte();
 
-                // Read this object's fifth unknown byte.
-                obj.UnknownByte_5 = reader.ReadByte();
+                // Read this object's sixth unknown byte.
+                obj.UnknownByte_6 = reader.ReadByte();
 
-                // Check this object's extra unknown byte to make sure it matches my assumption (that this value always matches UnknownByte_1).
-                if (reader.ReadByte() != obj.UnknownByte_5) Debugger.Break();
+                // Check this object's extra unknown byte to make sure it matches my assumption (that this value always matches UnknownByte_6).
+                if (reader.ReadByte() != obj.UnknownByte_6) Debugger.Break();
 
                 // Read this object's spawn radius.
                 obj.SpawnRadius = reader.ReadSingle();
@@ -444,8 +450,8 @@ namespace KnuxLib.Engines.RockmanX7
                 {
                     if (reader.ReadByte() != obj.UnknownByte_3) Debugger.Break();
                     if (reader.ReadByte() != 0) Debugger.Break();
-                    if (reader.ReadByte() != obj.UnknownByte_4) Debugger.Break();
-                    if (reader.ReadByte() != obj.UnknownByte_4) Debugger.Break();
+                    if (reader.ReadByte() != obj.UnknownByte_5) Debugger.Break();
+                    if (reader.ReadByte() != obj.UnknownByte_5) Debugger.Break();
                 }
 
                 // Read this object's position.
@@ -495,12 +501,12 @@ namespace KnuxLib.Engines.RockmanX7
                 // Write this object's third unknown byte.
                 writer.Write(Data[dataIndex].UnknownByte_3);
 
-                // Write a 0 byte.
-                writer.Write((byte)0);
+                // Write this object's fourth unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_4);
 
-                // Write two copies of this object's fourth unknown byte.
-                writer.Write(Data[dataIndex].UnknownByte_4);
-                writer.Write(Data[dataIndex].UnknownByte_4);
+                // Write two copies of this object's fifth unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_5);
+                writer.Write(Data[dataIndex].UnknownByte_5);
 
                 // Write this object's index.
                 writer.Write((byte)(dataIndex + 7));
@@ -508,9 +514,9 @@ namespace KnuxLib.Engines.RockmanX7
                 // Write this object's spwaning behaviour.
                 writer.Write((byte)Data[dataIndex].SpawnBehaviour);
 
-                // Write two copies of this object's fifth unknown byte.
-                writer.Write(Data[dataIndex].UnknownByte_5);
-                writer.Write(Data[dataIndex].UnknownByte_5);
+                // Write two copies of this object's sixth unknown byte.
+                writer.Write(Data[dataIndex].UnknownByte_6);
+                writer.Write(Data[dataIndex].UnknownByte_6);
 
                 // Write this object's spawn radius.
                 writer.Write(Data[dataIndex].SpawnRadius);
@@ -551,13 +557,13 @@ namespace KnuxLib.Engines.RockmanX7
                 // Write this object's seventh unknown floating point value.
                 writer.Write(Data[dataIndex].UnknownFloat_7);
 
-                // If this SET isn't from the Rockman X7 Preview Trial, then write another copy of UnknownByte_3, a 0, and two copies of UnknownByte_4.
+                // If this SET isn't from the Rockman X7 Preview Trial, then write another copy of UnknownByte_3, UnknownByte_4, and two copies of UnknownByte_5.
                 if (!previewSet)
                 {
                     writer.Write(Data[dataIndex].UnknownByte_3);
-                    writer.Write((byte)0);
                     writer.Write(Data[dataIndex].UnknownByte_4);
-                    writer.Write(Data[dataIndex].UnknownByte_4);
+                    writer.Write(Data[dataIndex].UnknownByte_5);
+                    writer.Write(Data[dataIndex].UnknownByte_5);
                 }
 
                 // Write this object's position.
