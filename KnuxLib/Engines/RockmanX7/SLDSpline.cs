@@ -4,6 +4,7 @@
     // TODO: Figure out the unknown data and how it interacts with the points.
         // ST08_03 (The inside part of Wind Crowrang's stage) has a branch with an obvious mistake that these numbers might be a part of?
     // TODO: What does SLD mean? Scripted Line Definition?
+    // TODO: That unknown data doesn't actually seem to be halves, if st10_00.sld is to be believed.
     public class SLDSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
