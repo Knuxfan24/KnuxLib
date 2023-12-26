@@ -121,6 +121,38 @@
         }
 
         /// <summary>
+        /// Saves this format's file.
+        /// </summary>
+        /// <param name="filepath">The path to save to.</param>
+        public void Save(string filepath)
+        {
+            // Set up Marathon's BinaryWriter.
+            BinaryWriterEx writer = new(File.Create(filepath));
+
+            // Write the count of vertices and unknown data chunks in this file.
+            writer.Write((ushort)Data.Vertices.Count);
+
+            // Loop through and write each vertex for this spline.
+            for (int vertexIndex = 0; vertexIndex < Data.Vertices.Count; vertexIndex++)
+                writer.Write(Data.Vertices[vertexIndex]);
+
+            // Loop through and write each unknown chunk for this spline.
+            for (int unknownIndex = 0; unknownIndex < Data.UnknownData_1.Count; unknownIndex++)
+            {
+                writer.Write((Half)Data.UnknownData_1[unknownIndex].UnknownHalf_1);
+                writer.Write((Half)Data.UnknownData_1[unknownIndex].UnknownHalf_2);
+                writer.Write((Half)Data.UnknownData_1[unknownIndex].UnknownHalf_3);
+                writer.Write((Half)Data.UnknownData_1[unknownIndex].UnknownHalf_4);
+                writer.Write((Half)Data.UnknownData_1[unknownIndex].UnknownHalf_5);
+                writer.Write((Half)Data.UnknownData_1[unknownIndex].UnknownHalf_6);
+                writer.Write((Half)Data.UnknownData_1[unknownIndex].UnknownHalf_7);
+            }
+
+            // Close Marathon's BinaryWriter.
+            writer.Close();
+        }
+
+        /// <summary>
         /// Exports the position values from this spline to an OBJ.
         /// </summary>
         /// <param name="filepath">The filepath to export to.</param>
