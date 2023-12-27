@@ -190,6 +190,10 @@
             {
                 foreach (string file in files)
                 {
+                    // If this file is the KnuxTools archive type identifier shortcut, then skip over it.
+                    if (Path.GetFileName(file) == "knuxtools_archivetype.txt")
+                        continue;
+
                     FileNode node = new()
                     {
                         Name = Path.GetFileName(file),

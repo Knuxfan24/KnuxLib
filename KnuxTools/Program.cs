@@ -240,6 +240,10 @@ namespace KnuxTools
         /// <param name="version">The version parameter to use.</param>
         private static void HandleDirectory(string arg, string? version)
         {
+            // Check for an archive type identifier if a version wasn't specified, set the version if one was found.
+            if (string.IsNullOrEmpty(version) && File.Exists($@"{arg}\knuxtools_archivetype.txt"))
+                version = File.ReadAllText($@"{arg}\knuxtools_archivetype.txt");
+
             // Carry out a version check.
             version = NoVersionChecker(version,
                                        "Please specify the archive type to pack this directory into, valid options are:",

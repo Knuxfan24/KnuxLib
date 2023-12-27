@@ -423,6 +423,10 @@ namespace KnuxLib
             // TODO: Is it worth making a toggle for current directory only for formats that don't use subdirectories?
             foreach (string file in Directory.GetFiles(directory, "*.*", SearchOption.AllDirectories))
             {
+                // If this file is the KnuxTools archive type identifier shortcut, then skip over it.
+                if (Path.GetFileName(file) == "knuxtools_archivetype.txt")
+                    continue;
+
                 // Read this file's name (stripping out the directory name in the search) and binary data.
                 FileNode node = new()
                 {
