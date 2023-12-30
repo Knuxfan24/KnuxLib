@@ -10,9 +10,21 @@ namespace KnuxLib.Engines.RockmanX7
         {
             Load(filepath);
 
-            //if (export)
-            //    JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.rockmanx7.mathtable.json", Data);
+            if (export)
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.rockmanx7.mathtable.json", Data);
         }
+
+        public class FormatData
+        {
+            public MathTableChunks.Environment? Environment { get; set; }
+        }
+
+        public enum ChunkType : ushort
+        {
+            Environment = 382
+        }
+
+        public FormatData Data = new();
 
         /// <summary>
         /// Loads and parses this format's file.
@@ -49,7 +61,7 @@ namespace KnuxLib.Engines.RockmanX7
                 ushort chunkUnknownUShort_2 = reader.ReadUInt16();
 
                 // TODO: Make sure this is correct and, if so, figure out what chunk type is what.
-                ushort chunkType = reader.ReadUInt16();
+                ChunkType chunkType = (ChunkType)reader.ReadUInt16();
 
                 // Realign to 0x10 bytes.
                 reader.FixPadding(0x10);
@@ -61,38 +73,47 @@ namespace KnuxLib.Engines.RockmanX7
                 reader.JumpTo(headerEnd);
 
                 // TODO: Handle the 0xFFFF (texture?) chunk type.
-                if (chunkType != 0xFFFF)
+                //if (chunkType != 0xFFFF)
+                //{
+                //    // Read the count of offsets in this chunk.
+                //    uint offsetCount = reader.ReadUInt32();
+
+                //    // Loop through and read each offset.
+                //    for (int offsetIndex = 0; offsetIndex < offsetCount; offsetIndex++)
+                //    {
+                //        // Read this offset, relative to the chunk's start.
+                //        uint offset = reader.ReadUInt32(); // first offset always points to 0x10 nulls,
+                //                                           // second offset is always 0,
+                //                                           // third offset is always 0x10 higher than the first.
+                //                                           // TODO: Check this outside of a 0x17E type.
+
+                //        // Save our current position so we can jump back for the next offset.
+                //        long offsetPosition = reader.BaseStream.Position;
+
+                //        // Only read this offset's data if it isn't 0.
+                //        if (offset != 0)
+                //        {
+                //            // Jump to this offset.
+                //            reader.JumpTo(offset + headerEnd);
+
+                //            // TODO: Figure out the actual data.
+                //        }
+
+                //        // Jump back for the next offset.
+                //        reader.JumpTo(offsetPosition);
+                //    }
+
+                //    // Jump back for the temporary chunk split.
+                //    reader.JumpTo(headerEnd);
+                //}
+
+                switch (chunkType)
                 {
-                    // Read the count of offsets in this chunk.
-                    uint offsetCount = reader.ReadUInt32();
+                    case ChunkType.Environment:
+                        Data.Environment = MathTableChunks.Environment.Read(reader);
+                        break;
 
-                    // Loop through and read each offset.
-                    for (int offsetIndex = 0; offsetIndex < offsetCount; offsetIndex++)
-                    {
-                        // Read this offset, relative to the chunk's start.
-                        uint offset = reader.ReadUInt32(); // first offset always points to 0x10 nulls,
-                                                           // second offset is always 0,
-                                                           // third offset is always 0x10 higher than the first.
-                                                           // TODO: Check this outside of a 0x17E type.
-
-                        // Save our current position so we can jump back for the next offset.
-                        long offsetPosition = reader.BaseStream.Position;
-
-                        // Only read this offset's data if it isn't 0.
-                        if (offset != 0)
-                        {
-                            // Jump to this offset.
-                            reader.JumpTo(offset + headerEnd);
-
-                            // TODO: Figure out the actual data.
-                        }
-
-                        // Jump back for the next offset.
-                        reader.JumpTo(offsetPosition);
-                    }
-
-                    // Jump back for the temporary chunk split.
-                    reader.JumpTo(headerEnd);
+                    default: Console.WriteLine($"Chunk type '{chunkType}' not yet handled."); break;
                 }
 
                 // Temporarily read this chunk's raw bytes and dump them to files.

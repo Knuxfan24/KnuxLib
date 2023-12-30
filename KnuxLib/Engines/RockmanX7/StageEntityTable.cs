@@ -229,7 +229,7 @@ namespace KnuxLib.Engines.RockmanX7
                 /// Unknown_4
                 /// Wall_Blaster
             /// </summary>
-            public uint UnknownUInt32_2 { get; set; } = 1200;
+            public uint UnknownUInt32_1 { get; set; } = 1200;
 
             /// <summary>
             /// An unknown integer value.
@@ -250,7 +250,7 @@ namespace KnuxLib.Engines.RockmanX7
                 /// Unknown_1
                 /// Yellow_Guardian
             /// </summary>
-            public uint UnknownUInt32_3 { get; set; } = 0;
+            public uint UnknownUInt32_2 { get; set; } = 0;
 
             /// <summary>
             /// An unknown integer value.
@@ -265,13 +265,13 @@ namespace KnuxLib.Engines.RockmanX7
                 /// Unknown_1
                 /// Unknown_2
             /// </summary>
-            public uint UnknownUInt32_4 { get; set; } = 0;
+            public uint UnknownUInt32_3 { get; set; } = 0;
 
             /// <summary>
             /// An unknown integer value.
             /// TODO: What is this? Usually set to 0, but a few Ball_De_Voux_Normal_Types use 1, Proto_Rides can also use 1, 3 and 4, and Wall_Blasters can use 1, 2, 3 and 99(?!).
             /// </summary>
-            public uint UnknownUInt32_5 { get; set; } = 0;
+            public uint UnknownUInt32_4 { get; set; } = 0;
 
             /// <summary>
             /// An unknown floating point value.
@@ -291,7 +291,7 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this? It's always set to 0, except for a few Pastegunners (which use -80 or -90) and the Spotlights (which use a range of values up to and including 0.5).
+            /// TODO: What is this? It's always set to 0, except for a few Pastegunners (which use -80 or -90, seems to control their rotation in someway which is silly???) and the Spotlights (which use a range of values up to and including 0.5, controls their rotating movement in someway).
             /// </summary>
             public float UnknownFloat_5 { get; set; } = 0f;
 
@@ -326,7 +326,9 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this? It's always set to 0, except for a single Bee Blader in Central Highway and some Planes in Air Force Act 1 using 1 instead.
+            /// TODO: What is this, is it a parameter?
+                /// It's always set to 0, except for a single Bee Blader in Central Highway and some Planes in Air Force Act 1 using 1 instead.
+                /// Didn't notice any difference setting those to 0 or others to 1???
             /// </summary>
             public float UnknownFloat_7 { get; set; } = 0f;
 
@@ -337,7 +339,9 @@ namespace KnuxLib.Engines.RockmanX7
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this? It's always set to 1, except for a single Big Ray in Air Force Act 2 using 180 instead.
+            /// TODO: What is this, is it a parameter?
+                /// It's always set to 1, except for a single Big Ray in Air Force Act 2 using 180 instead.
+                /// Didn't notice any difference changing that object or any others???
             /// </summary>
             public float UnknownFloat_8 { get; set; } = 1f;
 
@@ -412,6 +416,9 @@ namespace KnuxLib.Engines.RockmanX7
                 // Read this object's first unknown floating point value.
                 obj.UnknownFloat_1 = reader.ReadSingle();
 
+                // Read this object's first unknown integer value.
+                obj.UnknownUInt32_1 = reader.ReadUInt32();
+
                 // Read this object's second unknown integer value.
                 obj.UnknownUInt32_2 = reader.ReadUInt32();
 
@@ -420,9 +427,6 @@ namespace KnuxLib.Engines.RockmanX7
 
                 // Read this object's fourth unknown integer value.
                 obj.UnknownUInt32_4 = reader.ReadUInt32();
-
-                // Read this object's fifth unknown integer value.
-                obj.UnknownUInt32_5 = reader.ReadUInt32();
 
                 // Read this object's third unknown floating point value.
                 obj.UnknownFloat_3 = reader.ReadSingle();
@@ -525,16 +529,16 @@ namespace KnuxLib.Engines.RockmanX7
                 writer.Write(Data[dataIndex].UnknownFloat_1);
 
                 // Write this object's second unknown integer value.
-                writer.Write(Data[dataIndex].UnknownUInt32_2);
+                writer.Write(Data[dataIndex].UnknownUInt32_1);
 
                 // Write this object's third unknown integer value.
-                writer.Write(Data[dataIndex].UnknownUInt32_3);
+                writer.Write(Data[dataIndex].UnknownUInt32_2);
 
                 // Write this object's fourth unknown integer value.
-                writer.Write(Data[dataIndex].UnknownUInt32_4);
+                writer.Write(Data[dataIndex].UnknownUInt32_3);
 
                 // Write this object's fifth unknown integer value.
-                writer.Write(Data[dataIndex].UnknownUInt32_5);
+                writer.Write(Data[dataIndex].UnknownUInt32_4);
 
                 // Write this object's third unknown floating point value.
                 writer.Write(Data[dataIndex].UnknownFloat_3);
