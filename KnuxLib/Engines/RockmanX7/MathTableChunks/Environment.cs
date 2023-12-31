@@ -536,10 +536,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
 
                             break;
 
-                        case 0x00020014:
-                            break;
-
-                        //default: throw new NotImplementedException();
+                        default: Console.WriteLine($"Environment sub chunk {Helpers.ReturnUIntAsHex(subChunkID)} not yet handled!"); break;
                     }
 
                     // Jump back for the next sub chunk.

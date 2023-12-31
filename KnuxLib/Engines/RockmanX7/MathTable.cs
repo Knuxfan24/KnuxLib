@@ -14,16 +14,13 @@ namespace KnuxLib.Engines.RockmanX7
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.rockmanx7.mathtable.json", Data);
         }
 
+        // Classes for this format.
         public class FormatData
         {
-            public MathTableChunks.Environment? Environment { get; set; }
+            public List<MathTableChunks.Environment>? Environments { get; set; }
         }
 
-        public enum ChunkType : ushort
-        {
-            Environment = 382
-        }
-
+        // Actual data presented to the end user.
         public FormatData Data = new();
 
         /// <summary>
@@ -60,8 +57,8 @@ namespace KnuxLib.Engines.RockmanX7
                 // TODO: What is this for?
                 ushort chunkUnknownUShort_2 = reader.ReadUInt16();
 
-                // TODO: Make sure this is correct and, if so, figure out what chunk type is what.
-                ChunkType chunkType = (ChunkType)reader.ReadUInt16();
+                // TODO: Make sure this is correct and, if so, figure out what the different chunk types do.
+                ushort chunkType = reader.ReadUInt16();
 
                 // Realign to 0x10 bytes.
                 reader.FixPadding(0x10);
@@ -72,54 +69,23 @@ namespace KnuxLib.Engines.RockmanX7
                 // Jump to the current headerEnd value.
                 reader.JumpTo(headerEnd);
 
-                // TODO: Handle the 0xFFFF (texture?) chunk type.
-                //if (chunkType != 0xFFFF)
-                //{
-                //    // Read the count of offsets in this chunk.
-                //    uint offsetCount = reader.ReadUInt32();
-
-                //    // Loop through and read each offset.
-                //    for (int offsetIndex = 0; offsetIndex < offsetCount; offsetIndex++)
-                //    {
-                //        // Read this offset, relative to the chunk's start.
-                //        uint offset = reader.ReadUInt32(); // first offset always points to 0x10 nulls,
-                //                                           // second offset is always 0,
-                //                                           // third offset is always 0x10 higher than the first.
-                //                                           // TODO: Check this outside of a 0x17E type.
-
-                //        // Save our current position so we can jump back for the next offset.
-                //        long offsetPosition = reader.BaseStream.Position;
-
-                //        // Only read this offset's data if it isn't 0.
-                //        if (offset != 0)
-                //        {
-                //            // Jump to this offset.
-                //            reader.JumpTo(offset + headerEnd);
-
-                //            // TODO: Figure out the actual data.
-                //        }
-
-                //        // Jump back for the next offset.
-                //        reader.JumpTo(offsetPosition);
-                //    }
-
-                //    // Jump back for the temporary chunk split.
-                //    reader.JumpTo(headerEnd);
-                //}
-
-                switch (chunkType)
+                // Check the chunk type, if it's not a texture one, then read it as an environment chunk.
+                if (chunkType != 0xFFFF)
                 {
-                    case ChunkType.Environment:
-                        Data.Environment = MathTableChunks.Environment.Read(reader);
-                        break;
-
-                    default: Console.WriteLine($"Chunk type '{chunkType}' not yet handled."); break;
+                    Data.Environments ??= new();
+                    Data.Environments.Add(MathTableChunks.Environment.Read(reader));
+                }
+                else
+                {
+                    Console.WriteLine("Skipped texture? chunk.");
                 }
 
-                // Temporarily read this chunk's raw bytes and dump them to files.
-                File.WriteAllBytes($@"{filepath}.{chunkType}", reader.ReadBytes(chunkSize));
+                reader.JumpTo(headerEnd);
 
-                // Realign to 0x800, don't need to do this, just making sure for now.
+                // Jump ahead by the size of this chunk so we can reach the next one.
+                reader.JumpAhead(chunkSize);
+
+                // Realign to 0x800 so that we're in the right place.
                 reader.FixPadding(0x800);
 
                 // Update the headerEnd position as a hacky way to make jumping to the next chunk doable.
