@@ -61,10 +61,9 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
         public uint UnknownUInt32_1 { get; set; }
 
         /// <summary>
-        /// An unknown integer value.
-        /// TODO: What is this?
+        /// The stage chunk this collision face is associated with.
         /// </summary>
-        public uint UnknownUInt32_2 { get; set; }
+        public uint AssociatedChunk { get; set; }
 
         /// <summary>
         /// The coordinates that make up this polygon's vertex points.
@@ -210,12 +209,18 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             if (reader.ReadUInt32() != 0) Debugger.Break();
                             break;
 
+                        case 0x1000040:
                         case 0x01010060:
                             // Read this sub chunk's first unknown byte. This is normally 1, but SCR04_06 is set to 0 instead.
                             byte UnknownByte_1 = reader.ReadByte();
 
                             // Skip 0x27 bytes that are always FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 00 00 00 CD CC CC 3D.
-                            reader.JumpAhead(0x27);
+                            if (subChunkID == 0x01010060)
+                                reader.JumpAhead(0x27);
+
+                            // Skip 0x07 bytes that are always 00 00 00 CD CC CC 3D.
+                            if (subChunkID == 0x1000040)
+                                reader.JumpAhead(0x07);
 
                             // TODO: SCR04_06 has this set of four values done differently?
                             // Read this sub chunk's UnknownCount, used by a few parts of this sub chunk, but not all of them?
@@ -224,7 +229,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             // Check that this next byte is 0.
                             if (reader.ReadByte() != 0) Debugger.Break();
 
-                            // Check that this next byte matches UnknownCount.
+                            // Check that this next byte matches UnknownCount. The Beta version of SCR12_04 doesn't.
                             if (reader.ReadByte() != UnknownCount) Debugger.Break();
 
                             // Check that this next byte is 0.
@@ -265,7 +270,11 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             environment.UnknownVector3_2 = reader.ReadVector3();
 
                             // Add 0x90 to the reader's offset.
-                            reader.Offset += 0x90;
+                            if (subChunkID == 0x01010060)
+                                reader.Offset += 0x90;
+
+                            if (subChunkID == 0x1000040)
+                                reader.Offset += 0x70;
 
                             // Jump to the matrix table's offset.
                             reader.JumpTo(matrixTableOffset, true);
@@ -297,14 +306,14 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             // Loop through each stage chunk.
                             for (byte stageChunkIndex = 0; stageChunkIndex < UnknownCount; stageChunkIndex++)
                             {
-                                // Initalise this stage chunk, setting index to the for loop value.
-                                environment.StageChunkIdentifiers[stageChunkIndex] = new() { Index = stageChunkIndex };
+                                // Initalise this stage chunk.
+                                environment.StageChunkIdentifiers[stageChunkIndex] = new();
 
                                 // Check if the next byte is set to 1.
                                 if (reader.ReadByte() != 1) Debugger.Break();
 
-                                // Check if the next byte matches the for loop value.
-                                if (reader.ReadByte() != stageChunkIndex) Debugger.Break();
+                                // Set the chunk index, this is usually the same as the for loop value, but not in the Beta version of SCR12_04.
+                                environment.StageChunkIdentifiers[stageChunkIndex].Index = reader.ReadByte();
 
                                 // Check if the next two bytes are set to 0.
                                 if (reader.ReadByte() != 0) Debugger.Break();
@@ -323,7 +332,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             // Jump to this sub chunk's second unknown offset.
                             reader.JumpTo(UnknownOffset_2, true);
 
-                            // Loop through and check that each value is set to 0x2FFFF.
+                            // Loop through and check that each value is set to 0x2FFFF. Some of these in the Beta version of SCR12_04 have 0x2FF00 instead?
                             for (byte stageChunkIndex = 0; stageChunkIndex < UnknownCount; stageChunkIndex++)
                                 if (reader.ReadUInt32() != 0x2FFFF)
                                     Debugger.Break();
@@ -383,7 +392,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                                         face.UnknownUInt32_1 = reader.ReadUInt32();
 
                                         // Read this face's second unknown integer value.
-                                        face.UnknownUInt32_2 = reader.ReadUInt32();
+                                        face.AssociatedChunk = reader.ReadUInt32();
 
                                         // Check that the next value is always 0.
                                         if (reader.ReadUInt32() != 0) Debugger.Break();
@@ -532,7 +541,11 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             }
 
                             // Remove the added 0x90 from the reader's offset.
-                            reader.Offset -= 0x90;
+                            if (subChunkID == 0x01010060)
+                                reader.Offset -= 0x90;
+
+                            if (subChunkID == 0x1000040)
+                                reader.Offset -= 0x70;
 
                             break;
 

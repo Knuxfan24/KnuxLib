@@ -17,7 +17,7 @@ namespace KnuxLib.Engines.RockmanX7
         // Classes for this format.
         public class FormatData
         {
-            public List<MathTableChunks.Environment>? Environments { get; set; }
+            public List<MathTableChunks.Environment> Environments { get; set; } = new();
         }
 
         // Actual data presented to the end user.
