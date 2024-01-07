@@ -10,8 +10,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
     public class StageChunkIdentifier
     {
         /// <summary>
-        /// The index of this stage chunk.
-        /// TODO: This is sequential and can be removed, is only here as a temporary value for checking stuff.
+        /// The index of this stage chunk, usually sequential, but a single beta environment doesn't have them sequentially.
         /// </summary>
         public byte Index { get; set; }
 
@@ -229,7 +228,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             // Check that this next byte is 0.
                             if (reader.ReadByte() != 0) Debugger.Break();
 
-                            // Check that this next byte matches UnknownCount. The Beta version of SCR12_04 doesn't.
+                            // Check that this next byte matches UnknownCount. SCR12_04 doesn't?
                             if (reader.ReadByte() != UnknownCount) Debugger.Break();
 
                             // Check that this next byte is 0.
@@ -257,7 +256,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             // Read this sub chunk's collision table offset.
                             uint collisionOffset = reader.ReadUInt32();
 
-                            // Read an unknown offset to some data that seems to be 0x10 bytes in length repeated UnknownCount times.
+                            // Read an unknown offset to some data that seems to be four floats repeated UnknownCount times.
                             uint UnknownOffset_4 = reader.ReadUInt32();
 
                             // Read this sub chunk's mesh table offset.
@@ -267,7 +266,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             environment.UnknownVector3_1 = reader.ReadVector3();
 
                             // Read this sub chunk's second unknown Vector3 value.
-                            environment.UnknownVector3_2 = reader.ReadVector3();
+                            // environment.UnknownVector3_2 = reader.ReadVector3();
 
                             // Add 0x90 to the reader's offset.
                             if (subChunkID == 0x01010060)
@@ -275,6 +274,13 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
 
                             if (subChunkID == 0x1000040)
                                 reader.Offset += 0x70;
+
+                            for (byte test = 0; test < UnknownCount; test++)
+                                reader.JumpAhead(0x24);
+
+                            reader.FixPadding(0x10);
+
+                            if (reader.BaseStream.Position != (matrixTableOffset + reader.Offset)) Debugger.Break();
 
                             // Jump to the matrix table's offset.
                             reader.JumpTo(matrixTableOffset, true);
@@ -312,7 +318,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                                 // Check if the next byte is set to 1.
                                 if (reader.ReadByte() != 1) Debugger.Break();
 
-                                // Set the chunk index, this is usually the same as the for loop value, but not in the Beta version of SCR12_04.
+                                // Set the chunk index, this is usually the same as the for loop value, but not in SCR12_04?
                                 environment.StageChunkIdentifiers[stageChunkIndex].Index = reader.ReadByte();
 
                                 // Check if the next two bytes are set to 0.
@@ -332,7 +338,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             // Jump to this sub chunk's second unknown offset.
                             reader.JumpTo(UnknownOffset_2, true);
 
-                            // Loop through and check that each value is set to 0x2FFFF. Some of these in the Beta version of SCR12_04 have 0x2FF00 instead?
+                            // Loop through and check that each value is set to 0x2FFFF. Some of these in SCR12_04 have other values instead?
                             for (byte stageChunkIndex = 0; stageChunkIndex < UnknownCount; stageChunkIndex++)
                                 if (reader.ReadUInt32() != 0x2FFFF)
                                     Debugger.Break();
@@ -391,7 +397,7 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                                         // Read this face's first unknown integer value.
                                         face.UnknownUInt32_1 = reader.ReadUInt32();
 
-                                        // Read this face's second unknown integer value.
+                                        // Read the index of the chunk this face is for.
                                         face.AssociatedChunk = reader.ReadUInt32();
 
                                         // Check that the next value is always 0.
@@ -432,6 +438,10 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                                     reader.JumpTo(collisionPosition);
                                 }
                             }
+
+                            // Jump to the chunk's fourth unknown offset.
+                            // TODO: Read the data here, 4 floats each?
+                            reader.JumpTo(UnknownOffset_4, true);
                             
                             // Jump to the chunk's mesh offset.
                             reader.JumpTo(meshOffset, true);
@@ -547,6 +557,11 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                             if (subChunkID == 0x1000040)
                                 reader.Offset -= 0x70;
 
+                            break;
+
+                        case 0x00020014:
+                            if (reader.ReadUInt16() != 0x01) Debugger.Break();
+                            ushort UnknownCount_1 = reader.ReadUInt16();
                             break;
 
                         default: Console.WriteLine($"Environment sub chunk {Helpers.ReturnUIntAsHex(subChunkID)} not yet handled!"); break;

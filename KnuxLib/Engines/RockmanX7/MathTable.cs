@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Drawing;
 
 namespace KnuxLib.Engines.RockmanX7
 {
@@ -18,6 +19,8 @@ namespace KnuxLib.Engines.RockmanX7
         public class FormatData
         {
             public List<MathTableChunks.Environment> Environments { get; set; } = new();
+
+            public List<Bitmap> Textures { get; set; } = new();
         }
 
         // Actual data presented to the end user.
@@ -71,14 +74,9 @@ namespace KnuxLib.Engines.RockmanX7
 
                 // Check the chunk type, if it's not a texture one, then read it as an environment chunk.
                 if (chunkType != 0xFFFF)
-                {
-                    Data.Environments ??= new();
                     Data.Environments.Add(MathTableChunks.Environment.Read(reader));
-                }
                 else
-                {
-                    Console.WriteLine("Skipped texture? chunk.");
-                }
+                    Data.Textures = MathTableChunks.Texture.Read(reader);
 
                 reader.JumpTo(headerEnd);
 
