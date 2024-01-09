@@ -311,16 +311,12 @@ namespace KnuxLib.Engines.CapcomMT
         /// <param name="directory">The directory to extract to.</param>
         public void Extract(string directory)
         {
-            // Set up an array to store the version tag in.
+            // Set up an array to store the version tag in. Default it to capcomv7.
             byte[] versionFlag = Encoding.ASCII.GetBytes("capcomv7");
 
             // Switch based on the read version and compression flag (where appropriate).
             switch (version)
             {
-                case 7:
-                    versionFlag = Encoding.ASCII.GetBytes("capcomv7");
-                    break;
-
                 case 9:
                     versionFlag = Encoding.ASCII.GetBytes("capcomv9");
                     if (isNotCompressed)
