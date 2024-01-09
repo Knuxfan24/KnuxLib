@@ -16,6 +16,9 @@
         // Actual data presented to the end user.
         public List<FileNode> Data = new();
 
+        // Internal values used for extraction.
+        public bool wasCompressed = false;
+
         /// <summary>
         /// Loads and parses this format's file.
         /// </summary>
@@ -31,6 +34,9 @@
             // If the value of the first four bytes is not "one.", then decompress it.
             if (compressedIdentifier != "one.")
             {
+                // Set the compressed flag.
+                wasCompressed = true;
+
                 // Close the old reader.
                 reader.Close();
 
@@ -171,6 +177,12 @@
                     File.WriteAllBytes($@"{directory}\{node.Name}", node.Data);
                 }
             }
+
+            // Write the archive type identifier based on the compression flag.
+            if (!wasCompressed)
+                File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", "swawii");
+            else
+                File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", "swawii_compressed");
 
             // Finish the order log.
             log.Close();

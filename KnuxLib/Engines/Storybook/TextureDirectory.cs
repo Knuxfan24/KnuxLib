@@ -1,4 +1,5 @@
 ﻿using PuyoTools.Core.Textures.Gvr;
+using System.Text;
 
 namespace KnuxLib.Engines.Storybook
 {
@@ -119,7 +120,10 @@ namespace KnuxLib.Engines.Storybook
         {
             // If we're not converting the textures, then just use the standard extract archive function.
             if (!convert)
+            {
+                Data.Add(new() { Data = Encoding.ASCII.GetBytes("storybook_texture"), Name = "knuxtools_archivetype.txt" });
                 Helpers.ExtractArchive(Data, directory, ".gvr");
+            }
 
             // If we are converting them, then do the following.
             else
@@ -142,6 +146,9 @@ namespace KnuxLib.Engines.Storybook
                     // Save the png data from the decoder.
                     decoder.Save($@"{directory}\{texture}.png");
                 }
+
+                // Write the archive type identifier.
+                File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", "storybook_texture");
             }
         }
 

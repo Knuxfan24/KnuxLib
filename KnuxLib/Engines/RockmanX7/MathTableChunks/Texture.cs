@@ -143,12 +143,19 @@ namespace KnuxLib.Engines.RockmanX7.MathTableChunks
                                 Palette paletteValue = palette[reader.ReadByte()];
 
                                 // Set the current pixel to the colour that we read.
-                                block.SetPixel(x, y, Color.FromArgb(255, paletteValue.Red, paletteValue.Green, paletteValue.Blue));
+                                block.SetPixel(x, y, Color.FromArgb(paletteValue.Alpha, paletteValue.Red, paletteValue.Green, paletteValue.Blue));
                             }
                         }
 
                         // Save this 16x16 block into the list.
                         _16x16blocks.Add(block);
+                    }
+
+                    if (textureWidth == 16)
+                    {
+                        textures.Add(_16x16blocks[0]);
+                        reader.JumpTo(position);
+                        continue;
                     }
 
                     // Run the MergeBlocks function twice to piece together the 64x64 blocks.

@@ -1,4 +1,6 @@
-﻿namespace KnuxLib.Engines.CapcomMT
+﻿using System.Text;
+
+namespace KnuxLib.Engines.CapcomMT
 {
     // TODO: Determine if file order actually matters, didn't in X7's stage01_01_cmn.arc file.
     public class Archive : FileBase
@@ -94,6 +96,10 @@
         // Actual data presented to the end user.
         public List<FileNode> Data = new();
 
+        // Internal values used for extraction.
+        ushort version;
+        bool isNotCompressed = false;
+
         /// <summary>
         /// Loads and parses this format's file.
         /// </summary>
@@ -111,15 +117,12 @@
 
             // Check this file's version.
             // TODO: Handle versions other than V7 and V9?
-            ushort version = reader.ReadUInt16();
+            version = reader.ReadUInt16();
             if (version != 0x07 && version != 0x09)
                 throw new NotImplementedException($"Capcom MT Framework Archive with version identifier of 0x{version.ToString("X").PadLeft(4, '0')} not supported.");
 
             // Read the amount of files in this archive.
             ushort fileCount = reader.ReadUInt16();
-
-            // Set up a bool to determine if compression if used.
-            bool isNotCompressed = false;
 
             // If this is a version 9 archive, then read the not compressed flag.
             if (version == 0x09)
@@ -306,7 +309,31 @@
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory);
+        public void Extract(string directory)
+        {
+            // Set up an array to store the version tag in.
+            byte[] versionFlag = Encoding.ASCII.GetBytes("capcomv7");
+
+            // Switch based on the read version and compression flag (where appropriate).
+            switch (version)
+            {
+                case 7:
+                    versionFlag = Encoding.ASCII.GetBytes("capcomv7");
+                    break;
+
+                case 9:
+                    versionFlag = Encoding.ASCII.GetBytes("capcomv9");
+                    if (isNotCompressed)
+                        versionFlag = Encoding.ASCII.GetBytes("capcomv9_uncompressed");
+                    break;
+            }
+
+            // Add the archive type identifier before extraction.
+			Data.Add(new() { Data = versionFlag, Name = "knuxtools_archivetype.txt" });
+
+            // Extract the archive.
+            Helpers.ExtractArchive(Data, directory);
+        }
 
         /// <summary>
         /// Imports files from a directory into a ONE node.

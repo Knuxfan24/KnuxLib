@@ -1,4 +1,6 @@
-﻿namespace KnuxLib.Engines.Portable
+﻿using System.Text;
+
+namespace KnuxLib.Engines.Portable
 {
     // TODO: Verify saving/importing works correctly with files that have .\ at the start of their names.
     public class AMB : FileBase
@@ -171,7 +173,11 @@
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory);
+        public void Extract(string directory)
+        {
+            Data.Add(new() { Data = Encoding.ASCII.GetBytes("portable"), Name = "knuxtools_archivetype.txt" });
+            Helpers.ExtractArchive(Data, directory);
+        }
 
         /// <summary>
         /// Imports files from a directory into an AMB node.
