@@ -34,7 +34,7 @@ The following formats are only partially supported, either due to missing functi
 
 ## Rockman X7 Engine
 
-- [Math Table (.emi)](KnuxLib/Engines/RockmanX7/MathTable.cs). Most basic of reading that simply splits the chunks out into their own files. No actual reverse engineering work on the chunks themselves has been done yet.
+- [Math Table (.emi)](KnuxLib/Engines/RockmanX7/MathTable.cs). Unfinished code that can currently read about 70% of the environment files. Can also read one type of texture, but the palette is wrong in some way. Skinned models can't be read at all.
 
 - [Stage Entity Table (.328f438b/.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs). Entirely functional besides basically every value being an unknown. Slowly working through and figuring out what each object type is.
 
