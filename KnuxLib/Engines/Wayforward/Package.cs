@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace KnuxLib.Engines.Wayforward
+﻿namespace KnuxLib.Engines.Wayforward
 {
     // Based on https://github.com/artlavrov/paktools
     // TODO: Rethink the Colon stuff, as some files in Half-Genie Hero imply sub directory support.

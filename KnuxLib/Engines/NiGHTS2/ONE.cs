@@ -1,5 +1,4 @@
 ﻿using FraGag.Compression;
-using System.Text;
 
 namespace KnuxLib.Engines.NiGHTS2
 {

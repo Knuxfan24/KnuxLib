@@ -1,6 +1,7 @@
 ﻿global using HedgeLib.Headers;
 global using Marathon.IO;
 global using System.Numerics;
+global using System.Text;
 
 namespace KnuxLib
 {

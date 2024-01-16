@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace KnuxLib.Engines.Portable
+﻿namespace KnuxLib.Engines.Portable
 {
     // TODO: Verify saving/importing works correctly with files that have .\ at the start of their names.
     public class AMB : FileBase

@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace KnuxLib.Engines.Wayforward
+﻿namespace KnuxLib.Engines.Wayforward
 {
     // TODO: If the game accepts it, maybe refactor this to remove the seperate tag and string name entries? As maintaining that in a JSON will be ugly.
     // TODO: Tidy up? Not the biggest fan of how some of this works.

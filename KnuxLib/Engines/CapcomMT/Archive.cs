@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace KnuxLib.Engines.CapcomMT
+﻿namespace KnuxLib.Engines.CapcomMT
 {
     // TODO: Determine if file order actually matters, didn't in X7's stage01_01_cmn.arc file.
     public class Archive : FileBase

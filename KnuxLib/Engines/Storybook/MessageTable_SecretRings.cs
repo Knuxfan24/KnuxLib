@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace KnuxLib.Engines.Storybook
+﻿namespace KnuxLib.Engines.Storybook
 {
     // TODO: What is the extra set of offsets even for?
     // TODO: The event message tables save incorrectly, why?
