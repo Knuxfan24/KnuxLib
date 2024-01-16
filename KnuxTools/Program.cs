@@ -203,6 +203,10 @@ namespace KnuxTools
                 ColourConsole("    Extension Flag (USA) - tre", true, ConsoleColor.Yellow);
                 ColourConsole("    Extension Flag (UK) - tru\n", true, ConsoleColor.Yellow);
 
+                Console.WriteLine("Yacht Club Engine:");
+                Console.WriteLine("Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates a (currently broken) archive from an input directory.");
+                ColourConsole("    Version Flag - yachtclub\n", true, ConsoleColor.Yellow);
+
                 Console.WriteLine("Usage:");
                 Console.WriteLine("KnuxTools.exe \"path\\to\\supported\\file\" [-version={VERSION}] [-extension={EXTENSION}]");
                 Console.WriteLine("Arguments surrounded by square brackets are optional and only affect certain formats (highlighted in yellow), if they aren't specified then they will be selected through manual input when required.\n");
@@ -257,8 +261,9 @@ namespace KnuxTools
                                                           "portable\t\t\t(Sonic The Portable Engine AMB File)",
                                                           "swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)",
                                                           "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)",
-                                                          "wayforward\t\t\t(Wayforward Engine PAK File)"},
-                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false },
+                                                          "wayforward\t\t\t(Wayforward Engine PAK File)",
+                                                          "yachtclub\t\t\t(Yacht Club Engine PAK File)"},
+                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, true },
                                        "Archive Type");
 
             // If the version is still null or empty, then abort.
@@ -361,6 +366,12 @@ namespace KnuxTools
                 case "wayforward":
                     Console.WriteLine("Packing directory for Wayforward Engine.");
                     ImportAndSaveArchive(typeof(KnuxLib.Engines.Wayforward.Package), arg, "pak");
+                    break;
+
+                // Yacht Club Engine Packages.
+                case "yachtclub":
+                    Console.WriteLine("Packing directory for Yacht Club Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.YachtClub.Package), arg, "pak");
                     break;
 
                 // If a command line argument without a corresponding format has been passed, then inform the user and abort.
@@ -658,6 +669,41 @@ namespace KnuxTools
                             Console.WriteLine("Extracting Sonic World Adventure Wii Engine archive.");
                             using (KnuxLib.Engines.WorldAdventureWii.ONE one = new(arg, true))
                             break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported .one archive types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
+                    break;
+
+                case ".pak":
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "wayforward\t\t(Wayforward Engine PAK File)",
+                                                                  "yachtclub\t\t(Yacht Club Engine PAK File)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
+                    {
+                        // Wayforward Engine Archives.
+                        case "wayforward":
+                            Console.WriteLine("Extracting Wayforward Engine package archive.");
+                            using (KnuxLib.Engines.Wayforward.Package pak = new(arg, true))
+                                break;
+
+                        // Sonic Storybook Engine Archives.
+                        case "yachtclub":
+                            Console.WriteLine("Extracting Yacht Club Engine package archive.");
+                            using (KnuxLib.Engines.YachtClub.Package pak = new(arg, true))
+                                break;
 
                         // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
@@ -1747,11 +1793,6 @@ namespace KnuxTools
                         mesh.Load(arg);
                         mesh.ExportOBJTemp($@"{Path.ChangeExtension(arg, ".obj")}", gpuFile);
                     }
-                    break;
-
-                case ".pak":
-                    Console.WriteLine("Extracting Wayforward Engine package archive.");
-                    using (KnuxLib.Engines.Wayforward.Package pak = new(arg, true))
                     break;
                 #endregion
 

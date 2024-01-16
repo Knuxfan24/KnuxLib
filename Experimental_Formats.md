@@ -65,3 +65,7 @@ The following formats are only partially supported, either due to missing functi
 - [Level Binary (.lvb)](KnuxLib/Engines/Wayforward/LevelBinary.cs). Really, REALLY unfinished reading that barely gets anywhere. Honestly this format has pushed me to my limit I hate it. Left out of KnuxTools because it has next to no functionality in its current state.
 
 - [Mesh (.wf3d/.gpu)](KnuxLib/Engines/Wayforward/Mesh.cs) and the chunks that make them up. This code currently reads MOST of the data (although a lot of chunks have unknown bits that I am yet to successfully read), but a lot of the data is a mystery. This format also has some (slightly messy) unfinished functionality for Saving, Exporting to OBJ (which is intended to be temporary due to it not supporting things I've yet to reverse engineer) and Assimp Importing.
+
+## Yacht Club Engine
+
+- [Package Archive (.pak)](KnuxLib/Engines/YachtClub/Package.cs). Has two unknown values which the game requires, one appears to be a hash (although I don't know the type, not been able to make it match) and the other I have no idea.
