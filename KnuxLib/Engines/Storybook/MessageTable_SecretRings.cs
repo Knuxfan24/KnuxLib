@@ -38,6 +38,7 @@
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
+        /// <param name="isJapanese">Whether this is a Japanese encoded file.</param>
         public void Load(string filepath, bool isJapanese = false)
         {
             // Set up the correct encoding.
@@ -122,6 +123,7 @@
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
+        /// <param name="isJapanese">Whether this is a Japanese encoded file.</param>
         public void Save(string filepath, bool isJapanese = false)
         {
             // Set up the correct encoding.

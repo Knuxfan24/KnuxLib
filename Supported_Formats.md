@@ -278,3 +278,16 @@ Supported formats:
 Notes:
 
 - Did Westwood use this engine and its formats for other games?
+
+## Yacht Club Engine
+
+Known games:
+
+- Shovel Knight (3DS, Wii U, PC, PS3, PS4, PSV, XB1, AFTV, NSW)
+
+Supported formats:
+
+- [String Translation List (.stl)](KnuxLib/Engines/YachtClub/StringTranslationList.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Japanese files don't write correctly (and might also not be reading correctly?).

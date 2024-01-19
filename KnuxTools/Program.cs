@@ -205,7 +205,8 @@ namespace KnuxTools
 
                 Console.WriteLine("Yacht Club Engine:");
                 Console.WriteLine("Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates a (currently broken) archive from an input directory.");
-                ColourConsole("    Version Flag - yachtclub\n", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag - yachtclub", true, ConsoleColor.Yellow);
+                Console.WriteLine("String Translation Table (.stl)\n");
 
                 Console.WriteLine("Usage:");
                 Console.WriteLine("KnuxTools.exe \"path\\to\\supported\\file\" [-version={VERSION}] [-extension={EXTENSION}]");
@@ -1839,6 +1840,22 @@ namespace KnuxTools
                     {
                         messageTable.Data = messageTable.JsonDeserialise<List<KnuxLib.Engines.Westwood.MessageTable.Message>>(arg);
                         messageTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.{extension}");
+                    }
+                    break;
+                #endregion
+
+                #region Yacht Club Engine Formats
+                case ".stl":
+                    Console.WriteLine("Converting Yacht Club Engine String Translation List to JSON.");
+                    using (KnuxLib.Engines.YachtClub.StringTranslationList stl = new(arg, true))
+                        break;
+
+                case ".yachtclub.stringtranslationlist.json":
+                    Console.WriteLine("Converting JSON to Yacht Club Engine String Translation List.");
+                    using (KnuxLib.Engines.YachtClub.StringTranslationList stl = new())
+                    {
+                        stl.Data = stl.JsonDeserialise<List<string>>(arg);
+                        stl.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.stl");
                     }
                     break;
                 #endregion
