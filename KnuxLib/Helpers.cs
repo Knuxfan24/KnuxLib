@@ -379,6 +379,9 @@ namespace KnuxLib
         /// <param name="extension">The extension to change all the files to.</param>
         public static void ExtractArchive(List<FileNode> files, string directory, string? extension = null)
         {
+            // Set up a dictionary so we can handle duplicated names.
+            Dictionary<string, int> usedNames = new();
+
             // Create the extraction directory.
             Directory.CreateDirectory(directory);
 
@@ -387,6 +390,17 @@ namespace KnuxLib
             {
                 // Get this file's name.
                 string fileName = node.Name;
+
+                // If this file name isn't in the dictonary, then add it.
+                if (!usedNames.ContainsKey(fileName))
+                    usedNames.Add(fileName, 0);
+
+                // If this file name is already in the dictonary, then increment its value and append the number to the name.
+                else
+                {
+                    usedNames[fileName]++;
+                    fileName += $"_{usedNames[fileName]}";
+                }
 
                 // If we need to, change the extension.
                 if (extension != null)

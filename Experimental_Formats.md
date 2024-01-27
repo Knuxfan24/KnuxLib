@@ -28,6 +28,10 @@ The following formats are only partially supported, either due to missing functi
 
 - [Scene Effect Collision (.fxcol.bin)](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
 
+## PlayStation 2
+
+- [Archive File System (.afs)](KnuxLib/Engines/Playstation2/ArchiveFileSystem.cs). Doesn't read 0x10 bytes in the name table and lacks saving support.
+
 ## Nu2 Engine
 
 - [Scenes (.nus/.nux/.gsc)](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save, Export or Import function.

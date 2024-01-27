@@ -1,11 +1,9 @@
 ﻿using System.Globalization;
 using System.Numerics;
-using System.Reflection;
 using System.Text;
 
 namespace KnuxTools
 {
-    // TODO: Properly test everything, have been VERY lazy.
     // TODO: Make a version of the NoVersionChecker function for extensions so I stop duping it?
     internal class Program
     {
@@ -134,6 +132,9 @@ namespace KnuxTools
                 Console.WriteLine("Wumpa Fruit Table (.wmp)");
                 ColourConsole("    Version Flag (Gamecube) - gcn", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (PlayStation 2/Xbox) - ps2\n", true, ConsoleColor.Yellow);
+
+                Console.WriteLine("PlayStation 2 Generic Formats:");
+                ColourConsole("Archive File System (.afs)\n");
 
                 Console.WriteLine("Project M Engine:");
                 Console.WriteLine("Message Table (.dat) \n");
@@ -1297,6 +1298,13 @@ namespace KnuxTools
                             Console.ReadKey();
                             return;
                     }
+                    break;
+                #endregion
+                    
+                #region Playstation 2 generic formats.
+                case ".afs":
+                    Console.WriteLine("Extracting PlayStation 2 Archive File System.");
+                    using (KnuxLib.Engines.Playstation2.ArchiveFileSystem afs = new(arg, true))
                     break;
                 #endregion
 
