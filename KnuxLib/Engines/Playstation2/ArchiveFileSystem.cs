@@ -1,7 +1,7 @@
 ﻿namespace KnuxLib.Engines.Playstation2
 {
     // TODO: Figure out what the unknown bytes in the name table are.
-    // TODO: Writing support.
+    // TODO: Writing support, how are the files that have the name table at 0x7FFF8 gonna work with this?
     public class ArchiveFileSystem : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -43,6 +43,19 @@
 
             // Read the length of the name table.
             uint nameTableLength = reader.ReadUInt32();
+
+            // If the name table values are 0, then jump to the very end of the table and read again to see if they're there (Monster Hunter does this).
+            if (nameTableLength == 0 && nameTableOffset == 0)
+            {
+                // Jump to 0x7FFF8;
+                reader.JumpTo(0x7FFF8);
+
+                // Read the offset to the name table.
+                nameTableOffset = reader.ReadUInt32();
+
+                // Read the length of the name table.
+                nameTableLength = reader.ReadUInt32();
+            }
 
             // Jump back to 0x08.
             reader.JumpTo(0x08);
