@@ -1,7 +1,8 @@
 ﻿namespace KnuxLib.Engines.Playstation2
 {
     // TODO: Figure out what the unknown bytes in the name table are.
-    // TODO: Writing support, how are the files that have the name table at 0x7FFF8 gonna work with this?
+    // TODO: Which name table position is the standard one?
+    // TODO: Is the first chunk normally padded to 0x800 or is 0x80000 the standard?
     public class ArchiveFileSystem : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -98,6 +99,91 @@
 
             // Close Marathon's BinaryReader.
             reader.Close();
+        }
+
+        /// <summary>
+        /// Saves this format's file.
+        /// </summary>
+        /// <param name="filepath">The path to save to.</param>
+        /// <param name="firstSectionLength">How long the first chunk should be.</param>
+        /// <param name="nameTableAtEndOfChunk">Whether or not the name table's offset is placed at the end of the first chunk.</param>
+        public void Save(string filepath, uint firstSectionLength = 0x800, bool nameTableAtEndOfChunk = false)
+        {
+            // Set up Marathon's BinaryWriter.
+            BinaryWriterEx writer = new(File.Create(filepath));
+
+            // Write the AFS signature.
+            writer.WriteNullPaddedString("AFS", 0x04);
+
+            // Write the amount of files in this archive.
+            writer.Write(Data.Count);
+
+            // Loop through each file to add their offsets.
+            for (int fileIndex = 0; fileIndex < Data.Count; fileIndex++)
+            {
+                // Add an offset for this file.
+                writer.AddOffset($"File{fileIndex}Offset");
+
+                // Write this file's size.
+                writer.Write(Data[fileIndex].Data.Length);
+            }
+
+            // Handle padding and the name table's offset depending on its position.
+            if (!nameTableAtEndOfChunk)
+            {
+                // Add an offset for the name table.
+                writer.AddOffset("NameTableOffset");
+
+                // Write the size for the name table.
+                writer.Write(Data.Count * 0x30);
+
+                // Pad our position to the desired length.
+                writer.FixPadding(firstSectionLength);
+            }
+            else
+            {
+                // Pad our position to the desired length, minus 0x08.
+                writer.FixPadding(firstSectionLength - 0x08);
+
+                // Add an offset for the name table.
+                writer.AddOffset("NameTableOffset");
+
+                // Write the size for the name table.
+                writer.Write(Data.Count * 0x30);
+            }
+
+            // Loop through and write each file.
+            for (int fileIndex = 0; fileIndex < Data.Count; fileIndex++)
+            {
+                // Fill in the offset for this file.
+                writer.FillOffset($"File{fileIndex}Offset");
+
+                // Write the binary data for this file.
+                writer.Write(Data[fileIndex].Data);
+
+                // Pad our position to a multiple of 0x800.
+                writer.FixPadding(0x800);
+            }
+
+            // Fill in the offset for the name table.
+            writer.FillOffset("NameTableOffset");
+
+            // Loop through and write each's file name table data.
+            for (int fileIndex = 0; fileIndex < Data.Count; fileIndex++)
+            {
+                // Write this file's name, padded to 0x20.
+                writer.WriteNullPaddedString(Data[fileIndex].Name, 0x20);
+
+                // Write some placeholders for the unknown data.
+                // TODO: Figure these out.
+                writer.WriteNulls(0x10);
+            }
+
+            // Pad this archive to a multiple of 0x800.
+            writer.FixPadding(0x800);
+
+            // Close Marathon's BinaryWriter.
+            writer.Close();
         }
 
         /// <summary>
