@@ -129,7 +129,7 @@ namespace KnuxLib.Engines.Black
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory);
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "black_volume");
 
         /// <summary>
         /// Imports files from a directory into this format.

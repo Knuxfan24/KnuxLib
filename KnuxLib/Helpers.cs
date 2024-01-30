@@ -376,14 +376,18 @@ namespace KnuxLib
         /// </summary>
         /// <param name="files">The list of files to extract.</param>
         /// <param name="directory">The path to extract to.</param>
+        /// <param name="archiveIdentifier">The identifier used by KnuxTools.</param>
         /// <param name="extension">The extension to change all the files to.</param>
-        public static void ExtractArchive(List<FileNode> files, string directory, string? extension = null)
+        public static void ExtractArchive(List<FileNode> files, string directory, string archiveIdentifier, string? extension = null)
         {
             // Set up a dictionary so we can handle duplicated names.
             Dictionary<string, int> usedNames = new();
 
             // Create the extraction directory.
             Directory.CreateDirectory(directory);
+
+            // Write the archive type identifier
+            File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", archiveIdentifier);
 
             // Loop through each node to extract.
             foreach (FileNode node in files)

@@ -310,23 +310,20 @@
         public void Extract(string directory)
         {
             // Set up an array to store the version tag in. Default it to capcomv7.
-            byte[] versionFlag = Encoding.ASCII.GetBytes("capcomv7");
+            string versionFlag = "capcomv7";
 
             // Switch based on the read version and compression flag (where appropriate).
             switch (version)
             {
                 case 9:
-                    versionFlag = Encoding.ASCII.GetBytes("capcomv9");
+                    versionFlag = "capcomv9";
                     if (isNotCompressed)
-                        versionFlag = Encoding.ASCII.GetBytes("capcomv9_uncompressed");
+                        versionFlag = "capcomv9_uncompressed";
                     break;
             }
 
-            // Add the archive type identifier before extraction.
-			Data.Add(new() { Data = versionFlag, Name = "knuxtools_archivetype.txt" });
-
             // Extract the archive.
-            Helpers.ExtractArchive(Data, directory);
+            Helpers.ExtractArchive(Data, directory, versionFlag);
         }
 
         /// <summary>

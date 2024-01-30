@@ -146,11 +146,7 @@ namespace KnuxLib.Engines.Storybook
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory)
-        {
-            Data.Add(new() { Data = Encoding.ASCII.GetBytes("storybook"), Name = "knuxtools_archivetype.txt" });
-            Helpers.ExtractArchive(Data, directory);
-        }
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "storybook");
 
         /// <summary>
         /// Imports files from a directory into a ONE node.

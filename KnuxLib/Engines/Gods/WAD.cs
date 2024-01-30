@@ -199,6 +199,9 @@
             // Create the extraction directory.
             Directory.CreateDirectory(directory);
 
+            // Write the archive type identifier
+            File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", "gods");
+
             // Loop through each node to extract.
             foreach (Node node in Data)
             {

@@ -202,11 +202,7 @@
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory)
-        {
-            Data.Add(new() { Data = Encoding.ASCII.GetBytes("wayforward"), Name = "knuxtools_archivetype.txt" });
-            Helpers.ExtractArchive(Data, directory);
-        }
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "wayforward");
 
         /// <summary>
         /// Imports files from a directory into this format.

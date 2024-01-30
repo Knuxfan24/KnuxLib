@@ -119,10 +119,7 @@ namespace KnuxLib.Engines.Storybook
         {
             // If we're not converting the textures, then just use the standard extract archive function.
             if (!convert)
-            {
-                Data.Add(new() { Data = Encoding.ASCII.GetBytes("storybook_texture"), Name = "knuxtools_archivetype.txt" });
-                Helpers.ExtractArchive(Data, directory, ".gvr");
-            }
+                Helpers.ExtractArchive(Data, directory, "storybook_texture", ".gvr");
 
             // If we are converting them, then do the following.
             else
