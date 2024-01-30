@@ -7,7 +7,6 @@ namespace KnuxLib.Engines.Hedgehog
     // TODO: Figure out what the unknown tag in the meshes controls in terms of collision behaviour.
     // TODO: Figure out what the unknown data chunk is for.
     // TODO: Format saving.
-    // TODO: Mesh exporting.
     // TODO: Mesh importing.
     public class Collision_Rangers : FileBase
     {
@@ -18,7 +17,7 @@ namespace KnuxLib.Engines.Hedgehog
             Load(filepath);
             
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.collision_rangers.json", Data);
+                ExportOBJ($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.obj");
         }
 
         // Classes for this format.
@@ -400,6 +399,43 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Close HedgeLib#'s BINAReader.
             reader.Close();
+        }
+
+        /// <summary>
+        /// Exports this collision model to a standard Wavefront OBJ.
+        /// TODO: Export material tags.
+        /// TODO: Potentially replace this with a solution that integrates with the point cloud files?
+        /// </summary>
+        /// <param name="filepath">The filepath to export to.</param>
+        public void ExportOBJ(string filepath)
+        {
+            // Set up the StreamWriter.
+            StreamWriter obj = new(filepath);
+
+            // Set up a variable to track vertices.
+            int vertexCount = 0;
+
+            // Loop through each mesh in the model.
+            for (int meshIndex = 0; meshIndex < Data.Meshes.Length; meshIndex++)
+            {
+                // Write this mesh's vertices.
+                foreach (Vector3 vertex in Data.Meshes[meshIndex].Vertices)
+                    obj.WriteLine($"v {vertex.X} {vertex.Y} {vertex.Z}");
+
+                // Write this mesh's name.
+                obj.WriteLine($"o {Path.GetFileNameWithoutExtension(filepath)}_mesh_{meshIndex}");
+                obj.WriteLine($"g {Path.GetFileNameWithoutExtension(filepath)}_mesh_{meshIndex}");
+
+                // Write this mesh's faces.
+                foreach (var face in Data.Meshes[meshIndex].Faces)
+                    obj.WriteLine($"f {face.IndexA + 1 + vertexCount} {face.IndexB + 1 + vertexCount} {face.IndexC + 1 + vertexCount}");
+
+                // Increment vertexCount.
+                vertexCount += Data.Meshes[meshIndex].Vertices.Length;
+            }
+
+            // Close this StreamWriter.
+            obj.Close();
         }
     }
 }

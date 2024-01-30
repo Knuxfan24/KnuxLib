@@ -101,10 +101,11 @@ namespace KnuxTools
                 Console.WriteLine("Hedgehog Engine:");
                 Console.WriteLine("Archive Info (.arcinfo)");
                 Console.WriteLine("Bullet Skeleton (.skl.pxd)");
-                ColourConsole("2010 Collision (.orc) - Converts to an OBJ with the same name as the input file (importing and saving not yet possible).");
+                ColourConsole("2010 Collision (.orc) - Converts to an OBJ with the same name as the input file (importing and saving not yet possible). ");
+                ColourConsole("Rangers Collision (.btmesh) - Converts to an OBJ with the same name as the input file (importing and saving not yet possible, point cloud instancing is also ignored).");
                 Console.WriteLine("Density Point Cloud (.densitypointcloud)");
                 Console.WriteLine("Gismo V3 (.gismod/.gismop)");
-                Console.WriteLine("Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file.");
+                Console.WriteLine("Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file. ");
                 ColourConsole("    Version Flag (point cloud conversion) - hh_instance2pointcloud", true, ConsoleColor.Yellow);
                 Console.WriteLine("Light Field (Rangers) (.lf)");
                 Console.WriteLine("2010 Map (.map.bin)");
@@ -903,6 +904,11 @@ namespace KnuxTools
                 case ".orc":
                     Console.WriteLine("Converting Hedgehog Engine 2010 Collision to OBJ.");
                     using (KnuxLib.Engines.Hedgehog.Collision_2010 collision = new(arg, true))
+                    break;
+
+                case ".btmesh":
+                    Console.WriteLine("Converting Hedgehog Engine Rangers Collision to OBJ.");
+                    using (KnuxLib.Engines.Hedgehog.Collision_Rangers collision = new(arg, true))
                     break;
 
                 case ".densitypointcloud":
