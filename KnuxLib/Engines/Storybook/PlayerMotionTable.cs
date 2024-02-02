@@ -16,39 +16,48 @@
         public class MotionEntry
         {
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
+            /// The index that other motion entries use to reference this one.
             /// </summary>
-            public uint UnknownUInt32_1 { get; set; }
+            public uint AnimationIndex { get; set; }
 
             /// <summary>
-            /// This motion's name.
+            /// The Ninja Animation file associated with this motion.
             /// </summary>
-            public string Name { get; set; } = "";
+            public string AssociatedNinjaMotion { get; set; } = "";
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
+            /// The index of the motion entry to use as a follow up when this one ends.
             /// </summary>
-            public uint UnknownUInt32_2 { get; set; }
+            public uint FollowUpAnimationIndex { get; set; }
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this? Something to do with frames? Loop start frame?
             /// </summary>
             public float UnknownFloat_1 { get; set; }
 
             /// <summary>
             /// An unknown floating point value.
-            /// TODO: What is this?
+            /// TODO: What is this? Something to do with frames? Loop end frame?
             /// </summary>
             public float UnknownFloat_2 { get; set; }
 
             /// <summary>
-            /// An unknown integer value.
+            /// An unknown short value.
             /// TODO: What is this?
             /// </summary>
-            public uint UnknownUInt32_3 { get; set; }
+            public ushort UnknownUShort_1 { get; set; }
+
+            /// <summary>
+            /// An unknown short value.
+            /// TODO: What is this?
+            /// </summary>
+            public ushort UnknownUShort_2 { get; set; }
+
+            /// <summary>
+            /// A value to multiple the framerate specified in this motion's GNM file by.
+            /// </summary>
+            public float FramerateMultiplier { get; set; }
 
             /// <summary>
             /// An unknown floating point value.
@@ -56,13 +65,7 @@
             /// </summary>
             public float UnknownFloat_3 { get; set; }
 
-            /// <summary>
-            /// An unknown floating point value.
-            /// TODO: What is this?
-            /// </summary>
-            public float UnknownFloat_4 { get; set; }
-
-            public override string ToString() => Name;
+            public override string ToString() => AssociatedNinjaMotion;
         }
 
         // Actual data presented to the end user.
@@ -98,17 +101,29 @@
                 // Set up a new motion entry.
                 MotionEntry motion = new();
 
-                // Read this motion's first unknown integer value.
-                motion.UnknownUInt32_1 = reader.ReadUInt32();
+                // Read this motion's internal index.
+                motion.AnimationIndex = reader.ReadUInt32();
 
-                // Read this motion's name.
-                motion.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false, stringTableOffset);
+                // Read the offset into the name table for this motion.
+                uint nameOffset = reader.ReadUInt32();
+
+                // Save our position so we can jump back after reading the motion name.
+                long position = reader.BaseStream.Position;
+
+                // Jump to this motion's entry in the string table.
+                reader.JumpTo(stringTableOffset + nameOffset);
+
+                // Read this motion's Ninja file reference.
+                motion.AssociatedNinjaMotion = reader.ReadNullTerminatedString();
+
+                // Jump back for the rest of the motion.
+                reader.JumpTo(position);
 
                 // Skip an unknown value of 0xFFFFFFFF.
                 reader.JumpAhead(0x04);
 
-                // Read this motion's second unknown integer value.
-                motion.UnknownUInt32_2 = reader.ReadUInt32();
+                // Read this motion's follow up animation index.
+                motion.FollowUpAnimationIndex = reader.ReadUInt32();
 
                 // Read this motion's first unknown floating point value.
                 motion.UnknownFloat_1 = reader.ReadSingle();
@@ -116,14 +131,17 @@
                 // Read this motion's second unknown floating point value.
                 motion.UnknownFloat_2 = reader.ReadSingle();
 
-                // Read this motion's third unknown integer value.
-                motion.UnknownUInt32_3 = reader.ReadUInt32();
+                // Read this motion's first unknown short value.
+                motion.UnknownUShort_1 = reader.ReadUInt16();
+
+                // Read this motion's second unknown short value.
+                motion.UnknownUShort_2 = reader.ReadUInt16();
+
+                // Read this motion's framerate multiplier.
+                motion.FramerateMultiplier = reader.ReadSingle();
 
                 // Read this motion's third unknown floating point value.
                 motion.UnknownFloat_3 = reader.ReadSingle();
-
-                // Read this motion's fourth unknown floating point value.
-                motion.UnknownFloat_4 = reader.ReadSingle();
 
                 // Save this motion entry.
                 Data.Add(motion);
@@ -163,20 +181,20 @@
             // Loop through each motion entry.
             for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
-                // Write this motion's first unknown integer value.
-                writer.Write(Data[dataIndex].UnknownUInt32_1);
+                // Write this motion's internal animation index.
+                writer.Write(Data[dataIndex].AnimationIndex);
 
                 // Write the current value of totalStringLength.
                 writer.Write(totalStringLength);
 
-                // Add the length of this motion's name (including the null terminator) to the totalStringLength.
-                totalStringLength += Data[dataIndex].Name.Length + 1;
+                // Add the length of this motion's Ninja file name (including the null terminator) to the totalStringLength.
+                totalStringLength += Data[dataIndex].AssociatedNinjaMotion.Length + 1;
 
                 // Write an unknown value of 0xFFFFFFFF.
                 writer.Write(0xFFFFFFFF);
 
-                // Write this motion's second unknown integer value.
-                writer.Write(Data[dataIndex].UnknownUInt32_2);
+                // Write this motion's follow up animation index.
+                writer.Write(Data[dataIndex].FollowUpAnimationIndex);
 
                 // Write this motion's first unknown floating point value.
                 writer.Write(Data[dataIndex].UnknownFloat_1);
@@ -184,25 +202,30 @@
                 // Write this motion's second unknown floating point value.
                 writer.Write(Data[dataIndex].UnknownFloat_2);
 
-                // Write this motion's third unknown integer value.
-                writer.Write(Data[dataIndex].UnknownUInt32_3);
+                // Write this motion's first unknown short value.
+                writer.Write(Data[dataIndex].UnknownUShort_1);
+
+                // Write this motion's second unknown short value.
+                writer.Write(Data[dataIndex].UnknownUShort_2);
+
+                // Write this motion's framerate modifier.
+                writer.Write(Data[dataIndex].FramerateMultiplier);
 
                 // Write this motion's third unknown floating point value.
                 writer.Write(Data[dataIndex].UnknownFloat_3);
-
-                // Write this motion's fourth unknown floating point value.
-                writer.Write(Data[dataIndex].UnknownFloat_4);
             }
 
             // Fill in the offset for this file's string table.
             writer.FillOffset("StringTable");
 
-            // Loop through and write each motion entry's name.
+            // Loop through and write each motion entry's Ninja file name.
             for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
-                writer.WriteNullTerminatedString(Data[dataIndex].Name);
+                writer.WriteNullTerminatedString(Data[dataIndex].AssociatedNinjaMotion);
 
-            // Write the file size.
+            // Jump back to the start of the file.
             writer.BaseStream.Position = 0x00;
+
+            // Write this file's size.
             writer.Write((uint)writer.BaseStream.Length);
 
             // Close Marathon's BinaryWriter.
