@@ -27,6 +27,24 @@ Notes:
 
 - Definitely used by other Stellar Stone games, but I have yet to obtain and look at them myself.
 
+## Hasbro Wii Engine
+
+Known games:
+
+- Family Game Night Volume 1 (Wii)
+
+- Family Game Night Volume 2 (Wii)
+
+- Family Game Night Volume 3 (Wii)
+
+Supported formats:
+
+- [Big File Archive (.big)](KnuxLib/Engines/HasbroWii/BigFileArchive.cs) reading, writing, data extraction and data importing.
+
+Notes:
+
+- Uncertain if this is the engine's name.
+
 ## Hedgehog Engine
 
 Known games:

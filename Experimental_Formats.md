@@ -20,6 +20,10 @@ The following formats are only partially supported, either due to missing functi
 
 - [WAD Archive (.wad)](KnuxLib/Engines/Gods/WAD.cs). Has a few unknown values and no way to import or save a new file. The Wii version has even more unknowns and there are also definitely different versions of this format for different Data Design Interactive games.
 
+## Hasbro Wii Engine
+
+- [X Package (.xpac)](KnuxLib/Engines/HasbroWii/XPackage.cs). Extracts, but has no saving support. Extracted files also don't have proper names, as there doesn't appear to be any trace of them in the actual archives. There's also an unknown value that seems unique to each individual file within the archive.
+
 ## Hedgehog Engine
 
 - [2010 Collision (.orc)](KnuxLib/Engines/Hedgehog/Collision_2010.cs). Only reads about half the format but does have an OBJ exporter that exports the basic collision geometry.

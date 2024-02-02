@@ -98,6 +98,11 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (Ninjabread Man (PC/PS2)) - ninjabread_pc", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Ninjabread Man (Wii)) - ninjabread_wii\n", true, ConsoleColor.Yellow);
 
+                Console.WriteLine("Hasbro Wii Engine:");
+                Console.WriteLine("Big File Archive (.big) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
+                ColourConsole("    Version Flag (importing) - hasbro_big", true, ConsoleColor.Yellow);
+                ColourConsole("X Package (.xpac) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+
                 Console.WriteLine("Hedgehog Engine:");
                 Console.WriteLine("Archive Info (.arcinfo)");
                 Console.WriteLine("Bullet Skeleton (.skl.pxd)");
@@ -257,6 +262,7 @@ namespace KnuxTools
                                        new List<string> { "capcomv7\t\t\t(Capcom MT Framework Engine (Version 7))",
                                                           "capcomv9\t\t\t(Capcom MT Framework Engine (Version 9))",
                                                           "capcomv9_uncompressed\t(Capcom MT Framework Engine (Version 9, No Compression))",
+                                                          "hasbro_big\t(Hasbro Wii Engine Big File Archive)",
                                                           "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)",
                                                           "nights2\t\t\t(NiGHTS 2 Engine ONE File)",
                                                           "storybook\t\t\t(Sonic Storybook Engine ONE File)",
@@ -266,7 +272,7 @@ namespace KnuxTools
                                                           "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)",
                                                           "wayforward\t\t\t(Wayforward Engine PAK File)",
                                                           "yachtclub\t\t\t(Yacht Club Engine PAK File)"},
-                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, true },
+                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, false, true },
                                        "Archive Type");
 
             // If the version is still null or empty, then abort.
@@ -301,6 +307,12 @@ namespace KnuxTools
                         arc.Import(arg);
                         arc.Save($@"{arg}.arc", 0x09, false);
                     }
+                    break;
+
+                // Hasbro Wii Engine Big File Archives.
+                case "hasbro_big":
+                    Console.WriteLine("Packing directory for Hasbro Wii Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.HasbroWii.BigFileArchive), arg, "big");
                     break;
 
                 // Hedgehog Engine Terrain Instance Conversion.
@@ -870,6 +882,18 @@ namespace KnuxTools
                             return;
                     }
                     break;
+                #endregion
+
+                #region Hasbro Wii Engine formats.
+                case ".big":
+                    Console.WriteLine("Extracting Hasbro Wii Engine Big File Archive.");
+                    using (KnuxLib.Engines.HasbroWii.BigFileArchive big = new(arg, true))
+                        break;
+
+                case ".xpac":
+                    Console.WriteLine("Extracting Hasbro Wii Engine X Package.");
+                    using (KnuxLib.Engines.HasbroWii.XPackage xPac = new(arg, true))
+                        break;
                 #endregion
 
                 #region Hedgehog Engine formats.
