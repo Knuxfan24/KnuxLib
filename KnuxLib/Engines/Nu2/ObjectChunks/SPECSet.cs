@@ -16,9 +16,9 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
             public Matrix4x4 UnknownMatrix4x4_1 { get; set; }
 
             /// <summary>
-            /// The index of the geometry entry in the file's geometry set that this entry should use.
+            /// The index of the instance entry in the file's instance set that this entry should use.
             /// </summary>
-            public uint ModelIndex { get; set; }
+            public uint InstanceIndex { get; set; }
 
             /// <summary>
             /// The name of this entry.
@@ -68,7 +68,7 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
                 entry.UnknownMatrix4x4_1 = reader.ReadMatrix();
 
                 // Read this entry's model index.
-                entry.ModelIndex = reader.ReadUInt32();
+                entry.InstanceIndex = reader.ReadUInt32();
 
                 // Read the node name table offset for this data's name.
                 entry.Name = Helpers.FindNu2SceneName(reader, reader.ReadUInt32(), version);

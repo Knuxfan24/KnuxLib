@@ -47,6 +47,8 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
             // If this is a GameCube file, then flip chunkType.
             if (version == FormatVersion.GameCube)
                 chunkType = new string(chunkType.Reverse().ToArray());
+            else
+                throw new NotImplementedException();
 
             if (chunkType != "TSH0")
                 throw new Exception($"Expected 'TSH0', got '{chunkType}'.");
