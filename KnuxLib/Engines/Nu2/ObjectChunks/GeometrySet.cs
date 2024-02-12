@@ -152,7 +152,10 @@ namespace KnuxLib.Engines.Nu2.ObjectChunks
                                 vertex.Normals = reader.ReadVector3();
 
                                 // Read this vertex's colour.
-                                vertex.Colour.Read(reader);
+                                vertex.Colour.Alpha = reader.ReadByte();
+                                vertex.Colour.Red = reader.ReadByte();
+                                vertex.Colour.Green = reader.ReadByte();
+                                vertex.Colour.Blue = reader.ReadByte();
 
                                 // Read this vertex's texture coordinates.
                                 vertex.TextureCoordinates = reader.ReadVector2();

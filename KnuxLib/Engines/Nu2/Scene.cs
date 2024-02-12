@@ -220,14 +220,14 @@ namespace KnuxLib.Engines.Nu2
             // Loop through each geometry node in this scene.
             for (int geometryIndex = 0; geometryIndex < Data.Geometry.Count; geometryIndex++)
             {
+                // Ignore this mesh if it's a plane.
+                // TODO: Handle these in SOME way.
+                if (Data.Geometry[geometryIndex].Type == GeometrySet.GeometryType.Plane)
+                    continue;
+
                 // Loop through each mesh in this geometry node.
                 for (int meshIndex = 0; meshIndex < Data.Geometry[geometryIndex].Meshes.Count; meshIndex++)
                 {
-                    // Ignore this mesh if it's a plane.
-                    // TODO: Handle these in SOME way.
-                    if (Data.Geometry[geometryIndex].Type == GeometrySet.GeometryType.Plane)
-                        continue;
-
                     // Write this mesh's vertices.
                     foreach (var vertex in Data.Geometry[geometryIndex].Meshes[meshIndex].Vertices)
                         obj.WriteLine($"v {vertex.Position.X:F8} {vertex.Position.Y:F8} {vertex.Position.Z:F8}");
@@ -240,14 +240,20 @@ namespace KnuxLib.Engines.Nu2
                     foreach (var vertex in Data.Geometry[geometryIndex].Meshes[meshIndex].Vertices)
                         obj.WriteLine($"vn {vertex.Normals.Value.X:F8} {vertex.Normals.Value.Y:F8} {vertex.Normals.Value.Z:F8}");
 
-                    // TODO: Figure out a way to handle Vertex Colours. OBJ doesn't officially support them...
+                    // Write this mesh's vertex colours.
+                    // TODO: There's no official support for this, though the VColorOBJ MaxScript in HeroesPowerPlant can use them.
+                    foreach (var vertex in Data.Geometry[geometryIndex].Meshes[meshIndex].Vertices)
+                        obj.WriteLine($"vc {vertex.Colour.Red} {vertex.Colour.Green} {vertex.Colour.Blue} {vertex.Colour.Alpha}");         
+                }
 
-                    // Write the object entry for this mesh set, based on the geometry node it's part of.
-                    // This causes things to have the same name, but Max merges them into one object and Blender adds an incremental number to the end of the duplicates. 
-                    obj.WriteLine($"o geometry{geometryIndex}");
-                    obj.WriteLine($"g geometry{geometryIndex}");
+                // Write this object's name (just geometry followed by its index).
+                obj.WriteLine($"o geometry{geometryIndex}");
+                obj.WriteLine($"g geometry{geometryIndex}");
 
-                    // Write the material that this mesh set should use.
+                // Loop through each mesh in this geometry set.
+                for (int meshIndex = 0; meshIndex < Data.Geometry[geometryIndex].Meshes.Count; meshIndex++)
+                {
+                    // Write this mesh's material reference.
                     obj.WriteLine($"usemtl Material{Data.Geometry[geometryIndex].Meshes[meshIndex].MaterialIndex}");
 
                     // Determine whether to write as a triangle list or a triangle strip.
