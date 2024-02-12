@@ -262,7 +262,7 @@ namespace KnuxTools
                                        new List<string> { "capcomv7\t\t\t(Capcom MT Framework Engine (Version 7))",
                                                           "capcomv9\t\t\t(Capcom MT Framework Engine (Version 9))",
                                                           "capcomv9_uncompressed\t(Capcom MT Framework Engine (Version 9, No Compression))",
-                                                          "hasbro_big\t(Hasbro Wii Engine Big File Archive)",
+                                                          "hasbro_big\t\t\t(Hasbro Wii Engine Big File Archive)",
                                                           "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)",
                                                           "nights2\t\t\t(NiGHTS 2 Engine ONE File)",
                                                           "storybook\t\t\t(Sonic Storybook Engine ONE File)",
