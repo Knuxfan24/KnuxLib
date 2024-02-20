@@ -6,8 +6,8 @@ namespace KnuxLib.Engines.Hedgehog
     // Based on https://github.com/blueskythlikesclouds/SkythTools/tree/master/Sonic%20Forces/Path%20Scripts
     // TODO: Figure out and read the k-d tree data.
     // TODO: Format saving.
-    // TODO: Format exporting, Blender CAN read OBJ splines, so we can use those, although some data might get lost in translation?
     // TODO: Format importing.
+    // TODO: Proper Rangers support? The paths seem identical besides the type value changing (swapping SideView and GrindRail for some reason???).
     public class PathSpline_Wars : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -17,7 +17,7 @@ namespace KnuxLib.Engines.Hedgehog
             Load(filepath);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.pathspline_wars.json", Data);
+                ExportOBJ($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.obj");
         }
 
         // Classes for this format.
@@ -71,7 +71,7 @@ namespace KnuxLib.Engines.Hedgehog
             /// <summary>
             /// This spline's knot points for double splines.
             /// </summary>
-            public Vector3[] DoubleKnots { get; set; } = Array.Empty<Vector3>();
+            public Vector3[]? DoubleKnots { get; set; }
 
             /// <summary>
             /// This spline's axis aligned bounding box.
@@ -226,15 +226,19 @@ namespace KnuxLib.Engines.Hedgehog
                 for (int forwardVectorIndex = 0; forwardVectorIndex < knotCount; forwardVectorIndex++)
                     path.ForwardVector[forwardVectorIndex] = Helpers.ReadHedgeLibVector3(reader);
 
-                // Jump to the double spline knot array's offset.
-                reader.JumpTo(doubleKnotOffset, false);
+                // Only handle the double knot data if there is any, one path in Frontiers doesn't have any.
+                if (doubleKnotCount != 0)
+                {
+                    // Jump to the double spline knot array's offset.
+                    reader.JumpTo(doubleKnotOffset, false);
 
-                // Initialise this path's double spline knot array.
-                path.DoubleKnots = new Vector3[doubleKnotCount];
+                    // Initialise this path's double spline knot array.
+                    path.DoubleKnots = new Vector3[doubleKnotCount];
 
-                // Read each knot for this double spline.
-                for (ulong doubleKnotIndex = 0; doubleKnotIndex < doubleKnotCount; doubleKnotIndex++)
-                    path.DoubleKnots[doubleKnotIndex] = Helpers.ReadHedgeLibVector3(reader);
+                    // Read each knot for this double spline.
+                    for (ulong doubleKnotIndex = 0; doubleKnotIndex < doubleKnotCount; doubleKnotIndex++)
+                        path.DoubleKnots[doubleKnotIndex] = Helpers.ReadHedgeLibVector3(reader);
+                }
 
                 // Jump to this path's type data offset.
                 reader.JumpTo(typeOffset, false);
@@ -298,6 +302,88 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Close HedgeLib#'s BINAReader.
             reader.Close();
+        }
+
+        /// <summary>
+        /// Exports this path's splines to an OBJ file.
+        /// </summary>
+        /// <param name="filepath">The filepath to export to.</param>
+        public void ExportOBJ(string filepath)
+        {
+            // Set up the StreamWriter.
+            StreamWriter obj = new(filepath);
+
+            // Set up a variable to track vertices.
+            int vertexCount = 0;
+
+            // Loop through each path.
+            for (int pathIndex = 0; pathIndex < Data.Count; pathIndex++)
+            {
+                // If this path uses double knots, then write those values.
+                if (Data[pathIndex].DoubleKnots != null)
+                {
+                    // Starting from 0, write each knot value, incrementing by 2 rather than 1.
+                    for (int vertexIndex = 0; vertexIndex < Data[pathIndex].DoubleKnots.Length; vertexIndex+=2)
+                        obj.WriteLine($"v {Data[pathIndex].DoubleKnots[vertexIndex].X} {Data[pathIndex].DoubleKnots[vertexIndex].Y} {Data[pathIndex].DoubleKnots[vertexIndex].Z}");
+
+                    // Write the remaining knot values, starting from 1 and also incrementing by 2.
+                    for (int vertexIndex = 1; vertexIndex < Data[pathIndex].DoubleKnots.Length; vertexIndex+=2)
+                        obj.WriteLine($"v {Data[pathIndex].DoubleKnots[vertexIndex].X} {Data[pathIndex].DoubleKnots[vertexIndex].Y} {Data[pathIndex].DoubleKnots[vertexIndex].Z}");
+                }
+                // If this path doesn't use double knots, then write the regular knot values instead.
+                else
+                {
+                    // Loop through and write each single knot value with no special tricks.
+                    for (int vertexIndex = 0; vertexIndex < Data[pathIndex].Knots.Length; vertexIndex++)
+                        obj.WriteLine($"v {Data[pathIndex].Knots[vertexIndex].X} {Data[pathIndex].Knots[vertexIndex].Y} {Data[pathIndex].Knots[vertexIndex].Z}");
+                }
+
+                // Write this path's name.
+                obj.WriteLine($"o {Data[pathIndex].Name}");
+                obj.WriteLine($"g {Data[pathIndex].Name}");
+
+                // If this path uses double knots, then write two line objects.
+                if (Data[pathIndex].DoubleKnots != null)
+                {
+                    // Write the first line idenitifer.
+                    obj.Write("l ");
+
+                    // Write the first path in this spline.
+                    for (int vertexIndex = 0; vertexIndex < Data[pathIndex].DoubleKnots.Length / 2; vertexIndex++)
+                        obj.Write($"{vertexIndex + 1 + vertexCount} ");
+
+                    // Write the second line identifier.
+                    obj.Write("\r\nl ");
+
+                    // Write the second path in this spline.
+                    for (int vertexIndex = Data[pathIndex].DoubleKnots.Length / 2; vertexIndex < Data[pathIndex].DoubleKnots.Length; vertexIndex++)
+                        obj.Write($"{vertexIndex + 1 + vertexCount} ");
+
+                    // Write a line break to end the line object.
+                    obj.WriteLine();
+                }
+                else
+                {
+                    // Write the line idenitifer.
+                    obj.Write("l ");
+
+                    // Write the path in this spline.
+                    for (int vertexIndex = 0; vertexIndex < Data[pathIndex].Knots.Length; vertexIndex++)
+                        obj.Write($"{vertexIndex + 1 + vertexCount} ");
+
+                    // Write a line break to end the line object.
+                    obj.WriteLine();
+                }
+
+                // Increment the vertexCount based on whether this is a double knotted spline or not.
+                if (Data[pathIndex].DoubleKnots != null)
+                    vertexCount += Data[pathIndex].DoubleKnots.Length;
+                else
+                    vertexCount += Data[pathIndex].Knots.Length;
+            }
+
+            // Close this StreamWriter.
+            obj.Close();
         }
     }
 }

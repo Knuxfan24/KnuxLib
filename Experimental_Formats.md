@@ -28,7 +28,7 @@ The following formats are only partially supported, either due to missing functi
 
 - [2010 Collision (.orc)](KnuxLib/Engines/Hedgehog/Collision_2010.cs). Only reads about half the format but does have an OBJ exporter that exports the basic collision geometry.
 
-- [Path Spline (Wars) (.path)](KnuxLib/Engines/Hedgehog/PathSpline_Wars.cs). Reads almost the whole format (although the k-d tree is a bit of a mystery), but doesn't have any saving, exporting or importing.
+- [Path Spline (Wars) (.path)](KnuxLib/Engines/Hedgehog/PathSpline_Wars.cs). Reads almost the whole format (although the k-d tree is a bit of a mystery) and can export the spline data to an OBJ, but doesn't have any saving or importing.
 
 - [Rangers Collision (.btmesh)](KnuxLib/Engines/Hedgehog/Collision_Rangers.cs). Only has a reader that misses the bounding volume hierarchy data for the meshes, also has quite a few unknown values.
 
