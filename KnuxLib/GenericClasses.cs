@@ -132,4 +132,17 @@ namespace KnuxLib
         /// </summary>
         public uint IndexC { get; set; }
     }
+
+    public class AABB
+    {
+        /// <summary>
+        /// The minimum coordinate of the axis aligned bounding box.
+        /// </summary>
+        public Vector3 Min { get; set; }
+
+        /// <summary>
+        /// The maximum coordinate of the axis aligned bounding box.
+        /// </summary>
+        public Vector3 Max { get; set; }
+    }
 }

@@ -68,8 +68,12 @@
                 reader.JumpAhead(0x08);
 
                 // Read an unknown value.
-                // TODO: What is this? Seems to be a 32-bit hash value, followed by padding. What is the hashing algorithm if so?
-                ulong UnknownULong_1 = reader.ReadUInt64();
+                // TODO: What is this? Doesn't appear to be a hash, as it doesn't care about the file changing, but changing this value breaks it.
+                uint UnknownUInt32_1 = reader.ReadUInt32();
+
+                // Read an unknown value.
+                // TODO: What is this? Only ever 0 or 1, so I'm assuming a boolean?
+                bool UnknownBoolean_1 = reader.ReadBoolean(0x04);
 
                 // Read an unknown value.
                 // TODO: What is this? Seems to be a 32-bit value then four nulls, so I'm just lumping them together as one.

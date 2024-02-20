@@ -373,8 +373,8 @@ namespace KnuxLib.Engines.Wayforward
                     VertexHash = vertTableHash,
                     FaceHash = faceTableHash
                 };
-                objectMap.AABB[0] = new(assimpModel.Meshes[meshIndex].BoundingBox.Min.X, assimpModel.Meshes[meshIndex].BoundingBox.Min.Y, assimpModel.Meshes[meshIndex].BoundingBox.Min.Z);
-                objectMap.AABB[1] = new(assimpModel.Meshes[meshIndex].BoundingBox.Max.X, assimpModel.Meshes[meshIndex].BoundingBox.Max.Y, assimpModel.Meshes[meshIndex].BoundingBox.Max.Z);
+                objectMap.AxisAlignedBoundingBox.Min = new(assimpModel.Meshes[meshIndex].BoundingBox.Min.X, assimpModel.Meshes[meshIndex].BoundingBox.Min.Y, assimpModel.Meshes[meshIndex].BoundingBox.Min.Z);
+                objectMap.AxisAlignedBoundingBox.Max = new(assimpModel.Meshes[meshIndex].BoundingBox.Max.X, assimpModel.Meshes[meshIndex].BoundingBox.Max.Y, assimpModel.Meshes[meshIndex].BoundingBox.Max.Z);
 
                 // Increment the vertex table and face table hashes for the next mesh.
                 vertTableHash++;

@@ -119,7 +119,7 @@
 
         // HedgeLib# BinaryReader specific variables.
         // Set up HedgeLib#'s BINAV2Header.
-        public HedgeLib.Headers.BINAHeader Header = new BINAv2Header(210);
+        public HedgeLib.Headers.BINAHeader Header = new BINAv2Header(200);
 
         /// <summary>
         /// Loads and parses this format's file.

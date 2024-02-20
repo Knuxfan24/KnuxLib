@@ -182,5 +182,74 @@
             // Close HedgeLib#'s BINAWriter.
             writer.Close();
         }
+
+        /// <summary>
+        /// Dumps out a MaxScript to arrange already imported OBJs using a point cloud's data.
+        /// TODO: Replace this with a system to import the OBJs on its own rather than needing them to already be there.
+        /// </summary>
+        /// <param name="filepath"></param>
+        public void ExportMaxScript(string filepath)
+        {
+            // Don't bother creating a MaxScript if this file only has one instance with the same name for both the asset and instance itself.
+            if (Data.Count == 1)
+                if (Data[0].AssetName == Data[0].InstanceName)
+                    return;
+
+            // Create a StreamWriter for the instancer MaxScript.
+            StreamWriter maxscript = new(filepath);
+
+            // Loop through each entry in the point cloud data.
+            for (int instanceIndex = 0; instanceIndex < Data.Count; instanceIndex++)
+            {
+                // Write the start of a try catch block, as some geometry entries end up with no data due to me not currently writing planes, so they don't end up existing.
+                maxscript.WriteLine("try (");
+
+                // Get a refernce to the geometry this instance uses.
+                maxscript.WriteLine($"\ttargetGeometry = getNodeByName \"{Data[instanceIndex].AssetName}\"");
+
+                // Select the geometry this instance uses.
+                maxscript.WriteLine($"\tselect targetGeometry");
+
+                // Clone the geometry this instance uses.
+                maxscript.WriteLine($"\tmaxOps.cloneNodes (selection as array) cloneType:#instance newNodes:&nnl #nodialog");
+
+                // Write the name for this instance.
+                maxscript.WriteLine($"\tnnl[1].name = \"{Data[instanceIndex].InstanceName}\"");
+
+                // Convert the radian rotation into a quaternion.
+                HedgeLib.Quaternion rotation = new(new(Data[instanceIndex].Rotation.X, Data[instanceIndex].Rotation.Y, Data[instanceIndex].Rotation.Z), true);
+                
+                // Set this node's rotation, factoring in Z-Up.
+                maxscript.WriteLine($"\tnnl[1].rotation = quat {rotation.X} {-rotation.Z} {rotation.Y} {rotation.W}");
+
+                // Set this node's position, factoring in Z-Up.
+                maxscript.WriteLine($"\tnnl[1].position = point3 {Data[instanceIndex].Position.X} {-Data[instanceIndex].Position.Z} {Data[instanceIndex].Position.Y}");
+
+                // Set this node's scale.
+                maxscript.WriteLine($"\tnnl[1].scale = point3 {Data[instanceIndex].Scale.X} {Data[instanceIndex].Scale.Z} {Data[instanceIndex].Scale.Y}");
+
+                // Write the end of the try catch block.
+                maxscript.WriteLine(") catch (\r\n)\r\n");
+            }
+
+            // Loop through the original geometry so we can delete it.
+            for (int instanceIndex = 0; instanceIndex < Data.Count; instanceIndex++)
+            {
+                // Write the start of a try catch block, as some geometry entries end up with no data due to me not currently writing planes, so they don't end up existing.
+                maxscript.WriteLine("try (");
+
+                // Get a refernce to this geometry index.
+                maxscript.WriteLine($"\ttargetGeometry = getNodeByName \"{Data[instanceIndex].AssetName}\"");
+
+                // Delete this geometry index.
+                maxscript.WriteLine($"\tdelete targetGeometry");
+
+                // Write the end of the try catch block.
+                maxscript.WriteLine(") catch (\r\n)\r\n");
+            }
+
+            // Close the StreamWriter.
+            maxscript.Close();
+        }
     }
 }

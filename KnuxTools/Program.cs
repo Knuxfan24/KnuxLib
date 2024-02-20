@@ -179,7 +179,8 @@ namespace KnuxTools
 
                 Console.WriteLine("Sonic The Portable Engine:");
                 Console.WriteLine("AMB Archive (.amb) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
-                ColourConsole("    Version Flag - portable\n", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag - portable", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Big Endian, used by the Wii) - portable_big-endian\n", true, ConsoleColor.Yellow);
 
                 Console.WriteLine("Sonic World Adventure Wii Engine:");
                 Console.WriteLine("Area Points Table (.wap)");
@@ -268,11 +269,12 @@ namespace KnuxTools
                                                           "storybook\t\t\t(Sonic Storybook Engine ONE File)",
                                                           "storybook_texture\t\t(Sonic Storybook Engine TXD File)",
                                                           "portable\t\t\t(Sonic The Portable Engine AMB File)",
+                                                          "portable_big-endian\t\t(Sonic The Portable Engine AMB File)",
                                                           "swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)",
                                                           "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)",
                                                           "wayforward\t\t\t(Wayforward Engine PAK File)",
                                                           "yachtclub\t\t\t(Yacht Club Engine PAK File)"},
-                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, false, true },
+                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, false, false, true },
                                        "Archive Type");
 
             // If the version is still null or empty, then abort.
@@ -343,6 +345,15 @@ namespace KnuxTools
                 case "portable":
                     Console.WriteLine("Packing directory for Sonic The Portable Engine.");
                     ImportAndSaveArchive(typeof(KnuxLib.Engines.Portable.AMB), arg, "amb");
+                    break;
+                case "portable_big-endian":
+                    Console.WriteLine("Packing directory for Sonic The Portable Engine.");
+                    using (KnuxLib.Engines.Portable.AMB amb = new())
+                    {
+                        amb.Import(arg);
+                        amb.bigEndian = true;
+                        amb.Save($@"{arg}.amb");
+                    }
                     break;
 
                 // Sonic World Adventure Wii ONE Archives.

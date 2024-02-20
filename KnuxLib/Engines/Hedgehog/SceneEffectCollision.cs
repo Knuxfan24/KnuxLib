@@ -118,9 +118,9 @@ namespace KnuxLib.Engines.Hedgehog
             public uint BSPFirstNodeIndex { get; set; }
 
             /// <summary>
-            /// This group's Axis-Aligned Bounding Box.
+            /// This group's axis aligned bounding box.
             /// </summary>
-            public float[] AABB { get; set; } = new float[6];
+            public AABB AxisAlignedBoundingBox { get; set; } = new();
         }
 
         // Actual data presented to the end user.
@@ -244,9 +244,9 @@ namespace KnuxLib.Engines.Hedgehog
                 // Read this group's first BSP node index.
                 group.BSPFirstNodeIndex = reader.ReadUInt32();
 
-                // Loop through and read the six values of this group's Axis-Aligned Bounding Box.
-                for (int aabb = 0; aabb < 6; aabb++)
-                    group.AABB[aabb] = reader.ReadSingle();
+                // Read this group's axis aligned bounding box.
+                group.AxisAlignedBoundingBox.Min = Helpers.ReadHedgeLibVector3(reader);
+                group.AxisAlignedBoundingBox.Max = Helpers.ReadHedgeLibVector3(reader);
 
                 // Save this group.
                 Data.Groups.Add(group);
@@ -355,9 +355,9 @@ namespace KnuxLib.Engines.Hedgehog
                 // Write the index of this group's first BSP node.
                 writer.Write(Data.Groups[groupIndex].BSPFirstNodeIndex);
 
-                // Loop through and write the six values of this group's Axis-Aligned Bounding Box.
-                for (int aabb = 0; aabb < 6; aabb++)
-                    writer.Write(Data.Groups[groupIndex].AABB[aabb]);
+                // Write this group's axis aligned bounding box.
+                Helpers.WriteHedgeLibVector3(writer, Data.Groups[groupIndex].AxisAlignedBoundingBox.Min);
+                Helpers.WriteHedgeLibVector3(writer, Data.Groups[groupIndex].AxisAlignedBoundingBox.Max);
             }
 
             // Finish writing the BINA information.

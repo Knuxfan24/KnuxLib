@@ -72,10 +72,10 @@ namespace KnuxLib.Engines.Wayforward
         public class Model
         {
             /// <summary>
-            /// This model's Axis-Aligned Bounding Box.
+            /// This model's axis aligned bounding box.
             /// Doesn't seem to exist in the Ducktales Remastered version of the format?
             /// </summary>
-            public Vector3[]? AABB { get; set; }
+            public AABB? AxisAlignedBoundingBox { get; set; }
 
             /// <summary>
             /// An unknown Vector3 value that is only present in Ducktales Remastered.
@@ -166,12 +166,12 @@ namespace KnuxLib.Engines.Wayforward
 
                 if (version != FormatVersion.duck)
                 {
-                    // Initialise the AABB values.
-                    model.AABB = new Vector3[2];
-
-                    // Loop through and read the two values of this model's Axis-Aligned Bounding Box.
-                    for (int aabb = 0; aabb < 2; aabb++)
-                        model.AABB[aabb] = reader.ReadVector3();
+                    // Initialise and read the axis aligned bounding box.
+                    model.AxisAlignedBoundingBox = new()
+                    {
+                        Min = reader.ReadVector3(),
+                        Max = reader.ReadVector3()
+                    };
 
                     // Read an this model's behaviour flags.
                     model.Behaviour = (Behaviour)reader.ReadUInt64();
@@ -320,9 +320,9 @@ namespace KnuxLib.Engines.Wayforward
             {
                 if (version != FormatVersion.duck)
                 {
-                    // Write this model's AABB values.
-                    writer.Write(Data.Models[modelIndex].AABB[0]);
-                    writer.Write(Data.Models[modelIndex].AABB[1]);
+                    // Write this model's axis aligned bounding box.
+                    writer.Write(Data.Models[modelIndex].AxisAlignedBoundingBox.Min);
+                    writer.Write(Data.Models[modelIndex].AxisAlignedBoundingBox.Max);
 
                     // Write this model's behaviour tag.
                     writer.Write((ulong)Data.Models[modelIndex].Behaviour);
@@ -507,9 +507,9 @@ namespace KnuxLib.Engines.Wayforward
                 model.Vertices = new Vector3[assimpModel.Meshes[meshIndex].Vertices.Count];
                 model.Faces = new Face[assimpModel.Meshes[meshIndex].Faces.Count];
 
-                // Fill in the AABB.
-                model.AABB[0] = new(assimpModel.Meshes[meshIndex].BoundingBox.Min.X, assimpModel.Meshes[meshIndex].BoundingBox.Min.Y, assimpModel.Meshes[meshIndex].BoundingBox.Min.Z);
-                model.AABB[1] = new(assimpModel.Meshes[meshIndex].BoundingBox.Max.X, assimpModel.Meshes[meshIndex].BoundingBox.Max.Y, assimpModel.Meshes[meshIndex].BoundingBox.Max.Z);
+                // Fill in the axis aligned bounding box.
+                model.AxisAlignedBoundingBox.Min = new(assimpModel.Meshes[meshIndex].BoundingBox.Min.X, assimpModel.Meshes[meshIndex].BoundingBox.Min.Y, assimpModel.Meshes[meshIndex].BoundingBox.Min.Z);
+                model.AxisAlignedBoundingBox.Max = new(assimpModel.Meshes[meshIndex].BoundingBox.Max.X, assimpModel.Meshes[meshIndex].BoundingBox.Max.Y, assimpModel.Meshes[meshIndex].BoundingBox.Max.Z);
 
                 // Add all the vertices for this mesh.
                 for (int vertexIndex = 0; vertexIndex < assimpModel.Meshes[meshIndex].Vertices.Count; vertexIndex++)

@@ -43,9 +43,9 @@
             public Quaternion Rotation { get; set; }
 
             /// <summary>
-            /// This shape's Axis-Aligned Bounding Box.
+            /// This shape's axis aligned bounding box.
             /// </summary>
-            public float[] AABB { get; set; } = new float[6];
+            public AABB AxisAlignedBoundingBox { get; set; } = new();
 
             /// <summary>
             /// A list of sectors this shape controls.
@@ -128,9 +128,9 @@
                 // Read this shape's rotation.
                 shape.Rotation = Helpers.ReadHedgeLibQuaternion(reader);
 
-                // Loop through and read the six values of this shape's Axis-Aligned Bounding Box.
-                for (int aabb = 0; aabb < 6; aabb++)
-                    shape.AABB[aabb] = reader.ReadSingle();
+                // Read this shape's axis aligned bounding box.
+                shape.AxisAlignedBoundingBox.Min = Helpers.ReadHedgeLibVector3(reader);
+                shape.AxisAlignedBoundingBox.Max = Helpers.ReadHedgeLibVector3(reader);
 
                 // Skip an unknown value of 0.
                 reader.JumpAhead(0x04);
@@ -216,9 +216,9 @@
                 // Write this shape's rotation value.
                 Helpers.WriteHedgeLibQuaternion(writer, Data[dataIndex].Rotation);
 
-                // Loop through and write the six values of this shape's Axis-Aligned Bounding Box.
-                for (int aabb = 0; aabb < 6; aabb++)
-                    writer.Write(Data[dataIndex].AABB[aabb]);
+                // Write this shape's axis aligned bounding box.
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].AxisAlignedBoundingBox.Min);
+                Helpers.WriteHedgeLibVector3(writer, Data[dataIndex].AxisAlignedBoundingBox.Max);
 
                 // Write an unknown value of 0.
                 writer.Write(0x00);

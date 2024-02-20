@@ -24,9 +24,9 @@
         public ulong FaceHash { get; set; }
 
         /// <summary>
-        /// This object map's Axis-Aligned Bounding Box.
+        /// This object map's axis aligned bounding box.
         /// </summary>
-        public Vector3[] AABB { get; set; } = new Vector3[2];
+        public AABB AxisAlignedBoundingBox { get; set; } = new();
 
         public override string ToString() => $"Object Map: 0x{Hash.ToString("X").PadLeft(0x08, '0')}";
 
@@ -51,9 +51,9 @@
             // Read this object map's target face hash.
             objectMap.FaceHash = reader.ReadUInt64();
 
-            // Read the two Vector3s for this object map's AABB.
-            objectMap.AABB[0] = reader.ReadVector3();
-            objectMap.AABB[1] = reader.ReadVector3();
+            // Read this object maps's axis aligned bounding box.
+            objectMap.AxisAlignedBoundingBox.Min = reader.ReadVector3();
+            objectMap.AxisAlignedBoundingBox.Max = reader.ReadVector3();
 
             // Return our read object map.
             return objectMap;
@@ -84,9 +84,9 @@
             // Write this object map's face object hash.
             writer.Write(FaceHash);
 
-            // Write the two Vector3s for this object map's AABB.
-            writer.Write(AABB[0]);
-            writer.Write(AABB[1]);
+            // Write this object map's axis aligned bounding box.
+            writer.Write(AxisAlignedBoundingBox.Min);
+            writer.Write(AxisAlignedBoundingBox.Max);
         }
     }
 }

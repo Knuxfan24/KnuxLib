@@ -57,29 +57,41 @@ namespace KnuxLib.Engines.Hedgehog
             Sand3 = 0x1E
         }
 
-        [Flags]
         [JsonConverter(typeof(StringEnumConverter))]
-        public enum Flags : byte
+        public enum LayerType : byte
         {
-            NoStand = 0x00,
-            Breakable = 0x01,
-            Rest = 0x02,
-            Unsupported = 0x03, //?
-            ReflectLaser = 0x04,
-            Loop = 0x05,
-            Wall = 0x06,
-            Slide = 0x07,
-            Parkour = 0x08,
-            Decelerate = 0x09,
-            Moveable = 0x0A,
-            PressDead = 0x0C,
-            RayBlock = 0x0D,
-            WallJump = 0x0E,
-            PushBox = 0x0F,
-            StriderFloor = 0x10,
-            GiantTower = 0x11,
-            TestGrass = 0x14,
-            TestWater = 0x15
+            None = 0x00,
+            Solid = 0x01,
+            Liquid = 0x02,
+            Through = 0x03,
+            Camera = 0x04,
+            Solid_OneWay = 0x05,
+            Solid_Through = 0x06,
+            Solid_Tiny = 0x07,
+            Solid_Detail = 0x08,
+            Leaf = 0x09,
+            Land = 0x0A,
+            Ray_Block = 0x0B,
+            Event = 0x0C,
+            Reserved13 = 0x0D, // ?
+            Reserved14 = 0x0E, // ?
+            Player = 0x0F,
+            Enemy = 0x10,
+            Enemy_Body = 0x11,
+            Gimmick = 0x12,
+            Dynamics = 0x13,
+            Ring = 0x14,
+            Character_Control = 0x15,
+            Player_Only = 0x16,
+            Dynamics_Through = 0x17,
+            Enemy_Only = 0x18,
+            Sensor_Player = 0x19,
+            Sensor_Ring = 0x1A,
+            Sensor_Gimmick = 0x1B,
+            Sensor_Land = 0x1C,
+            Sensor_All = 0x1D,
+            Reserved30 = 0x1E, // ?
+            Reserved31 = 0x1F // ?
         }
 
         public class FormatData
@@ -123,7 +135,7 @@ namespace KnuxLib.Engines.Hedgehog
             /// <summary>
             /// This mesh's flags, only used if there aren't any faces.
             /// </summary>
-            public Flags? Flags { get; set; }
+            public LayerType? Flags { get; set; }
 
             /// <summary>
             /// An unknown byte, only used if there aren't any faces.
@@ -157,7 +169,7 @@ namespace KnuxLib.Engines.Hedgehog
             /// <summary>
             /// This face's flags.
             /// </summary>
-            public Flags Flags { get; set; }
+            public LayerType Flags { get; set; }
 
             /// <summary>
             /// An unknown byte.
@@ -331,7 +343,7 @@ namespace KnuxLib.Engines.Hedgehog
                 if (faceCount == 0)
                 {
                     // Read this mesh's flags.
-                    mesh.Flags = (Flags)reader.ReadByte();
+                    mesh.Flags = (LayerType)reader.ReadByte();
 
                     // Read this mesh's unknown collision value.
                     mesh.UnknownCollisionValue = reader.ReadByte();
@@ -349,7 +361,7 @@ namespace KnuxLib.Engines.Hedgehog
                     for (int tagIndex = 0; tagIndex < tagCount; tagIndex++)
                     {
                         // Read this face's flags.
-                        mesh.Faces[tagIndex].Flags = (Flags)reader.ReadByte();
+                        mesh.Faces[tagIndex].Flags = (LayerType)reader.ReadByte();
 
                         // Read this face's unknown collision value.
                         mesh.Faces[tagIndex].UnknownCollisionValue = reader.ReadByte();
@@ -403,39 +415,77 @@ namespace KnuxLib.Engines.Hedgehog
 
         /// <summary>
         /// Exports this collision model to a standard Wavefront OBJ.
-        /// TODO: Export material tags.
+        /// TODO: Export material tags in a less stupid way maybe?
         /// TODO: Potentially replace this with a solution that integrates with the point cloud files?
         /// </summary>
         /// <param name="filepath">The filepath to export to.</param>
         public void ExportOBJ(string filepath)
         {
-            // Set up the StreamWriter.
-            StreamWriter obj = new(filepath);
-
-            // Set up a variable to track vertices.
-            int vertexCount = 0;
-
-            // Loop through each mesh in the model.
-            for (int meshIndex = 0; meshIndex < Data.Meshes.Length; meshIndex++)
+            if (Data.Meshes != null)
             {
-                // Write this mesh's vertices.
-                foreach (Vector3 vertex in Data.Meshes[meshIndex].Vertices)
-                    obj.WriteLine($"v {vertex.X} {vertex.Y} {vertex.Z}");
+                // Collisions that are meant to be instanced by a point cloud shouldn't have _col at the end, remove them if they do.
+                if (filepath.EndsWith("_ins_col.obj"))
+                    filepath = filepath.Replace("_ins_col.obj", "_ins.obj");
+
+                // Set up the StreamWriter.
+                StreamWriter obj = new(filepath);
+
+                // Set up a variable to track vertices.
+                int vertexCount = 0;
+
+                // Loop through each mesh in the model to write its vertices.
+                for (int meshIndex = 0; meshIndex < Data.Meshes.Length; meshIndex++)
+                    foreach (Vector3 vertex in Data.Meshes[meshIndex].Vertices)
+                        obj.WriteLine($"v {vertex.X} {vertex.Y} {vertex.Z}");
 
                 // Write this mesh's name.
-                obj.WriteLine($"o {Path.GetFileNameWithoutExtension(filepath)}_mesh_{meshIndex}");
-                obj.WriteLine($"g {Path.GetFileNameWithoutExtension(filepath)}_mesh_{meshIndex}");
+                obj.WriteLine($"o {Path.GetFileNameWithoutExtension(filepath)}");
+                obj.WriteLine($"g {Path.GetFileNameWithoutExtension(filepath)}");
 
-                // Write this mesh's faces.
-                foreach (var face in Data.Meshes[meshIndex].Faces)
-                    obj.WriteLine($"f {face.IndexA + 1 + vertexCount} {face.IndexB + 1 + vertexCount} {face.IndexC + 1 + vertexCount}");
+                // Loop through each mesh in the model to write its faces.
+                for (int meshIndex = 0; meshIndex < Data.Meshes.Length; meshIndex++)
+                {
+                    if (Data.Meshes[meshIndex].Faces != null)
+                    {
+                        // Set up default material type and flag.
+                        Material materialType = Material.None;
+                        LayerType materialLayer = LayerType.None;
 
-                // Increment vertexCount.
-                vertexCount += Data.Meshes[meshIndex].Vertices.Length;
+                        // Write this mesh's faces.
+                        foreach (var face in Data.Meshes[meshIndex].Faces)
+                        {
+                            // Check if the type and flags have been changed since the last face.
+                            bool changedValue = false;
+
+                            // Check and set the face's material type.
+                            if (face.Material != materialType)
+                            {
+                                materialType = face.Material;
+                                changedValue = true;
+                            }
+
+                            // Check and set the face's material layer.
+                            if (face.Flags != materialLayer)
+                            {
+                                materialLayer = face.Flags;
+                                changedValue = true;
+                            }
+
+                            // If either the flags or type have changed, then write a material entry.
+                            if (changedValue)
+                                obj.WriteLine($"usemtl {materialType}_{materialLayer}");
+
+                            obj.WriteLine($"f {face.IndexA + 1 + vertexCount} {face.IndexB + 1 + vertexCount} {face.IndexC + 1 + vertexCount}");
+                        }
+
+                        // Increment vertexCount.
+                        vertexCount += Data.Meshes[meshIndex].Vertices.Length;
+                    }
+                }
+
+                // Close this StreamWriter.
+                obj.Close();
             }
-
-            // Close this StreamWriter.
-            obj.Close();
         }
     }
 }
