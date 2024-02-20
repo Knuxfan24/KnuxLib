@@ -109,7 +109,7 @@
         /// <param name="filepath">The path to save to.</param>
         public void Save(string filepath)
         {
-            // Set up our BINAWriter for the gismod file and write the BINAV2 header.
+            // Set up our BINAWriter and write the BINAV2 header.
             HedgeLib.IO.BINAWriter writer = new(File.Create(filepath), Header);
 
             // Write an unknown value of 0x01.

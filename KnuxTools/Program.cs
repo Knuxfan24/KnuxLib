@@ -120,6 +120,9 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (Sonic Generations) - blueblur", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Mario and Sonic at the London 2012 Olympic Games) - william", true, ConsoleColor.Yellow);
                 Console.WriteLine("Message Table (sonic2013) (.xtb2)");
+                Console.WriteLine("Path Spline (Wars/Rangers) (.path)");
+                ColourConsole("    Version Flag (Sonic Forces) - wars", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Sonic Frontiers) - rangers", true, ConsoleColor.Yellow);
                 Console.WriteLine("Point Cloud (.pccol/.pcmodel/.pcrt)");
                 ColourConsole("    Extension Flag (Collision Instance) - pccol", true, ConsoleColor.Yellow);
                 ColourConsole("    Extension Flag (Terrain Instance) - pcmodel", true, ConsoleColor.Yellow);
@@ -514,9 +517,7 @@ namespace KnuxTools
 
                                 // Create the wf3d file and inject the data into the gpu file.
                                 using (KnuxLib.Engines.Wayforward.Mesh mesh = new())
-                                {
                                     mesh.ImportAssimp(arg, Path.ChangeExtension(arg, ".wf3d"), gpuPath, vertexTableIndex, faceTableIndex);
-                                }
                             }
 
                             // If the .gpu file doesn't exist, then inform the user and abort.
@@ -1124,6 +1125,34 @@ namespace KnuxTools
                     {
                         messageTable_2013.Data = messageTable_2013.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2013.FormatData>(arg);
                         messageTable_2013.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.xtb2");
+                    }
+                    break;
+
+                case ".path":
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "wars\t(Sonic Forces)",
+                                                                  "rangers\t(Sonic Frontiers)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
+
+                    Console.WriteLine("Extracting Hedgehog Engine Path Spline (Wars/Rangers) to OBJ.");
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
+                    {
+                        case "wars": using (KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers pathSpline_WarsRangers = new(arg, KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Wars, true)) break;
+                        case "rangers": using (KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers pathSpline_Wars = new(arg, KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Wars, true)) break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Hedgehog Engine Path Spline (Wars/Rangers) types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
                     }
                     break;
 
