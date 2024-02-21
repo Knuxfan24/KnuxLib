@@ -446,6 +446,19 @@ namespace KnuxTools
                 case ".dae":
                 case ".obj":
                     // Carry out a version check.
+                    // TODO: This is dumb.
+                    if (KnuxLib.Helpers.GetExtension(arg).ToLower() == ".obj")
+                    version = NoVersionChecker(version,
+                                               "This file is a generic model, please specifiy what format to import and save it as:",
+                                               new List<string> { "carz\t\t\t(CarZ Engine SCO model & MAT material library)",
+                                                                  "wars\t\t\t(Hedgehog Engine Path Spline for Sonic Forces)",
+                                                                  "rangers\t\t\t(Hedgehog Engine Path Spline for Sonic Frontiers)",
+                                                                  "wayforward\t\t\t(Wayforward Engine WF3D Mesh)",
+                                                                  "wayforward_collision_duck\t(Wayforward Engine Collision for Ducktales Remastered)",
+                                                                  "wayforward_collision_hgh\t(Wayforward Engine Collision for Half-Genie Hero)",
+                                                                  "wayforward_collision_ss\t(Wayforward Engine Collision for Seven Sirens)"},
+                                               new List<bool> { false, false, false, true, true, true, true });
+                    else
                     version = NoVersionChecker(version,
                                                "This file is a generic model, please specifiy what format to import and save it as:",
                                                new List<string> { "carz\t\t\t(CarZ Engine SCO model & MAT material library)",
@@ -474,6 +487,41 @@ namespace KnuxTools
                             {
                                 mat.ImportAssimp(arg);
                                 mat.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.mat");
+                            }
+                            break;
+
+                        // Hedgehog Engine Path Splines (Wars/Rangers).
+                        case "wars":
+                            if (KnuxLib.Helpers.GetExtension(arg).ToLower() == ".obj")
+                            {
+                                Console.WriteLine("Converting OBJ to Hedgehog Engine (Wars) Path Spline.");
+                                using (KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers pathSpline = new())
+                                {
+                                    pathSpline.ImportOBJ(arg, KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Wars);
+                                    pathSpline.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.path", KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Wars);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported model types.\nPress any key to continue.");
+                                Console.ReadKey();
+                            }
+                            break;
+
+                        case "rangers":
+                            if (KnuxLib.Helpers.GetExtension(arg).ToLower() == ".obj")
+                            {
+                                Console.WriteLine("Converting OBJ to Hedgehog Engine (Rangers) Path Spline.");
+                                using (KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers pathSpline = new())
+                                {
+                                    pathSpline.ImportOBJ(arg, KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Rangers);
+                                    pathSpline.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.path", KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Rangers);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported model types.\nPress any key to continue.");
+                                Console.ReadKey();
                             }
                             break;
 
