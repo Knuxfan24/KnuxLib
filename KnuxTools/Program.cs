@@ -490,7 +490,7 @@ namespace KnuxTools
                             }
                             break;
 
-                        // Hedgehog Engine Path Splines (Wars/Rangers).
+                        // Hedgehog Engine Path Splines (Wars).
                         case "wars":
                             if (KnuxLib.Helpers.GetExtension(arg).ToLower() == ".obj")
                             {
@@ -508,6 +508,7 @@ namespace KnuxTools
                             }
                             break;
 
+                        // Hedgehog Engine Path Splines (Rangers).
                         case "rangers":
                             if (KnuxLib.Helpers.GetExtension(arg).ToLower() == ".obj")
                             {

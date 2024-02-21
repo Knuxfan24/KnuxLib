@@ -5,7 +5,6 @@ namespace KnuxLib.Engines.Hedgehog
 {
     // Based on https://github.com/blueskythlikesclouds/SkythTools/tree/master/Sonic%20Forces/Path%20Scripts
     // TODO: Figure out and properly read the k-d tree data.
-    // TODO: Import Blender 4.x OBJ splines.
     // TODO: Check to see if Frontiers does anything other than the type differently, if so, handle it with the FormatVersion check.
     public class PathSpline_WarsRangers : FileBase
     {
@@ -706,9 +705,11 @@ namespace KnuxLib.Engines.Hedgehog
             {
                 default:
                     throw new NotSupportedException();
+                case "max":
                 case "blender4":
-                    throw new NotImplementedException();
-                case "max":                    
+                    // Set up a count to track Blender's different line system.
+                    int blenderLineCount = 0;
+
                     // Loop through each line in the OBJ.
                     for (int lineIndex = 0; lineIndex < importedOBJ.Length; lineIndex++)
                     {
@@ -716,156 +717,11 @@ namespace KnuxLib.Engines.Hedgehog
                         if ((importedOBJ[lineIndex].StartsWith("v ") && !importedOBJ[lineIndex - 1].StartsWith("v ")) || lineIndex == importedOBJ.Length - 1)
                         {
                             // Check if this path actually has a name so we don't save the first, completely empty, one.
-                            if (path.Name != "")
+                            // Due to how Blender OBJs are set up, this is only relevant for 3DS Max OBJs.
+                            if (identifier == "max" && path.Name != "")
                             {
-                                // If this isn't a double knotted spline, then fill in the standard knot values.
-                                if (!doubleKnot)
-                                {
-                                    // Initialise the knots array.
-                                    path.Knots = new Vector3[coordinates.Count];
-
-                                    // Loop through and write each coordinate value to the knot array.
-                                    for (int coordinateIndex = 0; coordinateIndex < coordinates.Count; coordinateIndex++)
-                                        path.Knots[coordinateIndex] = coordinates[coordinateIndex];
-                                }
-                                else
-                                {
-                                    // Split the coordinates array in half to determine the left and right splines.
-                                    List<Vector3> leftSpline = coordinates.Take(coordinates.Count / 2).ToList();
-                                    List<Vector3> rightSpline = coordinates.Skip(coordinates.Count / 2).ToList();
-
-                                    // Check that the two splines for this path have the same number of knots.
-                                    if (leftSpline.Count != rightSpline.Count)
-                                        throw new NotSupportedException($"{path.Name} has a different number of points for its two splines.");
-
-                                    // Initialise the double knots array.
-                                    path.DoubleKnots = new Vector3[coordinates.Count];
-
-                                    // Initialise the knots array.
-                                    path.Knots = new Vector3[leftSpline.Count];
-
-                                    // Set up an index value to track values for the double knots.
-                                    int index = 0;
-
-                                    for (int coordinateIndex = 0; coordinateIndex < leftSpline.Count; coordinateIndex++)
-                                    {
-                                        // Write the two double knot values.
-                                        path.DoubleKnots[index] = leftSpline[coordinateIndex];
-                                        path.DoubleKnots[index + 1] = rightSpline[coordinateIndex];
-
-                                        // Increment index by 2 for the next loop.
-                                        index += 2;
-
-                                        // Calculate the standard knot value for this pair.
-                                        path.Knots[coordinateIndex] = new(
-                                                                             (leftSpline[coordinateIndex].X + rightSpline[coordinateIndex].X) / 2,
-                                                                             (leftSpline[coordinateIndex].Y + rightSpline[coordinateIndex].Y) / 2,
-                                                                             (leftSpline[coordinateIndex].Z + rightSpline[coordinateIndex].Z) / 2
-                                                                         );
-                                    }
-
-                                    // Initalise the up vector array.
-                                    path.UpVector = new Vector3[path.Knots.Length];
-
-                                    // Loop through each knot and calculate its up vector.
-                                    for (int knotIndex = 0; knotIndex < path.UpVector.Length - 1; knotIndex++)
-                                        path.UpVector[knotIndex] = CalculateDoublePointUpVector(path.DoubleKnots[knotIndex * 2], path.DoubleKnots[knotIndex * 2 + 1], path.DoubleKnots[knotIndex * 2 + 2]);
-
-                                    // Set the last up vector to the same as the one before it.
-                                    path.UpVector[^1] = path.UpVector[^2];
-                                }
-
-                                // Initialise the distance array.
-                                path.Distance = new float[path.Knots.Length];
-
-                                // Loop through each knot to calculate the distance values.
-                                for (int knotIndex = 1; knotIndex < path.Knots.Length; knotIndex++)
-                                    path.Distance[knotIndex] = Helpers.CalculateDistance(path.Knots[knotIndex - 1], path.Knots[knotIndex]) + path.Distance[knotIndex - 1];
-
-
-                                // Set up lists to sort the x, y and z values of the coordinates as sorting a Vector3 list doesn't seem possible.
-                                List<float> x = new();
-                                List<float> y = new();
-                                List<float> z = new();
-
-                                // Loop through each coordinate and get the x, y and z values.
-                                foreach (var coordinate in coordinates)
-                                {
-                                    x.Add(coordinate.X);
-                                    y.Add(coordinate.Y);
-                                    z.Add(coordinate.Z);
-                                }
-
-                                // Sort the lists to get the smallest and largest values.
-                                x.Sort();
-                                y.Sort();
-                                z.Sort();
-
-                                // Set up the axis aligned bounding box.
-                                path.AxisAlignedBoundingBox.Min = new(x[0], y[0], z[0]);
-                                path.AxisAlignedBoundingBox.Max = new(x[^1], y[^1], z[^1]);
-
-                                // Initialise the forward vector array.
-                                path.ForwardVector = new Vector3[path.Knots.Length];
-
-                                // Loop through and calculate the forward vectors for each knot (other than the last).
-                                for (int knotIndex = 0; knotIndex < path.Knots.Length - 1; knotIndex++)
-                                    path.ForwardVector[knotIndex] = Helpers.CalculateForwardVector(path.Knots[knotIndex], path.Knots[knotIndex + 1]);
-
-                                // Set the last knot's forward vector to the same as the one before it.
-                                path.ForwardVector[^1] = path.ForwardVector[^2];
-
-                                // If this path isn't double knotted, then handle the up vector stuff here.
-                                if (!doubleKnot)
-                                {
-                                    // Initialise the up vector array.
-                                    path.UpVector = new Vector3[path.Knots.Length];
-
-                                    // Loop through and calculate each knot's up vector value based on its forward vector.
-                                    for (int knotIndex = 0; knotIndex < path.UpVector.Length; knotIndex++)
-                                        path.UpVector[knotIndex] = CalculateSinglePointUpVector(path.ForwardVector[knotIndex]);
-                                }
-
-                                #region Shamelessly copying the MaxScript for this as a potential placeholder.
-                                uint numberOfLineSegments = (uint)(path.Knots.Length - 1);
-                                if (doubleKnot)
-                                    numberOfLineSegments = (uint)(path.DoubleKnots.Length - 2);
-                                path.KDTree.UnknownUInt32_1 = 0;
-                                path.KDTree.UnknownUInt32_2 = 2;
-                                path.KDTree.UnknownData_1 = new byte[16] {0, 0, 0, 0,
-                                                                          0, 0, 0, 0,
-                                                                          3, 0, 0, 0,
-                                                                          0, 0, 0, 0};
-                                path.KDTree.UnknownData_2.Add(new uint[2] { numberOfLineSegments, 0 });
-                                path.KDTree.UnknownData_3 = new uint[numberOfLineSegments];
-                                for (uint i = 0; i < numberOfLineSegments; i++)
-                                    path.KDTree.UnknownData_3[i] = i;
-                                #endregion
-
-                                // Determine the path type based on the end of the name (all of Sonic Team's official splines seem to follow this) and format version.
-                                switch (version)
-                                {
-                                    case FormatVersion.Wars:
-                                        if (path.Name.EndsWith("GR"))
-                                            path.Type = SplineTypeWars.GrindRail;
-                                        else if (path.Name.EndsWith("SV"))
-                                            path.Type = SplineTypeWars.SideView;
-                                        else
-                                            path.Type = SplineTypeWars.Default;
-                                        break;
-
-                                    case FormatVersion.Rangers:
-                                        if (path.Name.EndsWith("GR"))
-                                            path.Type = SplineTypeRangers.GrindRail;
-                                        else if (path.Name.EndsWith("SV"))
-                                            path.Type = SplineTypeRangers.SideView;
-                                        else
-                                            path.Type = SplineTypeRangers.Default;
-                                        break;
-                                }
-
-                                // Save this path.
-                                Data.Add(path);
+                                // Process the data using the generic function.
+                                ProcessOBJData(path, coordinates, doubleKnot, version);
 
                                 // Reset the coordinates list.
                                 coordinates = new();
@@ -888,24 +744,221 @@ namespace KnuxLib.Engines.Hedgehog
                             coordinates.Add(new(float.Parse(split[^3]), float.Parse(split[^2]), float.Parse(split[^1])));
                         }
 
-                        // If this line starts with an o and a space, then split it on the space and take the last split as the path name.
-                        if (importedOBJ[lineIndex].StartsWith("o "))
-                            path.Name = importedOBJ[lineIndex].Split(' ')[^1];
-
-                        // If this line starts with an l and a space and the next line does too, then set the double knot flag to true.
-                        if (importedOBJ[lineIndex].StartsWith("l ") && importedOBJ[lineIndex + 1].StartsWith("l "))
+                        // Handle setting the double knot flag on a 3DS Max OBJ.
+                        if (identifier == "max")
                         {
-                            // Check if the flag is already set as a ghetto way to detect splines with more than two lines.
-                            if (doubleKnot)
-                                throw new NotSupportedException($"{path.Name} appears to have more than two lines, this is not supported.");
+                            // If this line starts with an l and a space and the next line does too, then set the double knot flag to true.
+                            if (importedOBJ[lineIndex].StartsWith("l ") && importedOBJ[lineIndex + 1].StartsWith("l "))
+                            {
+                                // Check if the flag is already set as a ghetto way to detect splines with more than two lines.
+                                if (doubleKnot)
+                                    throw new NotSupportedException($"{path.Name} appears to have more than two lines, this is not supported.");
 
-                            // Set the flag to indicate this spline has two lines.
-                            doubleKnot = true;
+                                // Set the flag to indicate this spline has two lines.
+                                doubleKnot = true;
+                            }
+                        }
+
+                        // Calculate the line count on a Blender OBJ.
+                        if (identifier == "blender4")
+                            if (importedOBJ[lineIndex].StartsWith("l "))
+                                blenderLineCount++;
+
+
+                        // If this line starts with an o and a space, then split it on the space and take the last split as the path name.
+                        // Blender OBJs put the name first, so we also need to handle the processing down here for those.
+                        if (importedOBJ[lineIndex].StartsWith("o ") || (lineIndex == importedOBJ.Length - 1 && identifier == "blender4"))
+                        {
+                            // Handle processing this path if this is a Blender OBJ and we've actually read any lines.
+                            if (identifier == "blender4" && blenderLineCount != 0)
+                            {
+                                // Determine if this spline needs the double knot flag.
+                                // This doesn't block more than two splines like the Max one does, but OH WELL.
+                                if (blenderLineCount % 2 == 0)
+                                    doubleKnot = true;
+
+                                // Process the data using the generic function.
+                                ProcessOBJData(path, coordinates, doubleKnot, version);
+
+                                // Reset the coordinates list.
+                                coordinates = new();
+
+                                // Reset the double knot flag.
+                                doubleKnot = false;
+
+                                // Make a new path with an empty name.
+                                path = new() { Name = "" };
+
+                                // Reset the line count tracker.
+                                blenderLineCount = 0;
+                            }
+
+                            // Split the line on the space and take the last element as the path name.
+                            path.Name = importedOBJ[lineIndex].Split(' ')[^1];
                         }
                     }
 
                     break;
             }
+        }
+
+        /// <summary>
+        /// Takes data read from an OBJ and creates a proper path from them.
+        /// </summary>
+        /// <param name="path">The path with the name preset.</param>
+        /// <param name="coordinates">The list of point coordinates.</param>
+        /// <param name="doubleKnot">Whether or not this spline is double knotted or not.</param>
+        /// <param name="version">The format version to determine the spline type.</param>
+        private void ProcessOBJData(SplinePath path, List<Vector3> coordinates, bool doubleKnot, FormatVersion version)
+        {
+            // If this isn't a double knotted spline, then fill in the standard knot values.
+            if (!doubleKnot)
+            {
+                // Initialise the knots array.
+                path.Knots = new Vector3[coordinates.Count];
+
+                // Loop through and write each coordinate value to the knot array.
+                for (int coordinateIndex = 0; coordinateIndex < coordinates.Count; coordinateIndex++)
+                    path.Knots[coordinateIndex] = coordinates[coordinateIndex];
+            }
+            else
+            {
+                // Split the coordinates array in half to determine the left and right splines.
+                List<Vector3> leftSpline = coordinates.Take(coordinates.Count / 2).ToList();
+                List<Vector3> rightSpline = coordinates.Skip(coordinates.Count / 2).ToList();
+
+                // Check that the two splines for this path have the same number of knots.
+                if (leftSpline.Count != rightSpline.Count)
+                    throw new NotSupportedException($"{path.Name} has a different number of points for its two splines.");
+
+                // Initialise the double knots array.
+                path.DoubleKnots = new Vector3[coordinates.Count];
+
+                // Initialise the knots array.
+                path.Knots = new Vector3[leftSpline.Count];
+
+                // Set up an index value to track values for the double knots.
+                int index = 0;
+
+                for (int coordinateIndex = 0; coordinateIndex < leftSpline.Count; coordinateIndex++)
+                {
+                    // Write the two double knot values.
+                    path.DoubleKnots[index] = leftSpline[coordinateIndex];
+                    path.DoubleKnots[index + 1] = rightSpline[coordinateIndex];
+
+                    // Increment index by 2 for the next loop.
+                    index += 2;
+
+                    // Calculate the standard knot value for this pair.
+                    path.Knots[coordinateIndex] = new(
+                                                         (leftSpline[coordinateIndex].X + rightSpline[coordinateIndex].X) / 2,
+                                                         (leftSpline[coordinateIndex].Y + rightSpline[coordinateIndex].Y) / 2,
+                                                         (leftSpline[coordinateIndex].Z + rightSpline[coordinateIndex].Z) / 2
+                                                     );
+                }
+
+                // Initalise the up vector array.
+                path.UpVector = new Vector3[path.Knots.Length];
+
+                // Loop through each knot and calculate its up vector.
+                for (int knotIndex = 0; knotIndex < path.UpVector.Length - 1; knotIndex++)
+                    path.UpVector[knotIndex] = CalculateDoublePointUpVector(path.DoubleKnots[knotIndex * 2], path.DoubleKnots[knotIndex * 2 + 1], path.DoubleKnots[knotIndex * 2 + 2]);
+
+                // Set the last up vector to the same as the one before it.
+                path.UpVector[^1] = path.UpVector[^2];
+            }
+
+            // Initialise the distance array.
+            path.Distance = new float[path.Knots.Length];
+
+            // Loop through each knot to calculate the distance values.
+            for (int knotIndex = 1; knotIndex < path.Knots.Length; knotIndex++)
+                path.Distance[knotIndex] = Helpers.CalculateDistance(path.Knots[knotIndex - 1], path.Knots[knotIndex]) + path.Distance[knotIndex - 1];
+
+
+            // Set up lists to sort the x, y and z values of the coordinates as sorting a Vector3 list doesn't seem possible.
+            List<float> x = new();
+            List<float> y = new();
+            List<float> z = new();
+
+            // Loop through each coordinate and get the x, y and z values.
+            foreach (var coordinate in coordinates)
+            {
+                x.Add(coordinate.X);
+                y.Add(coordinate.Y);
+                z.Add(coordinate.Z);
+            }
+
+            // Sort the lists to get the smallest and largest values.
+            x.Sort();
+            y.Sort();
+            z.Sort();
+
+            // Set up the axis aligned bounding box.
+            path.AxisAlignedBoundingBox.Min = new(x[0], y[0], z[0]);
+            path.AxisAlignedBoundingBox.Max = new(x[^1], y[^1], z[^1]);
+
+            // Initialise the forward vector array.
+            path.ForwardVector = new Vector3[path.Knots.Length];
+
+            // Loop through and calculate the forward vectors for each knot (other than the last).
+            for (int knotIndex = 0; knotIndex < path.Knots.Length - 1; knotIndex++)
+                path.ForwardVector[knotIndex] = Helpers.CalculateForwardVector(path.Knots[knotIndex], path.Knots[knotIndex + 1]);
+
+            // Set the last knot's forward vector to the same as the one before it.
+            path.ForwardVector[^1] = path.ForwardVector[^2];
+
+            // If this path isn't double knotted, then handle the up vector stuff here.
+            if (!doubleKnot)
+            {
+                // Initialise the up vector array.
+                path.UpVector = new Vector3[path.Knots.Length];
+
+                // Loop through and calculate each knot's up vector value based on its forward vector.
+                for (int knotIndex = 0; knotIndex < path.UpVector.Length; knotIndex++)
+                    path.UpVector[knotIndex] = CalculateSinglePointUpVector(path.ForwardVector[knotIndex]);
+            }
+
+            #region Shamelessly copying the MaxScript for this as a potential placeholder.
+            uint numberOfLineSegments = (uint)(path.Knots.Length - 1);
+            if (doubleKnot)
+                numberOfLineSegments = (uint)(path.DoubleKnots.Length - 2);
+            path.KDTree.UnknownUInt32_1 = 0;
+            path.KDTree.UnknownUInt32_2 = 2;
+            path.KDTree.UnknownData_1 = new byte[16] {0, 0, 0, 0,
+                                                                          0, 0, 0, 0,
+                                                                          3, 0, 0, 0,
+                                                                          0, 0, 0, 0};
+            path.KDTree.UnknownData_2.Add(new uint[2] { numberOfLineSegments, 0 });
+            path.KDTree.UnknownData_3 = new uint[numberOfLineSegments];
+            for (uint i = 0; i < numberOfLineSegments; i++)
+                path.KDTree.UnknownData_3[i] = i;
+            #endregion
+
+            // Determine the path type based on the end of the name (all of Sonic Team's official splines seem to follow this) and format version.
+            switch (version)
+            {
+                case FormatVersion.Wars:
+                    if (path.Name.EndsWith("GR"))
+                        path.Type = SplineTypeWars.GrindRail;
+                    else if (path.Name.EndsWith("SV"))
+                        path.Type = SplineTypeWars.SideView;
+                    else
+                        path.Type = SplineTypeWars.Default;
+                    break;
+
+                case FormatVersion.Rangers:
+                    if (path.Name.EndsWith("GR"))
+                        path.Type = SplineTypeRangers.GrindRail;
+                    else if (path.Name.EndsWith("SV"))
+                        path.Type = SplineTypeRangers.SideView;
+                    else
+                        path.Type = SplineTypeRangers.Default;
+                    break;
+            }
+
+            // Save this path.
+            Data.Add(path);
         }
 
         /// <summary>
