@@ -1215,6 +1215,7 @@ namespace KnuxTools
                 case ".pcmodel":
                 case ".pccol":
                 case ".pcrt":
+                case ".pointcloud":
                     Console.WriteLine("Converting Hedgehog Engine Point Cloud to JSON.");
                     using (KnuxLib.Engines.Hedgehog.PointCloud pointCloud = new(arg, true))
                     break;
@@ -1229,7 +1230,8 @@ namespace KnuxTools
                             "This file has multiple file extension options, please select the extension to save with:\n" +
                             "1. .pccol (Collision Instance)\n" +
                             "2. .pcmodel (Terrain Instance)\n" +
-                            "3. .pcrt (Lighting Instance)"
+                            "3. .pcrt (Lighting Instance)\n" +
+                            "4. .pointcloud (Generic Instance)"
                         );
 
                         // Wait for the user to input an option from the list.
@@ -1238,6 +1240,7 @@ namespace KnuxTools
                             case '1': extension = "pccol"; break;
                             case '2': extension = "pcmodel"; break;
                             case '3': extension = "pcrt"; break;
+                            case '4': extension = "pointcloud"; break;
                         }
 
                         // Sanity check the input, inform the user and abort if its still null or empty.
