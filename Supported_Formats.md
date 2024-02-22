@@ -122,7 +122,7 @@ Supported formats:
 > **Note**
 > Sonic Lost World has two main message tables, one of them writes in a binary identical fashion to the source file, but the other has mistakes in the BINA Footer. This implementation has also not being tested in game due to HedgeArcPack seemingly corrupting the UI pac files containing the xtb2 files when trying to resave them.
 
-- [Path Spline (.path)](KnuxLib/Engines/Hedgehog/PathSpline_WarsRangers.cs) reading and OBJ exporting for Sonic Lost World, Sonic Forces and Sonic Frontiers. OBJ importing and saving for Sonic Forces and Sonic Lost World.
+- [Path Spline (.path)](KnuxLib/Engines/Hedgehog/PathSpline.cs) reading and OBJ exporting for Sonic Lost World, Sonic Forces and Sonic Frontiers. OBJ importing and saving for Sonic Forces and Sonic Lost World.
 
 > **Note**
 > Has an unknown chunk of data in the form of each path's k-d tree.
@@ -136,6 +136,14 @@ Supported formats:
 
 > **Note**
 > Has an unknown value.
+
+- [Terrain Material(.terrain-material)](KnuxLib/Engines/Hedgehog/TerrainMaterial.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Has a few unknown values.
+
+> **Note**
+> Doesn't write in a binary identical format due to a design choice in HedgeLib#, game doesn't seem to mind though?
 
 > **Note**
 > The Sector Visibility Collision format has some extra data in it that is not currently handled, but doesn't seem required?

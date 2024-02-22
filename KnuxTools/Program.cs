@@ -129,7 +129,8 @@ namespace KnuxTools
                 ColourConsole("    Extension Flag (Terrain Instance) - pcmodel", true, ConsoleColor.Yellow);
                 ColourConsole("    Extension Flag (Lighting Instance) - pcrt", true, ConsoleColor.Yellow);
                 ColourConsole("Scene Effect Collision (.fxcol.bin)");
-                Console.WriteLine("Sector Visibility Collision (.svcol.bin)\n");
+                Console.WriteLine("Sector Visibility Collision (.svcol.bin)");
+                Console.WriteLine("Terrain Material (.terrain-material)\n");
 
                 Console.WriteLine("NiGHTS 2 Engine:");
                 Console.WriteLine("ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
@@ -1259,17 +1260,48 @@ namespace KnuxTools
                     }
                     break;
 
+                case ".fxcol":
                 case ".fxcol.bin":
                     Console.WriteLine("Converting Hedgehog Engine Scene Effect Collision to JSON.");
                     using (KnuxLib.Engines.Hedgehog.SceneEffectCollision sceneEffectCollision = new(arg, true))
                     break;
 
                 case ".hedgehog.sceneeffectcollision.json":
+                    // If an extension isn't specified, then ask the user which fxcol extension to save with.
+                    if (string.IsNullOrEmpty(extension))
+                    {
+                        // List our supported extension options.
+                        Console.WriteLine
+                        (
+                            "This file has multiple file extension options, please select the extension to save with:\n" +
+                            "1. .fxcol.bin (Sonic Forces)\n" +
+                            "2. .fxcol (Sonic Frontiers)"
+                        );
+
+                        // Wait for the user to input an option from the list.
+                        switch (Console.ReadKey().KeyChar)
+                        {
+                            case '1': extension = "fxcol.bin"; break;
+                            case '2': extension = "fxcol"; break;
+                        }
+
+                        // Sanity check the input, inform the user and abort if its still null or empty.
+                        if (string.IsNullOrEmpty(extension))
+                        {
+                            Console.WriteLine("\nNo format extension specified! Aborting...\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                        }
+
+                        // Add a line break.
+                        Console.WriteLine();
+                    }
+
                     Console.WriteLine("Converting JSON to Hedgehog Engine Scene Effect Collision.");
                     using (KnuxLib.Engines.Hedgehog.SceneEffectCollision sceneEffectCollision = new())
                     {
                         sceneEffectCollision.Data = sceneEffectCollision.JsonDeserialise<KnuxLib.Engines.Hedgehog.SceneEffectCollision.FormatData>(arg);
-                        sceneEffectCollision.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.fxcol.bin");
+                        sceneEffectCollision.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.{extension}");
                     }
                     break;
 
@@ -1284,6 +1316,20 @@ namespace KnuxTools
                     {
                         sectorVisibilityCollision.Data = sectorVisibilityCollision.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.SectorVisibilityCollision.SectorVisibilityShape>>(arg);
                         sectorVisibilityCollision.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
+                    }
+                    break;
+
+                case ".terrain-material":
+                    Console.WriteLine("Converting Hedgehog Engine Terrain Material to JSON.");
+                    using (KnuxLib.Engines.Hedgehog.TerrainMaterial terrainMaterial = new(arg, true))
+                    break;
+
+                case ".hedgehog.terrain-material.json":
+                    Console.WriteLine("Converting JSON to Hedgehog Engine Terrain Material.");
+                    using (KnuxLib.Engines.Hedgehog.TerrainMaterial terrainMaterial = new())
+                    {
+                        terrainMaterial.Data = terrainMaterial.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.TerrainMaterial.Material>>(arg);
+                        terrainMaterial.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.terrain-material");
                     }
                     break;
                 #endregion

@@ -57,7 +57,7 @@
         /// <param name="filepath">The path to the file to load and parse.</param>
         public override void Load(string filepath)
         {
-            // Set up HedgeLib#'s BINAReader for the gismod file and read the BINAV2 header.
+            // Set up HedgeLib#'s BINAReader and read the BINAV2 header.
             HedgeLib.IO.BINAReader reader = new(File.OpenRead(filepath));
             Header = reader.ReadHeader();
 

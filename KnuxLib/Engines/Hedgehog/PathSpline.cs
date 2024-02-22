@@ -6,7 +6,7 @@ namespace KnuxLib.Engines.Hedgehog
     // Based on https://github.com/blueskythlikesclouds/SkythTools/tree/master/Sonic%20Forces/Path%20Scripts
     // TODO: Figure out and properly read the k-d tree data.
     // TODO: Check to see if Frontiers does anything other than the type differently, if so, handle it with the FormatVersion check.
-    // TODO: Lost World importing and saving.
+    // TODO: Lost World importing (gonna need to handle "grind_speed" and "next" tags and saving).
     public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -236,6 +236,7 @@ namespace KnuxLib.Engines.Hedgehog
                 long unknownBooleanTableOffset = reader.ReadInt64();
 
                 // If this is a sonic_2013 format path, then jump back and read unknownBooleanTableOffset as a 32 bit integer instead.
+                // TODO: Lost World can use false in this array, but Forces and Frontiers always have every value be true.
                 if (version == FormatVersion.sonic_2013)
                 {
                     reader.JumpBehind(0x08);
