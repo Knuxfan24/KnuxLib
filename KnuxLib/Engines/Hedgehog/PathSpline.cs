@@ -6,11 +6,12 @@ namespace KnuxLib.Engines.Hedgehog
     // Based on https://github.com/blueskythlikesclouds/SkythTools/tree/master/Sonic%20Forces/Path%20Scripts
     // TODO: Figure out and properly read the k-d tree data.
     // TODO: Check to see if Frontiers does anything other than the type differently, if so, handle it with the FormatVersion check.
-    public class PathSpline_WarsRangers : FileBase
+    // TODO: Lost World importing and saving.
+    public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
-        public PathSpline_WarsRangers() { }
-        public PathSpline_WarsRangers(string filepath, FormatVersion version = FormatVersion.Wars, bool export = false)
+        public PathSpline() { }
+        public PathSpline(string filepath, FormatVersion version = FormatVersion.Wars, bool export = false)
         {
             Load(filepath, version);
 
@@ -21,12 +22,13 @@ namespace KnuxLib.Engines.Hedgehog
         // Classes for this format.
         public enum FormatVersion
         {
-            Wars = 0,
-            Rangers = 1
+            sonic_2013 = 0,
+            Wars = 1,
+            Rangers = 2
         }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public enum SplineTypeWars : ulong
+        public enum SplineType2013Wars : ulong
         {
             Default = 0,
             SideView = 1,
@@ -41,6 +43,14 @@ namespace KnuxLib.Engines.Hedgehog
             SideView = 2
         }
 
+        [JsonConverter(typeof(StringEnumConverter))]
+        public enum GrindSpeed : ulong
+        {
+            Normal = 0,
+            Slow = 1,
+            Fast = 2
+        }
+
         public class SplinePath
         {
             /// <summary>
@@ -50,7 +60,7 @@ namespace KnuxLib.Engines.Hedgehog
 
             /// <summary>
             /// An unknown short value.
-            /// TODO: What is this? objpath_001 in Forces' w7b02_path.path is the only time this is 0 rather than 1.
+            /// TODO: What is this? Lost World uses it quite a bit, but objpath_001 in w7b02_path.path is the only time this is 0 rather than 1 in Forces.
             /// TODO: Could this indicate whether a spline is open or not? If this was the case then objpath_003 in Forces' w7a03_path.path and svpath_320_SV + svpath_321_SV in Frontiers' w6d08_sv_path.path should have it too? 
             /// </summary>
             public ushort UnknownUShort_1 { get; set; } = 0x01;
@@ -88,12 +98,22 @@ namespace KnuxLib.Engines.Hedgehog
             /// <summary>
             /// This spline's type.
             /// </summary>
-            public object Type { get; set; } = SplineTypeWars.Default;
+            public object Type { get; set; } = SplineType2013Wars.Default;
 
             /// <summary>
             /// This path's UID, if it has one.
             /// </summary>
             public ulong? UID { get; set; }
+
+            /// <summary>
+            /// The name of the path that this one should flow into, if it has one.
+            /// </summary>
+            public string? NextPathName { get; set; }
+
+            /// <summary>
+            /// This path's grind speed, if it has one.
+            /// </summary>
+            public GrindSpeed? GrindSpeed { get; set; }
 
             /// <summary>
             /// This path's k-d tree.
@@ -168,11 +188,28 @@ namespace KnuxLib.Engines.Hedgehog
             // Read the amount of paths in this file.
             ulong pathCount = reader.ReadUInt64();
 
-            // Read the offset to this file's path table.
-            long pathTableOffset = reader.ReadInt64();
+            // If this is a sonic_2013 format path, then jump back and read the path count as a 32 bit integer instead.
+            if (version == FormatVersion.sonic_2013)
+            {
+                reader.JumpBehind(0x08);
+                pathCount = reader.ReadUInt32();
+            }
 
-            // Jump to this file's path table.
-            reader.JumpTo(pathTableOffset, false);
+            // If this is NOT a sonic_2013 format path, then read the path table offset and jump to it.
+            if (version != FormatVersion.sonic_2013)
+            {
+                // Read the offset to this file's path table.
+                long pathTableOffset = reader.ReadInt64();
+
+                // Jump to this file's path table.
+                reader.JumpTo(pathTableOffset, false);
+            }
+
+            // If this is a sonic_2013 format path, read an unknown value that is either 0x04, or 0x10.
+            else
+            {
+                uint UnknownUInt32_1 = reader.ReadUInt32();
+            }
 
             // Loop through each path in this file.
             for (ulong pathIndex = 0; pathIndex < pathCount; pathIndex++)
@@ -181,7 +218,10 @@ namespace KnuxLib.Engines.Hedgehog
                 SplinePath path = new();
 
                 // Read this path's name.
-                path.Name = Helpers.ReadNullTerminatedStringTableEntry(reader);
+                if (version != FormatVersion.sonic_2013)
+                    path.Name = Helpers.ReadNullTerminatedStringTableEntry(reader);
+                else
+                    path.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false);
 
                 // Read an unknown ushort value that is always 1 except for a single instance.
                 path.UnknownUShort_1 = reader.ReadUInt16();
@@ -195,39 +235,113 @@ namespace KnuxLib.Engines.Hedgehog
                 // Read the offset to an unknown table (of knotCount length) of booleans that are always true.
                 long unknownBooleanTableOffset = reader.ReadInt64();
 
+                // If this is a sonic_2013 format path, then jump back and read unknownBooleanTableOffset as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    unknownBooleanTableOffset = reader.ReadUInt32();
+                }
+
                 // Read the offset to this path's distance array.
                 long distanceOffset = reader.ReadInt64();
+
+                // If this is a sonic_2013 format path, then jump back and read distanceOffset as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    distanceOffset = reader.ReadUInt32();
+                }
 
                 // Read the offset to this path's spline knot array.
                 long knotOffset = reader.ReadInt64();
 
+                // If this is a sonic_2013 format path, then jump back and read knotOffset as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    knotOffset = reader.ReadUInt32();
+                }
+
                 // Read the offset to this path's up vector array.
                 long upVectorOffset = reader.ReadInt64();
+
+                // If this is a sonic_2013 format path, then jump back and read upVectorOffset as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    upVectorOffset = reader.ReadUInt32();
+                }
 
                 // Read the offset to this path's forward vector array.
                 long forwardVectorOffset = reader.ReadInt64();
 
+                // If this is a sonic_2013 format path, then jump back and read forwardVectorOffset as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    forwardVectorOffset = reader.ReadUInt32();
+                }
+
                 // Read offset to this path's double spline knot count.
                 ulong doubleKnotCount = reader.ReadUInt64();
 
+                // If this is a sonic_2013 format path, then jump back and read this path's double spline knot count as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    doubleKnotCount = reader.ReadUInt32();
+                }
+
                 // Read offset to this path's double spline knot array.
                 long doubleKnotOffset = reader.ReadInt64();
+
+                // If this is a sonic_2013 format path, then jump back and read doubleKnotOffset as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    doubleKnotOffset = reader.ReadUInt32();
+                }
 
                 // Read this path's axis aligned bounding box.
                 path.AxisAlignedBoundingBox.Min = Helpers.ReadHedgeLibVector3(reader);
                 path.AxisAlignedBoundingBox.Max = Helpers.ReadHedgeLibVector3(reader);
 
-                // Read the count of type entries in this path, usually 2 ("type" and "uid") but some only have 1.
-                ulong typeCount = reader.ReadUInt64();
+                // Read the count of tags in this path, usually 2 ("type" and "uid") but some don't have the "uid" one.
+                ulong tagCount = reader.ReadUInt64();
 
-                // Read the offset to this path's type data.
-                long typeOffset = reader.ReadInt64();
+                // If this is a sonic_2013 format path, then jump back and read the tag count as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    tagCount = reader.ReadUInt32();
+                }
+
+                // Read the offset to this path's tag data.
+                long tagOffset = reader.ReadInt64();
+
+                // If this is a sonic_2013 format path, then jump back and read tagOffset as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    tagOffset = reader.ReadUInt32();
+                }
 
                 // Skip an unknown value that is always 0.
                 reader.JumpAhead(0x08);
 
+                // If this is a sonic_2013 format path, then jump back four bytes so we're still aligned correctly.
+                if (version == FormatVersion.sonic_2013)
+                    reader.JumpBehind(0x04);
+
                 // Read the offset to this path's k-d tree.
                 long kdTreeOffset = reader.ReadInt64();
+
+                // If this is a sonic_2013 format path, then jump back and read kdTreeOffset as a 32 bit integer instead.
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    kdTreeOffset = reader.ReadUInt32();
+                }
 
                 // Save our position so we can jump back for the next path.
                 long position = reader.BaseStream.Position;
@@ -286,33 +400,66 @@ namespace KnuxLib.Engines.Hedgehog
                         path.DoubleKnots[doubleKnotIndex] = Helpers.ReadHedgeLibVector3(reader);
                 }
 
-                // Jump to this path's type data offset.
-                reader.JumpTo(typeOffset, false);
+                // Jump to this path's tag data offset.
+                reader.JumpTo(tagOffset, false);
 
-                // Skip an offset that always points to the word "type" in the string table.
-                reader.JumpAhead(0x08);
-
-                // Skip an unknown value of 0.
-                reader.JumpAhead(0x08);
-
-                // Read this path's type.
-                switch (version)
+                // Loop through each tag in this path.
+                for (ulong tagIndex = 0; tagIndex < tagCount; tagIndex++)
                 {
-                    case FormatVersion.Wars: path.Type = (SplineTypeWars)reader.ReadUInt64(); break;
-                    case FormatVersion.Rangers: path.Type = (SplineTypeRangers)reader.ReadUInt64(); break;
-                }
+                    // Set up a string for the tag type.
+                    string tagType;
 
-                // If there is 2 types in this path, then read the UID entry.
-                if (typeCount == 2)
-                {
-                    // Skip an offset that always points to the word "uid" in the string table.
-                    reader.JumpAhead(0x08);
+                    // Read this tag's type.
+                    if (version == FormatVersion.sonic_2013)
+                        tagType = Helpers.ReadNullTerminatedStringTableEntry(reader, false);
+                    else
+                        tagType = Helpers.ReadNullTerminatedStringTableEntry(reader);
 
-                    // Skip an unknown value of 0.
-                    reader.JumpAhead(0x08);
+                    // Skip an unused value that is either 2 (if the tag is "next") or 0 (in every other tag).
+                    if (version == FormatVersion.sonic_2013)
+                        reader.JumpAhead(0x04);
+                    else
+                        reader.JumpAhead(0x08);
 
-                    // Read this path's UID value.
-                    path.UID = reader.ReadUInt64();
+                    // Read the next value depending on the tag type.
+                    switch (tagType)
+                    {
+                        case "type":
+                            // Read this path's type.
+                            switch (version)
+                            {
+                                case FormatVersion.sonic_2013: path.Type = (SplineType2013Wars)reader.ReadUInt32(); break;
+                                case FormatVersion.Wars: path.Type = (SplineType2013Wars)reader.ReadUInt64(); break;
+                                case FormatVersion.Rangers: path.Type = (SplineTypeRangers)reader.ReadUInt64(); break;
+                            }
+                            break;
+
+                        case "uid":
+                            // Read this path's UID value.
+                            if (version == FormatVersion.sonic_2013)
+                                path.UID = reader.ReadUInt32();
+                            else
+                                path.UID = reader.ReadUInt64();
+                            break;
+
+                        case "next":
+                            // Read this path's next name.
+                            if (version == FormatVersion.sonic_2013)
+                                path.NextPathName = Helpers.ReadNullTerminatedStringTableEntry(reader, false);
+                            else
+                                path.NextPathName = Helpers.ReadNullTerminatedStringTableEntry(reader);
+                            break;
+
+                        case "grind_speed":
+                            // Read this path's grind speed value.
+                            if (version == FormatVersion.sonic_2013)
+                                path.GrindSpeed = (GrindSpeed)reader.ReadUInt32();
+                            else
+                                path.GrindSpeed = (GrindSpeed)reader.ReadUInt64();
+                            break;
+
+                        default: throw new NotImplementedException($"Path tag with type '{tagType}' not yet handled!");
+                    }
                 }
 
                 #region TODO: Properly reverse engineer the k-d tree's data.
@@ -323,14 +470,39 @@ namespace KnuxLib.Engines.Hedgehog
                 path.KDTree.UnknownUInt32_2 = reader.ReadUInt32(); 
 
                 long UnknownData_1_Offset = reader.ReadInt64();
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    UnknownData_1_Offset = reader.ReadUInt32();
+                }
 
                 ulong UnknownData_2_Count = reader.ReadUInt64();
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    UnknownData_2_Count = reader.ReadUInt32();
+                }
 
                 long UnknownData_2_Offset = reader.ReadInt64();
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    UnknownData_2_Offset = reader.ReadUInt32();
+                }
 
                 ulong UnknownData_3_Count = reader.ReadUInt64();
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    UnknownData_3_Count = reader.ReadUInt32();
+                }
 
                 long UnknownData_3_Offset = reader.ReadInt64();
+                if (version == FormatVersion.sonic_2013)
+                {
+                    reader.JumpBehind(0x08);
+                    UnknownData_3_Offset = reader.ReadUInt32();
+                }
 
                 reader.JumpTo(UnknownData_1_Offset, false);
 
@@ -374,6 +546,9 @@ namespace KnuxLib.Engines.Hedgehog
         /// <param name="version">The game version to save this file as.</param>
         public void Save(string filepath, FormatVersion version = FormatVersion.Wars)
         {
+            if (version == FormatVersion.sonic_2013)
+                throw new NotImplementedException();
+
             // Set up our BINAWriter and write the BINAV2 header.
             HedgeLib.IO.BINAWriter writer = new(File.Create(filepath), Header);
 
@@ -525,7 +700,7 @@ namespace KnuxLib.Engines.Hedgehog
                 // Write this path's type identifier, depending on the format version.
                 switch (version)
                 {
-                    case FormatVersion.Wars: writer.Write((ulong)(SplineTypeWars)Data[pathIndex].Type); break;
+                    case FormatVersion.Wars: writer.Write((ulong)(SplineType2013Wars)Data[pathIndex].Type); break;
                     case FormatVersion.Rangers: writer.Write((ulong)(SplineTypeRangers)Data[pathIndex].Type); break;
                 }
 
@@ -940,11 +1115,11 @@ namespace KnuxLib.Engines.Hedgehog
             {
                 case FormatVersion.Wars:
                     if (path.Name.EndsWith("GR"))
-                        path.Type = SplineTypeWars.GrindRail;
+                        path.Type = SplineType2013Wars.GrindRail;
                     else if (path.Name.EndsWith("SV"))
-                        path.Type = SplineTypeWars.SideView;
+                        path.Type = SplineType2013Wars.SideView;
                     else
-                        path.Type = SplineTypeWars.Default;
+                        path.Type = SplineType2013Wars.Default;
                     break;
 
                 case FormatVersion.Rangers:

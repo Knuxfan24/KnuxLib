@@ -120,7 +120,8 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (Sonic Generations) - blueblur", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Mario and Sonic at the London 2012 Olympic Games) - william", true, ConsoleColor.Yellow);
                 Console.WriteLine("Message Table (sonic2013) (.xtb2)");
-                Console.WriteLine("Path Spline (Wars/Rangers) (.path)");
+                Console.WriteLine("Path Spline (.path) (.path2.bin)");
+                ColourConsole("    Version Flag (Sonic Lost World) - sonic2013", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Sonic Forces) - wars", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Sonic Frontiers) - rangers", true, ConsoleColor.Yellow);
                 Console.WriteLine("Point Cloud (.pccol/.pcmodel/.pcrt)");
@@ -495,10 +496,10 @@ namespace KnuxTools
                             if (KnuxLib.Helpers.GetExtension(arg).ToLower() == ".obj")
                             {
                                 Console.WriteLine("Converting OBJ to Hedgehog Engine (Wars) Path Spline.");
-                                using (KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers pathSpline = new())
+                                using (KnuxLib.Engines.Hedgehog.PathSpline pathSpline = new())
                                 {
-                                    pathSpline.ImportOBJ(arg, KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Wars);
-                                    pathSpline.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.path", KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Wars);
+                                    pathSpline.ImportOBJ(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Wars);
+                                    pathSpline.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.path", KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Wars);
                                 }
                             }
                             else
@@ -513,10 +514,10 @@ namespace KnuxTools
                             if (KnuxLib.Helpers.GetExtension(arg).ToLower() == ".obj")
                             {
                                 Console.WriteLine("Converting OBJ to Hedgehog Engine (Rangers) Path Spline.");
-                                using (KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers pathSpline = new())
+                                using (KnuxLib.Engines.Hedgehog.PathSpline pathSpline = new())
                                 {
-                                    pathSpline.ImportOBJ(arg, KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Rangers);
-                                    pathSpline.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.path", KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Rangers);
+                                    pathSpline.ImportOBJ(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Rangers);
+                                    pathSpline.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.path", KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Rangers);
                                 }
                             }
                             else
@@ -1177,6 +1178,11 @@ namespace KnuxTools
                     }
                     break;
 
+                case ".path2.bin":
+                    Console.WriteLine("Extracting Hedgehog Engine Path Spline to OBJ.");
+                    using (KnuxLib.Engines.Hedgehog.PathSpline pathSpline_WarsRangers = new(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true))
+                    break;
+
                 case ".path":
                     // Carry out a version check.
                     version = NoVersionChecker(version,
@@ -1189,13 +1195,13 @@ namespace KnuxTools
                     if (string.IsNullOrEmpty(version))
                         return;
 
-                    Console.WriteLine("Extracting Hedgehog Engine Path Spline (Wars/Rangers) to OBJ.");
+                    Console.WriteLine("Extracting Hedgehog Engine Path Spline to OBJ.");
 
                     // Decide what to do based on the version value.
                     switch (version.ToLower())
                     {
-                        case "wars": using (KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers pathSpline_WarsRangers = new(arg, KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Wars, true)) break;
-                        case "rangers": using (KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers pathSpline_Wars = new(arg, KnuxLib.Engines.Hedgehog.PathSpline_WarsRangers.FormatVersion.Wars, true)) break;
+                        case "wars": using (KnuxLib.Engines.Hedgehog.PathSpline pathSpline_WarsRangers = new(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Wars, true)) break;
+                        case "rangers": using (KnuxLib.Engines.Hedgehog.PathSpline pathSpline_Wars = new(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Wars, true)) break;
 
                         // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                         default:
