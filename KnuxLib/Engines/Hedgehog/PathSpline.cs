@@ -5,8 +5,8 @@ namespace KnuxLib.Engines.Hedgehog
 {
     // Based on https://github.com/blueskythlikesclouds/SkythTools/tree/master/Sonic%20Forces/Path%20Scripts
     // TODO: Figure out and properly read the k-d tree data.
-    // TODO: Check to see if Frontiers does anything other than the type differently, if so, handle it with the FormatVersion check.
-    // TODO: Lost World importing (gonna need to handle "grind_speed" and "next" tags and saving).
+    // TODO: Check to see if Lost World and Frontiers handle anything other than their tags differently, if so, handle them with the FormatVersion check.
+    // TODO: Lost World importing (gonna need to handle "grind_speed" and "next" tags).
     public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -64,6 +64,12 @@ namespace KnuxLib.Engines.Hedgehog
             /// TODO: Could this indicate whether a spline is open or not? If this was the case then objpath_003 in Forces' w7a03_path.path and svpath_320_SV + svpath_321_SV in Frontiers' w6d08_sv_path.path should have it too? 
             /// </summary>
             public ushort UnknownUShort_1 { get; set; } = 0x01;
+
+            /// <summary>
+            /// An unknown array of boolean values. Forces and Frontiers have all of these set to true, but Lost World sometimes has values set to false in it.
+            /// TODO: What do these do?
+            /// </summary>
+            public bool[] UnknownBooleanArray_1 { get; set; } = Array.Empty<bool>(); 
 
             /// <summary>
             /// This spline's distance array.
@@ -166,6 +172,9 @@ namespace KnuxLib.Engines.Hedgehog
         // Set up the Signature we expect.
         public new const string Signature = "HTAP";
 
+        // Internal values used for accurately resaving Sonic Lost World paths.
+        bool sonic2013_HasPathOffsetTable = false;
+
         /// <summary>
         /// Loads and parses this format's file.
         /// </summary>
@@ -206,9 +215,11 @@ namespace KnuxLib.Engines.Hedgehog
             }
 
             // If this is a sonic_2013 format path, read an unknown value that is either 0x04, or 0x10.
+            // If the value is 0x10, then its an offset to the path table, if it's 0x04, then I have no idea.
             else
             {
-                uint UnknownUInt32_1 = reader.ReadUInt32();
+                if (reader.ReadUInt32() == 0x10)
+                    sonic2013_HasPathOffsetTable = true;
             }
 
             // Loop through each path in this file.
@@ -232,7 +243,7 @@ namespace KnuxLib.Engines.Hedgehog
                 // Skip a floating point value which is always the same as the final value in the distance array.
                 reader.JumpAhead(0x04);
 
-                // Read the offset to an unknown table (of knotCount length) of booleans that are always true.
+                // Read the offset to an unknown table (of knotCount length) of booleans..
                 long unknownBooleanTableOffset = reader.ReadInt64();
 
                 // If this is a sonic_2013 format path, then jump back and read unknownBooleanTableOffset as a 32 bit integer instead.
@@ -346,6 +357,16 @@ namespace KnuxLib.Engines.Hedgehog
 
                 // Save our position so we can jump back for the next path.
                 long position = reader.BaseStream.Position;
+
+                // Jump to the unknown boolean array's offset.
+                reader.JumpTo(unknownBooleanTableOffset, false);
+
+                // Initialise this path's unknown boolean array.
+                path.UnknownBooleanArray_1 = new bool[knotCount];
+
+                // Read each value in this path's unknown boolean array.
+                for (int booleanIndex = 0; booleanIndex < knotCount; booleanIndex++)
+                    path.UnknownBooleanArray_1[booleanIndex] = reader.ReadBoolean();
 
                 // Jump to the distance array's offset.
                 reader.JumpTo(distanceOffset, false);
@@ -547,8 +568,9 @@ namespace KnuxLib.Engines.Hedgehog
         /// <param name="version">The game version to save this file as.</param>
         public void Save(string filepath, FormatVersion version = FormatVersion.Wars)
         {
+            // If this is a Sonic Lost World path, then change the BINA Header to v200.
             if (version == FormatVersion.sonic_2013)
-                throw new NotImplementedException();
+                Header = new BINAv2Header(200);
 
             // Set up our BINAWriter and write the BINAV2 header.
             HedgeLib.IO.BINAWriter writer = new(File.Create(filepath), Header);
@@ -560,19 +582,44 @@ namespace KnuxLib.Engines.Hedgehog
             writer.Write(0x200);
 
             // Write the count of splines in this file.
-            writer.Write((ulong)Data.Count);
+            if (version == FormatVersion.sonic_2013)
+                writer.Write(Data.Count);
+            else
+                writer.Write((ulong)Data.Count);
 
-            // Add an offset to the path table.
-            writer.AddOffset("PathTableOffset", 0x08);
+            if (version == FormatVersion.sonic_2013)
+            {
+                // Determine if we need to write a 0x04, or an offset to the path table.
+                if (sonic2013_HasPathOffsetTable)
+                {
+                    // Add an offset to the path table.
+                    writer.AddOffset("PathTableOffset", 0x04);
 
-            // Fill in the path table offset.
-            writer.FillInOffset("PathTableOffset", false);
+                    // Fill in the path table offset.
+                    writer.FillInOffset("PathTableOffset", false);
+                }
+                else
+                {
+                    writer.Write(0x04);
+                }
+            }
+            else
+            {
+                // Add an offset to the path table.
+                writer.AddOffset("PathTableOffset", 0x08);
+
+                // Fill in the path table offset.
+                writer.FillInOffset("PathTableOffset", false);
+            }
 
             // Loop through each path.
             for (int pathIndex = 0; pathIndex < Data.Count; pathIndex++)
             {
                 // Add a string for this path's name.
-                writer.AddString($"Path{pathIndex}Name", Data[pathIndex].Name, 0x08);
+                if (version == FormatVersion.sonic_2013)
+                    writer.AddString($"Path{pathIndex}Name", Data[pathIndex].Name, 0x04);
+                else
+                    writer.AddString($"Path{pathIndex}Name", Data[pathIndex].Name, 0x08);
 
                 // Write this path's unknown short value.
                 writer.Write(Data[pathIndex].UnknownUShort_1);
@@ -584,54 +631,101 @@ namespace KnuxLib.Engines.Hedgehog
                 writer.Write(Data[pathIndex].Distance[^1]);
 
                 // Add an offset to this path's table of unknown, always true, booleans.
-                writer.AddOffset($"Path{pathIndex}UnknownBooleanTableOffset", 0x08);
+                if (version == FormatVersion.sonic_2013)
+                    writer.AddOffset($"Path{pathIndex}UnknownBooleanTableOffset", 0x04);
+                else
+                    writer.AddOffset($"Path{pathIndex}UnknownBooleanTableOffset", 0x08);
 
                 // Add an offset to this path's distance array.
-                writer.AddOffset($"Path{pathIndex}DistanceOffset", 0x08);
+                if (version == FormatVersion.sonic_2013)
+                    writer.AddOffset($"Path{pathIndex}DistanceOffset", 0x04);
+                else
+                    writer.AddOffset($"Path{pathIndex}DistanceOffset", 0x08);
 
                 // Add an offset to this path's spline knot array.
-                writer.AddOffset($"Path{pathIndex}KnotOffset", 0x08);
+                if (version == FormatVersion.sonic_2013)
+                    writer.AddOffset($"Path{pathIndex}KnotOffset", 0x04);
+                else
+                    writer.AddOffset($"Path{pathIndex}KnotOffset", 0x08);
 
                 // Add an offset to this path's up vector array.
-                writer.AddOffset($"Path{pathIndex}UpVectorOffset", 0x08);
+                if (version == FormatVersion.sonic_2013)
+                    writer.AddOffset($"Path{pathIndex}UpVectorOffset", 0x04);
+                else
+                    writer.AddOffset($"Path{pathIndex}UpVectorOffset", 0x08);
 
                 // Add an offset to this path's forward vector array.
-                writer.AddOffset($"Path{pathIndex}ForwardVectorOffset", 0x08);
+                if (version == FormatVersion.sonic_2013)
+                    writer.AddOffset($"Path{pathIndex}ForwardVectorOffset", 0x04);
+                else
+                    writer.AddOffset($"Path{pathIndex}ForwardVectorOffset", 0x08);
 
                 // Handle whether or not this spline uses double knots.
                 if (Data[pathIndex].DoubleKnots != null)
                 {
                     // Write this spline's double knot count.
-                    writer.Write((ulong)Data[pathIndex].DoubleKnots.Length);
+                    if (version == FormatVersion.sonic_2013)
+                        writer.Write((uint)Data[pathIndex].DoubleKnots.Length);
+                    else
+                        writer.Write((ulong)Data[pathIndex].DoubleKnots.Length);
 
                     // Add an offset to this path's double spline knot table.
-                    writer.AddOffset($"Path{pathIndex}DoubleKnotOffset", 0x08);
+                    if (version == FormatVersion.sonic_2013)
+                        writer.AddOffset($"Path{pathIndex}DoubleKnotOffset", 0x04);
+                    else
+                        writer.AddOffset($"Path{pathIndex}DoubleKnotOffset", 0x08);
                 }
                 else
                 {
                     // Write two zero values in place of the double knot data.
-                    writer.Write(0L);
-                    writer.Write(0L);
+                    if (version == FormatVersion.sonic_2013)
+                    {
+                        writer.Write(0);
+                        writer.Write(0);
+                    }
+                    else
+                    {
+                        writer.Write(0L);
+                        writer.Write(0L);
+                    }
                 }
 
                 // Write this path's axis aligned bounding box.
                 Helpers.WriteHedgeLibVector3(writer, Data[pathIndex].AxisAlignedBoundingBox.Min);
                 Helpers.WriteHedgeLibVector3(writer, Data[pathIndex].AxisAlignedBoundingBox.Max);
 
-                // Write the type count, depending on if this path has a UID or not.
+                // Calculate the type count, depending on if this path has a UID, Next Path and/or Grind Speed.
+                ulong typeCount = 1;
                 if (Data[pathIndex].UID != null)
-                    writer.Write(2L);
-                else
-                    writer.Write(1L);
+                    typeCount++;
+                if (Data[pathIndex].NextPathName != null)
+                    typeCount++;
+                if (Data[pathIndex].GrindSpeed != null)
+                    typeCount++;
 
-                // Add an offset to this path's type data.
-                writer.AddOffset($"Path{pathIndex}TypeOffset", 0x08);
-                
+                // Write the type count.
+                if (version == FormatVersion.sonic_2013)
+                    writer.Write((uint)typeCount);
+                else
+                    writer.Write(typeCount);
+
+                // Add an offset to this path's tag data.
+                if (version == FormatVersion.sonic_2013)
+                    writer.AddOffset($"Path{pathIndex}TagOffset", 0x04);
+                else
+                    writer.AddOffset($"Path{pathIndex}TagOffset", 0x08);
+
                 // Write an unknown value that is always 0.
-                writer.Write(0L);
+                if (version == FormatVersion.sonic_2013)
+                    writer.Write(0);
+                else
+                    writer.Write(0L);
 
                 // Add an offset to this path's k-d tree.
-                writer.AddOffset($"Path{pathIndex}kdTreeOffset", 0x08);
+                if (version == FormatVersion.sonic_2013)
+                    writer.AddOffset($"Path{pathIndex}kdTreeOffset", 0x04);
+                else
+                    writer.AddOffset($"Path{pathIndex}kdTreeOffset", 0x08);
             }
 
             // Loop through each path.
@@ -640,9 +734,9 @@ namespace KnuxLib.Engines.Hedgehog
                 // Fill in the offset for this path's unknown boolean table.
                 writer.FillInOffset($"Path{pathIndex}UnknownBooleanTableOffset", false);
 
-                // Write a true value for each knot.
-                for (int knotIndex = 0; knotIndex < Data[pathIndex].Knots.Length; knotIndex++)
-                    writer.Write(true);
+                // Write a the value for each boolean.
+                for (int booleanIndex = 0; booleanIndex < Data[pathIndex].UnknownBooleanArray_1.Length; booleanIndex++)
+                    writer.Write(Data[pathIndex].UnknownBooleanArray_1[booleanIndex]);
 
                 // Realign to 0x04 bytes.
                 writer.FixPadding(0x04);
@@ -686,36 +780,30 @@ namespace KnuxLib.Engines.Hedgehog
                         Helpers.WriteHedgeLibVector3(writer, Data[pathIndex].DoubleKnots[doubleKnotIndex]);
                 }
 
-                // Realign to 0x08.
-                writer.FixPadding(0x08);
+                // Realign to 0x04 or 0x08 (depending on the format version).
+                if (version == FormatVersion.sonic_2013)
+                    writer.FixPadding(0x04);
+                else
+                    writer.FixPadding(0x08);
 
                 // Fill in the offset for this path's type data.
-                writer.FillInOffset($"Path{pathIndex}TypeOffset", false);
+                writer.FillInOffset($"Path{pathIndex}TagOffset", false);
 
-                // Add the "type" string to the string table.
-                writer.AddString($"Path{pathIndex}Type", "type", 0x08);
-
-                // Write an unknown value that is always 0.
-                writer.Write(0L);
-
-                // Write this path's type identifier, depending on the format version.
-                switch (version)
+                // Write the tags in different orders depending on the format version.
+                // TODO: Can Forces and Frontiers use grind_speed and next? If not, then throw them out.
+                if (version == FormatVersion.sonic_2013)
                 {
-                    case FormatVersion.Wars: writer.Write((ulong)(SplineType2013Wars)Data[pathIndex].Type); break;
-                    case FormatVersion.Rangers: writer.Write((ulong)(SplineTypeRangers)Data[pathIndex].Type); break;
+                    WritePathTag(writer, version, pathIndex, "uid", Data[pathIndex].UID);
+                    WritePathTag(writer, version, pathIndex, "grind_speed", (ulong?)Data[pathIndex].GrindSpeed);
+                    WritePathTag(writer, version, pathIndex, "type", (ulong)Data[pathIndex].Type);
+                    WritePathTag(writer, version, pathIndex, "next", null);
                 }
-
-                // If this path as a UID, then write the type entry for it as well.
-                if (Data[pathIndex].UID != null)
+                else
                 {
-                    // Add the "uid" string to the string table.
-                    writer.AddString($"Path{pathIndex}UID", "uid", 0x08);
-
-                    // Write an unknown value that is always 0.
-                    writer.Write(0L);
-
-                    // Write this path's UID value.
-                    writer.Write((ulong)Data[pathIndex].UID);
+                    WritePathTag(writer, version, pathIndex, "grind_speed", (ulong?)Data[pathIndex].GrindSpeed);
+                    WritePathTag(writer, version, pathIndex, "type", (ulong)Data[pathIndex].Type);
+                    WritePathTag(writer, version, pathIndex, "uid", Data[pathIndex].UID);
+                    WritePathTag(writer, version, pathIndex, "next", null);
                 }
 
                 // Fill in the offset for this path's k-d tree.
@@ -725,15 +813,22 @@ namespace KnuxLib.Engines.Hedgehog
                 writer.Write(Data[pathIndex].KDTree.UnknownUInt32_1);
                 writer.Write(Data[pathIndex].KDTree.UnknownUInt32_2);
 
-                writer.AddOffset($"Path{pathIndex}kdTreeUnknownData1_Offset", 0x08);
-
-                writer.Write((ulong)Data[pathIndex].KDTree.UnknownData_2.Count);
-
-                writer.AddOffset($"Path{pathIndex}kdTreeUnknownData2_Offset", 0x08);
-
-                writer.Write((ulong)Data[pathIndex].KDTree.UnknownData_3.Length);
-
-                writer.AddOffset($"Path{pathIndex}kdTreeUnknownData3_Offset", 0x08);
+                if (version == FormatVersion.sonic_2013)
+                {
+                    writer.AddOffset($"Path{pathIndex}kdTreeUnknownData1_Offset", 0x04);
+                    writer.Write((uint)Data[pathIndex].KDTree.UnknownData_2.Count);
+                    writer.AddOffset($"Path{pathIndex}kdTreeUnknownData2_Offset", 0x04);
+                    writer.Write((uint)Data[pathIndex].KDTree.UnknownData_3.Length);
+                    writer.AddOffset($"Path{pathIndex}kdTreeUnknownData3_Offset", 0x04);
+                }
+                else
+                {
+                    writer.AddOffset($"Path{pathIndex}kdTreeUnknownData1_Offset", 0x08);
+                    writer.Write((ulong)Data[pathIndex].KDTree.UnknownData_2.Count);
+                    writer.AddOffset($"Path{pathIndex}kdTreeUnknownData2_Offset", 0x08);
+                    writer.Write((ulong)Data[pathIndex].KDTree.UnknownData_3.Length);
+                    writer.AddOffset($"Path{pathIndex}kdTreeUnknownData3_Offset", 0x08);
+                }
 
                 writer.FillInOffset($"Path{pathIndex}kdTreeUnknownData1_Offset", false);
 
@@ -759,6 +854,55 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Close HedgeLib#'s BINAWriter.
             writer.Close();
+        }
+
+        /// <summary>
+        /// Write a tag entry for this path.
+        /// </summary>
+        /// <param name="writer">The BINAWriter to use.</param>
+        /// <param name="version">The format version, used to determine offset and data lengths.</param>
+        /// <param name="pathIndex">The index of the path this tag belongs to.</param>
+        /// <param name="tagType">The type of tag.</param>
+        /// <param name="value">The data (if any) for this tag.</param>
+        private void WritePathTag(HedgeLib.IO.BINAWriter writer, FormatVersion version, int pathIndex, string tagType, ulong? value)
+        {
+            // If this tag doesn't have a value and isn't a "next" tag with a path name, then don't write anything.
+            if (value == null)
+                if (tagType != "next")
+                    return;
+                else if (Data[pathIndex].NextPathName == null)
+                    return;
+
+
+            // Add the this tag type's string to the string table.
+            if (version == FormatVersion.sonic_2013)
+                writer.AddString($"Path{pathIndex}{tagType}", tagType, 0x04);
+            else
+                writer.AddString($"Path{pathIndex}{tagType}", tagType, 0x08);
+
+            // Write an unknown value that is always 0 on every tag except for "next", which uses 2.
+            if (version == FormatVersion.sonic_2013)
+                if (tagType != "next")
+                    writer.Write(0);
+                else
+                    writer.Write(2);
+            else
+                if (tagType != "next")
+                    writer.Write(0L);
+                else
+                    writer.Write(2L);
+
+            // Write this path's data value, unless this is a "next" tag, then write a string entry instead.
+            if (version == FormatVersion.sonic_2013)
+                if (tagType != "next")
+                    writer.Write((uint)value);
+                else
+                    writer.AddString($"Path{pathIndex}NextPath", Data[pathIndex].NextPathName, 0x04);
+            else
+                if (tagType != "next")
+                    writer.Write((ulong)value);
+                else
+                    writer.AddString($"Path{pathIndex}NextPath", Data[pathIndex].NextPathName, 0x08);
         }
 
         /// <summary>
@@ -1044,13 +1188,20 @@ namespace KnuxLib.Engines.Hedgehog
                 path.UpVector[^1] = path.UpVector[^2];
             }
 
+            // Initialise the unknown boolean array.
+            path.UnknownBooleanArray_1 = new bool[path.Knots.Length];
+
+            // Write a true for each value in this array.
+            // TODO: If this array turns out to be important, then figure out how the data in it can be reflected.
+            for (int boolIndex = 0; boolIndex < path.UnknownBooleanArray_1.Length; boolIndex++)
+                path.UnknownBooleanArray_1[boolIndex] = true;
+
             // Initialise the distance array.
             path.Distance = new float[path.Knots.Length];
 
             // Loop through each knot to calculate the distance values.
             for (int knotIndex = 1; knotIndex < path.Knots.Length; knotIndex++)
                 path.Distance[knotIndex] = Helpers.CalculateDistance(path.Knots[knotIndex - 1], path.Knots[knotIndex]) + path.Distance[knotIndex - 1];
-
 
             // Set up lists to sort the x, y and z values of the coordinates as sorting a Vector3 list doesn't seem possible.
             List<float> x = new();
