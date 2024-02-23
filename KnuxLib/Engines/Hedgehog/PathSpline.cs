@@ -694,20 +694,20 @@ namespace KnuxLib.Engines.Hedgehog
                 Helpers.WriteHedgeLibVector3(writer, Data[pathIndex].AxisAlignedBoundingBox.Min);
                 Helpers.WriteHedgeLibVector3(writer, Data[pathIndex].AxisAlignedBoundingBox.Max);
 
-                // Calculate the type count, depending on if this path has a UID, Next Path and/or Grind Speed.
-                ulong typeCount = 1;
+                // Calculate the tag count, depending on if this path has a UID, Next Path and/or Grind Speed.
+                ulong tagCount = 1;
                 if (Data[pathIndex].UID != null)
-                    typeCount++;
+                    tagCount++;
                 if (Data[pathIndex].NextPathName != null)
-                    typeCount++;
+                    tagCount++;
                 if (Data[pathIndex].GrindSpeed != null)
-                    typeCount++;
+                    tagCount++;
 
-                // Write the type count.
+                // Write the tag count.
                 if (version == FormatVersion.sonic_2013)
-                    writer.Write((uint)typeCount);
+                    writer.Write((uint)tagCount);
                 else
-                    writer.Write(typeCount);
+                    writer.Write(tagCount);
 
                 // Add an offset to this path's tag data.
                 if (version == FormatVersion.sonic_2013)
