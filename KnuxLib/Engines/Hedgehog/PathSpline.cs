@@ -943,8 +943,16 @@ namespace KnuxLib.Engines.Hedgehog
                 }
 
                 // Write this path's name.
-                obj.WriteLine($"o {Data[pathIndex].Name}");
-                obj.WriteLine($"g {Data[pathIndex].Name}");
+                if (Data[pathIndex].NextPathName == null)
+                {
+                    obj.WriteLine($"o {Data[pathIndex].Name}");
+                    obj.WriteLine($"g {Data[pathIndex].Name}");
+                }
+                else
+                {
+                    obj.WriteLine($"o {Data[pathIndex].Name}_[{Data[pathIndex].NextPathName}]");
+                    obj.WriteLine($"g {Data[pathIndex].Name}_[{Data[pathIndex].NextPathName}]");
+                }
 
                 // If this path uses double knots, then write two line objects.
                 if (Data[pathIndex].DoubleKnots != null)
@@ -985,6 +993,9 @@ namespace KnuxLib.Engines.Hedgehog
                 else
                     vertexCount += Data[pathIndex].Knots.Length;
             }
+
+            // Write an extra line so my importer code doesn't freak out.
+            obj.WriteLine();
 
             // Close this StreamWriter.
             obj.Close();
@@ -1083,7 +1094,6 @@ namespace KnuxLib.Engines.Hedgehog
                         if (identifier == "blender4")
                             if (importedOBJ[lineIndex].StartsWith("l "))
                                 blenderLineCount++;
-
 
                         // If this line starts with an o and a space, then split it on the space and take the last split as the path name.
                         // Blender OBJs put the name first, so we also need to handle the processing down here for those.
@@ -1262,25 +1272,42 @@ namespace KnuxLib.Engines.Hedgehog
                 path.KDTree.UnknownData_3[i] = i;
             #endregion
 
-            // Determine the path type based on the end of the name (all of Sonic Team's official splines seem to follow this) and format version.
-            switch (version)
+            // Determine the generic type.
+            string pathType = "default";
+            if (path.Name.EndsWith("GR_spd1")) pathType = "grind_slow";
+            if (path.Name.EndsWith("GR") || path.Name.EndsWith("GR_spd2")) pathType = "grind";
+            if (path.Name.EndsWith("GR_spd3")) pathType = "grind_fast";
+            if (path.Name.EndsWith("SV")) pathType = "side";
+
+            // Set the NextPathName if needed.
+            // TODO: Is this working? Does this need UIDs? My attempts to test this with Lost World is failing due to HedgeArcPack?
+            try
             {
-                case FormatVersion.Wars:
-                    if (path.Name.EndsWith("GR"))
+                path.NextPathName = path.Name[(path.Name.LastIndexOf("[") + 1)..(path.Name.LastIndexOf("]"))];
+                path.Name = path.Name.Replace(path.Name[(path.Name.LastIndexOf("[") - 1)..(path.Name.LastIndexOf("]") + 1)], "");
+            }
+            catch { }
+
+            // Determine the path type based on the end of the name (all of Sonic Team's official splines seem to follow this) and format version.
+            switch (pathType)
+            {
+                case "grind_slow":
+                case "grind":
+                case "grind_fast":
+                    if (version == FormatVersion.sonic_2013 || version == FormatVersion.Wars)
                         path.Type = SplineType2013Wars.GrindRail;
-                    else if (path.Name.EndsWith("SV"))
-                        path.Type = SplineType2013Wars.SideView;
-                    else
-                        path.Type = SplineType2013Wars.Default;
+                    if (version == FormatVersion.Rangers)
+                        path.Type = SplineTypeRangers.GrindRail;
+
+                    if (pathType == "grind_slow") path.GrindSpeed = GrindSpeed.Slow;
+                    if (pathType == "grind_fast") path.GrindSpeed = GrindSpeed.Fast;
                     break;
 
-                case FormatVersion.Rangers:
-                    if (path.Name.EndsWith("GR"))
-                        path.Type = SplineTypeRangers.GrindRail;
-                    else if (path.Name.EndsWith("SV"))
+                case "side":
+                    if (version == FormatVersion.sonic_2013 || version == FormatVersion.Wars)
+                        path.Type = SplineType2013Wars.SideView;
+                    if (version == FormatVersion.Rangers)
                         path.Type = SplineTypeRangers.SideView;
-                    else
-                        path.Type = SplineTypeRangers.Default;
                     break;
             }
 

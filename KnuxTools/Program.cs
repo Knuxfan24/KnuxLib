@@ -453,13 +453,14 @@ namespace KnuxTools
                     version = NoVersionChecker(version,
                                                "This file is a generic model, please specifiy what format to import and save it as:",
                                                new List<string> { "carz\t\t\t(CarZ Engine SCO model & MAT material library)",
+                                                                  "sonic2013\t\t\t(Hedgehog Engine Path Spline for Sonic Lost World)",
                                                                   "wars\t\t\t(Hedgehog Engine Path Spline for Sonic Forces)",
                                                                   "rangers\t\t\t(Hedgehog Engine Path Spline for Sonic Frontiers)",
                                                                   "wayforward\t\t\t(Wayforward Engine WF3D Mesh)",
                                                                   "wayforward_collision_duck\t(Wayforward Engine Collision for Ducktales Remastered)",
                                                                   "wayforward_collision_hgh\t(Wayforward Engine Collision for Half-Genie Hero)",
                                                                   "wayforward_collision_ss\t(Wayforward Engine Collision for Seven Sirens)"},
-                                               new List<bool> { false, false, false, true, true, true, true });
+                                               new List<bool> { false, false, false, false, true, true, true, true });
                     else
                     version = NoVersionChecker(version,
                                                "This file is a generic model, please specifiy what format to import and save it as:",
@@ -489,6 +490,24 @@ namespace KnuxTools
                             {
                                 mat.ImportAssimp(arg);
                                 mat.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.mat");
+                            }
+                            break;
+
+                        // Hedgehog Engine Path Splines (Sonic_2013).
+                        case "sonic2013":
+                            if (KnuxLib.Helpers.GetExtension(arg).ToLower() == ".obj")
+                            {
+                                Console.WriteLine("Converting OBJ to Hedgehog Engine (Sonic_2013) Path Spline.");
+                                using (KnuxLib.Engines.Hedgehog.PathSpline pathSpline = new())
+                                {
+                                    pathSpline.ImportOBJ(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013);
+                                    pathSpline.Save($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}.path2.bin", KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported model types.\nPress any key to continue.");
+                                Console.ReadKey();
                             }
                             break;
 

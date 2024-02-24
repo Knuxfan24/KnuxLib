@@ -122,7 +122,7 @@ Supported formats:
 > **Note**
 > Sonic Lost World has two main message tables, one of them writes in a binary identical fashion to the source file, but the other has mistakes in the BINA Footer. This implementation has also not being tested in game due to HedgeArcPack seemingly corrupting the UI pac files containing the xtb2 files when trying to resave them.
 
-- [Path Spline (.path)](KnuxLib/Engines/Hedgehog/PathSpline.cs) reading, writing and OBJ exporting for Sonic Lost World, Sonic Forces and Sonic Frontiers. OBJ importing for Sonic Forces and Sonic Frontiers.
+- [Path Spline (.path)](KnuxLib/Engines/Hedgehog/PathSpline.cs) reading, writing, OBJ exporting and OBJ importing.
 
 > **Note**
 > Has a few unknown value and an unknown chunk of data in the form of each path's k-d tree.
