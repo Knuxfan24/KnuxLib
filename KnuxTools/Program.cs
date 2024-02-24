@@ -108,6 +108,7 @@ namespace KnuxTools
                 Console.WriteLine("Bullet Skeleton (.skl.pxd)");
                 ColourConsole("2010 Collision (.orc) - Converts to an OBJ with the same name as the input file (importing and saving not yet possible). ");
                 ColourConsole("Rangers Collision (.btmesh) - Converts to an OBJ with the same name as the input file (importing and saving not yet possible, point cloud instancing is also ignored).");
+                ColourConsole("Rangers Skinned Collision (.btsmc) - Converts to an OBJ with the same name as the input file (importing not yet possible).");
                 Console.WriteLine("Density Point Cloud (.densitypointcloud)");
                 Console.WriteLine("Gismo V3 (.gismod/.gismop)");
                 Console.WriteLine("Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file. ");
@@ -1015,6 +1016,11 @@ namespace KnuxTools
                 case ".btmesh":
                     Console.WriteLine("Converting Hedgehog Engine Rangers Collision to OBJ.");
                     using (KnuxLib.Engines.Hedgehog.Collision_Rangers collision = new(arg, true))
+                    break;
+
+                case ".btsmc":
+                    Console.WriteLine("Converting Hedgehog Engine Skinned Rangers Collision to OBJ.");
+                    using (KnuxLib.Engines.Hedgehog.SkinnedCollision_Rangers skinnedCollision = new(arg, true))
                     break;
 
                 case ".densitypointcloud":

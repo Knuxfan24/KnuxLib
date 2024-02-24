@@ -133,9 +133,9 @@ namespace KnuxLib.Engines.Hedgehog
             public Face[]? Faces { get; set; }
 
             /// <summary>
-            /// This mesh's flags, only used if there aren't any faces.
+            /// This mesh's layer, only used if there aren't any faces.
             /// </summary>
-            public LayerType? Flags { get; set; }
+            public LayerType? Layer { get; set; }
 
             /// <summary>
             /// An unknown byte, only used if there aren't any faces.
@@ -167,9 +167,9 @@ namespace KnuxLib.Engines.Hedgehog
             public uint IndexC { get; set; }
 
             /// <summary>
-            /// This face's flags.
+            /// This face's layer.
             /// </summary>
-            public LayerType Flags { get; set; }
+            public LayerType Layer { get; set; }
 
             /// <summary>
             /// An unknown byte.
@@ -339,11 +339,11 @@ namespace KnuxLib.Engines.Hedgehog
                 // Jump to this mesh's tag table.
                 reader.JumpTo(tagTableOffset, false);
 
-                // If this mesh doesn't have any faces, then read the one tag value set that's here.
+                // If this mesh doesn't have any faces, then read the one layer and material value set that's here.
                 if (faceCount == 0)
                 {
                     // Read this mesh's flags.
-                    mesh.Flags = (LayerType)reader.ReadByte();
+                    mesh.Layer = (LayerType)reader.ReadByte();
 
                     // Read this mesh's unknown collision value.
                     mesh.UnknownCollisionValue = reader.ReadByte();
@@ -355,13 +355,13 @@ namespace KnuxLib.Engines.Hedgehog
                     mesh.Material = (Material)reader.ReadByte();
                 }
 
-                // If this mesh does have faces, then read the tags for each one.
+                // If this mesh does have faces, then read the layer and material value for each one.
                 else
                 {
                     for (int tagIndex = 0; tagIndex < tagCount; tagIndex++)
                     {
                         // Read this face's flags.
-                        mesh.Faces[tagIndex].Flags = (LayerType)reader.ReadByte();
+                        mesh.Faces[tagIndex].Layer = (LayerType)reader.ReadByte();
 
                         // Read this face's unknown collision value.
                         mesh.Faces[tagIndex].UnknownCollisionValue = reader.ReadByte();
@@ -465,9 +465,9 @@ namespace KnuxLib.Engines.Hedgehog
                             }
 
                             // Check and set the face's material layer.
-                            if (face.Flags != materialLayer)
+                            if (face.Layer != materialLayer)
                             {
-                                materialLayer = face.Flags;
+                                materialLayer = face.Layer;
                                 changedValue = true;
                             }
 

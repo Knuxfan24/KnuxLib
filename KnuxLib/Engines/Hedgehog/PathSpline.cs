@@ -6,7 +6,6 @@ namespace KnuxLib.Engines.Hedgehog
     // Based on https://github.com/blueskythlikesclouds/SkythTools/tree/master/Sonic%20Forces/Path%20Scripts
     // TODO: Figure out and properly read the k-d tree data.
     // TODO: Check to see if Lost World and Frontiers handle anything other than their tags differently, if so, handle them with the FormatVersion check.
-    // TODO: Lost World importing (gonna need to handle "grind_speed" and "next" tags).
     public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.

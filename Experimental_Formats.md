@@ -30,6 +30,8 @@ The following formats are only partially supported, either due to missing functi
 
 - [Rangers Collision (.btmesh)](KnuxLib/Engines/Hedgehog/Collision_Rangers.cs). Only has a reader that misses the bounding volume hierarchy data for the meshes, also has quite a few unknown values.
 
+- [Rangers Skinned Collision (.btsmc)](KnuxLib/Engines/Hedgehog/SkinnedCollision_Rangers.cs). Can read, write and export OBJs. But most of the data is unknowns with the types guessed.
+
 - [Scene Effect Collision (.fxcol.bin)](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
 
 ## PlayStation 2
