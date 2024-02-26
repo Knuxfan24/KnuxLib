@@ -15,7 +15,7 @@ namespace KnuxLib.Engines.Hedgehog
             Load(filepath, version);
 
             if (export)
-                ExportOBJ($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.obj");
+                ExportOBJ($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath).Replace(".path2", "")}.obj");
         }
 
         // Classes for this format.

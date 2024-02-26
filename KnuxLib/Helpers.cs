@@ -158,6 +158,68 @@ namespace KnuxLib
         }
 
         /// <summary>
+        /// Reads a Quaternion from a file using HedgeLib#'s BINAReader, as it doesn't have a native way to do so.
+        /// </summary>
+        /// <param name="reader">The HedgeLib# BINAReader to use.</param>
+        /// <param name="transpose">Whether this matrix needs to be transposed or not.</param>
+        public static Matrix4x4 ReadHedgeLibMatrix(HedgeLib.IO.BINAReader reader, bool transpose = false)
+        {
+            Matrix4x4 matrix = new()
+            {
+                M11 = reader.ReadSingle(),
+                M12 = reader.ReadSingle(),
+                M13 = reader.ReadSingle(),
+                M14 = reader.ReadSingle(),
+                M21 = reader.ReadSingle(),
+                M22 = reader.ReadSingle(),
+                M23 = reader.ReadSingle(),
+                M24 = reader.ReadSingle(),
+                M31 = reader.ReadSingle(),
+                M32 = reader.ReadSingle(),
+                M33 = reader.ReadSingle(),
+                M34 = reader.ReadSingle(),
+                M41 = reader.ReadSingle(),
+                M42 = reader.ReadSingle(),
+                M43 = reader.ReadSingle(),
+                M44 = reader.ReadSingle(),
+            };
+
+            if (transpose)
+                matrix = Matrix4x4.Transpose(matrix);
+
+            return matrix;
+        }
+
+        /// <summary>
+        /// Write a Quaternion to a file using HedgeLib#'s BINAWriter, as it doesn't have a native way to do so.
+        /// </summary>
+        /// <param name="reader">The HedgeLib# BINAWriter to use.</param>
+        /// <param name="matrix">The matrix to write.</param>
+        /// <param name="transpose">Whether this matrix needs to be transposed or not.</param>
+        public static void WriteHedgeLibMatrix(HedgeLib.IO.BINAWriter writer, Matrix4x4 matrix, bool transpose = false)
+        {
+            if (transpose)
+                matrix = Matrix4x4.Transpose(matrix);
+
+            writer.Write(matrix.M11);
+            writer.Write(matrix.M12);
+            writer.Write(matrix.M13);
+            writer.Write(matrix.M14);
+            writer.Write(matrix.M21);
+            writer.Write(matrix.M22);
+            writer.Write(matrix.M23);
+            writer.Write(matrix.M24);
+            writer.Write(matrix.M31);
+            writer.Write(matrix.M32);
+            writer.Write(matrix.M33);
+            writer.Write(matrix.M34);
+            writer.Write(matrix.M41);
+            writer.Write(matrix.M42);
+            writer.Write(matrix.M43);
+            writer.Write(matrix.M44);
+        }
+
+        /// <summary>
         /// Combines multiple byte arrays into one.
         /// Taken from https://www.techiedelight.com/concatenate-byte-arrays-csharp/
         /// </summary>

@@ -111,6 +111,7 @@ namespace KnuxTools
                 ColourConsole("Rangers Skinned Collision (.btsmc) - Converts to an OBJ with the same name as the input file (importing not yet possible).");
                 Console.WriteLine("Density Point Cloud (.densitypointcloud)");
                 Console.WriteLine("Gismo V3 (.gismod/.gismop)");
+                ColourConsole("Grass Instance (.grass.bin)");
                 Console.WriteLine("Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file. ");
                 ColourConsole("    Version Flag (point cloud conversion) - hh_instance2pointcloud", true, ConsoleColor.Yellow);
                 Console.WriteLine("Light Field (Rangers) (.lf)");
@@ -1053,6 +1054,20 @@ namespace KnuxTools
                     {
                         gismo_rangers.Data = gismo_rangers.JsonDeserialise<KnuxLib.Engines.Hedgehog.Gismo_Rangers.FormatData>(arg);
                         gismo_rangers.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.gismod");
+                    }
+                    break;
+
+                case ".grass.bin":
+                    Console.WriteLine("Converting Hedgehog Engine Grass Instance to JSON.");
+                    using (KnuxLib.Engines.Hedgehog.GrassInstance grassInstance = new(arg, true))
+                        break;
+
+                case ".hedgehog.grassinstance.json":
+                    Console.WriteLine("Converting JSON to Hedgehog Engine Grass Instance.");
+                    using (KnuxLib.Engines.Hedgehog.GrassInstance grassInstance = new())
+                    {
+                        grassInstance.Data = grassInstance.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.GrassInstance.Grass>>(arg);
+                        grassInstance.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.grass.bin");
                     }
                     break;
 

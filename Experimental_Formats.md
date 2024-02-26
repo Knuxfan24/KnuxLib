@@ -28,6 +28,8 @@ The following formats are only partially supported, either due to missing functi
 
 - [2010 Collision (.orc)](KnuxLib/Engines/Hedgehog/Collision_2010.cs). Only reads about half the format but does have an OBJ exporter that exports the basic collision geometry.
 
+- [Grass Instance (.grass.bin)](KnuxLib/Engines/Hedgehog/GrassInstance.cs). Reads and writes, but has a LOT of unknown values.
+
 - [Rangers Collision (.btmesh)](KnuxLib/Engines/Hedgehog/Collision_Rangers.cs). Only has a reader that misses the bounding volume hierarchy data for the meshes, also has quite a few unknown values.
 
 - [Rangers Skinned Collision (.btsmc)](KnuxLib/Engines/Hedgehog/SkinnedCollision_Rangers.cs). Can read, write and export OBJs. But most of the data is unknowns with the types guessed.

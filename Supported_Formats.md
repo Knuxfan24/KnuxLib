@@ -77,7 +77,12 @@ Known games:
 
 - Puyo Puyo Tetris 2 (XB1, PS4, NSW, PC)
 
-- Sonic Frontiers (XB1, PS4, NSW, PC)
+- Sonic Origins (XB1, XBS, PS4, PS5 NSW, PC)
+
+> **Note**
+> Sonic Origins also uses Retro Engine components
+
+- Sonic Frontiers (XB1, XBS, PS4, PS5, NSW, PC)
 
 Supported formats:
 

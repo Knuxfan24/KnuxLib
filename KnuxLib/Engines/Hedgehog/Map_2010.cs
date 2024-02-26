@@ -10,7 +10,7 @@
             Load(filepath);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.map_2010.json", Data);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath).Replace(".map", "")}.hedgehog.map_2010.json", Data);
         }
 
         // Classes for this format.
