@@ -125,7 +125,7 @@ Supported formats:
 - [Path Spline (.path)](KnuxLib/Engines/Hedgehog/PathSpline.cs) reading, writing, OBJ exporting and OBJ importing.
 
 > **Note**
-> Has a few unknown value and an unknown chunk of data in the form of each path's k-d tree.
+> Has a few unknown values and an unknown chunk of data in the form of each path's k-d tree.
 
 - [Point Cloud (.pccol/.pcmodel/.pcrt/.pointcloud)](KnuxLib/Engines/Hedgehog/PointCloud.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
@@ -137,6 +137,9 @@ Supported formats:
 > **Note**
 > Has an unknown value.
 
+> **Note**
+> Has some extra data in it that is not currently handled, but doesn't seem required?
+
 - [Terrain Material(.terrain-material)](KnuxLib/Engines/Hedgehog/TerrainMaterial.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 > **Note**
@@ -144,9 +147,6 @@ Supported formats:
 
 > **Note**
 > Doesn't write in a binary identical format due to a design choice in HedgeLib#, game doesn't seem to mind though?
-
-> **Note**
-> The Sector Visibility Collision format has some extra data in it that is not currently handled, but doesn't seem required?
 
 ## NiGHTS2 Engine
 
