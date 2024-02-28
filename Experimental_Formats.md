@@ -30,43 +30,43 @@ The following formats are only partially supported, either due to missing functi
 
 - [Grass Instance (.grass.bin)](KnuxLib/Engines/Hedgehog/GrassInstance.cs). Reads and writes, but has a LOT of unknown values.
 
-- [Rangers Collision (.btmesh)](KnuxLib/Engines/Hedgehog/Collision_Rangers.cs). Only has a reader that misses the bounding volume hierarchy data for the meshes, also has quite a few unknown values.
+- [Rangers Collision (.btmesh)](KnuxLib/Engines/Hedgehog/Collision_Rangers.cs). Only has a reader that misses the bounding volume hierarchy data for the meshes, also has quite a few unknown values. Does have a way to export OBJs.
 
 - [Rangers Skinned Collision (.btsmc)](KnuxLib/Engines/Hedgehog/SkinnedCollision_Rangers.cs). Can read, write and export OBJs. But most of the data is unknowns with the types guessed.
 
-- [Scene Effect Collision (.fxcol.bin)](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
+- [Scene Effect Collision (.fxcol.bin/.fxcol)](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
 
 ## PlayStation 2
 
-- [Archive File System (.afs)](KnuxLib/Engines/Playstation2/ArchiveFileSystem.cs). Doesn't read 0x10 bytes in the name table and lacks saving support.
+- [Archive File System (.afs)](KnuxLib/Engines/Playstation2/ArchiveFileSystem.cs). Doesn't read 0x10 bytes in the name table.
 
 ## Nu2 Engine
 
-- [Scenes (.nus/.nux/.gsc)](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save, Export or Import function.
+- [Scenes (.nus/.nux/.gsc)](KnuxLib/Engines/Nu2/Scene.cs) and the chunks that make them up. Most of the GameCube version of this format is handled for reading (with one unknown chunk structure), the Xbox version is missing the Texture Set and Geometry Set chunks and the PlayStation 2 version is missing the Texture Set, Material Set, Geometry Set and SPEC Set chunks. This format also currently lacks any form of Save or Import function, but does have an OBJ exporter and MaxScript exporter for handling instancing in the scene.
 
 ## Rockman X7 Engine
 
 - [Math Table (.emi)](KnuxLib/Engines/RockmanX7/MathTable.cs). Unfinished code that can currently read about 70% of the environment files. Can also read one type of texture, but the palette is wrong in some way. Skinned models can't be read at all.
 
-- [Stage Entity Table (.328f438b/.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs). Entirely functional besides basically every value being an unknown. Slowly working through and figuring out what each object type is.
+- [Stage Entity Table (.osd)](KnuxLib/Engines/RockmanX7/StageEntityTable.cs). Entirely functional besides basically every value being an unknown. Slowly working through and figuring out what each object type is.
 
-- [SLD Spline (.6ae91701/.sld)](KnuxLib/Engines/RockmanX7/SLDSpline.cs). Has very basic reading, but half of the file is an unknown placeholder that clearly interacts with the spline points in some ways. Can also export to a basic OBJ.
+- [SLD Spline (.sld)](KnuxLib/Engines/RockmanX7/SLDSpline.cs). Has very basic reading, but half of the file is an unknown placeholder that clearly interacts with the spline points in some ways. Can also export to a basic OBJ.
 
 ## Rockman X8 Engine
 
-- [Stage Entity Table (.31bf570e/.set)](KnuxLib/Engines/RockmanX8/StageEntityTable.cs). Entirely functional besides basically every value being an unknown.
+- [Stage Entity Table (.set)](KnuxLib/Engines/RockmanX8/StageEntityTable.cs). Entirely functional besides basically every value being an unknown.
 
 ## Sonic Storybook Engine
 
 - [Path Spline (.pth)](KnuxLib/Engines/Storybook/PathSpline.cs). Has reading and writing with a lot of unknown values and basic OBJ exporting.
 
-- [Player Motion Table (.bin)](KnuxLib/Engines/Storybook/PlayerMotionTable.cs). Entirely functional besides every value being an unknown.
+- [Player Motion Table (.bin)](KnuxLib/Engines/Storybook/PlayerMotionTable.cs). Entirely functional besides quite a few values being unknown.
 
 - [Stage Entity Table (.bin)](KnuxLib/Engines/Storybook/StageEntityTable.cs). Has a lot of little unknown values and lacks proper object parameters names and types, the HSON template sheet I've created only reads things as either a uint or a float, so if something is actually a different data type it won't be parsed correctly.
 
 ## Sonic World Adventure Wii Engine
 
-- [Path Spline (.path.dat)](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has reading and writing with a lot of unknowns. Completely lacking an Import or Export (other than generic JSON serialisation) function, left out of KnuxTools for this reason.
+- [Path Spline (.path.dat)](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has reading and writing with a lot of unknowns. Completely lacking an Import or Export (other than generic JSON serialisation) function.
 
 - [Stage Entity Table (.set)](KnuxLib/Engines/WorldAdventureWii/StageEntityTable.cs). Entirely functional besides a lack of proper object parameters names and types, the HSON template sheet I've created only reads things as either a uint or a float, so if something is actually a different data type it won't be parsed correctly.
 

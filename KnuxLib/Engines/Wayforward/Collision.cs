@@ -29,7 +29,7 @@ namespace KnuxLib.Engines.Wayforward
         [JsonConverter(typeof(StringEnumConverter))]
         public enum Behaviour : ulong
         {
-            // TODO: Figure out if I can split 0x400 depending on format version.
+            // TODO: Split based on the format version like how the Hedgehog Engine Path Spline is.
             // TODO: Figure out the unknown tags.
             // TODO: Check the game specific ones in the other (just in case some HGH stuff works in SS and vice versa)
             Solid = 0x1,
@@ -486,6 +486,7 @@ namespace KnuxLib.Engines.Wayforward
 
         /// <summary>
         /// Imports a Assimp compatible model and converts it to a Wayforward Engine collision model.
+        /// TODO: Handle the differences in the Ducktales Remastered format.
         /// TODO: Handle the differences in the Seven Sirens format when that's finally reverse engineered.
         /// </summary>
         /// <param name="filepath">The filepath of the model to import.</param>

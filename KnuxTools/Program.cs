@@ -916,8 +916,19 @@ namespace KnuxTools
 
                 #region Capcom MT Framework Engine formats.
                 case ".arc":
-                    Console.WriteLine("Extracting Capcom MT Framework Engine archive.");
-                    using (KnuxLib.Engines.CapcomMT.Archive arc = new(arg, true))
+                    try
+                    {
+                        Console.WriteLine("Extracting Capcom MT Framework Engine archive.");
+                        using KnuxLib.Engines.CapcomMT.Archive arc = new(arg, true);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"{e}\n\nAttempting to extract as a Marathon Engine archive instead.");
+                        using (Marathon.Formats.Archive.U8Archive arc = new(arg, Marathon.IO.ReadMode.IndexOnly))
+                        {
+                            arc.Extract($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}");
+                        }
+                    }
                     break;
                 #endregion
 
