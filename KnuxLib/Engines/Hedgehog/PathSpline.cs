@@ -172,7 +172,7 @@ namespace KnuxLib.Engines.Hedgehog
         public new const string Signature = "HTAP";
 
         // Internal values used for accurately resaving Sonic Lost World paths.
-        bool sonic2013_HasPathOffsetTable = false;
+        bool sonic2013_HasPathOffsetTable = true;
 
         /// <summary>
         /// Loads and parses this format's file.
@@ -217,8 +217,8 @@ namespace KnuxLib.Engines.Hedgehog
             // If the value is 0x10, then its an offset to the path table, if it's 0x04, then I have no idea.
             else
             {
-                if (reader.ReadUInt32() == 0x10)
-                    sonic2013_HasPathOffsetTable = true;
+                if (reader.ReadUInt32() == 0x04)
+                    sonic2013_HasPathOffsetTable = false;
             }
 
             // Loop through each path in this file.
@@ -1007,6 +1007,9 @@ namespace KnuxLib.Engines.Hedgehog
         /// <param name="version">The game version to import this file as.</param>
         public void ImportOBJ(string filepath, FormatVersion version = FormatVersion.Wars)
         {
+            // Set up a value to handle the scale modifier.
+            float scaleModifier = 1f;
+
             // Initialise a path.
             SplinePath path = new() { Name = "" };
 
@@ -1029,6 +1032,10 @@ namespace KnuxLib.Engines.Hedgehog
             // Set the identifier to "blender4" if the Blender 4.x comment is present. 
             if (importedOBJ[0].Contains("# Blender 4"))
                 identifier = "blender4";
+
+            // If the identifier line also has a scale modifier value added to it, then split and parse it.
+            if (importedOBJ[0].Contains("Scale Modifier = "))
+                scaleModifier = float.Parse(importedOBJ[0].Split("Scale Modifier = ")[1]);
 
             // Determine how to proceed based on the identifier.
             switch (identifier)
@@ -1070,8 +1077,8 @@ namespace KnuxLib.Engines.Hedgehog
                             // Split the line on the space.
                             string[] split = importedOBJ[lineIndex].Split(' ');
 
-                            // Parse the last three values in the split as floats and it to the coordinates array.
-                            coordinates.Add(new(float.Parse(split[^3]), float.Parse(split[^2]), float.Parse(split[^1])));
+                            // Parse the last three values in the split as floats, multiplying them by the scale modifier, and it to the coordinates array.
+                            coordinates.Add(new(float.Parse(split[^3]) * scaleModifier, float.Parse(split[^2]) * scaleModifier, float.Parse(split[^1]) * scaleModifier));
                         }
 
                         // Handle setting the double knot flag on a 3DS Max OBJ.
