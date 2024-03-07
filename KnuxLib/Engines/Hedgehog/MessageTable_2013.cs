@@ -1,6 +1,7 @@
 ﻿namespace KnuxLib.Engines.Hedgehog
 {
     //03-06-2024, ricky-daniel13: Fixed missing pointer to Sheet list. Swapped names to those in Rad's specs.
+    //03-07-2024, ricky-daniel13: Deleted redundant (And probably invalid after editing) data like counts and pointers.
 
     // TODO: Figure out all of the unknown values.
 
@@ -20,16 +21,6 @@
         public class FormatData
         {
             /// <summary>
-            /// Pointer to the data in the list
-            /// </summary>
-            public uint ListPointer { get; set; }
-
-            /// <summary>
-            /// Count of data in the list
-            /// </summary>
-            public uint ListCount { get; set; }
-
-            /// <summary>
             /// The categories this file has in it.
             /// </summary>
             public List<Sheet> Sheets { get; set; } = new();
@@ -41,11 +32,6 @@
             /// The name of this category.
             /// </summary>
             public string Name { get; set; } = "";
-
-            /// <summary>
-            /// Count of cells in the cell list
-            /// </summary>
-            public uint CellsCount { get; set; }
 
             /// <summary>
             /// The cells this sheet has within it.
@@ -71,12 +57,6 @@
             /// An unknown integer value.
             /// TODO: What is this?
             /// </summary>
-            public uint remapCapacity { get; set; }
-
-            /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
-            /// </summary>
             public uint Unknown5_UInt32 { get; set; }
 
             /// <summary>
@@ -86,7 +66,7 @@
             public uint Unknown8_UInt32 { get; set; }
 
             /// <summary>
-            /// The remap entries this message has.
+            /// The remap entries this cell has.
             /// </summary>
             public List<RemapEntry>? Remaps { get; set; }
 
@@ -138,20 +118,20 @@
             // Read the amount of sheets in this file.
             ushort sheetCount = reader.ReadUInt16();
 
-            // Pointer to the data in the sheet list
-            Data.ListPointer = reader.ReadUInt32();
+            // Pointer to the data in the Sheet* list
+            uint sheetListPointer = reader.ReadUInt32();
 
-            // List Count
-            Data.ListCount = reader.ReadUInt32();
-
-            // List Capacity, 32 uint, same as ListCount
+            // Skip List Count (Same as sheetCount)
             reader.JumpAhead(0x04);
 
-            // Allocator interface pointer, 3D bit address address, Null in file.
+            // Skip List Capacity, (same as ListCount)
             reader.JumpAhead(0x04);
 
-            // Jump to the category's data offset.
-            reader.JumpTo(Data.ListPointer, false);
+            // Skip Allocator interface pointer, 32 bit address, Null in file.
+            reader.JumpAhead(0x04);
+
+            // Jump to the Sheet* list's data pointer.
+            reader.JumpTo(sheetListPointer, false);
 
             // Loop through and read each category.
             for (int sheetIndex = 0; sheetIndex < sheetCount; sheetIndex++)
@@ -168,25 +148,25 @@
                 // Jump to the category's data offset.
                 reader.JumpTo(sheetDataOffset, false);
 
-                // Read this category's name.
+                // Read this sheet's name.
                 sheet.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false);
 
-                // Read this category's cell count
-                sheet.CellsCount = reader.ReadUInt32();
-
-                // Read the data offset of the Cells* list
-                uint cellListDataLoc = reader.ReadUInt32();
-
-                // Read the count of the Cells* list
+                // Read this sheet's cell count
                 uint cellListCount = reader.ReadUInt32();
 
-                // Skip the Cells* list capacity (Same as count)
+                // Pointer to the data in the Cell* list
+                uint cellListDataLoc = reader.ReadUInt32();
+
+                // Skip the count of the Cell* list (Same as cellListCount)
                 reader.JumpAhead(0x04);
 
-                // Skip the Cells* list pointer to the allocator (Null in files)
+                // Skip the Cell* list capacity (Same as count)
                 reader.JumpAhead(0x04);
 
-                // Jump to this category's message data.
+                // Skip Allocator interface pointer, 32 bit address, Null in file.
+                reader.JumpAhead(0x04);
+
+                // Jump to the Cell* list's data pointer.
                 reader.JumpTo(cellListDataLoc, false);
 
                 // Loop through and read each message in this category.
@@ -210,19 +190,19 @@
                     // Read this message's UTF16 encoded text.
                     cell.Message = Helpers.ReadNullTerminatedStringTableEntry(reader, false, true, 0, true);
 
-                    // Read the pointer to this remap list's data.
+                    // Read the pointer to this Remap* list's data.
                     uint remapPointer = reader.ReadUInt32();
 
-                    // Read this remap list count, this is always 0 or 1, but the game might support multiple (assuming this is a count).
+                    // Read this Remap* list count, this is always 0 or 1, but the game might support multiple (assuming this is a count).
                     uint remapCount = reader.ReadUInt32();
 
-                    // Read this remap list capacity
-                    cell.remapCapacity = reader.ReadUInt32();
-
-                    // Skip this remap list allocator pointer
+                    // Skip this Remap* list capacity 
                     reader.JumpAhead(0x04);
 
-                    // Skip 0x12 null bytes. (ulong + ulong + short)
+                    // Skip this Remap* list allocator pointer
+                    reader.JumpAhead(0x04);
+
+                    // Skip 0x12 null bytes. (ulong + ulong + short, Unknowns 1, 2 and 3)
                     reader.JumpAhead(0x12);
 
                     // Skip Last Character Index
@@ -249,10 +229,10 @@
                     // Skip Unknown 9
                     reader.JumpAhead(0x02);
 
-                    // Sip last character index 3
+                    // Skip last character index 3
                     reader.JumpAhead(0x02);
 
-                    //  Skip Unknown 10, 0x00
+                    // Skip Unknown 10, 0x00
                     reader.JumpAhead(0x04);
 
                     //  Skip Unknown 11 of 0x01.
@@ -282,13 +262,13 @@
                         // Loop through each remap in this message.
                         for (int remapIndex = 0; remapIndex < remapCount; remapIndex++)
                         {
-                            // Read the offset to this remap's data.
+                            // Read the pointer to this remap's data.
                             uint remapDataOffset = reader.ReadUInt32();
 
                             // Save our current position to jump back for the next remap.
                             long remapPosition = reader.BaseStream.Position;
 
-                            // Jump to the remap offset.
+                            // Jump to the remap pointer.
                             reader.JumpTo(remapDataOffset, false);
 
                             // Create a new remap.
@@ -338,7 +318,6 @@
 
         /// <summary>
         /// Saves this format's file.
-        /// TODO: Fix the BINA Footer being incorrect. Tested the English versions of text_common_text.xtb2 and text_ev_msg_text.xtb2, common was identical but ev wasn't.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
         public void Save(string filepath)
@@ -349,56 +328,62 @@
             // Write versionm
             writer.Write((ushort)0x02);
 
-            // Write the amount of categories in this file.
+            // Write the amount of sheets in this file.
             writer.Write((ushort)Data.Sheets.Count);
 
+
+            #region Sheet list data
             // Add the sheet list pointer
             writer.AddOffset("CategoryListPointer");
 
             // Write this sheet list count
-            writer.Write(Data.ListCount);
+            writer.Write((uint)Data.Sheets.Count);
 
             // Write this sheet list capacity
-            writer.Write(Data.ListCount);
+            writer.Write((uint)Data.Sheets.Count);
 
             // Write this sheet list allocator
             writer.WriteNulls(0x04);
+            #endregion
 
-            //write the sheet list poioter
+            // Write the sheet list pointer
             writer.FillInOffset("CategoryListPointer", false, false);
 
-            // Add an offset table for the categories.
+            // Add the pointer list for the sheets.
             writer.AddOffsetTable($"Categories", (uint)Data.Sheets.Count);
 
-            // Loop through and write each category entry.
+            // Loop through and write each sheet entry.
             for (int categoryIndex = 0; categoryIndex < Data.Sheets.Count; categoryIndex++)
             {
-                // Fill in this category's offset.
+                // Fill in this sheet's pointer.
                 writer.FillInOffset($"Categories_{categoryIndex}", false, false);
 
-                // Add this category's name.
+                // Add this sheet's name.
                 writer.AddString($"Category{categoryIndex}Name", Data.Sheets[categoryIndex].Name);
 
-                // Write this category's unknown integer value.
-                writer.Write(Data.Sheets[categoryIndex].CellsCount);
-
-                // Add an offset to this category's message table.
-                writer.AddOffset($"Category{categoryIndex}Messages");
-
-                // Write this category's message count.
+                // Write this sheet's cell count.
                 writer.Write(Data.Sheets[categoryIndex].Cells.Count);
 
-                // Write another copy of this category's message count.
-                writer.Write(Data.Sheets[categoryIndex].Cells.Count);
+                #region Cell list data
+                    // Add an pointer to the cell list data
+                    writer.AddOffset($"Category{categoryIndex}Messages");
 
-                // Write an unknown value of 0.
-                writer.Write(0x00);
+                    // Write the cell list count
+                    writer.Write(Data.Sheets[categoryIndex].Cells.Count);
+
+                    // Write the cell list capacity
+                    writer.Write(Data.Sheets[categoryIndex].Cells.Count);
+
+                    // Write the cell list pointer to the allocator
+                    writer.Write(0x00);
+                #endregion
+
             }
 
-            // Loop through and write each category's messages.
+            // Loop through and write each sheet's cells.
             for (int categoryIndex = 0; categoryIndex < Data.Sheets.Count; categoryIndex++)
             {
-                // Fill in the offset for this category's message table.
+                // Fill in the pointer list for this sheet's cell list.
                 writer.FillInOffset($"Category{categoryIndex}Messages", false, false);
 
                 // Add an offset table for this category's actual messages.
@@ -416,68 +401,73 @@
                     // Add an offset for this message's UTF16 encoded text.
                     writer.AddOffset($"Category{categoryIndex}Message{messageIndex}Message");
 
-                    // If this message has remaps, then add an offset and write the count of them.
+                    // If this message has remaps, write the remap list data
+                    #region Remap list data
                     if (Data.Sheets[categoryIndex].Cells[messageIndex].Remaps != null)
                     {
+                        //Pointer to remap list data
                         writer.AddOffset($"Category{categoryIndex}Message{messageIndex}Remaps");
+                        //Remap list count
                         writer.Write(Data.Sheets[categoryIndex].Cells[messageIndex].Remaps.Count);
+                        //Remap list capacity
+                        writer.Write(Data.Sheets[categoryIndex].Cells[messageIndex].Remaps.Count);
+                        //Remap list pointer to allocator
+                        writer.WriteNulls(0x04);
                     }
 
-                    // If not, then just write eight nulls.
+                    // If not, then just write sixteen nulls. (The size of the data of the list class)
                     else
                     {
-                        writer.WriteNulls(0x08);
+                        writer.WriteNulls(0x10);
                     }
+                    #endregion
 
-                    // Write this message's first unknown integer value.
-                    writer.Write(Data.Sheets[categoryIndex].Cells[messageIndex].remapCapacity);
-
-                    // Write 0x16 null bytes.
+                    // Write 0x16 null bytes. (ulong + ulong + short, Unknowns 1, 2 and 3)
                     writer.WriteNulls(0x16);
 
-                    // Write a value that is the length of the message minus 1.
+                    // Write the last char index 1
                     writer.Write((ushort)(Data.Sheets[categoryIndex].Cells[messageIndex].Message.Length - 1));
 
-                    // Write an unknown value of 0x02.
+                    // Write Unknown 4 value of 0x02.
                     writer.Write(0x02);
 
-                    // Write this message's second unknown integer value.
+                    // Write Unknown 5.
                     writer.Write(Data.Sheets[categoryIndex].Cells[messageIndex].Unknown5_UInt32);
 
-                    // Write two null bytes.
+                    // Write Unknown 6 (ushort)
                     writer.WriteNulls(0x02);
 
-                    // Write a value that is the length of the message minus 1.
+                    // Write the last character index 2
                     writer.Write((ushort)(Data.Sheets[categoryIndex].Cells[messageIndex].Message.Length - 1));
 
-                    // Write an unknown value of 0x01.
+                    // Write Unknown 7
                     writer.Write(0x01);
 
-                    // Write this message's third unknown integer value.
+                    // Write Unknown 8
                     writer.Write(Data.Sheets[categoryIndex].Cells[messageIndex].Unknown8_UInt32);
 
-                    // Write two null bytes.
+                    // Write Unkown 9 (ushort)
                     writer.WriteNulls(0x02);
 
-                    // Write a value that is the length of the message minus 1.
+                    // Write the last character index 3
                     writer.Write((ushort)(Data.Sheets[categoryIndex].Cells[messageIndex].Message.Length - 1));
 
-                    // Write four null bytes.
+                    // Write Unknown 10 (uint)
                     writer.WriteNulls(0x04);
 
-                    // Write an unknown value of 0x01.
+                    // Write Unknown 11 value of 1
                     writer.Write(0x01);
 
-                    // Write two null bytes.
+                    // Write Unknown 12 (ushort)
                     writer.WriteNulls(0x02);
 
-                    // Write a value that is the length of the message minus 1.
+                    // Write Last character Index 4
                     writer.Write((ushort)(Data.Sheets[categoryIndex].Cells[messageIndex].Message.Length - 1));
 
-                    // Write an unknown value of 0x03.
+                    // Write Unknown 13 value of 0x03.
                     writer.Write(0x03);
 
-                    // Write four null bytes.
+                    // Write Unknown 14 (uint)
                     writer.WriteNulls(0x04);
                 }
             }
