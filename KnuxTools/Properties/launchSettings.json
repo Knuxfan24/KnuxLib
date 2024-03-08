@@ -1,7 +1,8 @@
 {
   "profiles": {
     "KnuxTools": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "commandLineArgs": "\"G:\\Sonic '06\\Game Dump\\win32\\archives\\enemy_data.arc\""
     }
   }
 }

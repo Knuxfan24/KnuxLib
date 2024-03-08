@@ -103,13 +103,15 @@
                 reader.JumpTo(objectOffset);
 
                 // Print stuff for an unknown value.
-                Console.WriteLine($"TODO: Unknown 0x00 value of {reader.ReadUInt32()}");
+                //Console.WriteLine($"TODO: Unknown 0x00 value of {reader.ReadUInt32()}");
+                reader.JumpAhead(0x04);
 
                 // Read this entity's type?
                 entity.Type = reader.ReadUInt32();
 
                 // Print stuff for an unknown value.
-                Console.WriteLine($"TODO: Unknown 0x0C value of {reader.ReadUInt32()}");
+                //Console.WriteLine($"TODO: Unknown 0x0C value of {reader.ReadUInt32()}");
+                reader.JumpAhead(0x04);
 
                 // Read this entity's name.
                 entity.Name = Helpers.ReadWayforwardLengthPrefixedString(reader, stringTableOffset, reader.ReadUInt32());
