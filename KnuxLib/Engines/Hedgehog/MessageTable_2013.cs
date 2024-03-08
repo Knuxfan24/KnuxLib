@@ -1,8 +1,7 @@
 ﻿namespace KnuxLib.Engines.Hedgehog
 {
-    // TODO: Fix saving so that both instances are binary identical to the source files.
-    // TODO: Figure out all of the unknown values.
-    // TODO: Properly test stuff when HedgeArcPack gets Lost World pac writing fixed.
+    // Partially based on: https://gist.github.com/Radfordhound/9c7695a0f6b1bcdfaeb4ad4c5462a6e8
+    // TODO: Figure out the unknown values.
     public class MessageTable_2013 : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -16,27 +15,7 @@
         }
 
         // Classes for this format.
-        public class FormatData
-        {
-            /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
-            /// </summary>
-            public uint UnknownUInt32_1 { get; set; }
-
-            /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
-            /// </summary>
-            public uint UnknownUInt32_2 { get; set; }
-
-            /// <summary>
-            /// The categories this file has in it.
-            /// </summary>
-            public List<Category> Categories { get; set; } = new();
-        }
-
-        public class Category
+        public class Sheet
         {
             /// <summary>
             /// The name of this category.
@@ -44,28 +23,22 @@
             public string Name { get; set; } = "";
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
+            /// The cells this sheet has within it.
             /// </summary>
-            public uint UnknownUInt32_1 { get; set; }
-
-            /// <summary>
-            /// The messages this category has within it.
-            /// </summary>
-            public List<MessageEntry> Messages { get; set; } = new();
+            public Cell[] Cells { get; set; } = Array.Empty<Cell>();
 
             public override string ToString() => Name;
         }
 
-        public class MessageEntry
+        public class Cell
         {
             /// <summary>
-            /// The name of this message.
+            /// The name of this cell, if it has one.
             /// </summary>
             public string? Name { get; set; }
 
             /// <summary>
-            /// The text this message displays.
+            /// The message this cell displays.
             /// </summary>
             public string Message { get; set; } = "";
 
@@ -77,25 +50,23 @@
 
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this?
+            /// TODO: What is this? It's only ever 0x14 or 0x16.
             /// </summary>
             public uint UnknownUInt32_2 { get; set; }
 
             /// <summary>
-            /// An unknown integer value.
-            /// TODO: What is this?
+            /// The remap entries this cell has, if any.
             /// </summary>
-            public uint UnknownUInt32_3 { get; set; }
+            public Remap[]? Remaps { get; set; }
 
-            /// <summary>
-            /// The remap entries this message has.
-            /// </summary>
-            public List<RemapEntry>? Remaps { get; set; }
-
-            public override string ToString() => Name;
+            public override string ToString()
+            {
+                if (Name == null) return Message;
+                else return Name;
+            }
         }
 
-        public class RemapEntry
+        public class Remap
         {
             /// <summary>
             /// The index of the character this remap entry replaces.
@@ -111,11 +82,11 @@
             /// <summary>
             /// The data for this remap.
             /// </summary>
-            public object RemapData { get; set; }
+            public object RemapData { get; set; } = new();
         }
 
         // Actual data presented to the end user.
-        public FormatData Data = new();
+        public Sheet[] Data = Array.Empty<Sheet>();
 
         // HedgeLib# BinaryReader specific variables.
         // Set up HedgeLib#'s BINAV2Header.
@@ -131,197 +102,200 @@
             HedgeLib.IO.BINAReader reader = new(File.OpenRead(filepath));
             Header = reader.ReadHeader();
 
-            // Skip an unknown value of 0x02.
+            // Skip an unknown value that is always 0x02, likely a version identifier.
             reader.JumpAhead(0x02);
 
-            // Read the amount of categories in this file.
-            ushort categoryCount = reader.ReadUInt16();
+            // Read this message table's sheet count.
+            ushort sheetCount = reader.ReadUInt16();
 
-            // Read the first unknown integer value.
-            Data.UnknownUInt32_1 = reader.ReadUInt32();
+            // Read the offset to this message table's sheet table.
+            uint sheetTableOffset = reader.ReadUInt32();
 
-            // Read the second unknown integer value.
-            Data.UnknownUInt32_2 = reader.ReadUInt32();
+            // Skip two unknown values that are both always the same as sheet count (but as an integer rather than a short).
+            reader.JumpAhead(0x08);
 
-            // Skip an unknown value that is the same as the second unknown integer value.
+            // Skip an unknown value that is always 0.
             reader.JumpAhead(0x04);
 
-            // Skip an unknown value of 0.
-            reader.JumpAhead(0x04);
+            // Initialise the sheet array.
+            Data = new Sheet[sheetCount];
 
-            // Loop through and read each category.
-            for (int categoryIndex = 0; categoryIndex < categoryCount; categoryIndex++)
+            // Jump to this message table's sheet table.
+            reader.JumpTo(sheetTableOffset, false);
+
+            // Loop through each sheet in this message table.
+            for (int sheetIndex = 0; sheetIndex < sheetCount; sheetIndex++)
             {
-                // Set up a new category.
-                Category category = new();
+                // Set up a new sheet entry.
+                Sheet sheet = new();
 
-                // Read the offset to this category's data.
-                uint categoryDataOffset = reader.ReadUInt32();
+                // Read the offset to this sheet's data.
+                uint sheetDataOffset = reader.ReadUInt32();
 
-                // Save our current position to jump back to once this category is read.
+                // Save our current position to jump back to once this sheet is read.
                 long position = reader.BaseStream.Position;
 
-                // Jump to the category's data offset.
-                reader.JumpTo(categoryDataOffset, false);
+                // Jump to this sheet's data.
+                reader.JumpTo(sheetDataOffset, false);
 
-                // Read this category's name.
-                category.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false);
+                // Read this sheet's name.
+                sheet.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false);
 
-                // Read this category's unknown integer value.
-                category.UnknownUInt32_1 = reader.ReadUInt32();
+                // Read this sheet's cell count.
+                uint sheetCellCount = reader.ReadUInt32();
 
-                // Read the offset to this category's messages.
-                uint messagesOffset = reader.ReadUInt32();
+                // Read the offset to this sheet's cell table.
+                uint sheetCellTableOffset = reader.ReadUInt32();
 
-                // Read the count of messages in this category.
-                uint messageCount = reader.ReadUInt32();
+                // Skip two unknown values that are both always the same as this sheet's cell count.
+                reader.JumpAhead(0x08);
 
-                // Skip an unknown value that matches the message count.
+                // Skip an unknown value that is always 0.
                 reader.JumpAhead(0x04);
 
-                // Skip an unknown value of 0.
-                reader.JumpAhead(0x04);
+                // Initialise this sheet's cell array.
+                sheet.Cells = new Cell[sheetCellCount];
 
-                // Jump to this category's message data.
-                reader.JumpTo(messagesOffset, false);
+                // Jump to this sheet's cell table.
+                reader.JumpTo(sheetCellTableOffset, false);
 
-                // Loop through and read each message in this category.
-                for (int messageIndex = 0; messageIndex < messageCount; messageIndex++)
+                // Loop through each cell in this sheet.
+                for (int sheetCellIndex = 0; sheetCellIndex < sheetCellCount; sheetCellIndex++)
                 {
-                    // Set up a new message.
-                    MessageEntry message = new();
+                    // Set up a new cell entry.
+                    Cell cell = new();
 
-                    // Read the offset to this message's data.
-                    uint dataOffset = reader.ReadUInt32();
+                    // Read the offset to this cell's data.
+                    uint cellDataOffset = reader.ReadUInt32();
 
-                    // Save our current position so we can jump back for the next message.
-                    long currentPosition = reader.BaseStream.Position;
+                    // Save our current position to jump back to once this cell is read.
+                    long cellPosition = reader.BaseStream.Position;
 
-                    // Jump to this message's data.
-                    reader.JumpTo(dataOffset, false);
+                    // Jump to this cell's data.
+                    reader.JumpTo(cellDataOffset, false);
 
-                    // Read this message's name, if it has one.
-                    message.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false);
+                    // Read this cell's name.
+                    cell.Name = Helpers.ReadNullTerminatedStringTableEntry(reader, false);
 
-                    // Read this message's UTF16 encoded text.
-                    message.Message = Helpers.ReadNullTerminatedStringTableEntry(reader, false, true, 0, true);
+                    // Read this cell's message, encoded in UTF-16.
+                    cell.Message = Helpers.ReadNullTerminatedStringTableEntry(reader, false, true, 0, true);
 
-                    // Read the offset to this message's remap data.
-                    uint remapOffset = reader.ReadUInt32();
+                    // Read the offset to this cell's remap data.
+                    uint cellRemapTableOffset = reader.ReadUInt32();
 
-                    // Read this message's remap count, this is always 0 or 1, but the game might support multiple (assuming this is a count).
-                    uint remapCount = reader.ReadUInt32();
+                    // Read this cell's remap count. This is either a 0 or a 1.
+                    uint cellRemapCount = reader.ReadUInt32();
 
-                    // Read this message's first unknown integer value.
-                    message.UnknownUInt32_1 = reader.ReadUInt32();
+                    // Skip an unknown value that is always the same as the cell's remap count.
+                    reader.JumpAhead(0x04);
 
-                    // Skip 0x16 null bytes.
+                    // Skip 0x16 bytes that are always 0.
                     reader.JumpAhead(0x16);
 
-                    // Skip a value that appears to be the length of the message string minus 1.
+                    // Skip the first instance of this cell's message's last character index.
                     reader.JumpAhead(0x02);
 
-                    // Skip an unknown value 0x02.
+                    // Skip an unknown value that is always 0x02.
                     reader.JumpAhead(0x04);
 
-                    // Read this message's second unknown integer value.
-                    message.UnknownUInt32_2 = reader.ReadUInt32();
+                    // Read this cell's first unknown integer value.
+                    cell.UnknownUInt32_1 = reader.ReadUInt32();
 
-                    // Skip an unknown value of 0.
+                    // Skip an unknown value that is always 0x00.
                     reader.JumpAhead(0x02);
 
-                    // Skip a value that appears to be the length of the message string minus 1.
+                    // Skip the second instance of this cell's message's last character index.
                     reader.JumpAhead(0x02);
 
-                    // Skip an unknown value 0x01.
+                    // Skip an unknown value that is always 0x01.
                     reader.JumpAhead(0x04);
 
-                    // Read this message's third unknown integer value.
-                    message.UnknownUInt32_3 = reader.ReadUInt32();
+                    // Read this cell's second unknown integer value.
+                    cell.UnknownUInt32_2 = reader.ReadUInt32();
 
-                    // Skip an unknown value of 0.
+                    // Skip an unknown value that is always 0x00.
                     reader.JumpAhead(0x02);
 
-                    // Skip a value that appears to be the length of the message string minus 1.
+                    // Skip the third instance of this cell's message's last character index.
                     reader.JumpAhead(0x02);
 
-                    // Skip an unknown value of 0.
+                    // Skip an unknown value that is always 0.
                     reader.JumpAhead(0x04);
 
-                    // Skip an unknown value of 0x01.
+                    // Skip an unknown value that is always 0x01.
                     reader.JumpAhead(0x04);
 
-                    // Skip an unknown value of 0.
+                    // Skip an unknown value that is always 0.
                     reader.JumpAhead(0x02);
 
-                    // Skip a value that appears to be the length of the message string minus 1.
+                    // Skip the fourth instance of this cell's message's last character index.
                     reader.JumpAhead(0x02);
 
-                    // Skip an unknown value of 0x03.
+                    // Skip an unknown value that is always 0x03.
                     reader.JumpAhead(0x04);
 
-                    // Skip an unknown value of 0.
+                    // Skip an unknown value that is always 0.
                     reader.JumpAhead(0x04);
 
-                    // If this message has any remaps, then read them as well.
-                    if (remapOffset != 0)
+                    // If this cell has remap data, then read it as well.
+                    if (cellRemapTableOffset != 0)
                     {
-                        // Define the remap list.
-                        message.Remaps = new();
+                        // Initialise this cell's remap array.
+                        cell.Remaps = new Remap[cellRemapCount];
 
-                        // Jump to the previously read remap offset.
-                        reader.JumpTo(remapOffset, false);
+                        // Jump to this cell's remap table.
+                        reader.JumpTo(cellRemapTableOffset, false);
 
-                        // Loop through each remap in this message.
-                        for (int remapIndex = 0; remapIndex < remapCount; remapIndex++)
+                        // Loop through each remap in this cell.
+                        for (int cellRemapIndex = 0; cellRemapIndex < cellRemapCount; cellRemapIndex++)
                         {
+                            // Set up a new remap entry.
+                            Remap remap = new();
+
                             // Read the offset to this remap's data.
                             uint remapDataOffset = reader.ReadUInt32();
 
-                            // Save our current position to jump back for the next remap.
+                            // Save our current position to jump back to once this remap entry is read.
                             long remapPosition = reader.BaseStream.Position;
 
-                            // Jump to the remap offset.
+                            // Jump to this remap's data.
                             reader.JumpTo(remapDataOffset, false);
 
-                            // Create a new remap.
-                            RemapEntry remap = new();
-
-                            // Read this remap's character index.
+                            // Read the index of the character to replace.
                             remap.CharacterIndex = reader.ReadUInt16();
 
                             // Read this remap's unknown short value.
                             remap.UnknownUShort_1 = reader.ReadUInt16();
 
                             // Read this remap's data type.
-                            uint remapDataType = reader.ReadUInt32();
+                            uint cellRemapDataType = reader.ReadUInt32();
 
                             // Read the next four bytes as either a byte array or one value depending on the remap type.
-                            switch (remapDataType)
+                            switch (cellRemapDataType)
                             {
                                 case 4: remap.RemapData = reader.ReadBytes(0x04); break;
                                 case 5: remap.RemapData = reader.ReadUInt32(); break;
                             }
 
                             // Save this remap entry.
-                            message.Remaps.Add(remap);
+                            cell.Remaps[cellRemapIndex] = remap;
 
                             // Jump back for the next remap entry.
                             reader.JumpTo(remapPosition);
                         }
                     }
 
-                    // Save this message.
-                    category.Messages.Add(message);
+                    // Save this cell.
+                    sheet.Cells[sheetCellIndex] = cell;
 
-                    // Jump back for the next message.
-                    reader.JumpTo(currentPosition);
+                    // Jump back for the next cell.
+                    reader.JumpTo(cellPosition);
                 }
 
-                // Save this category.
-                Data.Categories.Add(category);
+                // Save this sheet.
+                Data[sheetIndex] = sheet;
 
-                // Jump back for the next category.
+                // Jump back for the next sheet.
                 reader.JumpTo(position);
             }
 
@@ -331,206 +305,214 @@
 
         /// <summary>
         /// Saves this format's file.
-        /// TODO: Fix the BINA Footer being incorrect. Tested the English versions of text_common_text.xtb2 and text_ev_msg_text.xtb2, common was identical but ev wasn't.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
         public void Save(string filepath)
         {
-            // Set up our BINAWriter for the gismod file and write the BINAV2 header.
+            // Set up our BINAWriter and write the BINAV2 header.
             HedgeLib.IO.BINAWriter writer = new(File.Create(filepath), Header);
 
-            // Write an unknown value of 0x02.
+            // Write an unknown value that is always 0x02, likely a version identifier.
             writer.Write((ushort)0x02);
 
-            // Write the amount of categories in this file.
-            writer.Write((ushort)Data.Categories.Count);
+            // Write the count of sheets in this file.
+            writer.Write((ushort)Data.Length);
 
-            // Write this file's first unknown integer value.
-            writer.Write(Data.UnknownUInt32_1);
+            // Add an offset to this file's sheet table.
+            writer.AddOffset("SheetTableOffset");
 
-            // Write this file's second unknown integer value.
-            writer.Write(Data.UnknownUInt32_2);
+            // Write copies of the sheet count.
+            writer.Write(Data.Length);
+            writer.Write(Data.Length);
 
-            // Write another copy of this file's second unknown integer value.
-            writer.Write(Data.UnknownUInt32_2);
+            // Write an unknown value that is always 0.
+            writer.Write(0);
 
-            // Write an unknown value of 0.
-            writer.WriteNulls(0x04);
+            // Fill in the sheet table offset.
+            writer.FillInOffset("SheetTableOffset", false);
 
-            // Add an offset table for the categories.
-            writer.AddOffsetTable($"Categories", (uint)Data.Categories.Count);
-
-            // Loop through and write each category entry.
-            for (int categoryIndex = 0; categoryIndex < Data.Categories.Count; categoryIndex++)
+            // Loop through and add an offset for each sheet in this file.
+            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
+                writer.AddOffset($"Sheet{sheetIndex}DataOffset");
+                    
+            // Loop through each sheet in this file.
+            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
             {
-                // Fill in this category's offset.
-                writer.FillInOffset($"Categories_{categoryIndex}", false, false);
+                // Fill in this sheet's offset.
+                writer.FillInOffset($"Sheet{sheetIndex}DataOffset", false);
 
-                // Add this category's name.
-                writer.AddString($"Category{categoryIndex}Name", Data.Categories[categoryIndex].Name);
+                // Add a string for this sheet's name.
+                writer.AddString($"Sheet{sheetIndex}Name", Data[sheetIndex].Name);
 
-                // Write this category's unknown integer value.
-                writer.Write(Data.Categories[categoryIndex].UnknownUInt32_1);
+                // Write the count of cells in this sheet.
+                writer.Write(Data[sheetIndex].Cells.Length);
 
-                // Add an offset to this category's message table.
-                writer.AddOffset($"Category{categoryIndex}Messages");
+                // Add an offset for this sheet's cell table.
+                writer.AddOffset($"Sheet{sheetIndex}CellTableOffset");
 
-                // Write this category's message count.
-                writer.Write(Data.Categories[categoryIndex].Messages.Count);
+                // Write copies of the cell count.
+                writer.Write(Data[sheetIndex].Cells.Length);
+                writer.Write(Data[sheetIndex].Cells.Length);
 
-                // Write another copy of this category's message count.
-                writer.Write(Data.Categories[categoryIndex].Messages.Count);
-
-                // Write an unknown value of 0.
-                writer.Write(0x00);
+                // Write an unknown value that is always 0.
+                writer.Write(0);
             }
 
-            // Loop through and write each category's messages.
-            for (int categoryIndex = 0; categoryIndex < Data.Categories.Count; categoryIndex++)
+            // Loop through each sheet in this file.
+            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
             {
-                // Fill in the offset for this category's message table.
-                writer.FillInOffset($"Category{categoryIndex}Messages", false, false);
+                // Fill in the offset for this sheet's cell table.
+                writer.FillInOffset($"Sheet{sheetIndex}CellTableOffset", false);
 
-                // Add an offset table for this category's actual messages.
-                writer.AddOffsetTable($"Category{categoryIndex}Messages", (uint)Data.Categories[categoryIndex].Messages.Count);
+                // Loop through and add an offset for each cell in this sheet.
+                for (int cellIndex = 0; cellIndex < Data[sheetIndex].Cells.Length; cellIndex++)
+                    writer.AddOffset($"Sheet{sheetIndex}Cell{cellIndex}Offset");
 
-                // Loop through and write each message in this category.
-                for (int messageIndex = 0; messageIndex < Data.Categories[categoryIndex].Messages.Count; messageIndex++)
+                // Loop through each cell in this sheet.
+                for (int cellIndex = 0; cellIndex < Data[sheetIndex].Cells.Length; cellIndex++)
                 {
-                    // Fill in this message's offset.
-                    writer.FillInOffset($"Category{categoryIndex}Messages_{messageIndex}", false, false);
+                    // Fill in the offset for this cell.
+                    writer.FillInOffset($"Sheet{sheetIndex}Cell{cellIndex}Offset", false);
 
-                    // Add this message's name.
-                    writer.AddString($"Category{categoryIndex}Message{messageIndex}Name", Data.Categories[categoryIndex].Messages[messageIndex].Name);
+                    // If this cell has a name, then add a string for it, if not, just write a 0.
+                    if (Data[sheetIndex].Cells[cellIndex].Name != null)
+                        writer.AddString($"Sheet{sheetIndex}Cell{cellIndex}Name", Data[sheetIndex].Cells[cellIndex].Name);
+                    else
+                        writer.Write(0);
 
-                    // Add an offset for this message's UTF16 encoded text.
-                    writer.AddOffset($"Category{categoryIndex}Message{messageIndex}Message");
+                    // Add an offset to this cell's message.
+                    writer.AddOffset($"Sheet{sheetIndex}Cell{cellIndex}MessageOffset");
 
-                    // If this message has remaps, then add an offset and write the count of them.
-                    if (Data.Categories[categoryIndex].Messages[messageIndex].Remaps != null)
+                    // Write data for this cell's remap offset and length.
+                    if (Data[sheetIndex].Cells[cellIndex].Remaps != null)
                     {
-                        writer.AddOffset($"Category{categoryIndex}Message{messageIndex}Remaps");
-                        writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].Remaps.Count);
-                    }
+                        // Add an offset for this cell's remap table.
+                        writer.AddOffset($"Sheet{sheetIndex}Cell{cellIndex}RemapTableOffset");
 
-                    // If not, then just write eight nulls.
+                        // Write the count of remaps in this cell.
+                        writer.Write(Data[sheetIndex].Cells[cellIndex].Remaps.Length);
+
+                        // Write a copy of this cell's remap count.
+                        writer.Write(Data[sheetIndex].Cells[cellIndex].Remaps.Length);
+                    }
                     else
                     {
-                        writer.WriteNulls(0x08);
+                        // If this cell doesn't have any remaps, then fill in this space with 0x0C null values.
+                        writer.WriteNulls(0x0C);
                     }
-
-                    // Write this message's first unknown integer value.
-                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].UnknownUInt32_1);
 
                     // Write 0x16 null bytes.
                     writer.WriteNulls(0x16);
 
-                    // Write a value that is the length of the message minus 1.
-                    writer.Write((ushort)(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length - 1));
+                    // Write the first instance of this cell's message's last character index.
+                    writer.Write((ushort)(Data[sheetIndex].Cells[cellIndex].Message.Length - 1));
 
-                    // Write an unknown value of 0x02.
+                    // Write an unknown value that is always 0x02.
                     writer.Write(0x02);
 
-                    // Write this message's second unknown integer value.
-                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].UnknownUInt32_2);
+                    // Write this cell's first unknown integer value.
+                    writer.Write(Data[sheetIndex].Cells[cellIndex].UnknownUInt32_1);
 
-                    // Write two null bytes.
-                    writer.WriteNulls(0x02);
+                    // Write an unknown value that is always 0.
+                    writer.Write((ushort)0);
 
-                    // Write a value that is the length of the message minus 1.
-                    writer.Write((ushort)(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length - 1));
+                    // Write the second instance of this cell's message's last character index.
+                    writer.Write((ushort)(Data[sheetIndex].Cells[cellIndex].Message.Length - 1));
 
-                    // Write an unknown value of 0x01.
+                    // Write an unknown value that is always 0x01.
                     writer.Write(0x01);
 
-                    // Write this message's third unknown integer value.
-                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].UnknownUInt32_3);
+                    // Write this cell's second unknown integer value.
+                    writer.Write(Data[sheetIndex].Cells[cellIndex].UnknownUInt32_2);
 
-                    // Write two null bytes.
-                    writer.WriteNulls(0x02);
+                    // Write an unknown value that is always 0.
+                    writer.Write((ushort)0);
 
-                    // Write a value that is the length of the message minus 1.
-                    writer.Write((ushort)(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length - 1));
+                    // Write the third instance of this cell's message's last character index.
+                    writer.Write((ushort)(Data[sheetIndex].Cells[cellIndex].Message.Length - 1));
 
-                    // Write four null bytes.
-                    writer.WriteNulls(0x04);
+                    // Write an unknown value that is always 0.
+                    writer.Write(0);
 
-                    // Write an unknown value of 0x01.
+                    // Write an unknown value that is always 0x01.
                     writer.Write(0x01);
 
-                    // Write two null bytes.
-                    writer.WriteNulls(0x02);
+                    // Write an unknown value that is always 0.
+                    writer.Write((ushort)0);
 
-                    // Write a value that is the length of the message minus 1.
-                    writer.Write((ushort)(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length - 1));
+                    // Write the fourth instance of this cell's message's last character index.
+                    writer.Write((ushort)(Data[sheetIndex].Cells[cellIndex].Message.Length - 1));
 
-                    // Write an unknown value of 0x03.
+                    // Write an unknown value that is always 0x03.
                     writer.Write(0x03);
 
-                    // Write four null bytes.
-                    writer.WriteNulls(0x04);
+                    // Write an unknown value that is always 0.
+                    writer.Write(0);
                 }
             }
 
-            // Loop through and write each remap entry.
-            for (int categoryIndex = 0; categoryIndex < Data.Categories.Count; categoryIndex++)
+            // Loop through each sheet in this file.
+            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
             {
-                for (int messageIndex = 0; messageIndex < Data.Categories[categoryIndex].Messages.Count; messageIndex++)
+                // Loop through each cell in this sheet.
+                for (int cellIndex = 0; cellIndex < Data[sheetIndex].Cells.Length; cellIndex++)
                 {
-                    // Only do this if this message actually has a remap entry.
-                    if (Data.Categories[categoryIndex].Messages[messageIndex].Remaps != null)
+                    // Only write any data here if this cell has remap values.
+                    if (Data[sheetIndex].Cells[cellIndex].Remaps != null)
                     {
-                        // Fill in this message's remap offset.
-                        writer.FillInOffset($"Category{categoryIndex}Message{messageIndex}Remaps", false, false);
+                        // Fill in the offset for this cell's remap table.
+                        writer.FillInOffset($"Sheet{sheetIndex}Cell{cellIndex}RemapTableOffset", false);
 
-                        // Add an offset table for this message's remap entries.
-                        writer.AddOffsetTable($"Category{categoryIndex}Message{messageIndex}RemapEntries", (uint)Data.Categories[categoryIndex].Messages[messageIndex].Remaps.Count);
+                        // Loop through and add an offset for each remap entry in this cell.
+                        for (int remapIndex = 0; remapIndex < Data[sheetIndex].Cells[cellIndex].Remaps.Length; remapIndex++)
+                            writer.AddOffset($"Sheet{sheetIndex}Cell{cellIndex}Remap{remapIndex}Offset");
 
-                        // Loop through each of this message's remaps.
-                        for (int remapIndex = 0; remapIndex < Data.Categories[categoryIndex].Messages[messageIndex].Remaps.Count; remapIndex++)
+                        // Loop through each remap entry in this cell.
+                        for (int remapIndex = 0; remapIndex < Data[sheetIndex].Cells[cellIndex].Remaps.Length; remapIndex++)
                         {
-                            // Fill in this remap entry's offset.
-                            writer.FillInOffset($"Category{categoryIndex}Message{messageIndex}RemapEntries_{remapIndex}", false, false);
+                            // Fill in the offset for this remap entry.
+                            writer.FillInOffset($"Sheet{sheetIndex}Cell{cellIndex}Remap{remapIndex}Offset", false);
 
-                            // Write this remap's character index.
-                            writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].CharacterIndex);
+                            // Write this remap entry's character index.
+                            writer.Write(Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].CharacterIndex);
 
-                            // Write this remap's unknown short value.
-                            writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].UnknownUShort_1);
+                            // Write this remap entry's unknown short value.
+                            writer.Write(Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].UnknownUShort_1);
 
-                            //Write the type index and data for this remap.
-                            if (Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].RemapData.GetType() == typeof(byte[]))
+                            // Determine and write the type index and data for this remap.
+                            if (Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].RemapData.GetType() == typeof(byte[]))
                             {
                                 writer.Write(0x04);
-                                writer.Write((byte[])Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].RemapData);
+                                writer.Write((byte[])Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].RemapData);
                             }
-                            if (Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].RemapData.GetType() == typeof(uint))
+                            if (Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].RemapData.GetType() == typeof(uint))
                             {
                                 writer.Write(0x05);
-                                writer.Write((uint)Data.Categories[categoryIndex].Messages[messageIndex].Remaps[remapIndex].RemapData);
+                                writer.Write((uint)Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].RemapData);
                             }
                         }
                     }
                 }
             }
 
-            // Loop through and write each UTF16 encoded message.
-            for (int categoryIndex = 0; categoryIndex < Data.Categories.Count; categoryIndex++)
+            // Loop through each sheet in this file.
+            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
             {
-                for (int messageIndex = 0; messageIndex < Data.Categories[categoryIndex].Messages.Count; messageIndex++)
+                // Loop through each cell in this sheet.
+                for (int cellIndex = 0; cellIndex < Data[sheetIndex].Cells.Length; cellIndex++)
                 {
-                    // Fill in this message's offset.
-                    writer.FillInOffset($"Category{categoryIndex}Message{messageIndex}Message", false, false);
+                    // Fill in this cell's message offset.
+                    writer.FillInOffset($"Sheet{sheetIndex}Cell{cellIndex}MessageOffset", false);
 
-                    // Write the UTF16 encoded text for this message.
-                    writer.WriteNullTerminatedStringUTF16(Data.Categories[categoryIndex].Messages[messageIndex].Message);
+                    // Write the UTF-16 encoded text for this message.
+                    writer.WriteNullTerminatedStringUTF16(Data[sheetIndex].Cells[cellIndex].Message);
                 }
             }
 
             // Finish writing the BINA information.
             writer.FinishWrite(Header);
 
-            // Close HedgeLib#'s BINAWriter for the gismod file.
+            // Close HedgeLib#'s BINAWriter.
             writer.Close();
         }
     }

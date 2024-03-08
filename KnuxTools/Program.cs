@@ -1225,7 +1225,7 @@ namespace KnuxTools
                     Console.WriteLine("Converting JSON to Hedgehog Engine 2013 Message Table.");
                     using (KnuxLib.Engines.Hedgehog.MessageTable_2013 messageTable_2013 = new())
                     {
-                        messageTable_2013.Data = messageTable_2013.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2013.FormatData>(arg);
+                        messageTable_2013.Data = messageTable_2013.JsonDeserialise<KnuxLib.Engines.Hedgehog.MessageTable_2013.Sheet[]>(arg);
                         messageTable_2013.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.xtb2");
                     }
                     break;
