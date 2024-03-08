@@ -126,8 +126,6 @@ namespace KnuxLib.HSON
             /// </summary>
             [JsonProperty(Order = 7, PropertyName = "descriptions")]
             public Dictionary<string, string> Descriptions { get; set; } = new();
-
-            public override string ToString() => Name;
         }
 
         public class HSONObject
@@ -143,8 +141,6 @@ namespace KnuxLib.HSON
             /// </summary>
             [JsonProperty(Order = 2, PropertyName = "category")]
             public string Category { get; set; } = "";
-
-            public override string ToString() => ObjectStruct;
         }
 
         // Actual data presented to the end user.
