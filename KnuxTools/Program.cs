@@ -106,6 +106,7 @@ namespace KnuxTools
                 Console.WriteLine("Hedgehog Engine:");
                 Console.WriteLine("Archive Info (.arcinfo)");
                 Console.WriteLine("Bullet Skeleton (.skl.pxd)");
+                ColourConsole("Cloud Instance");
                 ColourConsole("2010 Collision (.orc) - Converts to an OBJ with the same name as the input file (importing and saving not yet possible). ");
                 ColourConsole("Rangers Collision (.btmesh) - Converts to an OBJ with the same name as the input file (importing and saving not yet possible, point cloud instancing is also ignored).");
                 ColourConsole("Rangers Skinned Collision (.btsmc) - Converts to an OBJ with the same name as the input file (importing not yet possible).");
@@ -992,6 +993,20 @@ namespace KnuxTools
                 #endregion
 
                 #region Hedgehog Engine formats.
+                case "":
+                    Console.WriteLine("Converting Hedgehog Engine Cloud Instance to JSON.");
+                    using (KnuxLib.Engines.Hedgehog.Cloud cloud = new(arg, true))
+                    break;
+
+                case ".hedgehog.cloud.json":
+                    Console.WriteLine("Converting JSON to Hedgehog Engine Cloud Instance.");
+                    using (KnuxLib.Engines.Hedgehog.Cloud cloud = new())
+                    {
+                        cloud.Data = cloud.JsonDeserialise<KnuxLib.Engines.Hedgehog.Cloud.FormatData>(arg);
+                        cloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}");
+                    }
+                    break;
+
                 case ".arcinfo":
                     Console.WriteLine("Converting Hedgehog Engine Archive Info to JSON.");
                     using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true))
