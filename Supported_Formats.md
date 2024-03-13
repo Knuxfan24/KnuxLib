@@ -134,7 +134,7 @@ Supported formats:
 > **Note**
 > Has an unknown value.
 
-- [Sector Visibility Collision (.svcol.bin)](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision.cs) reading, writing, JSON serialisation and JSON deserialisation.
+- [Sector Visibility Collision (.svcol.bin)](KnuxLib/Engines/Hedgehog/SectorVisibilityCollision_Wars.cs) reading, writing, JSON serialisation and JSON deserialisation.
 
 > **Note**
 > Has an unknown value.
@@ -211,6 +211,11 @@ Known games:
 - Sonic and the Black Knight (Wii)
 
 Supported formats:
+
+- [Light Field (.bin)](KnuxLib/Engines/Storybook/LightField.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> Has a few unknown values.
 
 - [Message Table (Secret Rings) (.mtx)](KnuxLib/Engines/Storybook/ONE.cs) reading, writing, JSON serialisation and JSON deserialisation.
 

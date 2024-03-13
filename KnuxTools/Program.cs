@@ -166,6 +166,8 @@ namespace KnuxTools
                 ColourConsole("    Extension Flag (Legacy Collection 2) - 31BF570E\n", true, ConsoleColor.Yellow);
 
                 Console.WriteLine("Sonic Storybook Engine:");
+                Console.WriteLine("Light Field (.bin)");
+                ColourConsole("    Version Flag - storybook_lightfield", true, ConsoleColor.Yellow);
                 Console.WriteLine("Message Table (Secret Rings) (.mtx)");
                 ColourConsole("    Version Flag (English (and other languages)) - international", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Japanese) - japanese", true, ConsoleColor.Yellow);
@@ -648,12 +650,13 @@ namespace KnuxTools
                     version = NoVersionChecker(version,
                                                "This file has multiple variants that can't be auto detected, please specifiy the variant:",
                                                new List<string> { "flipnic\t\t\t(Flipnic Binary Archive File)",
+                                                                  "storybook_lightfield\t(Sonic Storybook Engine Light Field File)",
                                                                   "storybook_motion\t\t(Sonic Storybook Engine Player Motion File)",
                                                                   "storybook_set_sr\t\t(Sonic Storybook Engine Stage Entity Table File (Secret Rings)",
                                                                   "storybook_set_bk\t\t(Sonic Storybook Engine Stage Entity Table File (Black Knight)",
                                                                   "storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))",
                                                                   "storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))"},
-                                               new List<bool> { true, true, true, true, false, false });
+                                               new List<bool> { true, false, true, true, true, false, false });
 
                     // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
@@ -666,6 +669,12 @@ namespace KnuxTools
                         case "flipnic":
                             Console.WriteLine("Extracting Flipnic Engine binary archive.");
                             using (KnuxLib.Engines.Flipnic.BinaryArchive bin = new(arg, true))
+                            break;
+
+                        // Sonic Storybook Engine Player Light Field.
+                        case "storybook_lightfield":
+                            Console.WriteLine("Converting Sonic Storybook Engine Light Field to JSON.");
+                            using (KnuxLib.Engines.Storybook.LightField lightField = new(arg, true))
                             break;
 
                         // Sonic Storybook Engine Player Motion Tables.
@@ -1376,14 +1385,14 @@ namespace KnuxTools
 
                 case ".svcol.bin":
                     Console.WriteLine("Converting Hedgehog Engine Sector Visiblity Collision to JSON.");
-                    using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new(arg, true))
+                    using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars sectorVisibilityCollision = new(arg, true))
                     break;
 
                 case ".hedgehog.sectorvisiblitycollision.json":
                     Console.WriteLine("Converting JSON to Hedgehog Engine Sector Visiblity Collision.");
-                    using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision sectorVisibilityCollision = new())
+                    using (KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars sectorVisibilityCollision = new())
                     {
-                        sectorVisibilityCollision.Data = sectorVisibilityCollision.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.SectorVisibilityCollision.SectorVisibilityShape>>(arg);
+                        sectorVisibilityCollision.Data = sectorVisibilityCollision.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars.SectorVisibilityShape>>(arg);
                         sectorVisibilityCollision.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.svcol.bin");
                     }
                     break;
@@ -1706,6 +1715,15 @@ namespace KnuxTools
                 #endregion
 
                 #region Sonic Storybook Engine formats.
+                case ".storybook.lightfield.json":
+                    Console.WriteLine("Converting JSON to Sonic Storybook Engine Light Field.");
+                    using (KnuxLib.Engines.Storybook.LightField lightField = new())
+                    {
+                        lightField.Data = lightField.JsonDeserialise<KnuxLib.Engines.Storybook.LightField.FormatData>(arg);
+                        lightField.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.BIN");
+                    }
+                    break;
+
                 case ".mtx":
                     // Carry out a version check.
                     version = NoVersionChecker(version,
