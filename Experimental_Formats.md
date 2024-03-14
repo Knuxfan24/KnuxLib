@@ -66,6 +66,8 @@ The following formats are only partially supported, either due to missing functi
 
 - [Stage Entity Table (.bin)](KnuxLib/Engines/Storybook/StageEntityTable.cs). Has a lot of little unknown values and lacks proper object parameters names and types, the HSON template sheet I've created only reads things as either a uint or a float, so if something is actually a different data type it won't be parsed correctly.
 
+- [Visibility Table (.bin)](KnuxLib/Engines/Storybook/VisibilityTable.cs). Has a couple of unknown values. Unfortunately one of said unknown values is a set of floats that seems to actually control the block's size, so working with this format is a bit of a bitch right now because of it.
+
 ## Sonic World Adventure Wii Engine
 
 - [Path Spline (.path.dat)](KnuxLib/Engines/WorldAdventureWii/PathSpline.cs). Only has reading and writing with a lot of unknowns. Completely lacking an Import or Export (other than generic JSON serialisation) function.

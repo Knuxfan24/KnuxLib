@@ -185,7 +185,10 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (Sonic and the Secret Rings) - storybook_setitems_sr", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Sonic and the Black Knight) - storybook_setitems_bk", true, ConsoleColor.Yellow);
                 Console.WriteLine("Texture Directory (.txd) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
-                ColourConsole("    Version Flag - storybook_texture\n", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag - storybook_texture", true, ConsoleColor.Yellow);
+                ColourConsole("Visibility Table (.bin)");
+                ColourConsole("    Version Flag (Sonic and the Secret Rings) - storybook_visibility_sr", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Sonic and the Black Knight) - storybook_visibility_bk\n", true, ConsoleColor.Yellow);
 
                 Console.WriteLine("Sonic The Portable Engine:");
                 Console.WriteLine("AMB Archive (.amb) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
@@ -655,8 +658,10 @@ namespace KnuxTools
                                                                   "storybook_set_sr\t\t(Sonic Storybook Engine Stage Entity Table File (Secret Rings)",
                                                                   "storybook_set_bk\t\t(Sonic Storybook Engine Stage Entity Table File (Black Knight)",
                                                                   "storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))",
-                                                                  "storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))"},
-                                               new List<bool> { true, false, true, true, true, false, false });
+                                                                  "storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))",
+                                                                  "storybook_visibility_sr\t(Sonic Storybook Engine Visibility Table File (Secret Rings))",
+                                                                  "storybook_visibility_bk\t(Sonic Storybook Engine Visibility Table File (Black Knight))"},
+                                               new List<bool> { true, false, true, true, true, false, false, true, true });
 
                     // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
@@ -735,6 +740,18 @@ namespace KnuxTools
                         case "storybook_setitems_bk":
                             Console.WriteLine("Converting Sonic Storybook Engine Stage Entity Table Object Table to JSON.");
                             using (KnuxLib.Engines.Storybook.StageEntityTableItems setItems = new(arg, KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight, true))
+                            break;
+
+                        // Sonic Storybook Visibility Tables (Sonic and the Secret Rings Version).
+                        case "storybook_visibility_sr":
+                            Console.WriteLine("Converting Sonic Storybook Visibility Table to JSON.");
+                            using (KnuxLib.Engines.Storybook.VisibilityTable visibilityTable = new(arg, KnuxLib.Engines.Storybook.VisibilityTable.FormatVersion.SecretRings, true))
+                            break;
+
+                        // Sonic Storybook Visibility Tables (Sonic and the Black Knight Version).
+                        case "storybook_visibility_bk":
+                            Console.WriteLine("Converting Sonic Storybook Visibility Table to JSON.");
+                            using (KnuxLib.Engines.Storybook.VisibilityTable visibilityTable = new(arg, KnuxLib.Engines.Storybook.VisibilityTable.FormatVersion.BlackKnight, true))
                             break;
 
                         // If a command line argument without a corresponding format has been passed, then inform the user and abort.
@@ -1870,6 +1887,47 @@ namespace KnuxTools
                             {
                                 setItems.Data = setItems.JsonDeserialise<KnuxLib.Engines.Storybook.StageEntityTableItems.FormatData>(arg);
                                 setItems.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.StageEntityTableItems.FormatVersion.BlackKnight);
+                            }
+                            break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Sonic Storybook Engine Stage Entity Table types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
+                    break;
+
+                case ".storybook.visibilitytable.json":
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "secretrings\t\t(Sonic and the Secret Rings)",
+                                                                  "blackknight\t\t(Sonic and the Black Knight)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
+
+                    Console.WriteLine("Converting JSON to Sonic Storybook Engine Visibility Table.");
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
+                    {
+                        case "secretrings":
+                            using (KnuxLib.Engines.Storybook.VisibilityTable visibilityTable = new())
+                            {
+                                visibilityTable.Data = visibilityTable.JsonDeserialise<KnuxLib.Engines.Storybook.VisibilityTable.VisibilityBlock[]>(arg);
+                                visibilityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.VisibilityTable.FormatVersion.SecretRings);
+                            }
+                            break;
+
+                        case "blackknight":
+                            using (KnuxLib.Engines.Storybook.VisibilityTable visibilityTable = new())
+                            {
+                                visibilityTable.Data = visibilityTable.JsonDeserialise<KnuxLib.Engines.Storybook.VisibilityTable.VisibilityBlock[]>(arg);
+                                visibilityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", KnuxLib.Engines.Storybook.VisibilityTable.FormatVersion.BlackKnight);
                             }
                             break;
 

@@ -189,14 +189,14 @@ namespace KnuxLib.Engines.Storybook
             uint lightFieldTableOffset = reader.ReadUInt32();
 
             // Read the count of axis aligned bounding boxes in this file.
-            uint axisAlignedBoundingBoxTableCount = reader.ReadUInt32();
+            uint axisAlignedBoundingBoxCount = reader.ReadUInt32();
 
             // Read the offset to this file's axis aligned bounding box table.
             uint axisAlignedBoundingBoxTableOffset = reader.ReadUInt32();
 
             // Initalise the light field and axis aligned bounding box arrays.
             Data.LightFields = new LightFieldEntry[lightFieldCount];
-            Data.AxisAlignedBoundingBoxes = new LightFieldAxisAlignedBoundingBox[axisAlignedBoundingBoxTableCount];
+            Data.AxisAlignedBoundingBoxes = new LightFieldAxisAlignedBoundingBox[axisAlignedBoundingBoxCount];
 
             // Jump to this file's light field table.
             reader.JumpTo(lightFieldTableOffset, true);
@@ -285,7 +285,7 @@ namespace KnuxLib.Engines.Storybook
             reader.JumpTo(axisAlignedBoundingBoxTableOffset, true);
 
             // Loop through each axis aligned bounding box.
-            for (int axisAlignedBoundingBoxTableIndex = 0; axisAlignedBoundingBoxTableIndex < axisAlignedBoundingBoxTableCount; axisAlignedBoundingBoxTableIndex++)
+            for (int axisAlignedBoundingBoxTableIndex = 0; axisAlignedBoundingBoxTableIndex < axisAlignedBoundingBoxCount; axisAlignedBoundingBoxTableIndex++)
             {
                 // Set up a new axis aligned bounding box entry.
                 LightFieldAxisAlignedBoundingBox aabb = new();
