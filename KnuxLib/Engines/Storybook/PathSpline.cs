@@ -37,10 +37,9 @@ namespace KnuxLib.Engines.Storybook
         public class FormatData
         {
             /// <summary>
-            /// An unknown floating point value.
-            /// TODO: What is this?
+            /// The total distance this spline covers.
             /// </summary>
-            public float UnknownFloat_1 { get; set; }
+            public float TotalDistance { get; set; }
 
             /// <summary>
             /// This path's type.
@@ -56,6 +55,8 @@ namespace KnuxLib.Engines.Storybook
             /// The points that make up this path.
             /// </summary>
             public List<object> Points { get; set; } = new();
+
+            public override string ToString() => Name;
         }
 
         public class SplinePointType1
@@ -76,15 +77,24 @@ namespace KnuxLib.Engines.Storybook
         {
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this?
+            /// TODO: What is this? Seems to control rotation of the player in some way?
             /// </summary>
             public uint UnknownUInt32_1 { get; set; }
 
             /// <summary>
-            /// An unknown Vector3.
-            /// TODO: What is this? Seems to control how far away from the path the player can go.
+            /// The distance between this point and the next.
             /// </summary>
-            public Vector3 UnknownVector3_1 { get; set; }
+            public float Distance { get; set; }
+
+            /// <summary>
+            /// How far the player can deviate left and right from this point's center.
+            /// </summary>
+            public float Deviation { get; set; }
+
+            /// <summary>
+            /// This point's surface type.
+            /// </summary>
+            public uint Surface { get; set; }
 
             /// <summary>
             /// This point's in 3D space.
@@ -112,10 +122,19 @@ namespace KnuxLib.Engines.Storybook
             public Vector3 UnknownVector3_2 { get; set; }
 
             /// <summary>
-            /// An unknown Vector3.
-            /// TODO: What is this?
+            /// The distance between this point and the next.
             /// </summary>
-            public Vector3 UnknownVector3_3 { get; set; }
+            public float Distance { get; set; }
+
+            /// <summary>
+            /// How far the player can deviate left and right from this point's center.
+            /// </summary>
+            public float Deviation { get; set; }
+
+            /// <summary>
+            /// This point's surface type.
+            /// </summary>
+            public uint Surface { get; set; }
         }
 
         // Actual data presented to the end user.
@@ -138,7 +157,7 @@ namespace KnuxLib.Engines.Storybook
             ushort pointCount = reader.ReadUInt16();
 
             // Read this path's unknown floating point value.
-            Data.UnknownFloat_1 = reader.ReadSingle();
+            Data.TotalDistance = reader.ReadSingle();
 
             // Read the offset to this file's path table (always 0x10).
             uint pathTableOffset = reader.ReadUInt32();
@@ -176,7 +195,9 @@ namespace KnuxLib.Engines.Storybook
                         Data.Points.Add(new SplinePointType3()
                         {
                             UnknownUInt32_1 = reader.ReadUInt32(),
-                            UnknownVector3_1 = reader.ReadVector3(),
+                            Distance = reader.ReadSingle(),
+                            Deviation = reader.ReadSingle(),
+                            Surface = reader.ReadUInt32(),
                             Position = reader.ReadVector3()
                         });
                         break;
@@ -188,7 +209,9 @@ namespace KnuxLib.Engines.Storybook
                             Position = reader.ReadVector3(),
                             UnknownVector3_1 = reader.ReadVector3(),
                             UnknownVector3_2 = reader.ReadVector3(),
-                            UnknownVector3_3 = reader.ReadVector3()
+                            Distance = reader.ReadSingle(),
+                            Deviation = reader.ReadSingle(),
+                            Surface = reader.ReadUInt32()
                         });
                         break;
                 }
@@ -223,7 +246,7 @@ namespace KnuxLib.Engines.Storybook
             writer.Write((ushort)Data.Points.Count);
 
             // Write the unknown floating point value.
-            writer.Write(Data.UnknownFloat_1);
+            writer.Write(Data.TotalDistance);
 
             // Add an offset for the path table.
             writer.AddOffset("PathTableOffset");
@@ -254,16 +277,24 @@ namespace KnuxLib.Engines.Storybook
                         // Write this point's unknown floating point value.
                         writer.Write(((SplinePointType1)Data.Points[pointIndex]).UnknownFloat_1);
                         break;
+
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType3":
                         // Write this point's unknown integer value.
                         writer.Write(((SplinePointType3)Data.Points[pointIndex]).UnknownUInt32_1);
 
-                        // Write this point's unknown Vector3 value.
-                        writer.Write(((SplinePointType3)Data.Points[pointIndex]).UnknownVector3_1);
+                        // Write this point's distance value.
+                        writer.Write(((SplinePointType3)Data.Points[pointIndex]).Distance);
+
+                        // Write this point's deviation value.
+                        writer.Write(((SplinePointType3)Data.Points[pointIndex]).Deviation);
+
+                        // Write this point's surface type.
+                        writer.Write(((SplinePointType3)Data.Points[pointIndex]).Surface);
 
                         // Write this point's position.
                         writer.Write(((SplinePointType3)Data.Points[pointIndex]).Position);
                         break;
+
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType4":
                         // Write this point's position.
                         writer.Write(((SplinePointType4)Data.Points[pointIndex]).Position);
@@ -274,8 +305,14 @@ namespace KnuxLib.Engines.Storybook
                         // Write this point's second unknown Vector3 value.
                         writer.Write(((SplinePointType4)Data.Points[pointIndex]).UnknownVector3_2);
 
-                        // Write this point's third unknown Vector3 value.
-                        writer.Write(((SplinePointType4)Data.Points[pointIndex]).UnknownVector3_3);
+                        // Write this point's distance value.
+                        writer.Write(((SplinePointType4)Data.Points[pointIndex]).Distance);
+
+                        // Write this point's deviation value.
+                        writer.Write(((SplinePointType4)Data.Points[pointIndex]).Deviation);
+
+                        // Write this point's surface type.
+                        writer.Write(((SplinePointType4)Data.Points[pointIndex]).Surface);
                         break;
                 }
             }
@@ -304,9 +341,11 @@ namespace KnuxLib.Engines.Storybook
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType1":
                         obj.WriteLine($"v {((SplinePointType1)Data.Points[pointIndex]).Position.X} {((SplinePointType1)Data.Points[pointIndex]).Position.Y} {((SplinePointType1)Data.Points[pointIndex]).Position.Z}");
                         break;
+
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType3":
                         obj.WriteLine($"v {((SplinePointType3)Data.Points[pointIndex]).Position.X} {((SplinePointType3)Data.Points[pointIndex]).Position.Y} {((SplinePointType3)Data.Points[pointIndex]).Position.Z}");
                         break;
+
                     case "KnuxLib.Engines.Storybook.PathSpline+SplinePointType4":
                         obj.WriteLine($"v {((SplinePointType4)Data.Points[pointIndex]).Position.X} {((SplinePointType4)Data.Points[pointIndex]).Position.Y} {((SplinePointType4)Data.Points[pointIndex]).Position.Z}");
                         break;
