@@ -682,10 +682,10 @@ namespace KnuxTools
                             using (KnuxLib.Engines.Storybook.LightField lightField = new(arg, true))
                             break;
 
-                        // Sonic Storybook Engine Player Motion Tables.
+                        // Sonic Storybook Engine Motion Tables.
                         case "storybook_motion":
-                            Console.WriteLine("Converting Sonic Storybook Engine Player Motion Table to JSON.");
-                            using (KnuxLib.Engines.Storybook.PlayerMotionTable playerMotion = new(arg, true))
+                            Console.WriteLine("Converting Sonic Storybook Engine Motion Table to JSON.");
+                            using (KnuxLib.Engines.Storybook.MotionTable motion = new(arg, true))
                             break;
 
                         // Sonic Storybook Stage Entity Tables (Sonic and the Secret Rings Version).
@@ -1848,12 +1848,12 @@ namespace KnuxTools
                     }
                     break;
 
-                case ".storybook.playermotion.json":
+                case ".storybook.motion.json":
                     Console.WriteLine("Converting JSON to Sonic Storybook Engine Player Motion Table.");
-                    using (KnuxLib.Engines.Storybook.PlayerMotionTable playerMotion = new())
+                    using (KnuxLib.Engines.Storybook.MotionTable motion = new())
                     {
-                        playerMotion.Data = playerMotion.JsonDeserialise<List<KnuxLib.Engines.Storybook.PlayerMotionTable.MotionEntry>>(arg);
-                        playerMotion.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin");
+                        motion.Data = motion.JsonDeserialise<List<KnuxLib.Engines.Storybook.MotionTable.MotionEntry>>(arg);
+                        motion.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin");
                     }
                     break;
 

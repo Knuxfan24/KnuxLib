@@ -1,15 +1,15 @@
 ﻿namespace KnuxLib.Engines.Storybook
 {
-    public class PlayerMotionTable : FileBase
+    public class MotionTable : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
-        public PlayerMotionTable() { }
-        public PlayerMotionTable(string filepath, bool export = false)
+        public MotionTable() { }
+        public MotionTable(string filepath, bool export = false)
         {
             Load(filepath);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.storybook.playermotion.json", Data);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.storybook.motion.json", Data);
         }
 
         // Classes for this format.
