@@ -146,7 +146,7 @@ namespace KnuxLib.Engines.Wayforward
             // Store our current position to figure out how many bytes we need.
             paddingCount = writer.BaseStream.Position;
 
-            // Realign the writer. The actual files use question marks for this, but null bytes seem to work fine.
+            // Realign the writer.
             writer.FixPadding(0x10);
 
             // Calculate padding.
