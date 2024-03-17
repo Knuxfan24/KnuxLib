@@ -1,4 +1,6 @@
-﻿namespace KnuxLib.Engines.Wayforward
+﻿using System.Text.RegularExpressions;
+
+namespace KnuxLib.Engines.Wayforward
 {
     // Based on https://github.com/artlavrov/paktools
     // TODO: Rethink the Colon stuff, as some files in Half-Genie Hero imply sub directory support.
@@ -46,8 +48,7 @@
                 // Read this file's size.
                 int fileSize = reader.ReadInt32();
 
-                // Read this file's name.
-                // TODO: Properly handle file names.
+                // Read this file's name, replacing the first colon with a backslash.
                 string fileName = reader.ReadNullTerminatedString().Replace(':', '\\');
 
                 // Dirty hack to skip past the many padding ? bytes, as the amount of padding seems inconsistent?
@@ -107,6 +108,9 @@
             // Write the count of files in this package.
             writer.Write(Data.Count);
 
+            // Set up a value to track how much padding needs to be done.
+            long paddingCount;
+
             // Loop through and write each file entry.
             for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
             {
@@ -119,15 +123,14 @@
                 // Write the size of this file.
                 writer.Write(Data[dataIndex].Data.Length);
 
-                // Write this file's name, replacing the divider of sub directories with a colon.
-                // TODO: Figure out how this should actually be done.
-                writer.WriteNullTerminatedString(Data[dataIndex].Name.Replace('\\', ':'));
+                // Write this file's name, replacing the first sub directory divider with a colon.
+                writer.WriteNullTerminatedString(new Regex(Regex.Escape("\\")).Replace(Data[dataIndex].Name, ":", 1));
 
                 // Store our current position to figure out how many bytes we need.
-                long paddingCount = writer.BaseStream.Position;
+                paddingCount = writer.BaseStream.Position;
 
                 // Realign the writer.
-                writer.FixPadding(0x8);
+                writer.FixPadding(0x08);
 
                 // Calculate padding.
                 paddingCount = writer.BaseStream.Position - paddingCount;
@@ -140,8 +143,21 @@
                     writer.Write((byte)0x3F);
             }
 
+            // Store our current position to figure out how many bytes we need.
+            paddingCount = writer.BaseStream.Position;
+
             // Realign the writer. The actual files use question marks for this, but null bytes seem to work fine.
             writer.FixPadding(0x10);
+
+            // Calculate padding.
+            paddingCount = writer.BaseStream.Position - paddingCount;
+
+            // Jump back by the amount of padding bytes.
+            writer.BaseStream.Position -= paddingCount;
+
+            // Replace the padding bytes with question marks.
+            for (int paddingIndex = 0; paddingIndex < paddingCount; paddingIndex++)
+                writer.Write((byte)0x3F);
 
             // Fill in the offset for the file data table.
             writer.FillOffset("FileTable");
@@ -162,7 +178,7 @@
                 writer.Write(Data[dataIndex].Data);
 
                 // Store our current position to figure out how many bytes we need to pad by.
-                long paddingCount = writer.BaseStream.Position;
+                paddingCount = writer.BaseStream.Position;
 
                 // Realign the writer.
                 writer.FixPadding(0x10);
@@ -179,19 +195,19 @@
             }
 
             // Store our current position to figure out how many bytes we need to pad by.
-            long finalPaddingCount = writer.BaseStream.Position;
+            paddingCount = writer.BaseStream.Position;
 
             // Realign the writer.
             writer.FixPadding(0x40);
 
             // Calculate padding.
-            finalPaddingCount = writer.BaseStream.Position - finalPaddingCount;
+            paddingCount = writer.BaseStream.Position - paddingCount;
 
             // Jump back by the amount of padding bytes.
-            writer.BaseStream.Position -= finalPaddingCount;
+            writer.BaseStream.Position -= paddingCount;
 
             // Replace the padding bytes with question marks.
-            for (int paddingIndex = 0; paddingIndex < finalPaddingCount; paddingIndex++)
+            for (int paddingIndex = 0; paddingIndex < paddingCount; paddingIndex++)
                 writer.Write((byte)0x3F);
 
             // Close Marathon's BinaryWriter.
