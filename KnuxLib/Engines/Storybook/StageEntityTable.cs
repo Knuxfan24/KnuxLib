@@ -10,7 +10,7 @@ namespace KnuxLib.Engines.Storybook
         public StageEntityTable() { }
         public StageEntityTable(string filepath, string hsonPath, bool export = false, bool includePadding = false)
         {
-            Load(filepath, hsonPath);
+            Load(filepath, hsonPath, includePadding);
 
             if (export)
                 JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.storybook.stageentitytable.json", Data);
@@ -273,6 +273,18 @@ namespace KnuxLib.Engines.Storybook
                                         param.DataType = typeof(float);
                                         param.Data = reader.ReadSingle();
                                         break;
+                                    case "vector3":
+                                        param.DataType = typeof(Vector3);
+                                        param.Data = reader.ReadVector3();
+                                        break;
+                                    case "uint8":
+                                        param.DataType = typeof(byte);
+                                        param.Data = reader.ReadByte();
+                                        break;
+                                    case "uint16":
+                                        param.DataType = typeof(ushort);
+                                        param.Data = reader.ReadUInt16();
+                                        break;
                                     case "uint32":
                                         param.DataType = typeof(uint);
                                         param.Data = reader.ReadUInt32();
@@ -435,11 +447,26 @@ namespace KnuxLib.Engines.Storybook
                         // Make a reference to the object's struct. Just nicer than repeating this abomination of a line three times.
                         HSONTemplate.HSONStruct objStruct = templates.Data.Structs[templates.Data.Objects[objectType].ObjectStruct];
 
+                        byte parameterLength = 0;
+
                         // Check that this object actually has parameters and write the amount of them multiplied by 4.
                         if (objStruct.Fields != null)
-                            writer.Write((byte)(objStruct.Fields.Length * 0x04));
-                        else
-                            writer.Write((byte)0);
+                        {
+                            foreach (var parameter in objStruct.Fields)
+                            {
+                                switch (parameter.Type)
+                                {
+                                    case "float32": parameterLength += 4; break;
+                                    case "vector3": parameterLength += 12; break;
+                                    case "uint8": parameterLength += 1; break;
+                                    case "uint16": parameterLength += 2; break;
+                                    case "uint32": parameterLength += 4; break;
+                                    default: throw new NotImplementedException();
+                                }
+                            }
+                        }
+
+                        writer.Write(parameterLength);
                     }
 
                     // If this object doesn't exist in the templates, then just write the amount of parameters.
@@ -493,7 +520,10 @@ namespace KnuxLib.Engines.Storybook
                                         switch (objStruct.Fields[hsonParameterIndex].Type)
                                         {
                                             case "float32": writer.Write(Convert.ToSingle(param.Data)); break;
-                                            case "uint32": writer.Write(Convert.ToInt32(param.Data)); break;
+                                            case "vector3": writer.Write((Vector3)(param.Data)); break;
+                                            case "uint8": writer.Write(Convert.ToByte(param.Data)); break;
+                                            case "uint16": writer.Write(Convert.ToUInt16(param.Data)); break;
+                                            case "uint32": writer.Write(Convert.ToUInt32(param.Data)); break;
                                             default: throw new NotImplementedException();
                                         }
                                     }

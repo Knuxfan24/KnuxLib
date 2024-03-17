@@ -124,7 +124,7 @@ namespace KnuxLib.Engines.Wayforward
                 writer.Write(Data[dataIndex].Data.Length);
 
                 // Write this file's name, replacing the first sub directory divider with a colon.
-                writer.WriteNullTerminatedString(new Regex(Regex.Escape("\\")).Replace(Data[dataIndex].Name, ":", 1));
+                writer.WriteNullTerminatedString(new Regex(Regex.Escape("\\")).Replace(Data[dataIndex].Name, ":", 1).Replace('/', '\\'));
 
                 // Store our current position to figure out how many bytes we need.
                 paddingCount = writer.BaseStream.Position;
