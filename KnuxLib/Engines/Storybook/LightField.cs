@@ -62,10 +62,10 @@ namespace KnuxLib.Engines.Storybook
             public byte AxisAlignedBoundingBoxIndex { get; set; }
 
             /// <summary>
-            /// An unknown byte value.
+            /// An unknown short value.
             /// TODO: What is this?
             /// </summary>
-            public byte UnknownByte_1 { get; set; }
+            public ushort UnknownUShort_1 { get; set; }
 
             /// <summary>
             /// This object's scale, differs in type depending on the shape.
@@ -84,9 +84,9 @@ namespace KnuxLib.Engines.Storybook
 
             /// <summary>
             /// An unknown integer value.
-            /// TODO: What is this? Light Index? Need to RE the LIGHT.BIN format for that.
+            /// TODO: What is this? Light Index? Would need to RE the LIGHT.BIN format for that.
             /// </summary>
-            public uint UnknownUInt32_1 { get; set; }
+            public int UnknownInt32_1 { get; set; }
 
             public override string ToString() => Name.ToString();
         }
@@ -137,13 +137,13 @@ namespace KnuxLib.Engines.Storybook
             /// Index to the left node in the Light Field AABB tree.
             /// https://hedgedocs.com/docs/hedgehog-engine/sonic2010/files/lightfield/
             /// </summary>
-            public uint LeftNodeIndex { get; set; }
+            public int LeftNodeIndex { get; set; }
 
             /// <summary>
             /// Index to the right node in the Light Field AABB tree. If leftNodeIndex is 0, this field serves as an index back into the Light Field object array.
             /// https://hedgedocs.com/docs/hedgehog-engine/sonic2010/files/lightfield/
             /// </summary>
-            public uint RightNodeIndex { get; set; }
+            public int RightNodeIndex { get; set; }
 
             /// <summary>
             /// The actual axis aligned bounding box for this entry.
@@ -216,11 +216,8 @@ namespace KnuxLib.Engines.Storybook
                 // Read the index for this light field's axis aligned bounding box.
                 lightField.AxisAlignedBoundingBoxIndex = reader.ReadByte();
 
-                // Skip an unknown value that is always 0.
-                reader.JumpAhead(0x01);
-
-                // Read this light field's unknown byte value.
-                lightField.UnknownByte_1 = reader.ReadByte();
+                // Read this light field's unknown short value.
+                lightField.UnknownUShort_1 = reader.ReadUInt16();
 
                 // Read this light field's scale, depending on its shape.
                 switch (lightField.Shape)
@@ -275,7 +272,7 @@ namespace KnuxLib.Engines.Storybook
                 lightField.Rotation = reader.ReadQuaternion();
 
                 // Read this light field's unknown integer value.
-                lightField.UnknownUInt32_1 = reader.ReadUInt32();
+                lightField.UnknownInt32_1 = reader.ReadInt32();
 
                 // Save this light field.
                 Data.LightFields[lightFieldIndex] = lightField;
@@ -291,10 +288,10 @@ namespace KnuxLib.Engines.Storybook
                 LightFieldAxisAlignedBoundingBox aabb = new();
 
                 // Read this axis aligned bounding box's left node index.
-                aabb.LeftNodeIndex = reader.ReadUInt32();
+                aabb.LeftNodeIndex = reader.ReadInt32();
 
                 // Read this axis aligned bounding box's right node index.
-                aabb.RightNodeIndex = reader.ReadUInt32();
+                aabb.RightNodeIndex = reader.ReadInt32();
 
                 // Read this axis aligned bounding box.
                 aabb.AxisAlignedBoundingBox.Min = reader.ReadVector3();
@@ -353,11 +350,8 @@ namespace KnuxLib.Engines.Storybook
                 // Write this light field's axis aligned bounding box index.
                 writer.Write(Data.LightFields[lightFieldIndex].AxisAlignedBoundingBoxIndex);
 
-                // Write an unknown value of 0.
-                writer.Write((byte)0);
-
-                // Write this light field's unknown byte value.
-                writer.Write(Data.LightFields[lightFieldIndex].UnknownByte_1);
+                // Write this light field's unknown short value.
+                writer.Write(Data.LightFields[lightFieldIndex].UnknownUShort_1);
 
                 // If this light field's scale is a JObject, then we need to manually convert its values.
                 if (Data.LightFields[lightFieldIndex].Scale.GetType() == typeof(Newtonsoft.Json.Linq.JObject))
@@ -444,7 +438,7 @@ namespace KnuxLib.Engines.Storybook
                 Helpers.WriteHedgeLibQuaternion(writer, Data.LightFields[lightFieldIndex].Rotation);
 
                 // Write this light field's unknown integer value.
-                writer.Write(Data.LightFields[lightFieldIndex].UnknownUInt32_1);
+                writer.Write(Data.LightFields[lightFieldIndex].UnknownInt32_1);
 
                 // If this is the final light field in this file, then realign to 0x10 bytes.
                 if (lightFieldIndex == Data.LightFields.Length - 1)
