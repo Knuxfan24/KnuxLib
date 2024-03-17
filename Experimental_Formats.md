@@ -60,9 +60,9 @@ The following formats are only partially supported, either due to missing functi
 
 ## Sonic Storybook Engine
 
-- [Path Spline (.pth)](KnuxLib/Engines/Storybook/PathSpline.cs). Has reading and writing with a lot of unknown values and basic OBJ exporting.
+- [Motion Table (.bin)](KnuxLib/Engines/Storybook/MotionTable.cs). Entirely functional besides quite a few values being unknown.
 
-- [Player Motion Table (.bin)](KnuxLib/Engines/Storybook/PlayerMotionTable.cs). Entirely functional besides quite a few values being unknown.
+- [Path Spline (.pth)](KnuxLib/Engines/Storybook/PathSpline.cs). Has reading and writing with a lot of unknown values and basic OBJ exporting.
 
 - [Stage Entity Table (.bin)](KnuxLib/Engines/Storybook/StageEntityTable.cs). Has a lot of little unknown values and lacks proper object parameters names and types, the HSON template sheet I've created only reads things as either a uint or a float, so if something is actually a different data type it won't be parsed correctly.
 
