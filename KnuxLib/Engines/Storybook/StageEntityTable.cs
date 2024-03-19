@@ -13,7 +13,7 @@ namespace KnuxLib.Engines.Storybook
             Load(filepath, hsonPath, includePadding);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.storybook.stageentitytable.json", Data);
+                ExportHSON($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hson", hsonPath, Path.GetFileNameWithoutExtension(filepath), Environment.UserName, $"Autoconverted from {filepath}");
         }
 
         // Classes for this format.
@@ -601,6 +601,25 @@ namespace KnuxLib.Engines.Storybook
                                     switch (objStruct.Fields[hsonParameterIndex].Type)
                                     {
                                         case "float32": hsonObject.LocalParameters.Add(param.Name, new Parameter((float)param.Data)); break;
+
+                                        case "vector3":
+                                            // Read this parameter's value as a Vector3.
+                                            Vector3 parameterAsVector3 = (Vector3)param.Data;
+
+                                            // Create a parameter with the array type.
+                                            Parameter hsonParameterVector3 = new(ParameterType.Array);
+
+                                            // Add the X, Y and Z values from the Vector3 as individual parameters to the parameter array.
+                                            hsonParameterVector3.ValueArray.Add(new Parameter(parameterAsVector3.X));
+                                            hsonParameterVector3.ValueArray.Add(new Parameter(parameterAsVector3.Y));
+                                            hsonParameterVector3.ValueArray.Add(new Parameter(parameterAsVector3.Z));
+
+                                            // Add the array as a HSON parameter.
+                                            hsonObject.LocalParameters.Add(param.Name, hsonParameterVector3);
+                                            break;
+
+                                        case "uint8": hsonObject.LocalParameters.Add(param.Name, new Parameter((byte)param.Data)); break;
+                                        case "uint16": hsonObject.LocalParameters.Add(param.Name, new Parameter((ushort)param.Data)); break;
                                         case "uint32": hsonObject.LocalParameters.Add(param.Name, new Parameter((uint)param.Data)); break;
                                         default: throw new NotImplementedException();
                                     }
