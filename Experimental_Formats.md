@@ -28,7 +28,7 @@ The following formats are only partially supported, either due to missing functi
 
 - [Cloud Instance](KnuxLib/Engines/Hedgehog/Cloud.cs). Reads and writes the full file, but the purpose of the matrix for each instance and the two random floats at the end of the file are currently unknown.
 
-- [Density Setting (.densitsetting)](KnuxLib/Engines/Hedgehog/DensitySetting.cs) reading, JSON serialisation.
+- [Density Setting (.densitysetting)](KnuxLib/Engines/Hedgehog/DensitySetting.cs) reading, JSON serialisation.
 
 - [2010 Collision (.orc)](KnuxLib/Engines/Hedgehog/Collision_2010.cs). Only reads about half the format but does have an OBJ exporter that exports the basic collision geometry.
 
