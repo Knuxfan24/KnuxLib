@@ -10,7 +10,7 @@
             Load(filepath);
 
             if (export)
-                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.densitysetting.json", this);
+                JsonSerialise($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}.hedgehog.densitysetting.json", data);
         }
 
         // Classes for this format.
@@ -46,10 +46,10 @@
             public byte UnknownByte_3 { get; set; }
         }
 
-        public class UnknownStruct_1
+        public class LODItem
         {
-            public UInt32 UnknownUInt_0 { get; set; }
-            public float UnknownFloat_0 { get; set; }
+            public UInt32 ModelIndex { get; set; }
+            public float Distance { get; set; }
             public UInt32 UnknownUInt_1 { get; set; }
             public UInt32 UnknownUInt_2 { get; set; }
         }
@@ -96,23 +96,27 @@
             public string Name { get; set; } = "";
         }
 
-        // Actual data presented to the end user.
-        public float WorldSizeX;
-        public float WorldSizeY;
-        public UInt32 Count; // Still not sure on this one
-        public string AreaMap;
-        public string LayerMap;
-        public string ColorMap;
-        public string ScaleMap;
-        public List<DensityModel> DensityModels = new();
-        public List<UnknownStruct_0> UnknownStructs_0 = new();
-        public List<UnknownStruct_1> UnknownStructs_1 = new();
-        public List<UnknownStruct_2> UnknownStructs_2 = new();
-        public List<UnknownStruct_3> UnknownStructs_3 = new();
-        public List<IDItem> IDList = new();
-        /*public List<UnknownStruct_3> UnknownStructs_3 = new();*/ // This is another list of unknown structs, more info can be found in this template https://github.com/Ashrindy/AshDump/blob/main/010Templates/Sonic/Sonic%20Frontiers/ResDensitySetting.bt
-        public List<CollisionItem> CollisionData = new();
+        public class Data
+        {
+            public float WorldSizeX { get; set; } = 0;
+            public float WorldSizeY { get; set; } = 0;
+            public UInt32 ModelCount { get; set; } = 0; // Still not sure on this one
+            public string AreaMap { get; set; } = "";
+            public string LayerMap { get; set; } = "";
+            public string ColorMap { get; set; } = "";
+            public string ScaleMap { get; set; } = "";
+            public List<DensityModel> DensityModels = new();
+            public List<UnknownStruct_0> UnknownStructs_0 = new();
+            public List<LODItem> LODInfo = new();
+            public List<UnknownStruct_2> UnknownStructs_2 = new();
+            public List<UnknownStruct_3> UnknownStructs_3 = new();
+            public List<IDItem> IDList = new();
+            /*public List<UnknownStruct_3> UnknownStructs_3 = new();*/ // This is another list of unknown structs, more info can be found in this template https://github.com/Ashrindy/AshDump/blob/main/010Templates/Sonic/Sonic%20Frontiers/ResDensitySetting.bt
+            public List<CollisionItem> CollisionData = new();
+        }
 
+        // Actual data presented to the end user.
+        public Data data = new();
 
         // HedgeLib# BinaryReader specific variables.
         // Set up HedgeLib#'s BINAV2Header.
@@ -136,26 +140,27 @@
             if (signature != Signature)
                 throw new Exception($"Invalid signature, got '{signature}', expected '{Signature}'.");
 
-            reader.JumpAhead(4);
+            // Check this file version. Usually 11.
+            int version = reader.ReadInt32();
 
             // Get the world size (I would use vectors, but JSON doesn't support them)
-            WorldSizeX = reader.ReadSingle();
-            WorldSizeY = reader.ReadSingle();
+            data.WorldSizeX = reader.ReadSingle();
+            data.WorldSizeY = reader.ReadSingle();
 
             // Jump ahead an unknown value
             reader.JumpAhead(4);
 
             // Not 100% sure what this is, but it's mostly similar to the count of the models
-            Count = reader.ReadUInt32();
+            data.ModelCount = reader.ReadUInt32();
 
             // Jump ahead 32 UInt32's and 32 floats
             reader.JumpAhead(256);
 
             // Read all of the maps that the density uses
-            AreaMap = Helpers.ReadNullTerminatedStringTableEntry(reader);
-            LayerMap = Helpers.ReadNullTerminatedStringTableEntry(reader);
-            ColorMap = Helpers.ReadNullTerminatedStringTableEntry(reader);
-            ScaleMap = Helpers.ReadNullTerminatedStringTableEntry(reader);
+            data.AreaMap = Helpers.ReadNullTerminatedStringTableEntry(reader);
+            data.LayerMap = Helpers.ReadNullTerminatedStringTableEntry(reader);
+            data.ColorMap = Helpers.ReadNullTerminatedStringTableEntry(reader);
+            data.ScaleMap = Helpers.ReadNullTerminatedStringTableEntry(reader);
 
             // Read the density model names? I'm not sure what they really are.
             long StartOffset = reader.ReadInt64();
@@ -174,7 +179,7 @@
                     UnknownUInt_1 = reader.ReadUInt32(),
                 };
 
-                DensityModels.Add(densityModel);
+                data.DensityModels.Add(densityModel);
             }
 
             // Jump back to the offset table
@@ -215,13 +220,13 @@
                     UnknownByte_3 = reader.ReadByte(),
                 };
 
-                UnknownStructs_0.Add(unkStr_0);
+                data.UnknownStructs_0.Add(unkStr_0);
             }
 
             // Jump back to the offset table
             reader.JumpTo(PrePos, true);
 
-            // Read an Unknown Struct 1
+            // Read the LOD table
             StartOffset = reader.ReadInt64();
             Amount = reader.ReadInt64();
 
@@ -231,15 +236,15 @@
 
             for (int i = 0; i < Amount; i++)
             {
-                UnknownStruct_1 unkStr_1 = new()
+                LODItem lodItem = new()
                 {
-                    UnknownUInt_0 = reader.ReadUInt32(),
-                    UnknownFloat_0 = reader.ReadSingle(),
+                    ModelIndex = reader.ReadUInt32(),
+                    Distance = reader.ReadSingle(),
                     UnknownUInt_1 = reader.ReadUInt32(),
                     UnknownUInt_2 = reader.ReadUInt32(),
                 };
 
-                UnknownStructs_1.Add(unkStr_1);
+                data.LODInfo.Add(lodItem);
             }
 
             // Jump back to the offset table
@@ -263,7 +268,7 @@
                     UnknownUInt_3 = reader.ReadUInt32(),
                 };
 
-                UnknownStructs_2.Add(unkStr_2);
+                data.UnknownStructs_2.Add(unkStr_2);
             }
 
             // Jump back to the offset table
@@ -299,7 +304,7 @@
                     UnknownUInt_7 = reader.ReadUInt32(),
                 };
 
-                UnknownStructs_3.Add(unkStr_3);
+                data.UnknownStructs_3.Add(unkStr_3);
             }
 
             // Jump back to the offset table
@@ -324,7 +329,7 @@
                     UnknownFloat_1 = reader.ReadSingle(),
                 };
 
-                IDList.Add(idItem);
+                data.IDList.Add(idItem);
             }
 
             // Jump back to the offset table
@@ -348,7 +353,7 @@
                     Name = Helpers.ReadNullTerminatedStringTableEntry(reader),
                 };
 
-                CollisionData.Add(collisionItem);
+                data.CollisionData.Add(collisionItem);
             }
 
             // Close HedgeLib#'s BINAReader.
