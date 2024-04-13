@@ -270,6 +270,23 @@ Notes:
 
 - Uncertain if this is the engine's name.
 
+## Space Channel Engine
+
+Known games:
+
+- Space Channel 5 Part 2 (DC, PS2, PC, PS3, X360)
+
+Supported formats:
+
+- [Caption Table (.bin)](KnuxLib/Engines/SpaceChannel/CaptionTable.cs) reading, writing, JSON serialisation and JSON deserialisation.
+
+> **Note**
+> A single Japanese file doesn't write correctly.
+
+Notes:
+
+- Uncertain if this is the engine's name.
+
 ## Wayforward Engine
 
 Known games:

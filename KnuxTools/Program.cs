@@ -209,6 +209,9 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (PlayStation 2) - ps2", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Wii) - wii\n", true, ConsoleColor.Yellow);
 
+                Console.WriteLine("Space Channel Engine:");
+                Console.WriteLine("Caption Table (.bin)\n");
+
                 Console.WriteLine("Wayforward Engine:");
                 ColourConsole("Collision (.clb) - Converts to an OBJ format and imports from an Assimp compatible model.");
                 ColourConsole("    Version Flag (Ducktales Remastered) - wayforward_collision_duck", true, ConsoleColor.Yellow);
@@ -663,8 +666,9 @@ namespace KnuxTools
                                                                   "storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))",
                                                                   "storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))",
                                                                   "storybook_visibility_sr\t(Sonic Storybook Engine Visibility Table File (Secret Rings))",
-                                                                  "storybook_visibility_bk\t(Sonic Storybook Engine Visibility Table File (Black Knight))"},
-                                               new List<bool> { true, false, true, true, true, false, false, true, true });
+                                                                  "storybook_visibility_bk\t(Sonic Storybook Engine Visibility Table File (Black Knight))",
+                                                                  "spacechannel_caption\t(Space Channel Engine Caption Table)"},
+                                               new List<bool> { true, false, true, true, true, false, false, true, true, false });
 
                     // If the version is still null or empty, then abort.
                     if (string.IsNullOrEmpty(version))
@@ -755,6 +759,42 @@ namespace KnuxTools
                         case "storybook_visibility_bk":
                             Console.WriteLine("Converting Sonic Storybook Visibility Table to JSON.");
                             using (KnuxLib.Engines.Storybook.VisibilityTable visibilityTable = new(arg, KnuxLib.Engines.Storybook.VisibilityTable.FormatVersion.BlackKnight, true))
+                            break;
+
+                        case "spacechannel_caption":
+                            // Reset the version indicator.
+                            version = null;
+
+                            // Carry out a version check.
+                            version = NoVersionChecker(version,
+                                                       "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                                       new List<string> { "international\t(English and other languages)",
+                                                                          "japanese\t\t(Japanese)"},
+                                                       new List<bool> { false, false });
+
+                            // If the version is still null or empty, then abort.
+                            if (string.IsNullOrEmpty(version))
+                                return;
+
+                            Console.WriteLine("Converting Space Channel Engine Caption Table to JSON.");
+
+                            // Decide what to do based on the version value.
+                            switch (version.ToLower())
+                            {
+                                case "international":
+                                    using (KnuxLib.Engines.SpaceChannel.CaptionTable captionTable = new(arg, false, true))
+                                        break;
+
+                                case "japanese":
+                                    using (KnuxLib.Engines.SpaceChannel.CaptionTable captionTable = new(arg, true, true))
+                                        break;
+
+                                // If a command line argument without a corresponding format has been passed, then inform the user and abort.
+                                default:
+                                    Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Space Channel Caption Table types.\nPress any key to continue.");
+                                    Console.ReadKey();
+                                    return;
+                            }
                             break;
 
                         // If a command line argument without a corresponding format has been passed, then inform the user and abort.
@@ -2036,6 +2076,49 @@ namespace KnuxTools
                 case ".onz":
                     Console.WriteLine("Extracting Sonic World Adventure Wii Engine archive.");
                     using (KnuxLib.Engines.WorldAdventureWii.ONE onz = new(arg, true))
+                    break;
+                #endregion
+
+                #region Space Channel Engine formats.
+                case ".spacechannel.caption.json":
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant to save with:",
+                                               new List<string> { "international\t(English and other languages)",
+                                                                  "japanese\t\t(Japanese)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
+
+                    Console.WriteLine("Converting JSON to Space Channel Engine Caption Table.");
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
+                    {
+                        case "international":
+                            using (KnuxLib.Engines.SpaceChannel.CaptionTable captionTable = new())
+                            {
+                                captionTable.Data = captionTable.JsonDeserialise<List<string>>(arg);
+                                captionTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", false);
+                            }
+                            break;
+
+                        case "japanese":
+                            using (KnuxLib.Engines.SpaceChannel.CaptionTable captionTable = new())
+                            {
+                                captionTable.Data = captionTable.JsonDeserialise<List<string>>(arg);
+                                captionTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.bin", true);
+                            }
+                            break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Space Channel Engine Caption Table types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
                     break;
                 #endregion
 
