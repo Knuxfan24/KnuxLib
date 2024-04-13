@@ -147,6 +147,9 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (Gamecube) - gcn", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (PlayStation 2/Xbox) - ps2\n", true, ConsoleColor.Yellow);
 
+                Console.WriteLine("OpenSpace Engine:");
+                ColourConsole("Big File Archive (.bf/.dsc) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+
                 Console.WriteLine("PlayStation 2 Generic Formats:");
                 ColourConsole("Archive File System (.afs)\n");
 
@@ -1566,7 +1569,15 @@ namespace KnuxTools
                     }
                     break;
                 #endregion
-                    
+
+                #region OpenSpace Engine formats.
+                case ".bf":
+                case ".dsc":
+                    Console.WriteLine("Extracting OpenSpace Big File Archive.");
+                    using (KnuxLib.Engines.OpenSpace.BigFileArchive bf = new(arg, true))
+                    break;
+                #endregion
+
                 #region Playstation 2 generic formats.
                 case ".afs":
                     Console.WriteLine("Extracting PlayStation 2 Archive File System.");

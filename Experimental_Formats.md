@@ -38,6 +38,10 @@ The following formats are only partially supported, either due to missing functi
 
 - [Scene Effect Collision (.fxcol.bin/.fxcol)](KnuxLib/Engines/Hedgehog/SceneEffectCollision.cs). Has extremely basic reading and writing (which produces binary identical files to the originals), but the actual purpose of the data and their actual structures is yet to be researched.
 
+## OpenSpace
+
+- [Big File Archive (.bf/.dsc)](KnuxLib/Engines/OpenSpace/BigFileArchive.cs). Extracts, but has no saving support.
+
 ## PlayStation 2
 
 - [Archive File System (.afs)](KnuxLib/Engines/Playstation2/ArchiveFileSystem.cs). Doesn't read 0x10 bytes in the name table.

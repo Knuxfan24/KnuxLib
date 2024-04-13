@@ -1,8 +1,7 @@
 ﻿namespace KnuxLib.Engines.Alchemy
 {
-    // Based on https://wiki.xentax.com/index.php/Vicarious_Visions_GOB_GFC#GOB.2C_GFC
+    // Based on https://wiki.xentax.com/index.php/Vicarious_Visions_GOB_GFC#GOB.2C_GFC [dead link]
     // TODO: Format saving.
-    // TODO: Format importing.
     public class AssetsContainer : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
