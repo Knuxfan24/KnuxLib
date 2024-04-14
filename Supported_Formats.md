@@ -188,6 +188,20 @@ Notes:
 
 - Definitely used by other Travellers Tales games, but I have yet to obtain and look at them myself.
 
+## OpenSpace Engine
+
+Known games:
+
+- Rayman 2: The Great Escape (N64, PC, DC, PS1, PS2, DS, iOS, 3DS)
+
+Supported formats:
+
+- [Big File Archive (.bf/.dsc)](KnuxLib/Engines/OpenSpace/BigFileArchive.cs) reading, writing, data extraction and data importing.
+
+Notes:
+
+- Definitely used by other Ubisoft games, but I have yet to obtain and look at them myself.
+
 ## Project M Engine
 
 Known games:

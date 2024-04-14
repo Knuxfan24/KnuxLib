@@ -151,8 +151,8 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (PlayStation 2/Xbox) - ps2\n", true, ConsoleColor.Yellow);
 
                 Console.WriteLine("OpenSpace Engine:");
-                ColourConsole("Big File Archive (.bf/.dsc) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
-
+                Console.WriteLine("Big File Archive (.bf/.dsc) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
+                ColourConsole("    Version Flag - openspace_big\n", true, ConsoleColor.Yellow);
 
                 Console.WriteLine("Project M Engine:");
                 Console.WriteLine("Message Table (.dat) \n");
@@ -285,16 +285,17 @@ namespace KnuxTools
                                                           "capcomv9_uncompressed\t(Capcom MT Framework Engine (Version 9, No Compression))",
                                                           "hasbro_big\t\t\t(Hasbro Wii Engine Big File Archive)",
                                                           "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)",
+                                                          "openspace_big\t\t(OpenSpace Engine Big File Archive)",
                                                           "nights2\t\t\t(NiGHTS 2 Engine ONE File)",
-                                                          "storybook\t\t\t(Sonic Storybook Engine ONE File)",
-                                                          "storybook_texture\t\t(Sonic Storybook Engine TXD File)",
                                                           "portable\t\t\t(Sonic The Portable Engine AMB File)",
                                                           "portable_big-endian\t\t(Sonic The Portable Engine AMB File)",
+                                                          "storybook\t\t\t(Sonic Storybook Engine ONE File)",
+                                                          "storybook_texture\t\t(Sonic Storybook Engine TXD File)",
                                                           "swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)",
                                                           "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)",
                                                           "wayforward\t\t\t(Wayforward Engine PAK File)",
                                                           "yachtclub\t\t\t(Yacht Club Engine PAK File)"},
-                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, false, false, true },
+                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, false, false, false, true },
                                        "Archive Type");
 
             // If the version is still null or empty, then abort.
@@ -347,6 +348,12 @@ namespace KnuxTools
                 case "nights2":
                     Console.WriteLine("Packing directory for NiGHTS 2 Engine.");
                     ImportAndSaveArchive(typeof(KnuxLib.Engines.NiGHTS2.ONE), arg, "one");
+                    break;
+
+                // OpenSpace Engine Big File Archives.
+                case "openspace_big":
+                    Console.WriteLine("Packing directory for OpenSpace Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.OpenSpace.BigFileArchive), arg, "BF");
                     break;
 
                 // Sonic Storybook Series ONE Archives.
