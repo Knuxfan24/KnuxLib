@@ -90,6 +90,9 @@ namespace KnuxTools
                 Console.WriteLine("3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model.");
                 ColourConsole("    Version Flag (importing, shared with material library) - carz\n", true, ConsoleColor.Yellow);
 
+                Console.WriteLine("Criware:");
+                ColourConsole("Archive File System (.afs)\n");
+
                 Console.WriteLine("Flipnic Engine:");
                 ColourConsole("Binary Archive (.bin) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
 
@@ -150,8 +153,6 @@ namespace KnuxTools
                 Console.WriteLine("OpenSpace Engine:");
                 ColourConsole("Big File Archive (.bf/.dsc) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
 
-                Console.WriteLine("PlayStation 2 Generic Formats:");
-                ColourConsole("Archive File System (.afs)\n");
 
                 Console.WriteLine("Project M Engine:");
                 Console.WriteLine("Message Table (.dat) \n");
@@ -1014,6 +1015,13 @@ namespace KnuxTools
                     break;
                 #endregion
 
+                #region Criware formats.
+                case ".afs":
+                    Console.WriteLine("Extracting Criware Archive File System.");
+                    using (KnuxLib.Engines.Criware.ArchiveFileSystem afs = new(arg, true))
+                        break;
+                #endregion
+
                 #region GODS Engine formats.
                 case ".wad":
                     // Carry out a version check.
@@ -1615,13 +1623,6 @@ namespace KnuxTools
                 case ".dsc":
                     Console.WriteLine("Extracting OpenSpace Big File Archive.");
                     using (KnuxLib.Engines.OpenSpace.BigFileArchive bf = new(arg, true))
-                    break;
-                #endregion
-
-                #region Playstation 2 generic formats.
-                case ".afs":
-                    Console.WriteLine("Extracting PlayStation 2 Archive File System.");
-                    using (KnuxLib.Engines.Playstation2.ArchiveFileSystem afs = new(arg, true))
                     break;
                 #endregion
 

@@ -6,6 +6,10 @@ The following formats are only partially supported, either due to missing functi
 
 - [Map Collision (.hke)](KnuxLib/Engines/Alchemy/Collision.cs). There is currently a lot of unknown data in this format that would need to be reverse engineered properly for true support of the format. This format also currently lacks any form of Import function and only has a temporary OBJ export solution.
 
+## Criware
+
+- [Archive File System (.afs)](KnuxLib/Engines/Criware/ArchiveFileSystem.cs). Doesn't read 0x10 bytes in the name table and just writes nulls there as a placeholder.
+
 ## Engine Black
 
 - [Archive Data (.data)](KnuxLib/Engines/Black/DataArchive.cs). Currently reads, decompresses and exports data from the data archive found in Shantae and the Pirate's Curse. Writing hardcodes a sequence of 0x204 bytes near the start of the file and only has placeholders for another sequence later on, which leads to the game crashing on launch, replacing the sequence of placeholders with the original values seems to make the file work in game, although this hasn't been tested beyond the WayForward logo.
@@ -41,10 +45,6 @@ The following formats are only partially supported, either due to missing functi
 ## OpenSpace
 
 - [Big File Archive (.bf/.dsc)](KnuxLib/Engines/OpenSpace/BigFileArchive.cs). Extracts, but has no saving support.
-
-## PlayStation 2
-
-- [Archive File System (.afs)](KnuxLib/Engines/Playstation2/ArchiveFileSystem.cs). Doesn't read 0x10 bytes in the name table.
 
 ## Nu2 Engine
 

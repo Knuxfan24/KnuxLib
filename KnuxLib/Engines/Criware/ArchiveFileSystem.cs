@@ -1,4 +1,4 @@
-﻿namespace KnuxLib.Engines.Playstation2
+﻿namespace KnuxLib.Engines.Criware
 {
     // TODO: Figure out what the unknown bytes in the name table are.
     // TODO: Which name table position is the standard one?
