@@ -8,6 +8,7 @@ namespace KnuxLib.Engines.Nu2
     // TODO: Write a way to save this format.
     // TODO: Write a way to import models to this format.
     // TODO: Implement a way to decompress/recompress the PS2 version's RnC compression (https://segaretro.org/Rob_Northen_compression).
+    // TODO: See if replacing the old texture to PNG implementation with something that doesn't use ImageSharp?
     public class Scene : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.

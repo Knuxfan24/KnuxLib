@@ -30,7 +30,7 @@ namespace KnuxLib.Engines.Wayforward
         public enum Behaviour : ulong
         {
             // TODO: Split based on the format version like how the Hedgehog Engine Path Spline is.
-            // TODO: Figure out the unknown tags.
+            // TODO: Figure out the unknown tags, can the leaked source of Ducktales Remastered be used to figure out names?
             // TODO: Check the game specific ones in the other (just in case some HGH stuff works in SS and vice versa)
             Solid = 0x1,
             TopSolid = 0x2,

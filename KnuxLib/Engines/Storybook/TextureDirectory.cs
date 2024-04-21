@@ -1,6 +1,4 @@
-﻿using PuyoTools.Core.Textures.Gvr;
-
-namespace KnuxLib.Engines.Storybook
+﻿namespace KnuxLib.Engines.Storybook
 {
     public class TextureDirectory : FileBase
     {
@@ -111,46 +109,14 @@ namespace KnuxLib.Engines.Storybook
         }
 
         /// <summary>
-        /// Extracts the textures in this format to disc, converting them to pngs with PuyoTools by default.
+        /// Extracts the textures in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
         /// <param name="convert">Whether to convert the extracted .gvr files to .pngs.</param>
-        public void Extract(string directory, bool convert = true)
-        {
-            // If we're not converting the textures, then just use the standard extract archive function.
-            if (!convert)
-                Helpers.ExtractArchive(Data, directory, "storybook_texture", ".gvr");
-
-            // If we are converting them, then do the following.
-            else
-            {
-                // Create the directory specified.
-                Directory.CreateDirectory(directory);
-
-                // Loop through each texture.
-                foreach (FileNode texture in Data)
-                {
-                    // Print the name of the texture we're extracting, alongside the fact that it is getting converted.
-                    Console.WriteLine($"Extracting and converting {texture.Name}.");
-
-                    // Set up a MemoryStream with the texture's byte array.
-                    MemoryStream stream = new(texture.Data);
-
-                    // Set up a PuyoTools GvrTextureDecoder using the MemoryStream.
-                    GvrTextureDecoder decoder = new(stream);
-
-                    // Save the png data from the decoder.
-                    decoder.Save($@"{directory}\{texture}.png");
-                }
-
-                // Write the archive type identifier.
-                File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", "storybook_texture");
-            }
-        }
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "storybook_texture", ".gvr");
 
         /// <summary>
         /// Imports files from a directory into a texture directory.
-        /// TODO: See if I can make a way to auto convert pngs back to gvrs using PuyoTools?
         /// </summary>
         /// <param name="directory">The directory to import.</param>
         public void Import(string directory) => Data = Helpers.ImportArchive(directory, true);

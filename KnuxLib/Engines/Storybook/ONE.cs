@@ -1,4 +1,5 @@
-﻿using FraGag.Compression;
+﻿using AuroraLib.Compression;
+using AuroraLib.Compression.Algorithms;
 
 namespace KnuxLib.Engines.Storybook
 {
@@ -63,7 +64,7 @@ namespace KnuxLib.Engines.Storybook
                 Console.WriteLine($"Decompressing {node.Name}.");
 
                 // Read and decompress this file's data.
-                node.Data = Prs.Decompress(reader.ReadBytes(fileLength));
+                node.Data = new PRS().Decompress(reader.ReadBytes(fileLength));
 
                 // Jump back for the next file.
                 reader.JumpTo(position);
@@ -107,7 +108,7 @@ namespace KnuxLib.Engines.Storybook
                 Console.WriteLine($"Compressing {Data[dataIndex].Name}.");
 
                 // Compress this file's data.
-                CompressedData.Add(Prs.Compress(Data[dataIndex].Data));
+                CompressedData.Add(new PRS().Compress(Data[dataIndex].Data).ToArray());
 
                 // Write this file's name.
                 writer.WriteNullPaddedString(Data[dataIndex].Name, 0x20);

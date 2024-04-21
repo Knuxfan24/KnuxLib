@@ -3,9 +3,7 @@
 namespace KnuxLib.Engines.Wayforward
 {
     // Based on https://github.com/artlavrov/paktools
-    // TODO: Rethink the Colon stuff, as some files in Half-Genie Hero imply sub directory support.
-        // i.e. global:dialog/chapter0/magnet_delivery/intro_mimic.lua
-        // Not every file is just prefixed with the archive name, so that won't work as a solution.
+    // TODO: Handle big-endian files from the console (or just the Wii U?) versions.
     public class Package : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.

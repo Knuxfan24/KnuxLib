@@ -22,12 +22,12 @@ A developer looking to experiment with or contribute to the project will want to
 
 This repository also uses various other libraries as part of it, included as either a Nuget Package or a Git Submodule. These projects are:
 
+- [AuroraLib.Compression](https://github.com/Venomalia/AuroraLib.Compression) - Used for decompressing/recompressing PRS data in Sonic Storybook Engine ONE Archives and decompressing/recompressing LZ11 data in Sonic World Adventure Wii Engine ONZ Archives.
+
 - [libHSON-csharp](https://github.com/hedge-dev/libHSON-csharp) - Used for reading and writing HSON files.
 
 - [HedgeLib](https://github.com/Radfordhound/HedgeLib/tree/master) - Used for its BINAV2 Reader and Writer.
 
 - [Marathon](https://github.com/Big-Endian-32/Marathon) - Used for its BinaryReader and Writer.
 
-- [prs.net](https://github.com/FraGag/prs.net) - Used for decompressing/recompressing data in Sonic Storybook Engine ONE Archives.
-
-- [PuyoTools](https://github.com/nickworonekin/puyotools) - Used for decompressing/recompressing Sonic World Adventure Wii Engine ONZ Archives.
+- [SixLabors Image Sharp](https://github.com/SixLabors/ImageSharp) - Used for extracting and converting textures from Nu2 Scenes.

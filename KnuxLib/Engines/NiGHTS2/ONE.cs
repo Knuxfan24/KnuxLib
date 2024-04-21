@@ -1,4 +1,5 @@
-﻿using FraGag.Compression;
+﻿using AuroraLib.Compression;
+using AuroraLib.Compression.Algorithms;
 
 namespace KnuxLib.Engines.NiGHTS2
 {
@@ -90,7 +91,7 @@ namespace KnuxLib.Engines.NiGHTS2
                     Console.WriteLine($"Decompressing {node.Name}.");
 
                     // Read and decompress this file's data.
-                    node.Data = Prs.Decompress(reader.ReadBytes(compressedSize));
+                    node.Data = new PRS().Decompress(reader.ReadBytes(compressedSize));
                 }
                 else
                 {

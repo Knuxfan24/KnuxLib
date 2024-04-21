@@ -385,33 +385,16 @@ namespace KnuxTools
 
                 // Sonic World Adventure Wii ONE Archives.
                 case "swawii":
-                case "swawii_compressed":
                     Console.WriteLine("Packing directory for Sonic World Adventure Wii Engine.");
                     ImportAndSaveArchive(typeof(KnuxLib.Engines.WorldAdventureWii.ONE), arg, "one");
+                    break;
 
-                    // If the version indicates that the archive needs to be compressed, then compress it.
-                    if (version == "swawii_compressed")
+                case "swawii_compressed":
+                    Console.WriteLine("Packing directory for Sonic World Adventure Wii Engine.");
+                    using (KnuxLib.Engines.WorldAdventureWii.ONE one = new())
                     {
-                        // Inform the user of the compression.
-                        Console.WriteLine("Compressing generated archive for Sonic World Adventure Wii Engine.");
-
-                        // Set up PuyoTools' LZ11 Compression.
-                        PuyoTools.Core.Compression.Lz11Compression lz11 = new();
-
-                        // Set up a file stream of the uncompressed archive.
-                        var stream = File.OpenRead($@"{arg}.one");
-
-                        // Compress the previously saved ONE archive into a buffer.
-                        MemoryStream buffer = lz11.Compress(stream);
-
-                        // Write the buffer to disk.
-                        buffer.WriteTo(File.Create($@"{arg}.onz"));
-
-                        // Close the file stream so the uncompressed archive can be deleted.
-                        stream.Close();
-
-                        // Delete the temporary uncompressed file.
-                        File.Delete($@"{arg}.one");
+                        one.Import(arg);
+                        one.Save($@"{arg}.onz", true);
                     }
                     break;
 
