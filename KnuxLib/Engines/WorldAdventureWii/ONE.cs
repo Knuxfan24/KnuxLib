@@ -1,4 +1,7 @@
-﻿namespace KnuxLib.Engines.WorldAdventureWii
+﻿using AuroraLib.Compression;
+using AuroraLib.Compression.Algorithms;
+
+namespace KnuxLib.Engines.WorldAdventureWii
 {
     // TODO: Some ONZ files seem to fail to decompress? Check if I'm doing something wrong or if its a PuyoTools problem.
     public class ONE : FileBase
@@ -28,37 +31,28 @@
             // Set up Marathon's BinaryReader.
             BinaryReaderEx reader = new(File.OpenRead(filepath));
 
-            // Check the first four bytes of this file.
-            string compressedIdentifier = reader.ReadNullPaddedString(0x04);
-
-            // If the value of the first four bytes is not "one.", then decompress it.
-            if (compressedIdentifier != "one.")
+            // Check if this file is LZ11 compressed.
+            if (new LZ11().IsMatch(File.OpenRead(filepath)))
             {
-                // Set the compressed flag.
+                // Flag that this file was compressed for the archive identifier.
                 wasCompressed = true;
 
-                // Close the old reader.
-                reader.Close();
+                // Set up a memory stream to hold the decompressed file.
+                MemoryStream decompressed = new();
 
-                // Set up a memory stream buffer.
-                MemoryStream buffer = new();
+                // Decompress the file.
+                new LZ11().Decompress(File.OpenRead(filepath), decompressed);
 
-                // Set up a PuyoTools LZ11 class.
-                PuyoTools.Core.Compression.Lz11Compression lz11 = new();
+                // Reinitialise the reader with the decompressed stream.
+                reader = new BinaryReaderEx(decompressed);
 
-                // Decompress the data from this file into the buffer.
-                lz11.Decompress(File.OpenRead(filepath), buffer);
-
-                //Reinitalise the reader with the decompressed LZ11 data.
-                reader = new(buffer);
-
-                // Jump back to the start of the reader's buffer.
-                reader.JumpTo(0x00);
-
-                // Reread the first four bytes.
-                compressedIdentifier = reader.ReadNullPaddedString(0x04);
+                // Set the reader to the start of the stream.
+                reader.BaseStream.Position = 0;
             }
-            
+
+            // Read this file's signature.
+            reader.ReadSignature(0x04, "one.");
+
             // Read the amount of files in this archive.
             uint fileCount = reader.ReadUInt32();
 
@@ -101,7 +95,7 @@
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath)
+        public void Save(string filepath, bool compress = false)
         {
             // Set up Marathon's BinaryWriter.
             BinaryWriterEx writer = new(File.Create(filepath));
@@ -146,6 +140,25 @@
 
             // Close Marathon's BinaryWriter.
             writer.Close();
+
+            // Check if we need to compress the saved file.
+            if (compress)
+            {
+                // Read the newly saved, uncompressed file into a file stream.
+                using FileStream uncompressed = new(filepath, FileMode.Open, FileAccess.Read, FileShare.Read);
+
+                // Set up a memory stream to hold the compressed data.
+                using MemoryStream compressed = new();
+
+                // Compress the data.
+                new LZ11().Compress(uncompressed, compressed);
+
+                // Close the uncompressed file.
+                uncompressed.Close();
+
+                // Overwrite the file with the compressed data.
+                File.WriteAllBytes(filepath, compressed.ToArray());
+            }
         }
 
         /// <summary>

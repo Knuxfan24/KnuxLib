@@ -2,9 +2,3 @@
 	path = HedgeLib
 	url = https://github.com/Radfordhound/HedgeLib.git
 	branch = master
-[submodule "prs.net"]
-	path = prs.net
-	url = https://github.com/FraGag/prs.net.git
-[submodule "puyotools"]
-	path = puyotools
-	url = https://github.com/nickworonekin/puyotools.git

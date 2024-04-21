@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AuroraLib.Compression" Version="1.0.6" />
     <PackageReference Include="BE32.Marathon" Version="1.0.68" />
     <PackageReference Include="libHSON" Version="1.0.0" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
