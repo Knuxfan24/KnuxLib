@@ -6,6 +6,10 @@ The following formats are only partially supported, either due to missing functi
 
 - [Map Collision (.hke)](KnuxLib/Engines/Alchemy/Collision.cs). There is currently a lot of unknown data in this format that would need to be reverse engineered properly for true support of the format. This format also currently lacks any form of Import function and only has a temporary OBJ export solution.
 
+## Cobra Engine
+
+- [Zap Archive (.zap)](KnuxLib/Engines/Cobra/ZapArchive.cs). Currently reads and exports data, but doesn't have any functionality for importing or saving, as testing it would be a pain in the ass. Also has a single unknown value.
+
 ## Crash6 Engine
 
 - [Data Header Pair (.bd/.bh)](KnuxLib/Engines/Crash6/DataHeaderPair.cs). Currently reads and exports data, but doesn't have any functionality for importing or saving, as testing it would be a pain in the ass.

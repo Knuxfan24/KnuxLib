@@ -90,6 +90,9 @@ namespace KnuxTools
                 Console.WriteLine("3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model.");
                 ColourConsole("    Version Flag (importing, shared with material library) - carz\n", true, ConsoleColor.Yellow);
 
+                Console.WriteLine("Cobra Engine:");
+                ColourConsole("Zap Archive (.zap) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+
                 Console.WriteLine("Crash6 Engine:");
                 ColourConsole("Data Header Pair (.bh/.bd) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
 
@@ -1005,6 +1008,13 @@ namespace KnuxTools
                 case ".sco":
                     Console.WriteLine("Converting CarZ model to OBJ.");
                     using (KnuxLib.Engines.CarZ.SCO sco = new(arg, true))
+                    break;
+                #endregion
+
+                #region Cobra Engine formats.
+                case ".zap":
+                    Console.WriteLine("Extracting Cobra Engine Zap Archive.");
+                    using (KnuxLib.Engines.Cobra.ZapArchive zap = new(arg, true))
                     break;
                 #endregion
 
