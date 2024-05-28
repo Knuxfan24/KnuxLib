@@ -72,7 +72,7 @@ namespace KnuxTools
                 Console.Write("for information on the individual issues).\n\n");
 
                 Console.WriteLine("Alchemy Engine:");
-                ColourConsole("Assets Container Archive Pair (.gfc/gob) - Extracts to a directory of the same name as the input archive (importing not yet possible).");
+                ColourConsole("Assets Container Archive Pair (.gfc/.gob) - Extracts to a directory of the same name as the input archive (importing not yet possible).");
                 ColourConsole("Collision (.hke) - Converts to a set of OBJs in a directory with the same name as the input file (importing and saving not yet possible).\n");
 
                 Console.WriteLine("Engine Black:");
@@ -90,8 +90,11 @@ namespace KnuxTools
                 Console.WriteLine("3D Model (.sco) - Exports to the Wavefront OBJ model standard and imports from an Assimp compatible model.");
                 ColourConsole("    Version Flag (importing, shared with material library) - carz\n", true, ConsoleColor.Yellow);
 
+                Console.WriteLine("Crash6 Engine:");
+                ColourConsole("Data Header Pair (.bh/.bd) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+
                 Console.WriteLine("Criware:");
-                ColourConsole("Archive File System (.afs)\n");
+                ColourConsole("Archive File System (.afs) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
 
                 Console.WriteLine("Flipnic Engine:");
                 ColourConsole("Binary Archive (.bin) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
@@ -1005,11 +1008,19 @@ namespace KnuxTools
                     break;
                 #endregion
 
+                #region Crash6 Engine formats.
+                case ".bd":
+                case ".bh":
+                    Console.WriteLine("Extracting Crash6 Engine Data Header Pair.");
+                    using (KnuxLib.Engines.Crash6.DataHeaderPair dataHeader = new(arg, true))
+                    break;
+                #endregion
+
                 #region Criware formats.
                 case ".afs":
                     Console.WriteLine("Extracting Criware Archive File System.");
                     using (KnuxLib.Engines.Criware.ArchiveFileSystem afs = new(arg, true))
-                        break;
+                    break;
                 #endregion
 
                 #region GODS Engine formats.
