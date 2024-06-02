@@ -120,6 +120,7 @@ namespace KnuxTools
                 ColourConsole("Rangers Collision (.btmesh) - Converts to an OBJ with the same name as the input file (importing and saving not yet possible, point cloud instancing is also ignored).");
                 ColourConsole("Rangers Skinned Collision (.btsmc) - Converts to an OBJ with the same name as the input file (importing not yet possible).");
                 Console.WriteLine("Density Point Cloud (.densitypointcloud)");
+                Console.WriteLine("Density Setting (.densitysetting)");
                 Console.WriteLine("Gismo V3 (.gismod/.gismop)");
                 ColourConsole("Grass Instance (.grass.bin)");
                 Console.WriteLine("Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file. ");
@@ -1149,6 +1150,18 @@ namespace KnuxTools
                     {
                         densityPointCloud.Data = densityPointCloud.JsonDeserialise<List<KnuxLib.Engines.Hedgehog.DensityPointCloud.Instance>>(arg);
                         densityPointCloud.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.densitypointcloud");
+                    }
+                    break;
+
+                case ".densitysetting":
+                    Console.WriteLine("Converting Hedgehog Engine Density Setting to JSON.");
+                    using (KnuxLib.Engines.Hedgehog.DensitySetting densitySetting = new(arg, true))
+                        break;
+
+                case ".hedgehog.densitysetting.json":
+                    Console.WriteLine("Converting JSON to Hedgehog Engine Density Setting.");
+                    using (KnuxLib.Engines.Hedgehog.DensitySetting densitySetting = new())
+                    {
                     }
                     break;
 
