@@ -41,8 +41,6 @@
             // TODO: What is this?
             uint UnknownUInt32_1 = reader.ReadUInt32();
 
-            Console.WriteLine(UnknownUInt32_1.ToString("X"));
-
             // Skip an unknown value that is always 0D 0A
             reader.JumpAhead(0x02);
 
@@ -103,7 +101,7 @@
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "wererabbit");
+        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "cobra");
 
         /// <summary>
         /// Imports files from a directory into this format.
