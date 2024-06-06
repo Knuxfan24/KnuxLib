@@ -5,7 +5,7 @@ namespace KnuxLib.Engines.Storybook
 {
     // TODO: Figure out what the values for the points actually are and what they do, not so sure on some of the Vector3s.
     // TODO: Add proper exporting for this format.
-    // TODO: Add a way to import this format.
+    // TODO: Finish importing.
     public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -44,7 +44,7 @@ namespace KnuxLib.Engines.Storybook
             /// <summary>
             /// This path's type.
             /// </summary>
-            public PathType Type { get; set; }
+            public PathType Type { get; set; } = PathType.Standard;
 
             /// <summary>
             /// This path's name, only present in Black Knight files.
@@ -320,9 +320,186 @@ namespace KnuxLib.Engines.Storybook
             // Close Marathon's BinaryWriter.
             writer.Close();
         }
+        
+        /// <summary>
+        /// Imports an OBJ exported from either 3DS Max or Blender 4.x and converts lines in it to paths.
+        /// </summary>
+        /// <param name="filepath">The OBJ file to import.</param>
+        public void ImportOBJ(string filepath)
+        {
+            // Set up a value to handle the scale modifier.
+            float scaleModifier = 1f;
+
+            // Set up a list to store coordinates.
+            List<Vector3> coordinates = new();
+
+            // Set up a flag to check if a spline is single or double knotted.
+            bool doubleKnot = false;
+
+            // Set up a string to identify what exported the OBJ we're reading.
+            string? identifier = null;
+
+            // Read the OBJ.
+            string[] importedOBJ = File.ReadAllLines(filepath);
+
+            // Set the identifier to "max" if the 3DS Max OBJ Exporter comment (or the KnuxLib one) is present.
+            if (importedOBJ[0].Contains("# 3ds Max Wavefront OBJ Exporter") || importedOBJ[0].Contains("# KnuxLib PathSpline_WarsRangers OBJ Export"))
+                identifier = "max";
+
+            // Set the identifier to "blender4" if the Blender 4.x comment is present. 
+            if (importedOBJ[0].Contains("# Blender 4"))
+                identifier = "blender4";
+
+            // If the identifier line also has a scale modifier value added to it, then split and parse it.
+            if (importedOBJ[0].Contains("Scale Modifier = "))
+                scaleModifier = float.Parse(importedOBJ[0].Split("Scale Modifier = ")[1]);
+
+            #region Check that this file only has one spline in it.
+            // Set up a boolean to check if we've found an object already.
+            bool foundObject = false;
+
+            // Loop through each line in this file.
+            for (int lineIndex = 0; lineIndex < importedOBJ.Length; lineIndex++)
+            {
+                // If this line starts with an o and a space, then check if we've found an object already.
+                // If so, throw an exception. If we haven't, then we set the foundObject to true and continue looping.
+                if (importedOBJ[lineIndex].StartsWith("o "))
+                {
+                    if (foundObject) throw new NotSupportedException();
+                    foundObject = true;
+                }
+            }
+            #endregion
+
+            // Determine how to proceed based on the identifier.
+            switch (identifier)
+            {
+                default:
+                    throw new NotSupportedException();
+
+                case "max":
+                case "blender4":
+                    // Set up a count to track Blender's different line system.
+                    int blenderLineCount = 0;
+
+                    // Loop through each line in the OBJ.
+                    for (int lineIndex = 0; lineIndex < importedOBJ.Length; lineIndex++)
+                    {
+                        // If this line is the first vertex entry for an object or the last line in the OBJ, then handle finalising the path.
+                        if ((importedOBJ[lineIndex].StartsWith("v ") && !importedOBJ[lineIndex - 1].StartsWith("v ")) || lineIndex == importedOBJ.Length - 1)
+                        {
+                            // Check if this path actually has a name so we don't save the first, completely empty, one.
+                            // Due to how Blender OBJs are set up, this is only relevant for 3DS Max OBJs.
+                            if (identifier == "max" && Data.Name != null)
+                            {
+                                // Process the data using the generic function.
+                                ProcessOBJData(coordinates, doubleKnot);
+                            }
+                        }
+
+                        // If this line starts with a v and a space, then handle it as a vertex coordinate.
+                        if (importedOBJ[lineIndex].StartsWith("v "))
+                        {
+                            // Split the line on the space.
+                            string[] split = importedOBJ[lineIndex].Split(' ');
+
+                            // Parse the last three values in the split as floats, multiplying them by the scale modifier, and it to the coordinates array.
+                            coordinates.Add(new(float.Parse(split[^3]) * scaleModifier, float.Parse(split[^2]) * scaleModifier, float.Parse(split[^1]) * scaleModifier));
+                        }
+
+                        // Handle setting the double knot flag on a 3DS Max OBJ.
+                        if (identifier == "max")
+                        {
+                            // If this line starts with an l and a space and the next line does too, then set the double knot flag to true.
+                            if (importedOBJ[lineIndex].StartsWith("l ") && importedOBJ[lineIndex + 1].StartsWith("l "))
+                            {
+                                // Check if the flag is already set as a ghetto way to detect splines with more than two lines.
+                                if (doubleKnot)
+                                    throw new NotSupportedException($"{Data.Name} appears to have more than two lines, this is not supported.");
+
+                                // Set the flag to indicate this spline has two lines.
+                                doubleKnot = true;
+                            }
+                        }
+
+                        // Calculate the line count on a Blender OBJ.
+                        if (identifier == "blender4")
+                            if (importedOBJ[lineIndex].StartsWith("l "))
+                                blenderLineCount++;
+
+                        // If this line starts with an o and a space, then split it on the space and take the last split as the path name.
+                        // Blender OBJs put the name first, so we also need to handle the processing down here for those.
+                        if (importedOBJ[lineIndex].StartsWith("o ") || (lineIndex == importedOBJ.Length - 1 && identifier == "blender4"))
+                        {
+                            // Handle processing this path if this is a Blender OBJ and we've actually read any lines.
+                            if (identifier == "blender4" && blenderLineCount != 0)
+                            {
+                                // Determine if this spline needs the double knot flag.
+                                // This doesn't block more than two splines like the Max one does, but OH WELL.
+                                if (blenderLineCount % 2 == 0)
+                                    doubleKnot = true;
+
+                                // Process the data using the generic function.
+                                ProcessOBJData(coordinates, doubleKnot);
+                            }
+
+                            // Split the line on the space and take the last element as the path name.
+                            Data.Name = importedOBJ[lineIndex].Split(' ')[^1];
+                        }
+                    }
+
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Takes data read from an OBJ and creates a proper path from them.
+        /// TODO: Tidy up and document.
+        /// </summary>
+        /// <param name="coordinates">The list of point coordinates.</param>
+        /// <param name="doubleKnot">Whether or not this spline is double knotted or not.</param>
+        private void ProcessOBJData(List<Vector3> coordinates, bool doubleKnot)
+        {
+            // TODO: Finish the single knot splines.
+            if (!doubleKnot)
+            {
+                for (int pointIndex = 0; pointIndex < coordinates.Count; pointIndex++)
+                {
+                    SplinePointType3 point = new()
+                    {
+                        Position = coordinates[pointIndex]
+                    };
+                }
+            }
+            else
+            {
+                for (int pointIndex = 0; pointIndex < coordinates.Count / 2; pointIndex++)
+                {
+                    SplinePointType3 point = new();
+                    point.Position = Vector3.Lerp(coordinates[pointIndex], coordinates[pointIndex + (coordinates.Count / 2)], 0.5f);
+                    point.Deviation = (coordinates[pointIndex + (coordinates.Count / 2)] - coordinates[pointIndex]).X + (coordinates[pointIndex + (coordinates.Count / 2)] - coordinates[pointIndex]).Z;
+
+                    if (pointIndex != (coordinates.Count / 2) - 1)
+                    {
+                        Vector3 nextPointPosition = Vector3.Lerp(coordinates[pointIndex + 1], coordinates[pointIndex + 1 + (coordinates.Count / 2)], 0.5f);
+                        float xDist = point.Position.X - nextPointPosition.X;
+                        float yDist = point.Position.Y - nextPointPosition.Y;
+                        float zDist = point.Position.Z - nextPointPosition.Z;
+
+                        point.Distance = (Math.Abs(xDist) + Math.Abs(yDist) + Math.Abs(zDist));
+                    }
+
+                    Data.Points.Add(point);
+                }
+            }
+
+            for (int pointIndex = 0; pointIndex < Data.Points.Count; pointIndex++)
+                Data.TotalDistance += (Data.Points[pointIndex] as SplinePointType3).Distance;
+        }
 
         /// <summary>
         /// Exports the position values from this spline to an OBJ.
+        /// TODO: Can we potentially calculate a double knot spline export using the deviation value?
         /// </summary>
         /// <param name="filepath">The filepath to export to.</param>
         public void ExportOBJ(string filepath)

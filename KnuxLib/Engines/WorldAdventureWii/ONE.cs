@@ -202,7 +202,7 @@ namespace KnuxLib.Engines.WorldAdventureWii
         }
 
         /// <summary>
-        /// Imports files from a directory into a ONE node, respecting a fileorder.log file if one exists.
+        /// Imports files from a directory into this format, respecting a fileorder.log file if one exists.
         /// TODO: Add fileordering to the FileNode importer so this can use it instead.
         /// </summary>
         /// <param name="directory">The directory to import, excluding sub directories.</param>

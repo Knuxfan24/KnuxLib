@@ -94,7 +94,8 @@ namespace KnuxTools
                 ColourConsole("Zap Archive (.zap) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
 
                 Console.WriteLine("Crash6 Engine:");
-                ColourConsole("Data Header Pair (.bh/.bd) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
+                Console.WriteLine("Data Header Pair (.bh/.bd) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
+                ColourConsole("    Version Flag (importing) - crash6_datapair\n", true, ConsoleColor.Yellow);
 
                 Console.WriteLine("Criware:");
                 ColourConsole("Archive File System (.afs) - Extracts to a directory of the same name as the input archive (importing not yet possible).\n");
@@ -292,6 +293,7 @@ namespace KnuxTools
                                        new List<string> { "capcomv7\t\t\t(Capcom MT Framework Engine (Version 7))",
                                                           "capcomv9\t\t\t(Capcom MT Framework Engine (Version 9))",
                                                           "capcomv9_uncompressed\t(Capcom MT Framework Engine (Version 9, No Compression))",
+                                                          "crash6_datapair\t\t(Crash 6 Engine Data Header Pair)",
                                                           "hasbro_big\t\t\t(Hasbro Wii Engine Big File Archive)",
                                                           "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)",
                                                           "openspace_big\t\t(OpenSpace Engine Big File Archive)",
@@ -304,7 +306,7 @@ namespace KnuxTools
                                                           "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)",
                                                           "wayforward\t\t\t(Wayforward Engine PAK File)",
                                                           "yachtclub\t\t\t(Yacht Club Engine PAK File)"},
-                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, false, false, false, true },
+                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true },
                                        "Archive Type");
 
             // If the version is still null or empty, then abort.
@@ -339,6 +341,12 @@ namespace KnuxTools
                         arc.Import(arg);
                         arc.Save($@"{arg}.arc", 0x09, false);
                     }
+                    break;
+
+                // Crash 6 Engine Data Header Pair Archives.
+                case "crash6_datapair":
+                    Console.WriteLine("Packing directory for Crash 6 Engine.");
+                    ImportAndSaveArchive(typeof(KnuxLib.Engines.Crash6.DataHeaderPair), arg, "bd");
                     break;
 
                 // Hasbro Wii Engine Big File Archives.

@@ -27,6 +27,20 @@ Notes:
 
 - Definitely used by other Stellar Stone games, but I have yet to obtain and look at them myself.
 
+## Crash 6 Engine
+
+Known games:
+
+- Crash Twinsanity (PS2, Xbox)
+
+Supported formats:
+
+- [Data Header Pair (.bd/.bh)](KnuxLib/Engines/Crash6/DataHeaderPair.cs) reading, writing, data extraction and data importing.
+
+Notes:
+
+- Uncertain if this is the engine's name.
+
 ## Hasbro Wii Engine
 
 Known games:

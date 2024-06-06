@@ -194,7 +194,7 @@ namespace KnuxLib.Engines.NiGHTS2
         public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "nights2");
 
         /// <summary>
-        /// Imports files from a directory into a ONE node.
+        /// Imports files from a directory into this format.
         /// TODO: This seemed to work, but hasn't been extensively tested at all.
         /// </summary>
         /// <param name="directory">The directory to import.</param>

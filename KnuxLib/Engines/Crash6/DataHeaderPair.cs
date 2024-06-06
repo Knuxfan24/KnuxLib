@@ -1,6 +1,6 @@
 ﻿namespace KnuxLib.Engines.Crash6
 {
-    // TODO: Format saving.
+    // TODO: Does this format care about file order?
     public class DataHeaderPair : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -60,9 +60,52 @@
         }
 
         /// <summary>
+        /// Saves this format's file.
+        /// </summary>
+        /// <param name="filepath">The path to save to.</param>
+        public void Save(string filepath)
+        {
+            // Set up Marathon's BinaryWriter.
+            BinaryWriterEx headerWriter = new(File.Create(Path.ChangeExtension(filepath, ".BH")));
+            BinaryWriterEx dataWriter = new(File.Create(Path.ChangeExtension(filepath, ".BD")));
+
+            // Write the unknown value to the header.
+            headerWriter.Write(0x501);
+
+            // Loop through each file in this data pair.
+            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+            {
+                // Write the length of this file's name to the header.
+                headerWriter.Write(Data[dataIndex].Name.Length);
+
+                // Write this file's name to the header.
+                headerWriter.WriteNullPaddedString(Data[dataIndex].Name, Data[dataIndex].Name.Length);
+
+                // Write the current position of the data writer to the header.
+                headerWriter.Write((uint)dataWriter.BaseStream.Position);
+
+                // Write the size of this file to the header.
+                headerWriter.Write(Data[dataIndex].Data.Length);
+
+                // Write this file's data to the data writer.
+                dataWriter.Write(Data[dataIndex].Data);
+            }
+
+            // Close Marathon's BinaryWriter.
+            headerWriter.Close();
+            dataWriter.Close();
+        }
+
+        /// <summary>
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
         public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "crash6_datapair");
+
+        /// <summary>
+        /// Imports files from a directory into this format.
+        /// </summary>
+        /// <param name="directory">The directory to import.</param>
+        public void Import(string directory) => Data = Helpers.ImportArchive(directory);
     }
 }

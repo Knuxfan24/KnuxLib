@@ -213,7 +213,7 @@
         public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "alchemy");
 
         /// <summary>
-        /// Imports files from a directory into an Alchemy node.
+        /// Imports files from a directory into this format.
         /// </summary>
         /// <param name="directory">The directory to import.</param>
         public void Import(string directory) => Data = Helpers.ImportArchive(directory);

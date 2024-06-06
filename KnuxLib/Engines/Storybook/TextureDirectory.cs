@@ -109,14 +109,14 @@
         }
 
         /// <summary>
-        /// Extracts the textures in this format to disc.
+        /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
         /// <param name="convert">Whether to convert the extracted .gvr files to .pngs.</param>
         public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "storybook_texture", ".gvr");
 
         /// <summary>
-        /// Imports files from a directory into a texture directory.
+        /// Imports files from a directory into this format.
         /// </summary>
         /// <param name="directory">The directory to import.</param>
         public void Import(string directory) => Data = Helpers.ImportArchive(directory, true);
