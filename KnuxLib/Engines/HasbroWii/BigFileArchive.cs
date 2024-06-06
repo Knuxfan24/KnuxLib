@@ -1,5 +1,6 @@
 ﻿namespace KnuxLib.Engines.HasbroWii
 {
+    // TODO: The PS2 Harry Potter games seem to use this format too (though PoA uses a slightly different signature for some reason), so it's probably from a different source?
     public class BigFileArchive : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
