@@ -152,6 +152,9 @@ namespace KnuxTools
                 Console.WriteLine("AI Entity Table (.ai)");
                 ColourConsole("    Version Flag (Gamecube) - gcn", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (PlayStation 2/Xbox) - ps2", true, ConsoleColor.Yellow);
+                ColourConsole("Crate Table (.crt)");
+                ColourConsole("    Version Flag (Gamecube) - gcn", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (PlayStation 2/Xbox) - ps2", true, ConsoleColor.Yellow);
                 Console.WriteLine("Wumpa Fruit Table (.wmp)");
                 ColourConsole("    Version Flag (Gamecube) - gcn", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (PlayStation 2/Xbox) - ps2\n", true, ConsoleColor.Yellow);
@@ -1514,7 +1517,7 @@ namespace KnuxTools
                         
                         // If a command line argument without a corresponding format has been passed, then inform the user.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine Ai Entity Table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine AI Entity Table types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
@@ -1554,7 +1557,75 @@ namespace KnuxTools
 
                         // If a command line argument without a corresponding format has been passed, then inform the user.
                         default:
-                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine Ai Entity Table types.\nPress any key to continue.");
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine AI Entity Table types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
+                    break;
+
+                case ".crt":
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "gcn\t\t(GameCube)",
+                                                                  "ps2\t\t(PlayStation 2/Xbox)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
+
+                    Console.WriteLine("Converting Nu2 Engine Crate Table to JSON.");
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
+                    {
+                        case "gcn": using (KnuxLib.Engines.Nu2.CrateTable crateTable = new(arg, KnuxLib.Engines.Nu2.CrateTable.FormatVersion.GameCube, true)) break;
+                        case "ps2": using (KnuxLib.Engines.Nu2.CrateTable crateTable = new(arg, KnuxLib.Engines.Nu2.CrateTable.FormatVersion.PlayStation2Xbox, true)) break;
+                        
+                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine Crate Table types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
+                    break;
+
+                case ".nu2.cratetable.json":
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant to save with:",
+                                               new List<string> { "gcn\t\t(GameCube)",
+                                                                  "ps2\t\t(PlayStation 2/Xbox)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
+
+                    Console.WriteLine("Converting JSON to Nu2 Engine Crate Entity Table.");
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
+                    {
+                        case "gcn":
+                            using (KnuxLib.Engines.Nu2.CrateTable crateTable = new())
+                            {
+                                crateTable.Data = crateTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.CrateTable.Group>>(arg);
+                                crateTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.CrateTable.FormatVersion.GameCube);
+                            }
+                            break;
+                        case "ps2":
+                            using (KnuxLib.Engines.Nu2.CrateTable aiEntityTable = new())
+                            {
+                                aiEntityTable.Data = aiEntityTable.JsonDeserialise<List<KnuxLib.Engines.Nu2.CrateTable.Group>>(arg);
+                                aiEntityTable.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}.ai", KnuxLib.Engines.Nu2.CrateTable.FormatVersion.PlayStation2Xbox);
+                            }
+                            break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine Crate Table types.\nPress any key to continue.");
                             Console.ReadKey();
                             return;
                     }
