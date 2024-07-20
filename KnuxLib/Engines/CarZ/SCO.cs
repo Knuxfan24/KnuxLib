@@ -196,13 +196,13 @@ namespace KnuxLib.Engines.CarZ
             foreach (Vector3 vertex in Data.Vertices)
                 obj.WriteLine($"v {vertex.X} {vertex.Y} {vertex.Z}");
 
-            // Write the texture coordinates for this model, inverting both values.
-            // Some models might not need the X value inverting?
+            // Write the texture coordinates for this model, inverting the Y values.
+            // TODO: A lot of models are left-handed, but others aren't. For left-handed models, the texture will be mirrored horizontally.
             for (int faceIndex = 0; faceIndex < Data.Faces.Count; faceIndex++)
             {
-                obj.WriteLine($"vt {-Data.Faces[faceIndex].TextureCoordinates[0]} {-Data.Faces[faceIndex].TextureCoordinates[1]}");
-                obj.WriteLine($"vt {-Data.Faces[faceIndex].TextureCoordinates[2]} {-Data.Faces[faceIndex].TextureCoordinates[3]}");
-                obj.WriteLine($"vt {-Data.Faces[faceIndex].TextureCoordinates[4]} {-Data.Faces[faceIndex].TextureCoordinates[5]}");
+                obj.WriteLine($"vt {Data.Faces[faceIndex].TextureCoordinates[0]} {-Data.Faces[faceIndex].TextureCoordinates[1]}");
+                obj.WriteLine($"vt {Data.Faces[faceIndex].TextureCoordinates[2]} {-Data.Faces[faceIndex].TextureCoordinates[3]}");
+                obj.WriteLine($"vt {Data.Faces[faceIndex].TextureCoordinates[4]} {-Data.Faces[faceIndex].TextureCoordinates[5]}");
             }
 
             // Set up control stuff for materials and texture coordinates.

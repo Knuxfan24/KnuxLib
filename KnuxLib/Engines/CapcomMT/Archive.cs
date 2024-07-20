@@ -1,6 +1,5 @@
 ﻿namespace KnuxLib.Engines.CapcomMT
 {
-    // TODO: Determine if file order actually matters, didn't in X7's stage01_01_cmn.arc file.
     public class Archive : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -114,7 +113,7 @@
             reader.FixPadding(0x04);
 
             // Check this file's version.
-            // TODO: Handle versions other than V7 and V9?
+            // TODO: Handle versions other than V7 and V9.
             version = reader.ReadUInt16();
             if (version != 0x07 && version != 0x09)
                 throw new NotImplementedException($"Capcom MT Framework Archive with version identifier of 0x{version.ToString("X").PadLeft(4, '0')} not supported.");
