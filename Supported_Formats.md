@@ -184,6 +184,15 @@ Notes:
 
 - Uncertain if this is the engine's name.
 
+## Nintendo Generic
+
+Supported formats:
+
+- [U8 Archive (.arc)](KnuxLib/Engines/Nintendo/U8.cs) reading, writing, data extraction and data importing.
+
+> **Note**
+> Includes support for the modified version of the format used by SONIC THE HEDGEHOG (2006).
+
 ## Nu2 Engine
 
 Known games:

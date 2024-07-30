@@ -149,6 +149,11 @@ namespace KnuxTools
                 Console.WriteLine("ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
                 ColourConsole("    Version Flag - nights2\n", true, ConsoleColor.Yellow);
 
+                Console.WriteLine("Nintendo Generic:");
+                Console.WriteLine("U8 Archive (.arc) - Extracts to a directory of the same name as the input archive and creates an archive from an input directory.");
+                ColourConsole("    Version Flag - nintendo_u8", true, ConsoleColor.Yellow);
+                ColourConsole("    Version Flag (Sonic '06) - nintendo_u8_marathon\n", true, ConsoleColor.Yellow);
+
                 Console.WriteLine("Nu2 Engine:");
                 Console.WriteLine("AI Entity Table (.ai)");
                 ColourConsole("    Version Flag (Gamecube) - gcn", true, ConsoleColor.Yellow);
@@ -298,6 +303,8 @@ namespace KnuxTools
                                                           "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)",
                                                           "openspace_big\t\t(OpenSpace Engine Big File Archive)",
                                                           "nights2\t\t\t(NiGHTS 2 Engine ONE File)",
+                                                          "nintendo_u8\t\t\t(Nintendo U8 Archive File)",
+                                                          "nintendo_u8_marathon\t(Nintendo U8 Archive File (Sonic '06))",
                                                           "portable\t\t\t(Sonic The Portable Engine AMB File)",
                                                           "portable_big-endian\t\t(Sonic The Portable Engine AMB File)",
                                                           "storybook\t\t\t(Sonic Storybook Engine ONE File)",
@@ -306,7 +313,7 @@ namespace KnuxTools
                                                           "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)",
                                                           "wayforward\t\t\t(Wayforward Engine PAK File)",
                                                           "yachtclub\t\t\t(Yacht Club Engine PAK File)"},
-                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true },
+                                       new List<bool> { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, true },
                                        "Archive Type");
 
             // If the version is still null or empty, then abort.
@@ -365,6 +372,24 @@ namespace KnuxTools
                 case "nights2":
                     Console.WriteLine("Packing directory for NiGHTS 2 Engine.");
                     ImportAndSaveArchive(typeof(KnuxLib.Engines.NiGHTS2.ONE), arg, "one");
+                    break;
+
+                // Nintendo U8 Archives.
+                case "nintendo_u8":
+                    Console.WriteLine("Packing directory for Nintendo U8 Archive.");
+                    using (KnuxLib.Engines.Nintendo.U8 u8 = new())
+                    {
+                        u8.Import(arg);
+                        u8.Save($"{arg}.arc", false, System.IO.Compression.CompressionLevel.Optimal);
+                    }
+                    break;
+                case "nintendo_u8_marathon":
+                    Console.WriteLine("Packing directory for Nintendo U8 Archive (Sonic '06).");
+                    using (KnuxLib.Engines.Nintendo.U8 u8 = new())
+                    {
+                        u8.Import(arg);
+                        u8.Save($"{arg}.arc", true, System.IO.Compression.CompressionLevel.Optimal);
+                    }
                     break;
 
                 // OpenSpace Engine Big File Archives.
@@ -662,6 +687,49 @@ namespace KnuxTools
                 #endregion
 
                 #region Generic File Formats.
+                case ".arc":
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                               new List<string> { "capcom\t(Capcom MT Engine Archive)",
+                                                                  "marathon\t(Nintendo U8 (Sonic '06))",
+                                                                  "nintendo\t(Nintendo U8)"},
+                                               new List<bool> { false, false, false });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
+
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
+                    {
+                        // Capcom MT Framework Engine Archives.
+                        case "capcom":
+                            Console.WriteLine("Extracting Capcom MT Framework Engine archive.");
+                            using (KnuxLib.Engines.CapcomMT.Archive arc = new(arg, true))
+                            break;
+
+                        // Nintendo U8 Archives (Sonic '06).
+                        case "marathon":
+                            Console.WriteLine("Extracting Nintendo U8 archive (Sonic '06).");
+                            using (KnuxLib.Engines.Nintendo.U8 u8 = new(arg, true, true))
+                            break;
+
+                        // Nintendo U8 Archives.
+                        case "nintendo":
+                            Console.WriteLine("Extracting Nintendo U8 archive.");
+                            using (KnuxLib.Engines.Nintendo.U8 u8 = new(arg, false, true))
+                            break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Nu2 Engine AI Entity Table types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
+                    break;
+
                 case ".bin":
                     // Carry out a version check.
                     version = NoVersionChecker(version,
@@ -989,24 +1057,6 @@ namespace KnuxTools
                 case ".vol":
                     Console.WriteLine("Extracting Engine Black volume blob.");
                     using (KnuxLib.Engines.Black.VolumeBlob vol = new(arg, true))
-                    break;
-                #endregion
-
-                #region Capcom MT Framework Engine formats.
-                case ".arc":
-                    try
-                    {
-                        Console.WriteLine("Extracting Capcom MT Framework Engine archive.");
-                        using KnuxLib.Engines.CapcomMT.Archive arc = new(arg, true);
-                    }
-                    catch (Exception e)
-                    {
-                        Console.WriteLine($"{e}\n\nAttempting to extract as a Marathon Engine archive instead.");
-                        using (Marathon.Formats.Archive.U8Archive arc = new(arg, Marathon.IO.ReadMode.IndexOnly))
-                        {
-                            arc.Extract($@"{Path.GetDirectoryName(arg)}\{Path.GetFileNameWithoutExtension(arg)}");
-                        }
-                    }
                     break;
                 #endregion
 
