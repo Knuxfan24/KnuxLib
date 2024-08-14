@@ -31,7 +31,7 @@ jobs:
           
     - name: Create win client archive
       run: |
-        cd /home/runner/work/KnuxTools/bin/Release/net8.0/win-x64/publish/ && zip -r client-win-x64.zip *
+        cd /home/runner/work/KnuxLib/KnuxLib/KnuxTools/bin/Release/net8.0/win-x64/publish/ && zip -r client-win-x64.zip *
         
     - name: Get current date
       id: date
