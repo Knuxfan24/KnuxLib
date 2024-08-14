@@ -29,32 +29,32 @@ jobs:
     - name: Publish win-x64
       run: dotnet publish KnuxTools/KnuxTools.csproj -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=false
           
-  - name: Create win client archive
-    run: |
-      cd /home/runner/work/KnuxTools/bin/Release/net8.0/win-x64/publish/ && zip -r client-win-x64.zip *
-      
-  - name: Get current date
-    id: date
-    run: echo "::set-output name=date::$(date +'%Y%m%d%H%M%S')"
-      
-  - name: Create Release
-    id: create_release
-    uses: actions/create-release@v1
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      tag_name: release-${{ steps.date.outputs.date }}
-      release_name: Release ${{ steps.date.outputs.date }}
-      draft: false
-      prerelease: false
-      
-  - name: Upload Client win7-x64 Asset
-    id: upload-release-client-win-asset 
-    uses: actions/upload-release-asset@v1
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      asset_path: /home/runner/work/KnuxLib/KnuxLib/KnuxTools/bin/Release/net8.0/win-x64/publish/client-win-x64.zip
-      asset_name: client-win-x64.zip
-      asset_content_type: application/zip
+    - name: Create win client archive
+      run: |
+        cd /home/runner/work/KnuxTools/bin/Release/net8.0/win-x64/publish/ && zip -r client-win-x64.zip *
+        
+    - name: Get current date
+      id: date
+      run: echo "::set-output name=date::$(date +'%Y%m%d%H%M%S')"
+        
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: release-${{ steps.date.outputs.date }}
+        release_name: Release ${{ steps.date.outputs.date }}
+        draft: false
+        prerelease: false
+        
+    - name: Upload Client win7-x64 Asset
+      id: upload-release-client-win-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: /home/runner/work/KnuxLib/KnuxLib/KnuxTools/bin/Release/net8.0/win-x64/publish/client-win-x64.zip
+        asset_name: client-win-x64.zip
+        asset_content_type: application/zip
