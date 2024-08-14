@@ -29,7 +29,7 @@ jobs:
     - name: Publish KnuxTools
       run: dotnet publish KnuxTools/KnuxTools.csproj -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=false
     - name: Publish KnuxLib
-      run: dotnet publish KnuxTools/KnuxTools.csproj -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=false
+      run: dotnet publish KnuxLib/KnuxLib.csproj -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=false
         
     - name: Upload KnuxTools
       uses: actions/upload-artifact@v4
