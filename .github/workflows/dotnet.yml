@@ -27,4 +27,4 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
     - name: Publish win-x64
-      run: dotnet publish KnuxTools/KnuxTools.csproj -c Release -r win7-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=false
+      run: dotnet publish KnuxTools/KnuxTools.csproj -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=false
