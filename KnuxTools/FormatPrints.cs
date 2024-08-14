@@ -47,5 +47,13 @@
             Console.WriteLine("ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input\r\ndirectory.");
             Helpers.ColourConsole("    Version Flag - storybook", true, ConsoleColor.Yellow);
         }
+
+        public static void Twinsanity()
+        {
+            Console.WriteLine("===");
+            Console.WriteLine("Twinsanity Engine:");
+            Console.WriteLine("Data Header Pair (.bd/.bh) - Extracts to a directory of the same name as the input archive and creates an archive from\r\nan input directory.");
+            Helpers.ColourConsole("    Version Flag - twinsanity", true, ConsoleColor.Yellow);
+        }
     }
 }

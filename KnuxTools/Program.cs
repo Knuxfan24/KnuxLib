@@ -74,6 +74,7 @@ namespace KnuxTools
                 FormatPrints.Nu2();
                 FormatPrints.StellarStone();
                 FormatPrints.SonicStorybook();
+                FormatPrints.Twinsanity();
 
                 Console.WriteLine("===\r\nUsage:");
                 Console.WriteLine("KnuxTools.exe \"path\\to\\supported\\file\" [-version={VERSION}] [-extension={EXTENSION}]\r\n");
@@ -103,7 +104,8 @@ namespace KnuxTools
                                        { "capcomv7\t\t\t(Capcom MT Framework Engine (Version 7))", false },
                                        { "capcomv9\t\t\t(Capcom MT Framework Engine (Version 9))", false },
                                        { "capcomv9_uncompressed\t(Capcom MT Framework Engine (Version 9, No Compression))", false },
-                                       { "storybook\t\t\t(Sonic Storybook Engine ONE File)", false }
+                                       { "storybook\t\t\t(Sonic Storybook Engine ONE File)", false },
+                                       { "twinsanity\t\t\t(Twinsanity Engine Data Header Pair)", false },
                                    },
                                    "Archive Type");
 
@@ -121,6 +123,9 @@ namespace KnuxTools
 
                 // Sonic Storybook ONE Archive.
                 case "storybook": _ = new KnuxLib.Engines.SonicStorybook.ONE(arg, true); break;
+
+                // Twinsanity Engine Data Header Pair.
+                case "twinsanity": _ = new KnuxLib.Engines.Twinsanity.DataHeaderPair(arg, true); break;
             }
         }
     
@@ -134,6 +139,8 @@ namespace KnuxTools
             switch (KnuxLib.Helpers.GetExtension(arg).ToLower())
             {
                 case ".arc": _ = new KnuxLib.Engines.CapcomMT.Archive(arg, true); break;
+
+                case ".bd": case ".bh": _ = new KnuxLib.Engines.Twinsanity.DataHeaderPair(arg, true); break;
 
                 case ".mat": _ = new KnuxLib.Engines.StellarStone.MaterialLibrary(arg, true); break;
 
