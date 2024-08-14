@@ -33,13 +33,8 @@ jobs:
       run: |
         cd /home/runner/work/KnuxLib/KnuxLib/KnuxTools/bin/Release/net8.0/win-x64/publish/ && zip -r client-win-x64.zip *
         
-    - name: Upload Client win7-x64 Asset
-      id: upload-release-client-win-asset 
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Archive code coverage results
+      uses: actions/upload-artifact@v4
       with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: /home/runner/work/KnuxLib/KnuxLib/KnuxTools/bin/Release/net8.0/win-x64/publish/client-win-x64.zip
-        asset_name: client-win-x64.zip
-        asset_content_type: application/zip
+        name: KnuxTools
+        path: /home/runner/work/KnuxLib/KnuxLib/KnuxTools/bin/Release/net8.0/win-x64/publish/client-win-x64.zip
