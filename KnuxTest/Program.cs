@@ -4,7 +4,7 @@ namespace KnuxTest
 {
     internal class Program
     {
-        static void Main(string[] args)
+        static void Main()
         {
             // Enable shift-jis for BINA stuff.
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
