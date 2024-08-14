@@ -1,15 +1,34 @@
-﻿namespace KnuxLib.Engines.CapcomMT
+﻿using System.IO.Compression;
+
+namespace KnuxLib.Engines.CapcomMT
 {
     public class Archive : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public Archive() { }
-        public Archive(string filepath, bool extract = false)
+        public Archive(string filepath, bool extract = false, ushort version = 0x07, bool compressed = true)
         {
-            Load(filepath);
+            // Check if the input path is a directory rather than a file.
+            if (Directory.Exists(filepath))
+            {
+                // Import the files in the directory.
+                Data = Helpers.ImportArchive(filepath);
 
-            if (extract)
-                Extract($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}");
+                // If the extract flag is set, then save this archive.
+                if (extract)
+                    Save($"{filepath}.arc", version, compressed);
+            }
+
+            // Check if the input path is a file.
+            else
+            {
+                // Load this file.
+                Load(filepath);
+
+                // If the extract flag is set, then extract this archive.
+                if (extract)
+                    Extract($@"{Path.GetDirectoryName(filepath)}\{Path.GetFileNameWithoutExtension(filepath)}");
+            }
         }
 
         // Classes for this format.
@@ -91,7 +110,7 @@
         };
 
         // Actual data presented to the end user.
-        public List<FileNode> Data = new();
+        public FileNode[] Data = [];
 
         // Internal values used for extraction.
         ushort version;
@@ -101,10 +120,10 @@
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
-        public override void Load(string filepath)
+        public void Load(string filepath)
         {
-            // Set up Marathon's BinaryReader.
-            BinaryReaderEx reader = new(File.OpenRead(filepath));
+            // Load this file into a BinaryReader.
+            ExtendedBinaryReader reader = new(File.OpenRead(filepath));
 
             // Read this file's signature.
             reader.ReadSignature(0x03, "ARC");
@@ -119,16 +138,16 @@
                 throw new NotImplementedException($"Capcom MT Framework Archive with version identifier of 0x{version.ToString("X").PadLeft(4, '0')} not supported.");
 
             // Read the amount of files in this archive.
-            ushort fileCount = reader.ReadUInt16();
+            Data = new FileNode[reader.ReadUInt16()];
 
             // If this is a version 9 archive, then read the not compressed flag.
             if (version == 0x09)
                 isNotCompressed = reader.ReadBoolean(0x04);
 
-            // Loop through and read each file.
-            for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
+            // Loop through each file.
+            for (int fileIndex = 0; fileIndex < Data.Length; fileIndex++)
             {
-                // Set up a new generic file node.
+                // Set up a new file node.
                 FileNode node = new();
 
                 // Read this file's name.
@@ -153,9 +172,23 @@
                 // Jump to this file's data offset.
                 reader.JumpTo(dataOffset);
 
-                // Read and decompress (if required) this file's data.
+                // Check if this file is compressed.
                 if (!isNotCompressed)
-                    node.Data = ZlibStream.Decompress(reader.ReadBytes(compressedSize));
+                {
+                    // Set up a ZLibStream with the compressed data.
+                    ZLibStream zLibData = new(new MemoryStream(reader.ReadBytes(compressedSize)), CompressionMode.Decompress);
+
+                    // Set up a MemoryStream to hold the decompressed data.
+                    MemoryStream decompressedData = new();
+
+                    // Copy the decompressed data to the memory stream.
+                    zLibData.CopyTo(decompressedData);
+
+                    // Save the decompressed data to this file node.
+                    node.Data = decompressedData.ToArray();
+                }
+
+                // If this file isn't compressed, then just read its data.
                 else
                     node.Data = reader.ReadBytes(compressedSize);
 
@@ -163,8 +196,8 @@
                 reader.JumpTo(position);
 
                 // Determine this file's extension using its type, setting it to the type if its not handled.
-                if (FileExtensions.ContainsKey(fileType))
-                    node.Name += FileExtensions[fileType];
+                if (FileExtensions.TryGetValue(fileType, out string? value))
+                    node.Name += value;
                 else
                 {
                     Console.WriteLine($"Unknown file type 0x{fileType.ToString("X").PadLeft(8, '0')} for file {node.Name} in {filepath}.");
@@ -172,10 +205,10 @@
                 }
 
                 // Save this file.
-                Data.Add(node);
+                Data[fileIndex] = node;
             }
 
-            // Close Marathon's BinaryReader.
+            // Close our BinaryReader.
             reader.Close();
         }
 
@@ -188,21 +221,36 @@
         /// <param name="compressed">Whether the files in this archive need to be compressed (if applicable).</param>
         public void Save(string filepath, ushort version = 0x07, bool compressed = true)
         {
-            // Set up a list of compressed data.
-            List<byte[]> CompressedData = new();
+            // Print that we're saving this archive format.
+            Console.WriteLine($"Saving Capcom MT Framework Engine Archive (Version {version}).");
+
+            // Set up an array of compressed data.
+            byte[][] CompressedData = new byte[Data.Length][];
 
             // Loop through each file to compress it.
-            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+            for (int dataIndex = 0; dataIndex < Data.Length; dataIndex++)
             {
                 // Print the name of the file we're compressing.
                 Console.WriteLine($"Compressing {Data[dataIndex].Name}.");
 
-                // Compress this file's data.
-                CompressedData.Add(ZlibStream.Compress(Data[dataIndex].Data, System.IO.Compression.CompressionLevel.SmallestSize));
+                // Set up a MemoryStream to hold the compressed data.
+                MemoryStream compressedStream = new();
+
+                // Set up a ZLibStream to compress the data.
+                ZLibStream zlibStream = new(compressedStream, CompressionMode.Compress);
+
+                // Use the ZLibStream to compress the data.
+                zlibStream.Write(Data[dataIndex].Data, 0, Data[dataIndex].Data.Length);
+
+                // Close the ZLibStream.
+                zlibStream.Close();
+
+                // Save this file's compressed data.
+                CompressedData[dataIndex] = compressedStream.ToArray();
             }
 
-            // Set up Marathon's BinaryWriter.
-            BinaryWriterEx writer = new(File.Create(filepath));
+            // Create this file through a BinaryWriter.
+            ExtendedBinaryWriter writer = new(File.Create(filepath));
 
             // Write this file's signature.
             writer.WriteNullPaddedString("ARC", 0x04);
@@ -211,7 +259,7 @@
             writer.Write(version);
 
             // Write the amount of files in this archive.
-            writer.Write((ushort)Data.Count);
+            writer.Write((ushort)Data.Length);
 
             // Write version 9's compression flag.
             if (version == 0x09)
@@ -221,7 +269,7 @@
                     writer.Write(1);
 
             // Loop through each file's information.
-            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+            for (int dataIndex = 0; dataIndex < Data.Length; dataIndex++)
             {
                 // Write this file's name, padded to 0x40 bytes with the extension stripped.
                 writer.WriteNullPaddedString(Path.ChangeExtension(Data[dataIndex].Name, null), 0x40);
@@ -272,10 +320,10 @@
             writer.FixPadding(0x8000);
 
             // Loop through each file.
-            for (int dataIndex = 0; dataIndex < Data.Count; dataIndex++)
+            for (int dataIndex = 0; dataIndex < Data.Length; dataIndex++)
             {
                 // Fill in the offset for this file's data.
-                writer.FillOffset($"File{dataIndex}Data");
+                writer.FillInOffset($"File{dataIndex}Data");
 
                 // Determine how to write the file data based on the version.
                 switch (version)
@@ -298,7 +346,7 @@
                 }
             }
 
-            // Close Marathon's BinaryWriter.
+            // Close our BinaryWriter.
             writer.Close();
         }
 
@@ -324,11 +372,5 @@
             // Extract the archive.
             Helpers.ExtractArchive(Data, directory, versionFlag);
         }
-
-        /// <summary>
-        /// Imports files from a directory into this format.
-        /// </summary>
-        /// <param name="directory">The directory to import.</param>
-        public void Import(string directory) => Data = Helpers.ImportArchive(directory);
     }
 }

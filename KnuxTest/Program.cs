@@ -1,5 +1,4 @@
-﻿using KnuxLib;
-using System.Text;
+﻿using System.Text;
 
 namespace KnuxTest
 {
@@ -7,7 +6,7 @@ namespace KnuxTest
     {
         static void Main(string[] args)
         {
-            // Enable shift-jis for HedgeLib# stuff.
+            // Enable shift-jis for BINA stuff.
             Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
 
             // Set the console's output to UTF8 rather than ASCII.
