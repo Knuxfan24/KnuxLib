@@ -33,21 +33,6 @@ jobs:
       run: |
         cd /home/runner/work/KnuxLib/KnuxLib/KnuxTools/bin/Release/net8.0/win-x64/publish/ && zip -r client-win-x64.zip *
         
-    - name: Get current date
-      id: date
-      run: echo "::set-output name=date::$(date +'%Y%m%d%H%M%S')"
-        
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: release-${{ steps.date.outputs.date }}
-        release_name: Release ${{ steps.date.outputs.date }}
-        draft: false
-        prerelease: false
-        
     - name: Upload Client win7-x64 Asset
       id: upload-release-client-win-asset 
       uses: actions/upload-release-asset@v1
