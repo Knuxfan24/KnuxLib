@@ -26,11 +26,19 @@ jobs:
       run: dotnet build --no-restore
     - name: Test
       run: dotnet test --no-build --verbosity normal
-    - name: Publish win-x64
+    - name: Publish KnuxTools
+      run: dotnet publish KnuxTools/KnuxTools.csproj -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=false
+    - name: Publish KnuxLib
       run: dotnet publish KnuxTools/KnuxTools.csproj -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=false
         
-    - name: Archive code coverage results
+    - name: Upload KnuxTools
       uses: actions/upload-artifact@v4
       with:
         name: KnuxTools
         path: /home/runner/work/KnuxLib/KnuxLib/KnuxTools/bin/Release/net8.0/win-x64/publish
+        
+    - name: Upload KnuxLib
+      uses: actions/upload-artifact@v4
+      with:
+        name: KnuxLib
+        path: /home/runner/work/KnuxLib/KnuxLib/KnuxLib/bin/Release/net8.0/win-x64/publish
