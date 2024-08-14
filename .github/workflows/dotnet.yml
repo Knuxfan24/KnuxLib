@@ -28,10 +28,6 @@ jobs:
       run: dotnet test --no-build --verbosity normal
     - name: Publish win-x64
       run: dotnet publish KnuxTools/KnuxTools.csproj -c Release -r win-x64 -p:PublishSingleFile=true -p:PublishTrimmed=true -p:PublishReadyToRun=false
-          
-    - name: Create win client archive
-      run: |
-        cd /home/runner/work/KnuxLib/KnuxLib/KnuxTools/bin/Release/net8.0/win-x64/publish/ && zip -r client-win-x64.zip *
         
     - name: Archive code coverage results
       uses: actions/upload-artifact@v4
