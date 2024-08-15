@@ -613,10 +613,10 @@ namespace KnuxLib.IO
             if (text.Length > length)
                 throw new ArgumentOutOfRangeException(nameof(text), $"The string was longer than {length} characters.");
 
-            WriteString(text.PadRight(length, '\0'));
+            Write(text.PadRight(length, '\0'));
         }
 
-        public void WriteString(string value) => Write(encoding.GetBytes(value));
+        public override void Write(string value) => Write(encoding.GetBytes(value));
 
         public void FixPadding(uint amount = 4)
         {

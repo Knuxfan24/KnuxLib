@@ -97,7 +97,6 @@
             /// <summary>
             /// Reads the data for this instance.
             /// </summary>
-            /// <param name="reader"></param>
             public void Read(BINAReader reader)
             {
                 InstanceName = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
@@ -179,7 +178,7 @@
             BINAWriter writer = new(File.Create(filepath), header);
 
             // Write this file's signature.
-            writer.WriteString("CPIC");
+            writer.Write("CPIC");
 
             // Write an unknown value that is usually 2.
             writer.Write(0x02);

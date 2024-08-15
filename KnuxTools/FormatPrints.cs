@@ -16,10 +16,12 @@
         {
             Console.WriteLine("===");
             Console.WriteLine("Hedgehog Engine:");
-            Console.WriteLine("Point Cloud (.pccol/.pcmodel/.pcrt)");
+            Console.WriteLine("Archive Info (.arcinfo)");
+            Console.WriteLine("Point Cloud (.pccol/.pcmodel/.pcrt/.pointcloud)");
             Helpers.ColourConsole("    Extension Flag (Collision Instance) - pccol", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Terrain Instance) - pcmodel", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Lighting Instance) - pcrt", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Extension Flag (Generic) - pointcloud", true, ConsoleColor.Yellow);
         }
 
         public static void Nu2()

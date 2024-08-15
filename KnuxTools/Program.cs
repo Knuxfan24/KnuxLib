@@ -140,6 +140,8 @@ namespace KnuxTools
             {
                 case ".arc": _ = new KnuxLib.Engines.CapcomMT.Archive(arg, true); break;
 
+                case ".arcinfo": case ".hedgehog.archiveinfo.json": _ = new KnuxLib.Engines.Hedgehog.ArchiveInfo(arg, true); break;
+
                 case ".bd": case ".bh": _ = new KnuxLib.Engines.Twinsanity.DataHeaderPair(arg, true); break;
 
                 case ".mat": _ = new KnuxLib.Engines.StellarStone.MaterialLibrary(arg, true); break;

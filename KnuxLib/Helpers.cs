@@ -112,6 +112,9 @@
         /// <param name="offsetLength"></param>
         public static string? ReadNullTerminatedStringTableEntry(ExtendedBinaryReader reader, int offsetLength, bool absolute = false)
         {
+            // Set up a value to store our offset.
+            long offset; 
+
             // Read the bytes that make up our offset.
             byte[] offsetBytes = reader.ReadBytes(offsetLength);
 
@@ -119,8 +122,13 @@
             if (reader.IsBigEndian)
                 Array.Reverse(offsetBytes);
 
-            // Convert the bytes to a long.
-            long offset = BitConverter.ToInt64(offsetBytes, 0);
+            // If our offset is at least eight bytes long, then parse it as a 64-bit integer.
+            if (offsetBytes.Length >= 8)
+                offset = BitConverter.ToInt64(offsetBytes, 0);
+
+            // If not, parse it as a 32-bit integer instead.
+            else
+                offset = BitConverter.ToInt32(offsetBytes, 0);
 
             // If this offset is just 0, then abort and return a null string.
             if (offset == 0)
