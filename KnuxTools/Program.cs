@@ -144,6 +144,8 @@ namespace KnuxTools
 
                 case ".bd": case ".bh": _ = new KnuxLib.Engines.Twinsanity.DataHeaderPair(arg, true); break;
 
+                case ".densitypointcloud": case ".hedgehog.densitypointcloud.json": _ = new KnuxLib.Engines.Hedgehog.DensityPointCloud(arg, true); break;
+
                 case ".mat": _ = new KnuxLib.Engines.StellarStone.MaterialLibrary(arg, true); break;
 
                 case ".one": _ = new KnuxLib.Engines.SonicStorybook.ONE(arg, true); break;

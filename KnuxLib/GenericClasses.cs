@@ -47,4 +47,88 @@ namespace KnuxLib
             Data = File.ReadAllBytes(sourceFile);
         }
     }
+
+    public class VertexColour
+    {
+        /// <summary>
+        /// The Red value for this Vertex Colour.
+        /// </summary>
+        public byte Red { get; set; } = 255;
+
+        /// <summary>
+        /// The Green value for this Vertex Colour.
+        /// </summary>
+        public byte Green { get; set; } = 255;
+
+        /// <summary>
+        /// The Blue value for this Vertex Colour.
+        /// </summary>
+        public byte Blue { get; set; } = 255;
+
+        /// <summary>
+        /// The (optional) Alpha value for this Vertex Colour.
+        /// </summary>
+        public byte? Alpha { get; set; }
+
+        public override string ToString()
+        {
+            if (Alpha != null)
+                return $"R: {Red} G: {Green} B: {Blue} A: {Alpha.Value}";
+            else
+                return $"R: {Red} G: {Green} B: {Blue}";
+        }
+
+        /// <summary>
+        /// Initialises this vertex colour with default data.
+        /// </summary>
+        public VertexColour() { }
+
+        /// <summary>
+        /// Initialises this vertex colour with the provided data.
+        /// </summary>
+        public VertexColour(byte red, byte green, byte blue, byte? alpha)
+        {
+            Red = red;
+            Green = green;
+            Blue = blue;
+            Alpha = alpha;
+        }
+
+        /// <summary>
+        /// Reads an RGB vertex colour entry.
+        /// </summary>
+        /// <param name="reader">The BinaryReader to use.</param>
+        /// <param name="hasAlpha">Whether or not to read an alpha byte.</param>
+        /// <param name="aRGB">Whether or not the alpha byte is stored first.</param>
+        public void Read(ExtendedBinaryReader reader, bool hasAlpha = true, bool aRGB = false)
+        {
+            if (hasAlpha && aRGB)
+                Alpha = reader.ReadByte();
+
+            Red = reader.ReadByte();
+            Green = reader.ReadByte();
+            Blue = reader.ReadByte();
+
+            if (hasAlpha && !aRGB)
+                Alpha = reader.ReadByte();
+        }
+
+        /// <summary>
+        /// Writes an RGB vertex colour entry.
+        /// </summary>
+        /// <param name="writer">The BinaryWriter to use</param>
+        /// <param name="aRGB">Whether or not the alpha byte is stored first (if it exists).</param>
+        public void Write(ExtendedBinaryWriter writer, bool aRGB = false)
+        {
+            if (Alpha != null && aRGB)
+                writer.Write(Alpha.Value);
+
+            writer.Write(Red);
+            writer.Write(Green);
+            writer.Write(Blue);
+
+            if (Alpha != null && !aRGB)
+                writer.Write(Alpha.Value);
+        }
+    }
 }

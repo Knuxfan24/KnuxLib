@@ -17,6 +17,7 @@
             Console.WriteLine("===");
             Console.WriteLine("Hedgehog Engine:");
             Console.WriteLine("Archive Info (.arcinfo)");
+            Console.WriteLine("Density Point Cloud (.densitypointcloud)");
             Console.WriteLine("Point Cloud (.pccol/.pcmodel/.pcrt/.pointcloud)");
             Helpers.ColourConsole("    Extension Flag (Collision Instance) - pccol", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Terrain Instance) - pcmodel", true, ConsoleColor.Yellow);

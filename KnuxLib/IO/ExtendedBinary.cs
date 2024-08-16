@@ -403,34 +403,9 @@ namespace KnuxLib.IO
         }
         
         // 16-Byte Types
-        public virtual Vector4 ReadVector4()
-        {
-            var vec = new Vector4();
-            ReadVector4(vec);
-            return vec;
-        }
+        public virtual Vector4 ReadVector4() => new(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-        public virtual Quaternion ReadQuaternion()
-        {
-            var vec = new Vector4();
-            ReadVector4(vec);
-            return new(vec.X, vec.Y, vec.Z, vec.W);
-        }
-
-        protected unsafe virtual void ReadVector4(Vector4 vec)
-        {
-            uint v = ReadUInt32();
-            vec.X = *((float*)&v);
-
-            v = ReadUInt32();
-            vec.Y = *((float*)&v);
-
-            v = ReadUInt32();
-            vec.Z = *((float*)&v);
-
-            v = ReadUInt32();
-            vec.W = *((float*)&v);
-        }
+        public virtual Quaternion ReadQuaternion() => new(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
         // TODO: Write override methods for decimals
 
@@ -1007,6 +982,12 @@ namespace KnuxLib.IO
             }
 
             Write(dataBuffer, 0, 16);
+        }
+
+
+        public virtual unsafe void Write(Quaternion quat)
+        {
+            Write(new Vector4(quat.X, quat.Y, quat.Z, quat.W));
         }
 
         // TODO: Write override methods for all types.
