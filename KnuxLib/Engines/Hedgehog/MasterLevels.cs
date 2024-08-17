@@ -282,8 +282,7 @@
                         // Write this file's name.
                         writer.AddString($"level_{index}_files_{fileIndex}_value", Files[fileIndex], 0x08);
 
-                        // Write an empty string. This doesn't work right with HedgeLib# in its normal state, although the game doesn't seem to care.
-                        // Lines 220-224 in BINA.cs need commenting out to make this accurate.
+                        // Write an empty string.
                         writer.AddString($"level_{index}_files_{fileIndex}_pad", "", 0x08, true);
 
                         // Write an unknown value of 0.

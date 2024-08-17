@@ -21,6 +21,10 @@
             Console.WriteLine("Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file.");
             Console.WriteLine("2010 Map (.map.bin)");
             Console.WriteLine("Master Level Table (.mlevel)");
+            Console.WriteLine("Message Table (sonic2010/blueblur/william) (.xtb)");
+            Helpers.ColourConsole("    Version Flag (Sonic Colours) - sonic2010", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Sonic Generations) - blueblur", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Mario and Sonic at the London 2012 Olympic Games) - william", true, ConsoleColor.Yellow);
             Console.WriteLine("Point Cloud (.pccol/.pcmodel/.pcrt/.pointcloud)");
             Helpers.ColourConsole("    Extension Flag (Collision Instance) - pccol", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Terrain Instance) - pcmodel", true, ConsoleColor.Yellow);

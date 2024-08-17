@@ -24,7 +24,7 @@
             else
             {
                 // Load this file.
-                Load(filepath);
+                Load(filepath, version);
 
                 // If the export flag is set, then export this format.
                 if (export)

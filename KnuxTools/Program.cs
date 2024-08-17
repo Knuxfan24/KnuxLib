@@ -208,6 +208,31 @@ namespace KnuxTools
 
                     break;
 
+                case ".xtb":
+                case ".hedgehog.messagetable_2010.json":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "sonic2010\t(Sonic Colours)", false },
+                                                { "blueblur\t(Sonic Generations)", false },
+                                                { "william\t(Mario and Sonic at the London 2012 Olympic Games)", false },
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "sonic2010": _ = new KnuxLib.Engines.Hedgehog.MessageTable_2010(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.sonic_2010, true); break;
+                        case "blueblur": _ = new KnuxLib.Engines.Hedgehog.MessageTable_2010(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.blueblur, true); break;
+                        case "william": _ = new KnuxLib.Engines.Hedgehog.MessageTable_2010(arg, KnuxLib.Engines.Hedgehog.MessageTable_2010.FormatVersion.william, true); break;
+                        default: Helpers.InvalidFormatVersion("Hedgehog Engine 2010 Message Table"); return;
+                    }
+
+                    break;
+
                 // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                 default:
                     Console.WriteLine($"Format extension {KnuxLib.Helpers.GetExtension(arg).ToLower()} is not valid for any currently supported formats.\nPress any key to continue.");
