@@ -407,7 +407,30 @@ namespace KnuxLib.IO
 
         public virtual Quaternion ReadQuaternion() => new(ReadSingle(), ReadSingle(), ReadSingle(), ReadSingle());
 
-        // TODO: Write override methods for decimals
+        public Matrix4x4 ReadMatrix()
+        {
+            Matrix4x4 matrix = new()
+            {
+                M11 = ReadSingle(),
+                M12 = ReadSingle(),
+                M13 = ReadSingle(),
+                M14 = ReadSingle(),
+                M21 = ReadSingle(),
+                M22 = ReadSingle(),
+                M23 = ReadSingle(),
+                M24 = ReadSingle(),
+                M31 = ReadSingle(),
+                M32 = ReadSingle(),
+                M33 = ReadSingle(),
+                M34 = ReadSingle(),
+                M41 = ReadSingle(),
+                M42 = ReadSingle(),
+                M43 = ReadSingle(),
+                M44 = ReadSingle()
+            };
+
+            return matrix;
+        }
 
         protected override void FillBuffer(int numBytes)
         {
@@ -592,6 +615,29 @@ namespace KnuxLib.IO
         }
 
         public override void Write(string value) => Write(encoding.GetBytes(value));
+
+        public void Write(Matrix4x4 matrix)
+        {
+            Write(matrix.M11);
+            Write(matrix.M12);
+            Write(matrix.M13);
+            Write(matrix.M14);
+
+            Write(matrix.M21);
+            Write(matrix.M22);
+            Write(matrix.M23);
+            Write(matrix.M24);
+
+            Write(matrix.M31);
+            Write(matrix.M32);
+            Write(matrix.M33);
+            Write(matrix.M34);
+
+            Write(matrix.M41);
+            Write(matrix.M42);
+            Write(matrix.M43);
+            Write(matrix.M44);
+        }
 
         public void FixPadding(uint amount = 4)
         {

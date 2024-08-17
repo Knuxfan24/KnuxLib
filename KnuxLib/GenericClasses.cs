@@ -131,4 +131,47 @@ namespace KnuxLib
                 writer.Write(Alpha.Value);
         }
     }
+
+    public class DecomposedMatrix
+    {
+        /// <summary>
+        /// This matrix's position in 3D space.
+        /// </summary>
+        public Vector3 Translation { get; set; }
+
+        /// <summary>
+        /// This matrix's rotation, converted from a quaternion to euler angles.
+        /// </summary>
+        public Vector3 EulerRotation { get; set; }
+
+        /// <summary>
+        /// This matrix's scale factor.
+        /// </summary>
+        public Vector3 Scale { get; set; } = Vector3.One;
+
+        /// <summary>
+        /// Initialises this decomposed matrix with default data.
+        /// </summary>
+        public DecomposedMatrix() { }
+
+        /// <summary>
+        /// Initialises this decomposed matrix by processing a regular matrix.
+        /// </summary>
+        public DecomposedMatrix(Matrix4x4 matrix) => Process(matrix);
+
+        /// <summary>
+        /// Process a matrix into a decomposed version.
+        /// </summary>
+        /// <param name="matrix">The matrix to decompose.</param>
+        public void Process(Matrix4x4 matrix)
+        {
+            // Decompose the matrix.
+            Matrix4x4.Decompose(matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation);
+
+            // Set the values for this decomposed matrix.
+            Translation = translation;
+            EulerRotation = Helpers.ConvertQuaternionToEuler(rotation);
+            Scale = scale;
+        }
+    }
 }

@@ -104,6 +104,7 @@ namespace KnuxTools
                                        { "capcomv7\t\t\t(Capcom MT Framework Engine (Version 7))", false },
                                        { "capcomv9\t\t\t(Capcom MT Framework Engine (Version 9))", false },
                                        { "capcomv9_uncompressed\t(Capcom MT Framework Engine (Version 9, No Compression))", false },
+                                       { "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)", false },
                                        { "storybook\t\t\t(Sonic Storybook Engine ONE File)", false },
                                        { "twinsanity\t\t\t(Twinsanity Engine Data Header Pair)", false },
                                    },
@@ -120,6 +121,9 @@ namespace KnuxTools
                 case "capcomv7": _ = new KnuxLib.Engines.CapcomMT.Archive(arg, true, 0x07, true); break;
                 case "capcomv9": _ = new KnuxLib.Engines.CapcomMT.Archive(arg, true, 0x09, true); break;
                 case "capcomv9_uncompressed": _ = new KnuxLib.Engines.CapcomMT.Archive(arg, true, 0x09, false); break;
+
+                // Hedgehog Engine Instance Info to Point Cloud conversion.
+                case "hh_instance2pointcloud": _ = new KnuxLib.Engines.Hedgehog.InstanceInfo(arg); break;
 
                 // Sonic Storybook ONE Archive.
                 case "storybook": _ = new KnuxLib.Engines.SonicStorybook.ONE(arg, true); break;
@@ -174,6 +178,8 @@ namespace KnuxTools
                     break;
 
                 case ".sco": _ = new KnuxLib.Engines.StellarStone.MeshObject(arg, true); break;
+
+                case ".terrain-instanceinfo": case ".hedgehog.instanceinfo.json": _ = new KnuxLib.Engines.Hedgehog.InstanceInfo(arg, true); break;
 
                 case ".wmp":
                 case ".nu2.wumpatable.json":
