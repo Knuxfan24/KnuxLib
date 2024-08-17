@@ -215,13 +215,16 @@ namespace KnuxLib.IO
             return footerStartPos;
         }
 
-        public void AddString(string offsetName, string str, uint offsetLength = 4)
+        public void AddString(string offsetName, string str, uint offsetLength = 4, bool addOffsetEvenIfNull = false)
         {
-            if (string.IsNullOrEmpty(offsetName)) return;
-            if (string.IsNullOrEmpty(str))
+            if (!addOffsetEvenIfNull)
             {
-                WriteNulls(offsetLength);
-                return;
+                if (string.IsNullOrEmpty(offsetName)) return;
+                if (string.IsNullOrEmpty(str))
+                {
+                    WriteNulls(offsetLength);
+                    return;
+                }
             }
 
             var tableEntry = new StringTableEntry(str);

@@ -154,6 +154,8 @@ namespace KnuxTools
 
                 case ".mat": _ = new KnuxLib.Engines.StellarStone.MaterialLibrary(arg, true); break;
 
+                case ".mlevel": case ".hedgehog.masterlevels.json": _ = new KnuxLib.Engines.Hedgehog.MasterLevels(arg, true); break;
+
                 case ".one": _ = new KnuxLib.Engines.SonicStorybook.ONE(arg, true); break;
 
                 case ".pcmodel":
@@ -205,6 +207,12 @@ namespace KnuxTools
                     }
 
                     break;
+
+                // If a command line argument without a corresponding format has been passed, then inform the user and abort.
+                default:
+                    Console.WriteLine($"Format extension {KnuxLib.Helpers.GetExtension(arg).ToLower()} is not valid for any currently supported formats.\nPress any key to continue.");
+                    Console.ReadKey();
+                    return;
             }
         }
     }
