@@ -150,6 +150,8 @@ namespace KnuxTools
 
                 case ".densitypointcloud": case ".hedgehog.densitypointcloud.json": _ = new KnuxLib.Engines.Hedgehog.DensityPointCloud(arg, true); break;
 
+                case ".map.bin": case ".hedgehog.map_2010.json": _ = new KnuxLib.Engines.Hedgehog.Map_2010(arg, true); break;
+
                 case ".mat": _ = new KnuxLib.Engines.StellarStone.MaterialLibrary(arg, true); break;
 
                 case ".one": _ = new KnuxLib.Engines.SonicStorybook.ONE(arg, true); break;

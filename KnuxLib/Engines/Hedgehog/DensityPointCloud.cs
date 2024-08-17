@@ -153,7 +153,7 @@
             // Jump to the instance table (should already be here but lets play it safe).
             reader.JumpTo(instanceTableOffset, false);
 
-            // Loop through each instance.
+            // Loop through and read each instance.
             for (int instanceIndex = 0; instanceIndex < Data.Length; instanceIndex++)
                 Data[instanceIndex] = new(reader);
 

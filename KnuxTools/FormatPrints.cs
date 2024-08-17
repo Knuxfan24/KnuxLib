@@ -19,6 +19,7 @@
             Console.WriteLine("Archive Info (.arcinfo)");
             Console.WriteLine("Density Point Cloud (.densitypointcloud)");
             Console.WriteLine("Instance Info (.terrain-instanceinfo) - Import a folder containing files to generate a Sonic Frontiers point cloud file.");
+            Console.WriteLine("2010 Map (.map.bin)");
             Console.WriteLine("Point Cloud (.pccol/.pcmodel/.pcrt/.pointcloud)");
             Helpers.ColourConsole("    Extension Flag (Collision Instance) - pccol", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Terrain Instance) - pcmodel", true, ConsoleColor.Yellow);
