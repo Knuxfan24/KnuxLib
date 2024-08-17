@@ -25,7 +25,7 @@ namespace KnuxLib.Engines.StellarStone
             public string Name { get; set; } = "";
 
             /// <summary>
-            /// The origin point of this model?
+            /// The origin point of this model.
             /// </summary>
             public Vector3 CentralPoint { get; set; }
 
@@ -39,6 +39,9 @@ namespace KnuxLib.Engines.StellarStone
             /// </summary>
             public List<Face> Faces { get; set; } = [];
 
+            /// <summary>
+            /// Displays this model's name in the debugger.
+            /// </summary>
             public override string ToString() => Name;
         }
 
@@ -59,6 +62,9 @@ namespace KnuxLib.Engines.StellarStone
             /// </summary>
             public double[] TextureCoordinates { get; set; } = new double[6];
 
+            /// <summary>
+            /// Displays this face's vertex indices in the debugger.
+            /// </summary>
             public override string ToString() => $"<{VertexIndices[0]}, {VertexIndices[1]}, {VertexIndices[2]}>";
         }
 

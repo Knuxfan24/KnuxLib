@@ -64,6 +64,9 @@ namespace KnuxLib.Engines.StellarStone
             /// </summary>
             public byte[] Colours { get; set; } = [255, 255, 255];
 
+            /// <summary>
+            /// Displays this material's name in the debugger.
+            /// </summary>
             public override string ToString() => Name;
         }
 

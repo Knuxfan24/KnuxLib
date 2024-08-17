@@ -70,6 +70,9 @@ namespace KnuxLib
         /// </summary>
         public byte? Alpha { get; set; }
 
+        /// <summary>
+        /// Displays this vertex colour's values in the debugger.
+        /// </summary>
         public override string ToString()
         {
             if (Alpha != null)
