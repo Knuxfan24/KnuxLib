@@ -105,6 +105,8 @@
                 Rotation = reader.ReadVector3();
                 UnknownInt32_1 = reader.ReadInt32();
                 Scale = reader.ReadVector3();
+                reader.JumpAhead(0x04); // Always 0.
+                reader.FixPadding(0x08);
             }
         
             /// <summary>
@@ -118,6 +120,7 @@
                 writer.Write(Rotation);
                 writer.Write(UnknownInt32_1);
                 writer.Write(Scale);
+                writer.WriteNulls(0x04);
             }
         }
 
@@ -148,18 +151,9 @@
             // Jump to the instance table (should already be here but lets play it safe).
             reader.JumpTo(instanceTableOffset, false);
 
-            // Loop through each instance.
+            // Loop through and read each instance.
             for (int instanceIndex = 0; instanceIndex < Data.Length; instanceIndex++)
-            {
-                // Set up and read this instance.
                 Data[instanceIndex] = new(reader);
-
-                // Skip four bytes that are always 0.
-                reader.JumpAhead(0x04);
-
-                // Realign for the next instance.
-                reader.FixPadding(0x08);
-            }
 
             // Close our BINAReader.
             reader.Close();
@@ -197,9 +191,6 @@
             {
                 // Write this instance.
                 Data[instanceIndex].Write(writer, instanceIndex);
-
-                // Write an unknown value that is always 0.
-                writer.Write(0x00);
 
                 // All instances but the last one appear to be aligned, so if this isn't the last instance, align it.
                 if (instanceIndex != Data.Length - 1)
