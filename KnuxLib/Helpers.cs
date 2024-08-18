@@ -110,7 +110,7 @@
         /// </summary>
         /// <param name="reader"></param>
         /// <param name="offsetLength"></param>
-        public static string? ReadNullTerminatedStringTableEntry(ExtendedBinaryReader reader, int offsetLength, bool absolute = false)
+        public static string? ReadNullTerminatedStringTableEntry(ExtendedBinaryReader reader, int offsetLength, bool absolute = false, bool isUTF16 = false)
         {
             // Set up a value to store our offset.
             long offset; 
@@ -140,8 +140,14 @@
             // Jump to the offset we read.
             reader.JumpTo(offset, absolute);
 
-            // Get the string at this position.
-            string value = reader.ReadNullTerminatedString();
+            // Set up a string value.
+            string value;
+
+            // Read the string at the offset based on whether it needs to be UTF16 or not.
+            if (!isUTF16)
+                value = reader.ReadNullTerminatedString();
+            else
+                value = reader.ReadNullTerminatedStringUTF16();
 
             // Jump back to where we were.
             reader.JumpTo(position);

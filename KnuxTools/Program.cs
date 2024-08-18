@@ -233,6 +233,8 @@ namespace KnuxTools
 
                     break;
 
+                case ".xtb2": case ".hedgehog.messagetable_2013.json": _ = new KnuxLib.Engines.Hedgehog.MessageTable_2013(arg, true); break;
+
                 // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                 default:
                     Console.WriteLine($"Format extension {KnuxLib.Helpers.GetExtension(arg).ToLower()} is not valid for any currently supported formats.\nPress any key to continue.");
