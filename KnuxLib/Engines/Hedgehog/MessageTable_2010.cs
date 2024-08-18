@@ -2,7 +2,6 @@
 
 namespace KnuxLib.Engines.Hedgehog
 {
-    // TODO: Change out the reader and write for the actual data to the new setup.
     public class MessageTable_2010 : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -60,15 +59,15 @@ namespace KnuxLib.Engines.Hedgehog
             /// <summary>
             /// The style sheets for this file.
             /// </summary>
-            public List<Style> Styles { get; set; } = [];
+            public StyleSheet[] StyleSheets { get; set; } = [];
 
             /// <summary>
             /// The categories of messages this file has.
             /// </summary>
-            public List<Category> Categories { get; set; } = [];
+            public Category[] Categories { get; set; } = [];
         }
 
-        public class Style
+        public class StyleSheet
         {
             /// <summary>
             /// The name of this style sheet.
@@ -76,27 +75,17 @@ namespace KnuxLib.Engines.Hedgehog
             public string Name { get; set; } = "";
 
             /// <summary>
-            /// The size of text using this style.
+            /// The size of text using this style sheet.
             /// </summary>
-            public uint FontSize { get; set; }
+            public int FontSize { get; set; }
 
             /// <summary>
-            /// The red colour for this style.
+            /// The colour of this style sheet.
             /// </summary>
-            public byte RedColour { get; set; } = 255;
+            public VertexColour Colour { get; set; } = new();
 
             /// <summary>
-            /// The green colour for this style.
-            /// </summary>
-            public byte GreenColour { get; set; } = 255;
-
-            /// <summary>
-            /// The blue colour for this style.
-            /// </summary>
-            public byte BlueColour { get; set; } = 255;
-
-            /// <summary>
-            /// How text using this style is aligned.
+            /// How text using this style sheet is aligned.
             /// </summary>
             public HorizontalAlignment HorizontalAlignment { get; set; }
 
@@ -104,10 +93,63 @@ namespace KnuxLib.Engines.Hedgehog
             /// An unknown byte value that is always 0 in the sonic_2010 versions.
             /// TODO: What is this?
             /// TODO: Is this actually a boolean?
+            /// TODO: Check if this always 0 in the william versions too.
             /// </summary>
             public byte UnknownByte_1 { get; set; }
 
+            /// <summary>
+            /// Displays this style sheet's name in the debugger.
+            /// </summary>
             public override string ToString() => Name;
+
+            /// <summary>
+            /// Initialises this style sheet with default data.
+            /// </summary>
+            public StyleSheet() { }
+
+            /// <summary>
+            /// Initialises this style sheet with the provided data.
+            /// </summary>
+            public StyleSheet(string name, int fontSize, VertexColour colour, HorizontalAlignment horizontalAlignment, byte unknownByte_1)
+            {
+                Name = name;
+                FontSize = fontSize;
+                Colour = colour;
+                HorizontalAlignment = horizontalAlignment;
+                UnknownByte_1 = unknownByte_1;
+            }
+
+            /// <summary>
+            /// Initialises this style sheet by reading its data from a BinaryReader.
+            /// </summary>
+            public StyleSheet(ExtendedBinaryReader reader) => Read(reader);
+
+            /// <summary>
+            /// Reads the data for this style sheet.
+            /// </summary>
+            public void Read(ExtendedBinaryReader reader)
+            {
+                Name = reader.ReadNullPaddedString(reader.ReadByte());
+                reader.JumpAhead(0x01); // Always 1.
+                FontSize = reader.ReadInt32();
+                Colour = new(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), null);
+                HorizontalAlignment = (HorizontalAlignment)reader.ReadByte();
+                UnknownByte_1 = reader.ReadByte();
+            }
+
+            /// <summary>
+            /// Writes the data for this style sheet.
+            /// </summary>
+            public void Write(ExtendedBinaryWriter writer)
+            {
+                writer.Write((byte)Name.Length);
+                writer.Write(Name);
+                writer.Write((byte)0x01);
+                writer.Write(FontSize);
+                Colour.Write(writer);
+                writer.Write((byte)HorizontalAlignment);
+                writer.Write(UnknownByte_1);
+            }
         }
 
         // Classes for this format.
@@ -131,9 +173,79 @@ namespace KnuxLib.Engines.Hedgehog
             /// <summary>
             /// A list of the messages within this category.
             /// </summary>
-            public List<MessageEntry> Messages { get; set; } = [];
+            public MessageEntry[] Messages { get; set; } = [];
 
+            /// <summary>
+            /// Displays this category's name in the debugger.
+            /// </summary>
             public override string ToString() => Name;
+
+            /// <summary>
+            /// Initialises this category with default data.
+            /// </summary>
+            public Category() { }
+
+            /// <summary>
+            /// Initialises this category with the provided data.
+            /// </summary>
+            public Category(string name, MessageEntry[] messages)
+            {
+                Name = name;
+                Messages = messages;
+            }
+
+            /// <summary>
+            /// Initialises this category by reading its data from a BinaryReader.
+            /// </summary>
+            public Category(ExtendedBinaryReader reader, FormatVersion version = FormatVersion.sonic_2010) => Read(reader, version);
+
+            /// <summary>
+            /// Reads the data for this category.
+            /// </summary>
+            public void Read(ExtendedBinaryReader reader, FormatVersion version = FormatVersion.sonic_2010)
+            {
+                // Read this category's name.
+                Name = reader.ReadNullPaddedString(reader.ReadByte());
+
+                // Read the amount of messages in this category.
+                int messageCount = reader.ReadByte();
+
+                // If this is a Mario and Sonic at the London 2012 Olympic Games file, then read the MessageCount as an integer instead.
+                if (version == FormatVersion.william)
+                {
+                    reader.JumpBehind(0x01);
+                    messageCount = reader.ReadInt32();
+                }
+
+                // Initialise the messages array.
+                Messages = new MessageEntry[messageCount];
+
+                // Loop through and read each message in this category.
+                for (int messageIndex = 0; messageIndex < messageCount; messageIndex++)
+                    Messages[messageIndex] = new(reader, version);
+            }
+
+            /// <summary>
+            /// Writes the data for this category.
+            /// </summary>
+            public void Write(ExtendedBinaryWriter writer, FormatVersion version = FormatVersion.sonic_2010)
+            {
+                // Write the size of this category's name.
+                writer.Write((byte)Name.Length);
+
+                // Write this category's name.
+                writer.Write(Name);
+
+                // Write the amount of messages in this category.
+                if (version != FormatVersion.william)
+                    writer.Write((byte)Messages.Length);
+                else
+                    writer.Write(Messages.Length);
+
+                // Loop through and write each of the messages in this category.
+                for (int messageIndex = 0; messageIndex < Messages.Length; messageIndex++)
+                    Messages[messageIndex].Write(writer, version);
+            }
         }
 
         public class MessageEntry
@@ -153,7 +265,136 @@ namespace KnuxLib.Engines.Hedgehog
             /// </summary>
             public string Message { get; set; } = "";
 
+            /// <summary>
+            /// Displays this message's name in the debugger.
+            /// </summary>
             public override string ToString() => Name;
+
+            /// <summary>
+            /// Initialises this message with default data.
+            /// </summary>
+            public MessageEntry() { }
+
+            /// <summary>
+            /// Initialises this message with the provided data.
+            /// </summary>
+            public MessageEntry(string name, string styleSheet, string message)
+            {
+                Name = name;
+                StyleSheet = styleSheet;
+                Message = message;
+            }
+
+            /// <summary>
+            /// Initialises this message by reading its data from a BinaryReader.
+            /// </summary>
+            public MessageEntry(ExtendedBinaryReader reader, FormatVersion version = FormatVersion.sonic_2010) => Read(reader, version);
+
+            /// <summary>
+            /// Reads the data for this message.
+            /// </summary>
+            public void Read(ExtendedBinaryReader reader, FormatVersion version = FormatVersion.sonic_2010)
+            {
+                // Read this message's name.
+                Name = reader.ReadNullPaddedString(reader.ReadByte());
+
+                // Read this message's style sheet reference.
+                StyleSheet = reader.ReadNullPaddedString(reader.ReadByte());
+
+                // Read the amount of bytes that make up this message's UTF16 encoded data.
+                int messageByteCount = reader.ReadInt32();
+
+                // Read the amount of characters this message when decoded.
+                uint messageCharacterCount = reader.ReadUInt32();
+
+                // Set up a byte array to read the UTF16 encoded data.
+                byte[] messageBytes = new byte[messageByteCount];
+
+                // Read each UTF-16 encoded byte for this message.
+                for (int characterIndex = 0; characterIndex < messageByteCount; characterIndex++)
+                    messageBytes[characterIndex] = reader.ReadByte();
+
+                // Set up a UTF16 Decoder.
+                Decoder utf16Decoder = Encoding.Unicode.GetDecoder();
+
+                // Set up a char array to hold the decoded characters.
+                char[] characters = new char[messageCharacterCount];
+
+                // If this is a Sonic Generations XTB file, then we need to endian swap the UTF16 encoded text's bytes.
+                if (version == FormatVersion.blueblur)
+                {
+                    // Loop through every other byte.
+                    for (int characterByte = 0; characterByte < messageBytes.Length; characterByte += 2)
+                    {
+                        // Read this byte and the next one.
+                        byte val0 = messageBytes[characterByte];
+                        byte val1 = messageBytes[characterByte + 1];
+
+                        // Switch the values around.
+                        messageBytes[characterByte] = val1;
+                        messageBytes[characterByte + 1] = val0;
+                    }
+                }
+
+                // Decode the bytes to the char array.
+                utf16Decoder.GetChars(messageBytes, 0, messageByteCount, characters, 0, true);
+
+                // Convert the char array to a string.
+                Message = new string(characters);
+            }
+
+            /// <summary>
+            /// Writes the data for this message.
+            /// </summary>
+            public void Write(ExtendedBinaryWriter writer, FormatVersion version = FormatVersion.sonic_2010)
+            {
+                // Write the size of this message's name.
+                writer.Write((byte)Name.Length);
+
+                // Write this message's name.
+                writer.Write(Name);
+
+                // Write the size of this message's style sheet.
+                writer.Write((byte)StyleSheet.Length);
+
+                // Write this message's style sheet.
+                writer.Write(StyleSheet);
+
+                // Write the amount of bytes that make the up the UTF16 encoded string.
+                // TODO: Is it safe to just assume that it will always be twice the size of the decoded string?
+                writer.Write(Message.Length * 2);
+
+                // Write the length of the decoded string.
+                writer.Write(Message.Length);
+
+                // Set up a UTF16 Encoder.
+                Encoder utf16Encoder = Encoding.Unicode.GetEncoder();
+
+                // Set up a byte array to hold the UTF16 encoded bytes.
+                byte[] messageBytes = new byte[Message.Length * 2];
+
+                // Encode this message into a UTF16 byte array.
+                utf16Encoder.GetBytes(Message.ToCharArray(), messageBytes, true);
+
+                // If this is a Sonic Generations XTB file, then we need to endian swap the UTF16 encoded text's bytes.
+                if (version == FormatVersion.blueblur)
+                {
+                    // Loop through every other byte.
+                    for (int characterIndex = 0; characterIndex < messageBytes.Length; characterIndex += 2)
+                    {
+                        // Read this byte and the next one.
+                        byte val0 = messageBytes[characterIndex];
+                        byte val1 = messageBytes[characterIndex + 1];
+
+                        // Switch the values around.
+                        messageBytes[characterIndex] = val1;
+                        messageBytes[characterIndex + 1] = val0;
+                    }
+                }
+
+                // Write the encoded array.
+                writer.Write(messageBytes);
+            }
         }
 
         // Actual data presented to the end user.
@@ -188,6 +429,7 @@ namespace KnuxLib.Engines.Hedgehog
                     reader.JumpAhead(0x06);
 
                     break;
+
                 case FormatVersion.blueblur:
                     // Switch the endianness to Big Endian.
                     reader.IsBigEndian = true;
@@ -201,35 +443,12 @@ namespace KnuxLib.Engines.Hedgehog
                     break;
             }
 
+            // Initialise the style sheets array.
+            Data.StyleSheets = new StyleSheet[styleCount];
+
             // Loop through and read each style sheet.
-            for (int styleIndex = 0; styleIndex < styleCount; styleIndex++)
-            {
-                // Set up a new style sheet entry.
-                Style style = new();
-
-                // Read this style sheet's name.
-                style.Name = reader.ReadNullPaddedString(reader.ReadByte());
-
-                // Skip an unknown value that is always 1.
-                reader.JumpAhead(0x01);
-
-                // Read this style's font size.
-                style.FontSize = reader.ReadUInt32();
-
-                // Read this style's RGB colour.
-                style.RedColour = reader.ReadByte();
-                style.GreenColour = reader.ReadByte();
-                style.BlueColour = reader.ReadByte();
-
-                // Read this style's horizontal alignment.
-                style.HorizontalAlignment = (HorizontalAlignment)reader.ReadByte();
-
-                // Read this style's unknown byte.
-                style.UnknownByte_1 = reader.ReadByte();
-
-                // Save this style sheet.
-                Data.Styles.Add(style);
-            }
+            for (int styleSheetIndex = 0; styleSheetIndex < styleCount; styleSheetIndex++)
+                Data.StyleSheets[styleSheetIndex] = new(reader);
 
             // Read the category count depending on the version.
             switch (version)
@@ -254,85 +473,12 @@ namespace KnuxLib.Engines.Hedgehog
                     break;
             }
 
+            // Initialise the categories array.
+            Data.Categories = new Category[categoryCount];
+
             // Loop through and read each category in this file.
             for (int categoryIndex = 0; categoryIndex < categoryCount; categoryIndex++)
-            {
-                // Set up a new category entry.
-                Category category = new();
-
-                // Read this category's name.
-                category.Name = reader.ReadNullPaddedString(reader.ReadByte());
-
-                // Read the amount of messages in this category.
-                uint messageCount = reader.ReadByte();
-
-                // If this is a Mario and Sonic at the London 2012 Olympic Games file, then read the MessageCount as a uint instead.
-                if (version == FormatVersion.william)
-                {
-                    reader.JumpBehind(0x01);
-                    messageCount = reader.ReadUInt32();
-                }
-
-                // Loop through and read each message in this category.
-                for (int messageIndex = 0; messageIndex < messageCount; messageIndex++)
-                {
-                    // Set up a new message entry.
-                    MessageEntry message = new();
-
-                    // Read this message's name.
-                    message.Name = reader.ReadNullPaddedString(reader.ReadByte());
-
-                    // Read this message's style sheet reference.
-                    message.StyleSheet = reader.ReadNullPaddedString(reader.ReadByte());
-
-                    // Read the amount of bytes that make up this message's UTF16 encoded data.
-                    int messageByteCount = reader.ReadInt32();
-
-                    // Read the amount of characters this message when decoded.
-                    uint messageCharacterCount = reader.ReadUInt32();
-
-                    // Set up a byte array to read the UTF16 encoded data.
-                    byte[] messageBytes = new byte[messageByteCount];
-
-                    // Read each UTF-16 encoded byte for this message.
-                    for (int characterIndex = 0; characterIndex < messageByteCount; characterIndex++)
-                        messageBytes[characterIndex] = reader.ReadByte();
-
-                    // Set up a UTF16 Decoder.
-                    Decoder utf16Decoder = Encoding.Unicode.GetDecoder();
-
-                    // Set up a char array to hold the decoded characters.
-                    char[] characters = new char[messageCharacterCount];
-
-                    // If this is a Sonic Generations XTB file, then we need to endian swap the UTF16 encoded text's bytes.
-                    if (version == FormatVersion.blueblur)
-                    {
-                        // Loop through every other byte.
-                        for (int characterByte = 0; characterByte < messageBytes.Length; characterByte += 2)
-                        {
-                            // Read this byte and the next one.
-                            byte val0 = messageBytes[characterByte];
-                            byte val1 = messageBytes[characterByte + 1];
-
-                            // Switch the values around.
-                            messageBytes[characterByte] = val1;
-                            messageBytes[characterByte + 1] = val0;
-                        }
-                    }
-
-                    // Decode the bytes to the char array.
-                    utf16Decoder.GetChars(messageBytes, 0, messageByteCount, characters, 0, true);
-
-                    // Convert the char array to a string.
-                    message.Message = new string(characters);
-
-                    // Save this message.
-                    category.Messages.Add(message);
-                }
-
-                // Save this category.
-                Data.Categories.Add(category);
-            }
+                Data.Categories[categoryIndex] = new(reader, version);
 
             // Close our BinaryReader.
             reader.Close();
@@ -348,6 +494,7 @@ namespace KnuxLib.Engines.Hedgehog
             // Create this file through a BinaryWriter.
             ExtendedBinaryWriter writer = new(File.Create(filepath));
 
+            // If we're writing a Sonic Generations XTB, then swap to big endian.
             if (version == FormatVersion.blueblur)
                 writer.IsBigEndian = true;
 
@@ -363,7 +510,7 @@ namespace KnuxLib.Engines.Hedgehog
                 case FormatVersion.sonic_2010:
                 case FormatVersion.william:
                     // Write the amount of style sheets in this file.
-                    writer.Write((ushort)Data.Styles.Count);
+                    writer.Write((ushort)Data.StyleSheets.Length);
 
                     // Write six null bytes.
                     writer.WriteNulls(0x06);
@@ -374,37 +521,14 @@ namespace KnuxLib.Engines.Hedgehog
                     writer.WriteNulls(0x06);
 
                     // Write the amount of style sheets in this file.
-                    writer.Write((ushort)Data.Styles.Count);
+                    writer.Write((ushort)Data.StyleSheets.Length);
 
                     break;
             }
 
             // Loop through and write each style sheet.
-            for (int styleIndex = 0; styleIndex < Data.Styles.Count; styleIndex++)
-            {
-                // Write the size of this style sheet's name.
-                writer.Write((byte)Data.Styles[styleIndex].Name.Length);
-
-                // Write this style sheet's name.
-                writer.Write(Data.Styles[styleIndex].Name);
-
-                // Write an unknown value that is always 0x01.
-                writer.Write((byte)0x01);
-
-                // Write this style sheet's font size.
-                writer.Write(Data.Styles[styleIndex].FontSize);
-
-                // Write this style sheet's RGB colour.
-                writer.Write(Data.Styles[styleIndex].RedColour);
-                writer.Write(Data.Styles[styleIndex].GreenColour);
-                writer.Write(Data.Styles[styleIndex].BlueColour);
-
-                // Write this style sheet's horizontal alignment.
-                writer.Write((byte)Data.Styles[styleIndex].HorizontalAlignment);
-
-                // Write this style sheet's unknown byte.
-                writer.Write(Data.Styles[styleIndex].UnknownByte_1);
-            }
+            for (int styleSheetIndex = 0; styleSheetIndex < Data.StyleSheets.Length; styleSheetIndex++)
+                Data.StyleSheets[styleSheetIndex].Write(writer);
 
             // Write the category count depending on the version.
             switch (version)
@@ -412,7 +536,7 @@ namespace KnuxLib.Engines.Hedgehog
                 case FormatVersion.sonic_2010:
                 case FormatVersion.william:
                     // Write the amount of message categories in this file.
-                    writer.Write((ushort)Data.Categories.Count);
+                    writer.Write((ushort)Data.Categories.Length);
 
                     // Write six null bytes.
                     writer.WriteNulls(0x06);
@@ -424,76 +548,14 @@ namespace KnuxLib.Engines.Hedgehog
                     writer.WriteNulls(0x06);
 
                     // Write the amount of message categories in this file.
-                    writer.Write((ushort)Data.Categories.Count);
+                    writer.Write((ushort)Data.Categories.Length);
 
                     break;
             }
 
             // Loop through and write this file's categories.
-            for (int categoryIndex = 0; categoryIndex < Data.Categories.Count; categoryIndex++)
-            {
-                // Write the size of this category's name.
-                writer.Write((byte)Data.Categories[categoryIndex].Name.Length);
-
-                // Write this category's name.
-                writer.Write(Data.Categories[categoryIndex].Name);
-
-                // Write the amount of messages in this category.
-                if (version != FormatVersion.william)
-                    writer.Write((byte)Data.Categories[categoryIndex].Messages.Count);
-                else
-                    writer.Write(Data.Categories[categoryIndex].Messages.Count);
-
-                for (int messageIndex = 0; messageIndex < Data.Categories[categoryIndex].Messages.Count; messageIndex++)
-                {
-                    // Write the size of this message's name.
-                    writer.Write((byte)Data.Categories[categoryIndex].Messages[messageIndex].Name.Length);
-
-                    // Write this message's name.
-                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].Name);
-
-                    // Write the size of this message's style sheet.
-                    writer.Write((byte)Data.Categories[categoryIndex].Messages[messageIndex].StyleSheet.Length);
-
-                    // Write this message's style sheet.
-                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].StyleSheet);
-
-                    // Write the amount of bytes that make the up the UTF16 encoded string.
-                    // TODO: Is it safe to just assume that it will always be twice the size of the decoded string?
-                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length * 2);
-
-                    // Write the length of the decoded string.
-                    writer.Write(Data.Categories[categoryIndex].Messages[messageIndex].Message.Length);
-
-                    // Set up a UTF16 Encoder.
-                    Encoder utf16Encoder = Encoding.Unicode.GetEncoder();
-
-                    // Set up a byte array to hold the UTF16 encoded bytes.
-                    byte[] messageBytes = new byte[Data.Categories[categoryIndex].Messages[messageIndex].Message.Length * 2];
-
-                    // Encode this message into a UTF16 byte array.
-                    utf16Encoder.GetBytes(Data.Categories[categoryIndex].Messages[messageIndex].Message.ToCharArray(), messageBytes, true);
-
-                    // If this is a Sonic Generations XTB file, then we need to endian swap the UTF16 encoded text's bytes.
-                    if (version == FormatVersion.blueblur)
-                    {
-                        // Loop through every other byte.
-                        for (int characterIndex = 0; characterIndex < messageBytes.Length; characterIndex += 2)
-                        {
-                            // Read this byte and the next one.
-                            byte val0 = messageBytes[characterIndex];
-                            byte val1 = messageBytes[characterIndex + 1];
-
-                            // Switch the values around.
-                            messageBytes[characterIndex] = val1;
-                            messageBytes[characterIndex + 1] = val0;
-                        }
-                    }
-
-                    // Write the encoded array.
-                    writer.Write(messageBytes);
-                }
-            }
+            for (int categoryIndex = 0; categoryIndex < Data.Categories.Length; categoryIndex++)
+                Data.Categories[categoryIndex].Write(writer, version);
 
             // Close our BinaryWriter.
             writer.Close();

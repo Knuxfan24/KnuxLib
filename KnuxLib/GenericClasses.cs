@@ -65,6 +65,7 @@ namespace KnuxLib
         /// </summary>
         public byte Blue { get; set; } = 255;
 
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         /// <summary>
         /// The (optional) Alpha value for this Vertex Colour.
         /// </summary>
