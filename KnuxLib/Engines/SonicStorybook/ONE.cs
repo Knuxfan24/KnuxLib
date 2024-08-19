@@ -1,5 +1,4 @@
 ﻿using AuroraLib.Compression.Algorithms;
-using System;
 
 namespace KnuxLib.Engines.SonicStorybook
 {

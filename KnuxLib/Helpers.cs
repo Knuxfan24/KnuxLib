@@ -213,5 +213,35 @@
                     (float)y * multi, (float)z * multi);
             }
         }
+
+        /// <summary>
+        /// Calculate the distance between two points in 3D space.
+        /// </summary>
+        /// <param name="pointA">The first point.</param>
+        /// <param name="pointB">The second point.</param>
+        /// <returns>The calculated distance between the two.</returns>
+        public static float CalculateDistance(Vector3 pointA, Vector3 pointB)
+        {
+            // Subtract the values in the first point from the values in the second.
+            float x = pointB.X - pointA.X;
+            float y = pointB.Y - pointA.Y;
+            float z = pointB.Z - pointA.Z;
+
+            // Square the three calculated values.
+            x *= x;
+            y *= y;
+            z *= z;
+
+            // Calculate the square root of the three values added together.
+            return (float)Math.Sqrt(x + y + z);
+        }
+
+        /// <summary>
+        /// Normalises two points together to calculate the first point's forward vector.
+        /// </summary>
+        /// <param name="pointA">The first point.</param>
+        /// <param name="pointB">The second point.</param>
+        /// <returns>The calculated forward vector for the first point.</returns>
+        public static Vector3 CalculateForwardVector(Vector3 pointA, Vector3 pointB) => Vector3.Normalize(new(pointB.X - pointA.X, pointB.Y - pointA.Y, pointB.Z - pointA.Z));
     }
 }

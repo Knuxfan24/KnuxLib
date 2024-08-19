@@ -3,6 +3,7 @@ using Assimp.Configs;
 
 namespace KnuxLib.Engines.StellarStone
 {
+    // TODO: Update the generic stuff to allow importing from one definition.
     public class MaterialLibrary : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -231,7 +232,6 @@ namespace KnuxLib.Engines.StellarStone
             // Close this StreamWriter.
             mtl.Close();
         }
-
 
         /// <summary>
         /// Imports material data from an Assimp compatible model and converts it to a material library.

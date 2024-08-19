@@ -4,6 +4,7 @@ using Assimp;
 namespace KnuxLib.Engines.StellarStone
 {
     // TODO: Update the OBJ export to compensate for the fact that these models are left handed.
+    // TODO: Update the generic stuff to allow importing from one definition.
     public class MeshObject : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.

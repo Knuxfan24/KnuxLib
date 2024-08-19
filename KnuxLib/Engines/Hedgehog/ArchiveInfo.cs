@@ -66,7 +66,7 @@
             }
 
             /// <summary>
-            /// Initialises this entry by reading its data from a Binary Reader.
+            /// Initialises this entry by reading its data from a BinaryReader.
             /// </summary>
             public ArchiveEntry(ExtendedBinaryReader reader, uint archiveByteOffset, int archiveEntryIndex) => Read(reader, archiveByteOffset, archiveEntryIndex);
 

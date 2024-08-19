@@ -178,4 +178,54 @@ namespace KnuxLib
             Scale = scale;
         }
     }
+
+    public class AABB
+    {
+        /// <summary>
+        /// The minimum coordinate of the axis aligned bounding box.
+        /// </summary>
+        public Vector3 Min { get; set; }
+
+        /// <summary>
+        /// The maximum coordinate of the axis aligned bounding box.
+        /// </summary>
+        public Vector3 Max { get; set; }
+
+        /// <summary>
+        /// Initialises this axis aligned bounding box with default data.
+        /// </summary>
+        public AABB() { }
+
+        /// <summary>
+        /// Initialises this axis aligned bounding box with the provided data.
+        /// </summary>
+        public AABB(Vector3 min, Vector3 max)
+        {
+            Min = min;
+            Max = max;
+        }
+
+        /// <summary>
+        /// Initialises this axis aligned bounding box by reading its data from a BinaryReader.
+        /// </summary>
+        public AABB(ExtendedBinaryReader reader) => Read(reader);
+
+        /// <summary>
+        /// Reads an axis aligned bounding box.
+        /// </summary>
+        public void Read(ExtendedBinaryReader reader)
+        {
+            Min = reader.ReadVector3();
+            Max = reader.ReadVector3();
+        }
+
+        /// <summary>
+        /// Writes an axis aligned bounding box.
+        /// </summary>
+        public void Write(ExtendedBinaryWriter writer)
+        {
+            writer.Write(Min);
+            writer.Write(Max);
+        }
+    }
 }

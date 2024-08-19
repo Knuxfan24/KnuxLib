@@ -26,6 +26,10 @@
             Helpers.ColourConsole("    Version Flag (Sonic Generations) - blueblur", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Mario and Sonic at the London 2012 Olympic Games) - william", true, ConsoleColor.Yellow);
             Console.WriteLine("Message Table (sonic2013) (.xtb2)");
+            Console.WriteLine("Path Spline (.path) (.path2.bin)");
+            Helpers.ColourConsole("    Version Flag (Sonic Lost World) - sonic2013", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Sonic Forces) - wars", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Sonic Frontiers) - rangers", true, ConsoleColor.Yellow);
             Console.WriteLine("Point Cloud (.pccol/.pcmodel/.pcrt/.pointcloud)");
             Helpers.ColourConsole("    Extension Flag (Collision Instance) - pccol", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Terrain Instance) - pcmodel", true, ConsoleColor.Yellow);

@@ -156,7 +156,56 @@ namespace KnuxTools
 
                 case ".mlevel": case ".hedgehog.masterlevels.json": _ = new KnuxLib.Engines.Hedgehog.MasterLevels(arg, true); break;
 
+                // TODO: Assimp for Stellar Stone Engine.
+                case ".obj":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "sonic_2013\t(Sonic Lost World)", false },
+                                                { "wars\t(Sonic Forces)", false },
+                                                { "rangers\t(Sonic Rangers)", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "sonic_2013": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true, ".path2.bin"); break;
+                        case "wars": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Wars, true); break;
+                        case "rangers": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Rangers, true); break;
+                        default: Helpers.InvalidFormatVersion("Hedgehog Engine Path Spline"); return;
+                    }
+
+                    break;
+
                 case ".one": _ = new KnuxLib.Engines.SonicStorybook.ONE(arg, true); break;
+
+                case ".path":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "wars\t(Sonic Forces)", false },
+                                                { "rangers\t(Sonic Rangers)", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "wars": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Wars, true); break;
+                        case "rangers": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Rangers, true); break;
+                        default: Helpers.InvalidFormatVersion("Hedgehog Engine Path Spline"); return;
+                    }
+
+                    break;
+
+                case ".path2.bin": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true); break;
 
                 case ".pcmodel":
                 case ".pccol":
