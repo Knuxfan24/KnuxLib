@@ -6,6 +6,7 @@ namespace KnuxLib.Engines.Hedgehog
     // TODO: Figure out and properly read the k-d tree data.
     // TODO: Check to see if Lost World and Frontiers handle anything other than their tags differently, if so, handle them with the FormatVersion check.
     // TODO: Slightly tidy this up after the porting process.
+    // TODO: Big Endian saving for the Wii U version of Sonic Lost World.
     public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -827,7 +828,7 @@ namespace KnuxLib.Engines.Hedgehog
         /// <param name="version">The game version to read this file as.</param>
         public void Load(string filepath, FormatVersion version = FormatVersion.Wars)
         {
-            // Set up HedgeLib#'s BINAReader and read the BINAV2 header.
+            // Load this file into a BINAReader.
             BINAReader reader = new(File.OpenRead(filepath));
 
             // Read this file's signature.
@@ -871,7 +872,7 @@ namespace KnuxLib.Engines.Hedgehog
             for (int pathIndex = 0; pathIndex < Data.Length; pathIndex++)
                 Data[pathIndex] = new(reader, version);
 
-            // Close HedgeLib#'s BINAReader.
+            // Close our BINAReader.
             reader.Close();
         }
 
@@ -937,7 +938,7 @@ namespace KnuxLib.Engines.Hedgehog
             for (int pathIndex = 0; pathIndex < Data.Length; pathIndex++)
                 Data[pathIndex].WriteData(writer, version, pathIndex);
 
-            // Close HedgeLib#'s BINAWriter.
+            // Close our BINAWriter.
             writer.Close(header);
         }
 

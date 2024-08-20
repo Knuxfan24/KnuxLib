@@ -259,7 +259,7 @@
         /// <param name="filepath">The path to the file to load and parse.</param>
         public void Load(string filepath)
         {
-            // Set up HedgeLib#'s BINAReader and read the BINAV2 header.
+            // Load this file into a BINAReader.
             BINAReader reader = new(File.OpenRead(filepath));
 
             // Read this file's signature.
@@ -281,7 +281,7 @@
             for (int shapeIndex = 0; shapeIndex < Data.Length; shapeIndex++)
                 Data[shapeIndex] = new(reader);
 
-            // Close HedgeLib#'s BINAReader.
+            // Close our BINAReader.
             reader.Close();
         }
 

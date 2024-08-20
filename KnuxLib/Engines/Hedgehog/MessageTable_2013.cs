@@ -492,7 +492,7 @@ namespace KnuxLib.Engines.Hedgehog
         /// <param name="filepath">The path to the file to load and parse.</param>
         public void Load(string filepath)
         {
-            // Set up HedgeLib#'s BINAReader and read the BINAV2 header.
+            // Load this file into a BINAReader.
             BINAReader reader = new(File.OpenRead(filepath));
 
             // Skip an unknown value that is always 0x02, likely a version identifier.
@@ -520,7 +520,7 @@ namespace KnuxLib.Engines.Hedgehog
             for (int sheetIndex = 0; sheetIndex < sheetCount; sheetIndex++)
                 Data[sheetIndex] = new(reader);
 
-            // Close HedgeLib#'s BINAReader.
+            // Close our BINAReader.
             reader.Close();
         }
 
@@ -615,7 +615,7 @@ namespace KnuxLib.Engines.Hedgehog
                 }
             }
 
-            // Close HedgeLib#'s BINAWriter.
+            // Close our BINAWriter.
             writer.Close(header);
         }
     }
