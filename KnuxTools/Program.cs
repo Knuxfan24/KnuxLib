@@ -232,6 +232,8 @@ namespace KnuxTools
 
                 case ".sco": _ = new KnuxLib.Engines.StellarStone.MeshObject(arg, true); break;
 
+                case ".svcol.bin": case ".hedgehog.sectorvisiblitycollision_wars.json": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars(arg, true); break;
+
                 case ".terrain-instanceinfo": case ".hedgehog.instanceinfo.json": _ = new KnuxLib.Engines.Hedgehog.InstanceInfo(arg, true); break;
 
                 case ".wmp":
