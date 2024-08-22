@@ -105,6 +105,9 @@ namespace KnuxLib.Engines.SonicStorybook
                 Index = reader.ReadUInt32();
             }
 
+            /// <summary>
+            /// Writes the data for this stage.
+            /// </summary>
             public void Write(ExtendedBinaryWriter writer)
             {
                 writer.WriteNullPaddedString(Name, 0x10);
@@ -165,6 +168,9 @@ namespace KnuxLib.Engines.SonicStorybook
                 reader.JumpAhead(0x02); // Always both 0xCD.
             }
 
+            /// <summary>
+            /// Writes the data for this object.
+            /// </summary>
             public void Write(ExtendedBinaryWriter writer)
             {
                 writer.WriteNullPaddedString(Name, 0x20);

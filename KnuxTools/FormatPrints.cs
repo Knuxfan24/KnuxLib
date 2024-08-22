@@ -35,6 +35,7 @@
             Helpers.ColourConsole("    Extension Flag (Terrain Instance) - pcmodel", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Lighting Instance) - pcrt", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Generic) - pointcloud", true, ConsoleColor.Yellow);
+            Console.WriteLine("Terrain Material (.terrain-material)");
         }
 
         public static void Nu2()

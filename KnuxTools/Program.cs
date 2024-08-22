@@ -259,6 +259,8 @@ namespace KnuxTools
 
                 case ".terrain-instanceinfo": case ".hedgehog.instanceinfo.json": _ = new KnuxLib.Engines.Hedgehog.InstanceInfo(arg, true); break;
 
+                case ".terrain-material": case ".hedgehog.terrain-material.json": _ = new KnuxLib.Engines.Hedgehog.TerrainMaterial(arg, true); break;
+
                 case ".wmp":
                 case ".nu2.wumpatable.json":
                     // Check for a format version.
