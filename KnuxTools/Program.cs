@@ -148,6 +148,29 @@ namespace KnuxTools
 
                 case ".bd": case ".bh": _ = new KnuxLib.Engines.Twinsanity.DataHeaderPair(arg, true); break;
 
+                case ".bin":
+                case ".sonicstorybook.setitems.json":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))", false },
+                                                { "storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "storybook_setitems_sr": _ = new KnuxLib.Engines.SonicStorybook.StageEntityTableItems(arg, KnuxLib.Engines.SonicStorybook.StageEntityTableItems.FormatVersion.SecretRings, true); break;
+                        case "storybook_setitems_bk": _ = new KnuxLib.Engines.SonicStorybook.StageEntityTableItems(arg, KnuxLib.Engines.SonicStorybook.StageEntityTableItems.FormatVersion.BlackKnight, true); break;
+                        default: Helpers.InvalidFormatVersion("Sonic Storybook Stage Entity Table Object Table"); return;
+                    }
+
+                    break;
+
                 case ".densitypointcloud": case ".hedgehog.densitypointcloud.json": _ = new KnuxLib.Engines.Hedgehog.DensityPointCloud(arg, true); break;
 
                 case ".map.bin": case ".hedgehog.map_2010.json": _ = new KnuxLib.Engines.Hedgehog.Map_2010(arg, true); break;

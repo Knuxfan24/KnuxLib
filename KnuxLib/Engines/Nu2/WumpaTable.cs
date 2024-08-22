@@ -4,7 +4,7 @@
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public WumpaTable() { }
-        public WumpaTable(string filepath, FormatVersion version = FormatVersion.GameCube, bool export = false, string exportExtension = ".wmp")
+        public WumpaTable(string filepath, FormatVersion version = FormatVersion.GameCube, bool export = false)
         {
             // Set this format's JSON file extension (usually in the form of engine.format.json).
             string jsonExtension = ".nu2.wumpatable.json";
@@ -17,7 +17,7 @@
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}{exportExtension}", version);
+                    Save($@"{Helpers.GetExtension(filepath, true)}.wmp", version);
             }
 
             // Check if the input file isn't this format's JSON.

@@ -1,11 +1,10 @@
-﻿using System.Reflection.Metadata.Ecma335;
-
-namespace KnuxLib.Engines.Hedgehog
+﻿namespace KnuxLib.Engines.Hedgehog
 {
     // Partially based on: https://gist.github.com/Radfordhound/9c7695a0f6b1bcdfaeb4ad4c5462a6e8
     // TODO: Figure out the unknown values.
     // TODO: Convert saving over to new standard.
     // TODO: Importing a JSON creates an inaccurate file, but it seems to work?
+    // TODO: Big Endian saving for the Wii U version.
     public class MessageTable_2013 : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
