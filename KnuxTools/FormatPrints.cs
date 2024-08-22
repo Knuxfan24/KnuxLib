@@ -38,6 +38,15 @@
             Console.WriteLine("Terrain Material (.terrain-material)");
         }
 
+        public static void Nintendo()
+        {
+            Console.WriteLine("===");
+            Console.WriteLine("Nintendo Generic:");
+            Console.WriteLine("U8 Archive (.arc) - Extracts to a directory of the same name as the input archive and creates an archive from an input\r\ndirectory.");
+            Helpers.ColourConsole("    Version Flag - nintendo_u8", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Sonic '06) - nintendo_u8_marathon", true, ConsoleColor.Yellow);
+        }
+
         public static void Nu2()
         {
             Console.WriteLine("===");

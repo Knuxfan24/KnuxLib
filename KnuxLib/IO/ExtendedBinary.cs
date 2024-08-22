@@ -310,6 +310,38 @@ namespace KnuxLib.IO
         //    return Half.ToHalf(ReadUInt16());
         //}
 
+        /// <summary>
+        /// Reads an Int24 from the current position.
+        /// </summary>
+        public unsafe int ReadInt24()
+        {
+            FillBuffer(3);
+
+            return IsBigEndian ?
+
+                   // Big-endian
+                   buffer[0] << 16 | buffer[1] << 8 | buffer[2] :
+
+                   // Little-endian
+                   buffer[2] << 16 | buffer[1] << 8 | buffer[0];
+        }
+
+        /// <summary>
+        /// Reads a UInt24 from the current position.
+        /// </summary>
+        public unsafe uint ReadUInt24()
+        {
+            FillBuffer(3);
+
+            return IsBigEndian ?
+
+                   // Big-endian
+                   ((uint)buffer[0] << 16 | (uint)buffer[1] << 8 | buffer[2]) :
+
+                   // Little-endian
+                   ((uint)buffer[2] << 16 | (uint)buffer[1] << 8 | buffer[0]);
+        }
+
         // 4-Byte Types
         public override int ReadInt32()
         {
@@ -778,6 +810,47 @@ namespace KnuxLib.IO
         //{
         //    Write(value.value);
         //}
+        /// <summary>
+        /// Writes an Int24 to the current position.
+        /// </summary>
+        public void WriteInt24(int value)
+        {
+            if (IsBigEndian)
+            {
+                dataBuffer[0] = (byte)(value >> 16);
+                dataBuffer[1] = (byte)(value >> 8);
+                dataBuffer[2] = (byte)value;
+            }
+            else
+            {
+                dataBuffer[0] = (byte)value;
+                dataBuffer[1] = (byte)(value >> 8);
+                dataBuffer[2] = (byte)(value >> 16);
+            }
+
+            OutStream.Write(dataBuffer, 0, 3);
+        }
+
+        /// <summary>
+        /// Writes a UInt24 to the current position.
+        /// </summary>
+        public void WriteUInt24(uint value)
+        {
+            if (IsBigEndian)
+            {
+                dataBuffer[0] = (byte)(value >> 16);
+                dataBuffer[1] = (byte)(value >> 8);
+                dataBuffer[2] = (byte)value;
+            }
+            else
+            {
+                dataBuffer[0] = (byte)value;
+                dataBuffer[1] = (byte)(value >> 8);
+                dataBuffer[2] = (byte)(value >> 16);
+            }
+
+            OutStream.Write(dataBuffer, 0, 3);
+        }
 
         // 4-Byte Types
         public override void Write(int value)

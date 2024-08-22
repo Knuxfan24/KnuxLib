@@ -71,6 +71,7 @@ namespace KnuxTools
 
                 FormatPrints.CapcomMT();
                 FormatPrints.Hedgehog();
+                FormatPrints.Nintendo();
                 FormatPrints.Nu2();
                 FormatPrints.StellarStone();
                 FormatPrints.SonicStorybook();
@@ -105,6 +106,8 @@ namespace KnuxTools
                                        { "capcomv9\t\t\t(Capcom MT Framework Engine (Version 9))", false },
                                        { "capcomv9_uncompressed\t(Capcom MT Framework Engine (Version 9, No Compression))", false },
                                        { "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)", false },
+                                       { "nintendo_u8\t\t\t(Nintendo U8 Archive File", false },
+                                       { "nintendo_u8_marathon\t(Nintendo U8 Archive File (Sonic '06))", false },
                                        { "storybook\t\t\t(Sonic Storybook Engine ONE File)", false },
                                        { "twinsanity\t\t\t(Twinsanity Engine Data Header Pair)", false },
                                    },
@@ -125,6 +128,10 @@ namespace KnuxTools
                 // Hedgehog Engine Instance Info to Point Cloud conversion.
                 case "hh_instance2pointcloud": _ = new KnuxLib.Engines.Hedgehog.InstanceInfo(arg); break;
 
+                // Nintendo U8 Archive.
+                case "nintendo_u8": _ = new KnuxLib.Engines.Nintendo.U8(arg, false, true); break;
+                case "nintendo_u8_marathon": _ = new KnuxLib.Engines.Nintendo.U8(arg, true, true); break;
+
                 // Sonic Storybook ONE Archive.
                 case "storybook": _ = new KnuxLib.Engines.SonicStorybook.ONE(arg, true); break;
 
@@ -142,7 +149,29 @@ namespace KnuxTools
             // Determine the full file extension.
             switch (KnuxLib.Helpers.GetExtension(arg).ToLower())
             {
-                case ".arc": _ = new KnuxLib.Engines.CapcomMT.Archive(arg, true); break;
+                case ".arc":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "capcom\t(Capcom MT Engine Archive)", false },
+                                                { "marathon\t(Nintendo U8 (Sonic '06))", false },
+                                                { "nintendo\t(Nintendo U8)", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "capcom": _ = new KnuxLib.Engines.CapcomMT.Archive(arg, true); break;
+                        case "marathon": _ = new KnuxLib.Engines.Nintendo.U8(arg, true, true); break;
+                        case "nintendo": _ = new KnuxLib.Engines.Nintendo.U8(arg, false, true); break;
+                        default: Helpers.InvalidFormatVersion("Generic .arc Archive"); return;
+                    }
+
+                    break;
 
                 case ".arcinfo": case ".hedgehog.archiveinfo.json": _ = new KnuxLib.Engines.Hedgehog.ArchiveInfo(arg, true); break;
 
