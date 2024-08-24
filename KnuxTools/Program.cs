@@ -223,6 +223,29 @@ namespace KnuxTools
 
                     break;
 
+                case ".crt":
+                case ".nu2.cratetable.json":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "gcn\t\t(GameCube)", false },
+                                                { "ps2\t\t(PlayStation 2/Xbox)", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "gcn": _ = new KnuxLib.Engines.Nu2.CrateTable(arg, KnuxLib.Engines.Nu2.CrateTable.FormatVersion.GameCube, true); break;
+                        case "ps2": _ = new KnuxLib.Engines.Nu2.CrateTable(arg, KnuxLib.Engines.Nu2.CrateTable.FormatVersion.PlayStation2Xbox, true); break;
+                        default: Helpers.InvalidFormatVersion("Nu2 Engine Crate Table"); return;
+                    }
+
+                    break;
+
                 case ".densitypointcloud": case ".hedgehog.densitypointcloud.json": _ = new KnuxLib.Engines.Hedgehog.DensityPointCloud(arg, true); break;
 
                 case ".map.bin": case ".hedgehog.map_2010.json": _ = new KnuxLib.Engines.Hedgehog.Map_2010(arg, true); break;

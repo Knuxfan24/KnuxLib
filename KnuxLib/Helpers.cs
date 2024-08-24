@@ -243,5 +243,17 @@
         /// <param name="pointB">The second point.</param>
         /// <returns>The calculated forward vector for the first point.</returns>
         public static Vector3 CalculateForwardVector(Vector3 pointA, Vector3 pointB) => Vector3.Normalize(new(pointB.X - pointA.X, pointB.Y - pointA.Y, pointB.Z - pointA.Z));
+
+        /// <summary>
+        /// Converts a signed integer stored in the Binary Angle Measurement System to a floating point value.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        public static float CalculateBAMsValue(int value) => value * 360f / 65536f;
+
+        /// <summary>
+        /// Converts a floating point value to a signed integer stored in the Binary Angle Measurement System.
+        /// </summary>
+        /// <param name="value">The value to convert.</param>
+        public static int CalculateBAMsValue(float value) => (int)(value * 65536f / 360f);
     }
 }
