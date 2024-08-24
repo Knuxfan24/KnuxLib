@@ -110,7 +110,7 @@
             }
 
             /// <summary>
-            /// Initialises this instance by reading its data from a BINAReader.
+            /// Initialises this material by reading its data from a BINAReader.
             /// </summary>
             public Material(BINAReader reader) => Read(reader);
 

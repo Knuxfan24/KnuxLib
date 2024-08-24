@@ -51,6 +51,9 @@
         {
             Console.WriteLine("===");
             Console.WriteLine("Nu2 Engine:");
+            Console.WriteLine("AI Entity Table (.ai)");
+            Helpers.ColourConsole("    Version Flag (Gamecube) - gcn", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (PlayStation 2/Xbox) - ps2", true, ConsoleColor.Yellow);
             Console.WriteLine("Wumpa Fruit Table (.wmp)");
             Helpers.ColourConsole("    Version Flag (Gamecube) - gcn", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (PlayStation 2/Xbox) - ps2", true, ConsoleColor.Yellow);
