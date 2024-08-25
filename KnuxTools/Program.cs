@@ -73,6 +73,7 @@ namespace KnuxTools
                 FormatPrints.Hedgehog();
                 FormatPrints.Nintendo();
                 FormatPrints.Nu2();
+                FormatPrints.OpenSpace();
                 FormatPrints.StellarStone();
                 FormatPrints.SonicStorybook();
                 FormatPrints.Twinsanity();
@@ -108,6 +109,7 @@ namespace KnuxTools
                                        { "hh_instance2pointcloud\t(Convert Hedgehog Engine Terrain Instances into a Hedgehog Engine Point Cloud)", false },
                                        { "nintendo_u8\t\t\t(Nintendo U8 Archive File", false },
                                        { "nintendo_u8_marathon\t(Nintendo U8 Archive File (Sonic '06))", false },
+                                       { "openspace_big\t\t(OpenSpace Engine Big File Archive)", true },
                                        { "storybook\t\t\t(Sonic Storybook Engine ONE File)", false },
                                        { "twinsanity\t\t\t(Twinsanity Engine Data Header Pair)", false },
                                    },
@@ -127,6 +129,9 @@ namespace KnuxTools
 
                 // Hedgehog Engine Instance Info to Point Cloud conversion.
                 case "hh_instance2pointcloud": _ = new KnuxLib.Engines.Hedgehog.InstanceInfo(arg); break;
+
+                // OpenSpace Engine Big File Archive.
+                case "openspace_big": _ = new KnuxLib.Engines.OpenSpace.BigFileArchive(arg, true); break;
 
                 // Nintendo U8 Archive.
                 case "nintendo_u8": _ = new KnuxLib.Engines.Nintendo.U8(arg, false, true); break;
@@ -199,6 +204,8 @@ namespace KnuxTools
                 case ".arcinfo": case ".hedgehog.archiveinfo.json": _ = new KnuxLib.Engines.Hedgehog.ArchiveInfo(arg, true); break;
 
                 case ".bd": case ".bh": _ = new KnuxLib.Engines.Twinsanity.DataHeaderPair(arg, true); break;
+
+                case ".bf": case ".dsc": _ = new KnuxLib.Engines.OpenSpace.BigFileArchive(arg, true); break;
 
                 case ".bin":
                 case ".sonicstorybook.setitems.json":

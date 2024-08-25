@@ -62,6 +62,14 @@
             Helpers.ColourConsole("    Version Flag (PlayStation 2/Xbox) - ps2", true, ConsoleColor.Yellow);
         }
 
+        public static void OpenSpace()
+        {
+            Console.WriteLine("===");
+            Console.WriteLine("OpenSpace Engine:");
+            Helpers.ColourConsole("Big File Archive (.bf/.dsc) - Extracts to a directory of the same name as the input archive and creates an archive from\r\nan input directory.");
+            Helpers.ColourConsole("    Version Flag - openspace_big\n", true, ConsoleColor.Yellow);
+        }
+
         public static void StellarStone()
         {
             Console.WriteLine("===");
