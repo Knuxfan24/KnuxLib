@@ -26,7 +26,10 @@
             Helpers.ColourConsole("    Version Flag (Sonic Generations) - blueblur", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Mario and Sonic at the London 2012 Olympic Games) - william", true, ConsoleColor.Yellow);
             Console.WriteLine("Message Table (sonic2013) (.xtb2)");
+            Helpers.ColourConsole("    Version Flag (importing) - wiiu", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (importing) - pc", true, ConsoleColor.Yellow);
             Console.WriteLine("Path Spline (.path) (.path2.bin)");
+            Helpers.ColourConsole("    Version Flag (Sonic Lost World (Wii U)) - sonic2013_cafe", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Sonic Lost World) - sonic2013", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Sonic Forces) - wars", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Sonic Frontiers) - rangers", true, ConsoleColor.Yellow);

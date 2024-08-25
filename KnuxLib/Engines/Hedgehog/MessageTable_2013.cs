@@ -2,14 +2,12 @@
 {
     // Partially based on: https://gist.github.com/Radfordhound/9c7695a0f6b1bcdfaeb4ad4c5462a6e8
     // TODO: Figure out the unknown values.
-    // TODO: Convert saving over to new standard.
     // TODO: Importing a JSON creates an inaccurate file, but it seems to work?
-    // TODO: Big Endian saving for the Wii U version.
     public class MessageTable_2013 : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public MessageTable_2013() { }
-        public MessageTable_2013(string filepath, bool export = false)
+        public MessageTable_2013(string filepath, bool export = false, bool bigEndianSave = false)
         {
             // Set this format's JSON file extension (usually in the form of engine.format.json).
             string jsonExtension = ".hedgehog.messagetable_2013.json";
@@ -22,7 +20,7 @@
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.xtb2");
+                    Save($@"{Helpers.GetExtension(filepath, true)}.xtb2", bigEndianSave);
             }
 
             // Check if the input file isn't this format's JSON.
@@ -527,13 +525,17 @@
         /// Saves this format's file.
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
-        public void Save(string filepath)
+        /// <param name="bigEndianSave">Whether this format should be saved in big endian for the Wii U version.</param>
+        public void Save(string filepath, bool bigEndianSave = false)
         {
             // Set up a BINA Version 2 Header.
-            BINAv2Header header = new(200);
+            BINAv2Header header = new(200, bigEndianSave);
 
             // Set up our BINAWriter and write the BINAV2 header.
             BINAWriter writer = new(File.Create(filepath), header);
+
+            // If the user has specified it, then switch the reader to big endian.
+            writer.IsBigEndian = bigEndianSave;
 
             // Write an unknown value that is always 0x02, likely a version identifier.
             writer.Write((ushort)0x02);

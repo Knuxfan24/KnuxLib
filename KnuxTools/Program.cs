@@ -267,7 +267,8 @@ namespace KnuxTools
                     Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
                                             new()
                                             {
-                                                { "sonic_2013\t(Sonic Lost World)", false },
+                                                { "sonic2013_cafe\t(Sonic Lost World (Wii U))", false },
+                                                { "sonic2013\t(Sonic Lost World)", false },
                                                 { "wars\t(Sonic Forces)", false },
                                                 { "rangers\t(Sonic Rangers)", false }
                                             });
@@ -278,7 +279,8 @@ namespace KnuxTools
 
                     switch (Version.ToLower())
                     {
-                        case "sonic_2013": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true, ".path2.bin"); break;
+                        case "sonic2013_cafe": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true, ".path2.bin", true); break;
+                        case "sonic2013": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true, ".path2.bin"); break;
                         case "wars": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Wars, true); break;
                         case "rangers": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Rangers, true); break;
                         default: Helpers.InvalidFormatVersion("Hedgehog Engine Path Spline"); return;
@@ -391,7 +393,28 @@ namespace KnuxTools
 
                     break;
 
-                case ".xtb2": case ".hedgehog.messagetable_2013.json": _ = new KnuxLib.Engines.Hedgehog.MessageTable_2013(arg, true); break;
+                case ".xtb2": _ = new KnuxLib.Engines.Hedgehog.MessageTable_2013(arg, true); break;
+                case ".hedgehog.messagetable_2013.json":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "wiiu\t(Sonic Lost World (Wii U))", false },
+                                                { "pc\t(Sonic Lost World (PC))", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "wiiu": _ = new KnuxLib.Engines.Hedgehog.MessageTable_2013(arg, true, true); break;
+                        case "pc": _ = new KnuxLib.Engines.Hedgehog.MessageTable_2013(arg, true, false); break;
+                        default: Helpers.InvalidFormatVersion("Hedgehog Engine Message Table (2013)"); return;
+                    }
+
+                    break;
 
                 // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                 default:

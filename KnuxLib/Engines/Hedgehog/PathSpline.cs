@@ -6,12 +6,11 @@ namespace KnuxLib.Engines.Hedgehog
     // TODO: Figure out and properly read the k-d tree data.
     // TODO: Check to see if Lost World and Frontiers handle anything other than their tags differently, if so, handle them with the FormatVersion check.
     // TODO: Slightly tidy this up after the porting process.
-    // TODO: Big Endian saving for the Wii U version of Sonic Lost World.
     public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public PathSpline() { }
-        public PathSpline(string filepath, FormatVersion version = FormatVersion.Wars, bool export = false, string exportExtension = ".path")
+        public PathSpline(string filepath, FormatVersion version = FormatVersion.Wars, bool export = false, string exportExtension = ".path", bool bigEndianSave = false)
         {
             // Check if the input file is an OBJ.
             if (Helpers.GetExtension(filepath) == ".obj")
@@ -21,7 +20,7 @@ namespace KnuxLib.Engines.Hedgehog
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}{exportExtension}", version);
+                    Save($@"{Helpers.GetExtension(filepath, true)}{exportExtension}", version, bigEndianSave);
             }
 
             // Check if the input file isn't an OBJ.
@@ -881,20 +880,28 @@ namespace KnuxLib.Engines.Hedgehog
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
         /// <param name="version">The game version to save this file as.</param>
-        public void Save(string filepath, FormatVersion version = FormatVersion.Wars)
+        /// <param name="bigEndianSave">Whether this format should be saved in big endian for the Wii U version (sonic_2013 only).</param>
+        public void Save(string filepath, FormatVersion version = FormatVersion.Wars, bool bigEndianSave = false)
         {
             // Set up a BINA Version 2 Header.
             BINAv2Header header = new(210);
 
             // If this is a Sonic Lost World path, then change the BINA Header to v200.
             if (version == FormatVersion.sonic_2013)
-                header = new BINAv2Header(200);
+                header = new BINAv2Header(200, bigEndianSave);
 
             // Set up our BINAWriter and write the BINAV2 header.
             BINAWriter writer = new(File.Create(filepath), header);
 
+            // If this is a Wii U Sonic Lost World path, then flip the endianness.
+            if (version == FormatVersion.sonic_2013 && bigEndianSave)
+                writer.IsBigEndian = true;
+
             // Write this file's signature.
-            writer.Write("HTAP");
+            if (!writer.IsBigEndian)
+                writer.Write("HTAP");
+            else
+                writer.Write("PATH");
 
             // Write an unknown value that is always 0x200.
             writer.Write(0x200);
@@ -959,7 +966,6 @@ namespace KnuxLib.Engines.Hedgehog
                 else if (nextPathName == null)
                     return;
 
-
             // Add the this tag type's string to the string table.
             if (version == FormatVersion.sonic_2013)
                 writer.AddString($"Path{pathIndex}{tagType}", tagType, 0x04);
@@ -971,7 +977,7 @@ namespace KnuxLib.Engines.Hedgehog
                 if (tagType != "next")
                     writer.Write(0);
                 else
-                    writer.Write(2);
+                    writer.Write([0x02, 0x00, 0x00, 0x00]); // TODO: This is probably a byte then, considering it's still this sequence in the Wii U's big endian files.
             else
                 if (tagType != "next")
                 writer.Write(0L);

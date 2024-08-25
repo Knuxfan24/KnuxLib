@@ -45,6 +45,8 @@ namespace KnuxLib.IO
             BaseStream.Position = (absolute) ? position : position + Offset;
         }
 
+        public void JumpTo(ulong position, bool absolute = true) => JumpTo((long)position, absolute);
+
         public void JumpAhead(long amount = 1)
         {
             BaseStream.Position += amount;
@@ -99,9 +101,10 @@ namespace KnuxLib.IO
         public void ReadSignature(int length, byte[] expectedSignature, bool throwOnInvalid = true)
         {
             byte[] receivedSignature = ReadBytes(length);
+            byte[] reversedSignature = receivedSignature.Reverse().ToArray();
 
-            if (!expectedSignature.SequenceEqual(receivedSignature) && throwOnInvalid)
-                throw new Exception($"The signature read from the stream is incorrect! Expected 0x{expectedSignature,8:X}, got 0x{receivedSignature,8:X}!");
+            if (!expectedSignature.SequenceEqual(receivedSignature) && !expectedSignature.SequenceEqual(reversedSignature) && throwOnInvalid)
+                throw new Exception($"The signature read from the stream is incorrect! Expected 0x{expectedSignature,8:X} or 0x{reversedSignature,8:X}, got 0x{receivedSignature,8:X}!");
         }
 
         /// <summary>
@@ -142,6 +145,10 @@ namespace KnuxLib.IO
                 FillBuffer(2);
 
                 if (buffer[0] == 0 && buffer[1] == 0) break;
+
+                if (IsBigEndian)
+                    (buffer[1], buffer[0]) = (buffer[0], buffer[1]);
+
                 sb.Append(utf16.GetChars(buffer, 0, 2));
             }
             while (fs.Position < len);
@@ -633,7 +640,10 @@ namespace KnuxLib.IO
 
         public void WriteNullTerminatedStringUTF16(string value)
         {
-            Write(Encoding.Unicode.GetBytes(value));
+            if (!IsBigEndian)
+                Write(Encoding.Unicode.GetBytes(value));
+            else
+                Write(Encoding.BigEndianUnicode.GetBytes(value));
             dataBuffer[0] = dataBuffer[1] = 0;
             OutStream.Write(dataBuffer, 0, sizeof(ushort));
         }
