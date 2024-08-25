@@ -60,13 +60,13 @@
             /// The type this instance should be.
             /// TODO: Is this pulled from the .densitysetting format?
             /// </summary>
-            public int TypeIndex;
+            public uint TypeIndex;
 
             /// <summary>
             /// An unknown integer value that can be four values, being 0x00000000, 0x01000000, 0x02000000 and 0x03000000
             /// TODO: What is this?
             /// </summary>
-            public int UnknownInt32_1;
+            public uint UnknownUInt32_1;
 
             /// <summary>
             /// Initialises this instance with default data.
@@ -76,14 +76,14 @@
             /// <summary>
             /// Initialises this instance with the provided data.
             /// </summary>
-            public Instance(Vector3 position, Vector3 scale, Quaternion rotation, VertexColour colour, int typeIndex, int unknownInt32_1)
+            public Instance(Vector3 position, Vector3 scale, Quaternion rotation, VertexColour colour, uint typeIndex, uint unknownUInt32_1)
             {
                 Position = position;
                 Scale = scale;
                 Rotation = rotation;
                 Colour = colour;
                 TypeIndex = typeIndex;
-                UnknownInt32_1 = unknownInt32_1;
+                UnknownUInt32_1 = unknownUInt32_1;
             }
 
             /// <summary>
@@ -103,8 +103,8 @@
                 Rotation = reader.ReadQuaternion();
                 reader.JumpAhead(0x10); // Always 0.
                 Colour.Read(reader, true, true);
-                TypeIndex = reader.ReadInt32();
-                UnknownInt32_1 = reader.ReadInt32();
+                TypeIndex = reader.ReadUInt32();
+                UnknownUInt32_1 = reader.ReadUInt32();
                 reader.JumpAhead(0x08); // Always 0.
             }
 
@@ -121,7 +121,7 @@
                 writer.WriteNulls(0x10);
                 Colour.Write(writer, true);
                 writer.Write(TypeIndex);
-                writer.Write(UnknownInt32_1);
+                writer.Write(UnknownUInt32_1);
                 writer.WriteNulls(0x08);
             }
         }
@@ -145,10 +145,10 @@
             reader.JumpAhead(0x0C);
 
             // Read the offset to this file's instance table.
-            long instanceTableOffset = reader.ReadInt64();
+            ulong instanceTableOffset = reader.ReadUInt64();
 
             // Initialise the data array.
-            Data = new Instance[reader.ReadInt64()];
+            Data = new Instance[reader.ReadUInt64()];
 
             // Jump to the instance table (should already be here but lets play it safe).
             reader.JumpTo(instanceTableOffset, false);

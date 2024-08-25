@@ -245,7 +245,7 @@ namespace KnuxLib.Engines.Nintendo
             StringTableLength = 0;
 
             // Set up the root node.
-            Node root = new() { Name = "Root", Children = new() };
+            Node root = new() { Name = "Root", Children = [] };
 
             // Set up a node index value.
             uint nodeIndex = 1;
@@ -263,7 +263,7 @@ namespace KnuxLib.Engines.Nintendo
                 for (int nodeNameIndex = 0; nodeNameIndex < nodeNameSplit.Length; nodeNameIndex++)
                 {
                     // If our parent node doesn't have any children, then initialise its list.
-                    parentNode.Children ??= new();
+                    parentNode.Children ??= [];
 
                     // Get a reference to the node in the parent's child nodes with this node's name.
                     Node? newParentNode = parentNode.Children.Where(x => x.Name == nodeNameSplit[nodeNameIndex]).FirstOrDefault();

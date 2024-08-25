@@ -77,7 +77,7 @@ namespace KnuxLib.Engines.Hedgehog
             /// <summary>
             /// The size of text using this style sheet.
             /// </summary>
-            public int FontSize { get; set; }
+            public uint FontSize { get; set; }
 
             /// <summary>
             /// The colour of this style sheet.
@@ -110,7 +110,7 @@ namespace KnuxLib.Engines.Hedgehog
             /// <summary>
             /// Initialises this style sheet with the provided data.
             /// </summary>
-            public StyleSheet(string name, int fontSize, VertexColour colour, HorizontalAlignment horizontalAlignment, byte unknownByte_1)
+            public StyleSheet(string name, uint fontSize, VertexColour colour, HorizontalAlignment horizontalAlignment, byte unknownByte_1)
             {
                 Name = name;
                 FontSize = fontSize;
@@ -131,7 +131,7 @@ namespace KnuxLib.Engines.Hedgehog
             {
                 Name = reader.ReadNullPaddedString(reader.ReadByte());
                 reader.JumpAhead(0x01); // Always 1.
-                FontSize = reader.ReadInt32();
+                FontSize = reader.ReadUInt32();
                 Colour = new(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), null);
                 HorizontalAlignment = (HorizontalAlignment)reader.ReadByte();
                 UnknownByte_1 = reader.ReadByte();
@@ -208,13 +208,13 @@ namespace KnuxLib.Engines.Hedgehog
                 Name = reader.ReadNullPaddedString(reader.ReadByte());
 
                 // Read the amount of messages in this category.
-                int messageCount = reader.ReadByte();
+                uint messageCount = reader.ReadByte();
 
                 // If this is a Mario and Sonic at the London 2012 Olympic Games file, then read the MessageCount as an integer instead.
                 if (version == FormatVersion.william)
                 {
                     reader.JumpBehind(0x01);
-                    messageCount = reader.ReadInt32();
+                    messageCount = reader.ReadUInt32();
                 }
 
                 // Initialise the messages array.
@@ -302,7 +302,7 @@ namespace KnuxLib.Engines.Hedgehog
                 StyleSheet = reader.ReadNullPaddedString(reader.ReadByte());
 
                 // Read the amount of bytes that make up this message's UTF16 encoded data.
-                int messageByteCount = reader.ReadInt32();
+                uint messageByteCount = reader.ReadUInt32();
 
                 // Read the amount of characters this message when decoded.
                 uint messageCharacterCount = reader.ReadUInt32();
@@ -337,7 +337,7 @@ namespace KnuxLib.Engines.Hedgehog
                 }
 
                 // Decode the bytes to the char array.
-                utf16Decoder.GetChars(messageBytes, 0, messageByteCount, characters, 0, true);
+                utf16Decoder.GetChars(messageBytes, 0, (int)messageByteCount, characters, 0, true);
 
                 // Convert the char array to a string.
                 Message = new string(characters);

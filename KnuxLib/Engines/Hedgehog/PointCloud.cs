@@ -59,7 +59,7 @@
             /// An unknown integer value.
             /// TODO: What is this?
             /// </summary>
-            public int UnknownInt32_1 = 1;
+            public uint UnknownUInt32_1 = 1;
 
             /// <summary>
             /// This instance's scale in 3D space.
@@ -79,13 +79,13 @@
             /// <summary>
             /// Initialises this instance with the provided data.
             /// </summary>
-            public Instance(string instanceName, string assetName, Vector3 position, Vector3 rotation, int unknownInt32_1, Vector3 scale)
+            public Instance(string instanceName, string assetName, Vector3 position, Vector3 rotation, uint unknownUInt32_1, Vector3 scale)
             {
                 InstanceName = instanceName;
                 AssetName = assetName;
                 Position = position;
                 Rotation = rotation;
-                UnknownInt32_1 = unknownInt32_1;
+                UnknownUInt32_1 = unknownUInt32_1;
                 Scale = scale;
             }
 
@@ -103,7 +103,7 @@
                 AssetName = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
                 Position = reader.ReadVector3();
                 Rotation = reader.ReadVector3();
-                UnknownInt32_1 = reader.ReadInt32();
+                UnknownUInt32_1 = reader.ReadUInt32();
                 Scale = reader.ReadVector3();
                 reader.JumpAhead(0x04); // Always 0.
                 reader.FixPadding(0x08);
@@ -118,7 +118,7 @@
                 writer.AddString($"Instane{index}AssetName", AssetName, 0x08);
                 writer.Write(Position);
                 writer.Write(Rotation);
-                writer.Write(UnknownInt32_1);
+                writer.Write(UnknownUInt32_1);
                 writer.Write(Scale);
                 writer.WriteNulls(0x04);
             }

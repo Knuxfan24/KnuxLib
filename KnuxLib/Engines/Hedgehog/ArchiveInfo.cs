@@ -75,19 +75,10 @@
             /// </summary>
             public void Read(ExtendedBinaryReader reader, uint archiveByteOffset, int archiveEntryIndex)
             {
-                // Read this entry's archive.
                 Archive = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
-
-                // Save our current position.
                 long position = reader.BaseStream.Position;
-
-                // Jump to the archive byte table, plus the index of this entry.
                 reader.JumpTo(archiveByteOffset + archiveEntryIndex, false);
-
-                // Read this entry's unknown byte.
                 UnknownByte_1 = reader.ReadByte();
-
-                // Jump back to the saved position.
                 reader.JumpTo(position);
             }
         }

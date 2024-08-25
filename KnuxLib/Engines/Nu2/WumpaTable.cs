@@ -57,7 +57,7 @@
                 reader.IsBigEndian = true;
 
             // Initialise the data array.
-            Data = new Vector3[reader.ReadInt32()];
+            Data = new Vector3[reader.ReadUInt32()];
 
             // Loop through and read each Wumpa Fruit's coordinate values. 
             for (int wumpaFruitIndex = 0; wumpaFruitIndex < Data.Length; wumpaFruitIndex++)

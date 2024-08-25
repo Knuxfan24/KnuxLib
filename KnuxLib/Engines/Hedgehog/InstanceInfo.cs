@@ -86,19 +86,19 @@
             ExtendedBinaryReader reader = new(File.OpenRead(filepath), true);
 
             // Read the size of this file.
-            int fileSize = reader.ReadInt32();
+            uint fileSize = reader.ReadUInt32();
 
             // Skip the root node type, as it's always 0.
             reader.JumpAhead(0x04);
 
             // Read the root node size.
-            int rootNodeSize = reader.ReadInt32();
+            uint rootNodeSize = reader.ReadUInt32();
 
             // Read the offset to the root node.
             uint rootNodeOffset = reader.ReadUInt32();
 
             // Read the offset to the footer.
-            int footerOffset = reader.ReadInt32();
+            uint footerOffset = reader.ReadUInt32();
 
             // Skip the file end offset, as it's always 0.
             reader.JumpAhead(0x04);
@@ -113,7 +113,7 @@
             Data.ModelName = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
 
             // Read the offset to this instance's matrix.
-            int matrixOffset = reader.ReadInt32();
+            uint matrixOffset = reader.ReadUInt32();
 
             // Read this instance's name.
             Data.InstanceName = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);

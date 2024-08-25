@@ -39,7 +39,7 @@
             /// An unknown integer value.
             /// TODO: What is this?
             /// </summary>
-            public int UnknownInt32_1 { get; set; }
+            public uint UnknownUInt32_1 { get; set; }
 
             /// <summary>
             /// The sector references that make up this map.
@@ -125,7 +125,7 @@
             Data.Sectors = new Sector[reader.ReadInt32()];
 
             // Read the unknown value in this data.
-            Data.UnknownInt32_1 = reader.ReadInt32();
+            Data.UnknownUInt32_1 = reader.ReadUInt32();
 
             // Jump to the sector table (should already be here but lets play it safe).
             reader.JumpTo(sectorTableOffset, false);
@@ -157,7 +157,7 @@
             writer.Write(Data.Sectors.Length);
 
             // Write this file's unknown integer.
-            writer.Write(Data.UnknownInt32_1);
+            writer.Write(Data.UnknownUInt32_1);
 
             // Fill in the offset for the sector table.
             writer.FillInOffset("sectorTableOffset");

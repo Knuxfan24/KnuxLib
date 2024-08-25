@@ -44,7 +44,7 @@ namespace KnuxLib.Engines.SonicStorybook
             ExtendedBinaryReader reader = new(File.OpenRead(filepath), true);
 
             // Initialise the data array.
-            Data = new FileNode[reader.ReadInt32()];
+            Data = new FileNode[reader.ReadUInt32()];
 
             // Skip 0x0C bytes that are the same between all files.
             reader.JumpAhead(0x0C); // Always 0x10 then an offset to the first file's binary data then either four nulls or four FF bytes.
@@ -65,7 +65,7 @@ namespace KnuxLib.Engines.SonicStorybook
                 uint fileOffset = reader.ReadUInt32();
 
                 // Read this file's length.
-                int fileLength = reader.ReadInt32();
+                uint fileLength = reader.ReadUInt32();
 
                 // Read this file's decompressed size.
                 uint decompressedSize = reader.ReadUInt32();

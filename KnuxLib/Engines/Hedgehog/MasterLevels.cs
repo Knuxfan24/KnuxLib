@@ -106,10 +106,10 @@
                 uint dependencyCount = reader.ReadUInt32();
 
                 // Read this level's file offset.
-                long filesOffset = reader.ReadInt64();
+                ulong filesOffset = reader.ReadUInt64();
 
                 // Read this level's dependency offset.
-                long dependenciesOffset = reader.ReadInt64();
+                ulong dependenciesOffset = reader.ReadUInt64();
 
                 // Read this level's unknown boolean.
                 UnknownBoolean_1 = reader.ReadBoolean();
@@ -133,7 +133,7 @@
                     for (int dependencyIndex = 0; dependencyIndex < dependencyCount; dependencyIndex++)
                     {
                         // Read this dependency's offset.
-                        long dependencyOffset = reader.ReadInt64();
+                        ulong dependencyOffset = reader.ReadUInt64();
 
                         // Save our current position so we can jump back for the next dependency.
                         long dependencyPosition = reader.BaseStream.Position;
@@ -165,7 +165,7 @@
                     for (int fileIndex = 0; fileIndex < fileCount; fileIndex++)
                     {
                         // Read this file's offset.
-                        long fileOffset = reader.ReadInt64();
+                        ulong fileOffset = reader.ReadUInt64();
 
                         // Save our current position so we can jump back for the next file.
                         long filePosition = reader.BaseStream.Position;
@@ -314,7 +314,7 @@
             Data = new Level[reader.ReadInt64()];
 
             // Read the offset to this file's level table table.
-            long levelOffsetTable = reader.ReadInt64();
+            ulong levelOffsetTable = reader.ReadUInt64();
 
             // Skip an unknown value that is always 0. Likely padding?
             reader.JumpAhead(0x08);

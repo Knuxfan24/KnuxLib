@@ -62,7 +62,7 @@
                 uint DataOffset = headerReader.ReadUInt32();
 
                 // Read the size of this file.
-                int DataSize = headerReader.ReadInt32();
+                uint DataSize = headerReader.ReadUInt32();
 
                 // Jump the data reader to our read offset.
                 dataReader.BaseStream.Position = DataOffset;

@@ -253,6 +253,8 @@ namespace KnuxLib.IO
             return structure;
         }
 
+        public virtual byte[] ReadBytes(uint count) => ReadBytes((int)count);
+
         // 1-Byte Types
         public bool ReadBoolean(int length = 1)
         {
