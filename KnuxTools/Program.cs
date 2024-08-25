@@ -74,6 +74,7 @@ namespace KnuxTools
                 FormatPrints.Nintendo();
                 FormatPrints.Nu2();
                 FormatPrints.OpenSpace();
+                FormatPrints.ProjectM();
                 FormatPrints.StellarStone();
                 FormatPrints.SonicStorybook();
                 FormatPrints.Twinsanity();
@@ -252,6 +253,8 @@ namespace KnuxTools
                     }
 
                     break;
+
+                case ".dat": case ".projectm.messagetable.json": _ = new KnuxLib.Engines.ProjectM.MessageTable(arg, true); break;
 
                 case ".densitypointcloud": case ".hedgehog.densitypointcloud.json": _ = new KnuxLib.Engines.Hedgehog.DensityPointCloud(arg, true); break;
 

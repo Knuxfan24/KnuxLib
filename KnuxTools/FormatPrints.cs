@@ -70,7 +70,14 @@
             Console.WriteLine("===");
             Console.WriteLine("OpenSpace Engine:");
             Helpers.ColourConsole("Big File Archive (.bf/.dsc) - Extracts to a directory of the same name as the input archive and creates an archive from\r\nan input directory.");
-            Helpers.ColourConsole("    Version Flag - openspace_big\n", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag - openspace_big", true, ConsoleColor.Yellow);
+        }
+
+        public static void ProjectM()
+        {
+            Console.WriteLine("===");
+            Console.WriteLine("Project M Engine:");
+            Console.WriteLine("Message Table (.dat)");
         }
 
         public static void StellarStone()
