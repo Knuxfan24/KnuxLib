@@ -1,6 +1,5 @@
 ﻿namespace KnuxLib.Engines.ProjectM
 {
-    // TODO: Test removing the empty messages (assuming they're empty in every language)?
     public class MessageTable : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
