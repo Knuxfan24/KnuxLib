@@ -100,6 +100,15 @@
             Helpers.ColourConsole("    Version Flag (Sonic and the Black Knight) - storybook_setitems_bk", true, ConsoleColor.Yellow);
         }
 
+        public static void SpaceChannel()
+        {
+            Console.WriteLine("===");
+            Console.WriteLine("Space Channel Engine:");
+            Console.WriteLine("Caption Table (.bin)");
+            Helpers.ColourConsole("    Version Flag (Japanese) - spacechannel_caption_jpn", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (International) - spacechannel_caption", true, ConsoleColor.Yellow);
+        }
+
         public static void Twinsanity()
         {
             Console.WriteLine("===");

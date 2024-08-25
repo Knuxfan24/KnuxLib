@@ -77,6 +77,7 @@ namespace KnuxTools
                 FormatPrints.ProjectM();
                 FormatPrints.StellarStone();
                 FormatPrints.SonicStorybook();
+                FormatPrints.SpaceChannel();
                 FormatPrints.Twinsanity();
 
                 Console.WriteLine("===\r\nUsage:");
@@ -209,6 +210,30 @@ namespace KnuxTools
                 case ".bf": case ".dsc": _ = new KnuxLib.Engines.OpenSpace.BigFileArchive(arg, true); break;
 
                 case ".bin":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "spacechannel_caption\t(Space Channel Engine Caption Table)", false },
+                                                { "spacechannel_caption_jpn\t(Space Channel Engine Caption Table (Japanese))", false },
+                                                { "storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))", false },
+                                                { "storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "spacechannel_caption": _ = new KnuxLib.Engines.SpaceChannel.CaptionTable(arg, false, true); break;
+                        case "spacechannel_caption_jpn": _ = new KnuxLib.Engines.SpaceChannel.CaptionTable(arg, true, true); break;
+                        case "storybook_setitems_sr": _ = new KnuxLib.Engines.SonicStorybook.StageEntityTableItems(arg, KnuxLib.Engines.SonicStorybook.StageEntityTableItems.FormatVersion.SecretRings, true); break;
+                        case "storybook_setitems_bk": _ = new KnuxLib.Engines.SonicStorybook.StageEntityTableItems(arg, KnuxLib.Engines.SonicStorybook.StageEntityTableItems.FormatVersion.BlackKnight, true); break;
+                        default: Helpers.InvalidFormatVersion("Generic Binary"); return;
+                    }
+
+                    break;
                 case ".sonicstorybook.setitems.json":
                     // Check for a format version.
                     Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
@@ -227,6 +252,27 @@ namespace KnuxTools
                         case "storybook_setitems_sr": _ = new KnuxLib.Engines.SonicStorybook.StageEntityTableItems(arg, KnuxLib.Engines.SonicStorybook.StageEntityTableItems.FormatVersion.SecretRings, true); break;
                         case "storybook_setitems_bk": _ = new KnuxLib.Engines.SonicStorybook.StageEntityTableItems(arg, KnuxLib.Engines.SonicStorybook.StageEntityTableItems.FormatVersion.BlackKnight, true); break;
                         default: Helpers.InvalidFormatVersion("Sonic Storybook Stage Entity Table Object Table"); return;
+                    }
+
+                    break;
+                case ".spacechannel.caption.json":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "spacechannel_caption\t(Space Channel Engine Caption Table)", false },
+                                                { "spacechannel_caption_jpn\t(Space Channel Engine Caption Table (Japanese))", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "spacechannel_caption": _ = new KnuxLib.Engines.SpaceChannel.CaptionTable(arg, false, true); break;
+                        case "spacechannel_caption_jpn": _ = new KnuxLib.Engines.SpaceChannel.CaptionTable(arg, true, true); break;
+                        default: Helpers.InvalidFormatVersion("Space Channel Engine Caption Table"); return;
                     }
 
                     break;
