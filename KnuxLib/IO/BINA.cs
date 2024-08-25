@@ -38,8 +38,6 @@ namespace KnuxLib.IO
 
             if (sig == BINAHeader.Signature)
                 return new BINAv2Header(this);
-            else if (sig == PACxHeader.PACxSignature)
-                return new PACxHeader(this);
 
             return new BINAv1Header(this);
         }
@@ -132,10 +130,6 @@ namespace KnuxLib.IO
                 h2.StringTableOffset = (stringTablePos - Offset);
                 h2.StringTableLength = (uint)BaseStream.Position - stringTablePos;
             }
-            else if (header is PACxHeader h3)
-            {
-                h3.StringTableLength = (uint)BaseStream.Position - stringTablePos;
-            }
         }
 
         public uint WriteStringTable()
@@ -163,8 +157,6 @@ namespace KnuxLib.IO
         public uint WriteFooter(BINAHeader header)
         {
             uint footerStartPos = WriteFooter();
-            if (header is PACxHeader)
-                FixPadding(8);
 
             // Update header values and write footer magic
             header.FinalTableLength = (uint)BaseStream.Position - footerStartPos;
