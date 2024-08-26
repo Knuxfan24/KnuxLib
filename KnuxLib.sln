@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnuxLib", "KnuxLib\KnuxLib.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnuxTest", "KnuxTest\KnuxTest.csproj", "{B888B6AA-905B-45E5-973D-ABB6ABEAE2F5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KnuxTools", "KnuxTools\KnuxTools.csproj", "{F826FD42-1052-4A7C-808F-5DC443FF10AB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KnuxTools", "KnuxTools\KnuxTools.csproj", "{F826FD42-1052-4A7C-808F-5DC443FF10AB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

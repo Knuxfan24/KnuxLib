@@ -100,6 +100,15 @@
             Helpers.ColourConsole("    Version Flag (Sonic and the Black Knight) - storybook_setitems_bk", true, ConsoleColor.Yellow);
         }
 
+        public static void SonicWorldAdventureWii()
+        {
+            Console.WriteLine("===");
+            Console.WriteLine("Sonic World Adventure Wii Engine:");
+            Console.WriteLine("ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an\r\ninput directory.");
+            Helpers.ColourConsole("    Version Flag (Importing as .one) - swawii", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Importing as .onz) - swawii_compressed", true, ConsoleColor.Yellow);
+        }
+
         public static void SpaceChannel()
         {
             Console.WriteLine("===");
