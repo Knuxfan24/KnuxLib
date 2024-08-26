@@ -2,6 +2,8 @@
 
 namespace KnuxLib.IO
 {
+    // TODO: Tidy my additions to this up.
+
     // This class was purposely written to avoid unnecessary method
     // calls for performance, hence its extreme length.
     public class ExtendedBinaryReader : BinaryReader
@@ -92,12 +94,12 @@ namespace KnuxLib.IO
                 throw new Exception($"The signature read from the stream is incorrect! Expected 0x{expectedSignature.ToString("X").PadLeft(8, '0')}, got 0x{receivedSignature.ToString("X").PadLeft(8, '0')}!");
         }
 
-        public void CheckValue(uint expectedValue, int count = 1)
+        public void CheckValue(int expectedValue, int count = 1)
         {
             #if DEBUG
                 for (int index = 0; index < count; index++)
                 {
-                    uint recievedValue = ReadUInt32();
+                    int recievedValue = ReadInt32();
 
                     if (recievedValue != expectedValue)
                         throw new Exception($"Expected value of 0x{expectedValue.ToString("X").PadLeft(8, '0')}, got 0x{recievedValue.ToString("X").PadLeft(8, '0')}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x04).ToString("X").PadLeft(16, '0')}");
@@ -107,15 +109,30 @@ namespace KnuxLib.IO
             #endif
         }
 
-        public void CheckValue(ulong expectedValue, int count = 1)
+        public void CheckValue(long expectedValue, int count = 1)
         {
             #if DEBUG
                 for (int index = 0; index < count; index++)
                 {
-                    ulong recievedValue = ReadUInt64();
+                    long recievedValue = ReadInt64();
 
                     if (recievedValue != expectedValue)
                         throw new Exception($"Expected value of 0x{expectedValue.ToString("X").PadLeft(16, '0')}, got 0x{recievedValue.ToString("X").PadLeft(16, '0')}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x08).ToString("X").PadLeft(16, '0')}");
+                }
+            #else
+                JumpAhead(count * 0x04);
+            #endif
+        }
+
+        public void CheckValue(byte expectedValue, int count = 1)
+        {
+            #if DEBUG
+                for (int index = 0; index < count; index++)
+                {
+                    uint recievedValue = ReadByte();
+
+                    if (recievedValue != expectedValue)
+                        throw new Exception($"Expected value of 0x{expectedValue.ToString("X").PadLeft(2, '0')}, got 0x{recievedValue.ToString("X").PadLeft(2, '0')}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x04).ToString("X").PadLeft(16, '0')}");
                 }
             #else
                 JumpAhead(count * 0x04);

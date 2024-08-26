@@ -417,7 +417,50 @@ namespace KnuxTools
 
                 case ".sco": _ = new KnuxLib.Engines.StellarStone.MeshObject(arg, true); break;
 
-                case ".svcol.bin": case ".hedgehog.sectorvisiblitycollision_wars.json": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars(arg, true); break;
+                case ".svcol.bin":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "sonic2013\t(Sonic Lost World)", true },
+                                                { "wars\t(Sonic Forces)", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "sonic2013": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_2013(arg, true); break;
+                        case "wars": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars(arg, true); break;
+                        default: Helpers.InvalidFormatVersion("Hedgehog Engine Sector Visibility Collision"); return;
+                    }
+                    break;
+
+                case ".hedgehog.sectorvisiblitycollision_2013.json":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "sonic2013_cafe\t(Sonic Lost World (Wii U))", true },
+                                                { "sonic2013\t(Sonic Lost World)", true }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "sonic2013_cafe": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_2013(arg, true, true); break;
+                        case "sonic2013": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_2013(arg, true); break;
+                        default: Helpers.InvalidFormatVersion("Hedgehog Engine Sector Visibility Collision"); return;
+                    }
+
+                    break;
+
+                case ".hedgehog.sectorvisiblitycollision_wars.json": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars(arg, true); break;
 
                 case ".terrain-instanceinfo": case ".hedgehog.instanceinfo.json": _ = new KnuxLib.Engines.Hedgehog.InstanceInfo(arg, true); break;
 
