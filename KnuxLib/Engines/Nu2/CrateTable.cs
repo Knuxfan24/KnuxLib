@@ -271,7 +271,7 @@ namespace KnuxLib.Engines.Nu2
             public void Read(ExtendedBinaryReader reader)
             {
                 Position = reader.ReadVector3();
-                reader.JumpAhead(0x04); // Always 0.
+                reader.CheckValue(0x00);
                 UnknownUShort_1 = reader.ReadUInt16();
                 UnknownUShort_2 = reader.ReadUInt16();
                 UnknownUShort_3 = reader.ReadUInt16();
@@ -330,7 +330,7 @@ namespace KnuxLib.Engines.Nu2
                 reader.IsBigEndian = true;
 
             // Skip an unknown value that is always 0x04.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x04);
 
             // Read the count of groups in this crate table.
             Data = new Group[reader.ReadUInt16()];

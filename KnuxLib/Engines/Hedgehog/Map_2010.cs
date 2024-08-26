@@ -81,16 +81,16 @@
             /// <summary>
             /// Initialises this sector by reading its data from a BINAReader.
             /// </summary>
-            public Sector(BINAReader reader) => Read(reader);
+            public Sector(BINAReader reader, int index) => Read(reader, index);
 
             /// <summary>
             /// Reads the data for this sector.
             /// </summary>
-            public void Read(BINAReader reader)
+            public void Read(BINAReader reader, int index)
             {
                 Name = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
-                reader.JumpAhead(0x04); // Index of this sector, always sequential.
-                reader.JumpAhead(0x04); // Always 0.
+                reader.CheckValue((uint)index);
+                reader.CheckValue(0x00);
                 Position = reader.ReadVector3();
             }
 
@@ -132,7 +132,7 @@
 
             // Loop through and read each sector.
             for (int sectorIndex = 0; sectorIndex < Data.Sectors.Length; sectorIndex++)
-                Data.Sectors[sectorIndex] = new(reader);
+                Data.Sectors[sectorIndex] = new(reader, sectorIndex);
 
             // Close our BINAReader.
             reader.Close();

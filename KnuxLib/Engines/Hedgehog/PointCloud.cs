@@ -105,7 +105,7 @@
                 Rotation = reader.ReadVector3();
                 UnknownUInt32_1 = reader.ReadUInt32();
                 Scale = reader.ReadVector3();
-                reader.JumpAhead(0x04); // Always 0.
+                reader.CheckValue(0x00);
                 reader.FixPadding(0x08);
             }
         

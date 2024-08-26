@@ -99,7 +99,7 @@
             uint fileSize = reader.ReadUInt32();
 
             // Skip an unknown value of 0x01.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x01);
 
             // Read the offset to the end of the string table.
             uint stringTableEnd = reader.ReadUInt32();
@@ -111,16 +111,16 @@
             reader.Offset = offsetSize;
 
             // Skip an unknown value that seems to be the same as stringTableEnd but with offsetSize added to it.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(stringTableEnd + offsetSize);
 
             // Skip an unknown (potentially padding) value of 0x00.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x00);
 
             // Read the amount of archives in this file.
             Data = new ArchiveEntry[reader.ReadInt32()];
 
             // Skip an unknown value of 0x0C.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x0C);
 
             // Read the offset to the table of unknown bytes.
             uint archiveByteOffset = reader.ReadUInt32();

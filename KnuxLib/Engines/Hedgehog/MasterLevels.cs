@@ -145,7 +145,7 @@
                         Dependencies[dependencyIndex] = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
 
                         // Skip an unknown value of 0.
-                        reader.JumpAhead(0x08);
+                        reader.CheckValue(0x00L);
 
                         // Jump back for the next dependency.
                         reader.JumpTo(dependencyPosition);
@@ -180,7 +180,7 @@
                         reader.JumpAhead(0x08);
 
                         // Skip an unknown value of 0.
-                        reader.JumpAhead(0x08);
+                        reader.CheckValue(0x00L);
 
                         // Jump back for the next file.
                         reader.JumpTo(filePosition);
@@ -317,7 +317,7 @@
             ulong levelOffsetTable = reader.ReadUInt64();
 
             // Skip an unknown value that is always 0. Likely padding?
-            reader.JumpAhead(0x08);
+            reader.CheckValue(0x00L);
 
             // Jump to the main offset table (should already be here but lets play it safe).
             reader.JumpTo(levelOffsetTable, false);

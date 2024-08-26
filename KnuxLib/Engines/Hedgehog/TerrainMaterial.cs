@@ -123,7 +123,7 @@
                 Index = reader.ReadUInt32();
                 UnknownUInt32_1 = reader.ReadUInt32();
                 UnknownUInt32_2 = reader.ReadUInt32();
-                reader.JumpAhead(0x04); // Always 0.
+                reader.CheckValue(0x00);
                 DetailDiffuse = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
                 DetailNormal = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
                 DetailHeight = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
@@ -167,7 +167,7 @@
             reader.ReadSignature(0x04, "MTDN");
 
             // Skip an unknown value that is always 1.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x01);
 
             // Read the offset to this file's material table.
             long materialTableOffset = reader.ReadInt64();

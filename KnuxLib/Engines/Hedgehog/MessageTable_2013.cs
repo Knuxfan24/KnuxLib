@@ -96,10 +96,10 @@
                 uint cellTableOffset = reader.ReadUInt32();
 
                 // Skip two unknown values that are both always the same as this sheet's cell count.
-                reader.JumpAhead(0x08);
+                reader.CheckValue(cellCount, 0x02);
 
                 // Skip an unknown value that is always 0.
-                reader.JumpAhead(0x04);
+                reader.CheckValue(0x00);
 
                 // Initialise this sheet's cell array.
                 Cells = new Cell[cellCount];
@@ -228,7 +228,7 @@
                 uint remapCount = reader.ReadUInt32();
 
                 // Skip an unknown value that is always the same as the cell's remap count.
-                reader.JumpAhead(0x04);
+                reader.CheckValue(remapCount);
 
                 // Skip 0x16 bytes that are always 0.
                 reader.JumpAhead(0x16);
@@ -237,19 +237,19 @@
                 reader.JumpAhead(0x02);
 
                 // Skip an unknown value that is always 0x02.
-                reader.JumpAhead(0x04);
+                reader.CheckValue(0x02);
 
                 // Read this cell's first unknown integer value.
                 UnknownInt32_1 = reader.ReadInt32();
 
                 // Skip an unknown value that is always 0x00.
-                reader.JumpAhead(0x02);
+                reader.CheckValue(0x00);
 
                 // Skip the second instance of this cell's message's last character index.
                 reader.JumpAhead(0x02);
 
                 // Skip an unknown value that is always 0x01.
-                reader.JumpAhead(0x04);
+                reader.CheckValue(0x01);
 
                 // Read this cell's second unknown integer value.
                 UnknownInt32_2 = reader.ReadInt32();
@@ -261,10 +261,10 @@
                 reader.JumpAhead(0x02);
 
                 // Skip an unknown value that is always 0.
-                reader.JumpAhead(0x04);
+                reader.CheckValue(0x00);
 
                 // Skip an unknown value that is always 0x01.
-                reader.JumpAhead(0x04);
+                reader.CheckValue(0x01);
 
                 // Skip an unknown value that is always 0.
                 reader.JumpAhead(0x02);
@@ -273,10 +273,10 @@
                 reader.JumpAhead(0x02);
 
                 // Skip an unknown value that is always 0x03.
-                reader.JumpAhead(0x04);
+                reader.CheckValue(0x03);
 
                 // Skip an unknown value that is always 0.
-                reader.JumpAhead(0x04);
+                reader.CheckValue(0x00);
 
                 // If this cell has remap data, then read it as well.
                 if (remapTableOffset != 0)
@@ -502,10 +502,10 @@
             uint sheetTableOffset = reader.ReadUInt32();
 
             // Skip two unknown values that are both always the same as sheet count (but as an integer rather than a short).
-            reader.JumpAhead(0x08);
+            reader.CheckValue(sheetCount, 0x02);
 
             // Skip an unknown value that is always 0.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x00);
 
             // Initialise the sheet array.
             Data = new Sheet[sheetCount];

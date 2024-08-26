@@ -127,7 +127,7 @@
                 AxisAlignedBoundingBox = new(reader);
 
                 // Skip an unknown value of 0.
-                reader.JumpAhead(0x04);
+                reader.CheckValue(0x00);
 
                 // Read this shape's sector count.
                 Sectors = new SectorVisiblitySector[reader.ReadUInt64()];
@@ -266,7 +266,7 @@
             reader.ReadSignature(0x04, "OCVS");
 
             // Skip an unknown value of 0x01.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x01);
 
             // Read the amount of shapes in this svcol.
             Data = new SectorVisibilityShape[reader.ReadUInt64()];

@@ -293,7 +293,7 @@ namespace KnuxLib.Engines.Hedgehog
                 }
 
                 // Skip an unknown value that is always 0.
-                reader.JumpAhead(0x08);
+                reader.CheckValue(0x00L);
 
                 // If this is a sonic_2013 format path, then jump back four bytes so we're still aligned correctly.
                 if (version == FormatVersion.sonic_2013)
@@ -834,7 +834,7 @@ namespace KnuxLib.Engines.Hedgehog
             reader.ReadSignature(0x04, "HTAP");
 
             // Skip an unknown value that is always 0x200.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x200);
 
             // Read the amount of paths in this file.
             long pathCount = reader.ReadInt64();

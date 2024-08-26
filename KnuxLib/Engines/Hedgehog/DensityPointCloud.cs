@@ -97,15 +97,15 @@
             public void Read(BINAReader reader)
             {
                 Position = reader.ReadVector3();
-                reader.JumpAhead(0x04); // Always 0.
+                reader.CheckValue(0x00);
                 Scale = reader.ReadVector3();
-                reader.JumpAhead(0x04); // Always 0.
+                reader.CheckValue(0x00);
                 Rotation = reader.ReadQuaternion();
-                reader.JumpAhead(0x10); // Always 0.
+                reader.CheckValue(0x00, 0x04);
                 Colour.Read(reader, true, true);
                 TypeIndex = reader.ReadUInt32();
                 UnknownUInt32_1 = reader.ReadUInt32();
-                reader.JumpAhead(0x08); // Always 0.
+                reader.CheckValue(0x00, 0x02);
             }
 
             /// <summary>
@@ -142,7 +142,9 @@
             reader.ReadSignature(0x04, "EIYD");
 
             // Skip three unknown values of 0x04, 0x02 and 0x00.
-            reader.JumpAhead(0x0C);
+            reader.CheckValue(0x04);
+            reader.CheckValue(0x02);
+            reader.CheckValue(0x00);
 
             // Read the offset to this file's instance table.
             ulong instanceTableOffset = reader.ReadUInt64();

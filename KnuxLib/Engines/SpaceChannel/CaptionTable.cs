@@ -60,7 +60,7 @@
             Data = new string[reader.ReadUInt32()];
 
             // Skip two unknown values of 0 (likely padding?).
-            reader.JumpAhead(0x08);
+            reader.CheckValue(0x00L);
 
             // Loop through each message entry in this caption table.
             for (int messageIndex = 0; messageIndex < Data.Length; messageIndex++)

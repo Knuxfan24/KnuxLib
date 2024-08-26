@@ -89,7 +89,7 @@
             uint fileSize = reader.ReadUInt32();
 
             // Skip the root node type, as it's always 0.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x00);
 
             // Read the root node size.
             uint rootNodeSize = reader.ReadUInt32();
@@ -101,7 +101,7 @@
             uint footerOffset = reader.ReadUInt32();
 
             // Skip the file end offset, as it's always 0.
-            reader.JumpAhead(0x04);
+            reader.CheckValue(0x00);
 
             // Set the reader's offset to the value in rootNodeOffset.
             reader.Offset = rootNodeOffset;

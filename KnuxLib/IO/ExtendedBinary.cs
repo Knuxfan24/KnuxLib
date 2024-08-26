@@ -89,7 +89,37 @@ namespace KnuxLib.IO
             uint receivedSignature = ReadUInt32();
 
             if (receivedSignature != expectedSignature && throwOnInvalid)
-                throw new Exception($"The signature read from the stream is incorrect! Expected 0x{expectedSignature,8:X}, got 0x{receivedSignature,8:X}!");
+                throw new Exception($"The signature read from the stream is incorrect! Expected 0x{expectedSignature.ToString("X").PadLeft(8, '0')}, got 0x{receivedSignature.ToString("X").PadLeft(8, '0')}!");
+        }
+
+        public void CheckValue(uint expectedValue, int count = 1)
+        {
+            #if DEBUG
+                for (int index = 0; index < count; index++)
+                {
+                    uint recievedValue = ReadUInt32();
+
+                    if (recievedValue != expectedValue)
+                        throw new Exception($"Expected value of 0x{expectedValue.ToString("X").PadLeft(8, '0')}, got 0x{recievedValue.ToString("X").PadLeft(8, '0')}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x04).ToString("X").PadLeft(16, '0')}");
+                }
+            #else
+                JumpAhead(count * 0x04);
+            #endif
+        }
+
+        public void CheckValue(ulong expectedValue, int count = 1)
+        {
+            #if DEBUG
+                for (int index = 0; index < count; index++)
+                {
+                    ulong recievedValue = ReadUInt64();
+
+                    if (recievedValue != expectedValue)
+                        throw new Exception($"Expected value of 0x{expectedValue.ToString("X").PadLeft(16, '0')}, got 0x{recievedValue.ToString("X").PadLeft(16, '0')}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x08).ToString("X").PadLeft(16, '0')}");
+                }
+            #else
+                JumpAhead(count * 0x04);
+            #endif
         }
 
         /// <summary>
@@ -157,10 +187,18 @@ namespace KnuxLib.IO
 
         /// <summary>
         /// Reads a string padded by null characters with a specified length.
+        /// TODO: Swapped to this because apparently ReadChars() is just busted???
         /// </summary>
         /// <param name="count">Length of the string (including null characters).</param>
         public string ReadNullPaddedString(int count)
-            => new string(ReadChars(count)).Trim('\0');
+        {
+            char[] characters = new char[count];
+
+            for (int characterIndex = 0; characterIndex < count; characterIndex++)
+                characters[characterIndex] = (char)ReadByte();
+
+            return new string(characters).Trim('\0');
+        }
 
         public T ReadByType<T>()
         {

@@ -47,7 +47,7 @@
             ExtendedBinaryReader dataReader = new(File.OpenRead(Path.ChangeExtension(filepath, ".BD")));
 
             // TODO: What is this first value? Is it always 01 05 00 00?
-            headerReader.JumpAhead(0x04);
+            headerReader.CheckValue(0x501);
 
             // Loop through until we hit the end of the header file.
             while (headerReader.BaseStream.Position < headerReader.BaseStream.Length)

@@ -130,7 +130,7 @@ namespace KnuxLib.Engines.Hedgehog
             public void Read(ExtendedBinaryReader reader)
             {
                 Name = reader.ReadNullPaddedString(reader.ReadByte());
-                reader.JumpAhead(0x01); // Always 1.
+                reader.CheckValue(0x01);
                 FontSize = reader.ReadUInt32();
                 Colour = new(reader.ReadByte(), reader.ReadByte(), reader.ReadByte(), null);
                 HorizontalAlignment = (HorizontalAlignment)reader.ReadByte();
