@@ -97,6 +97,8 @@
         {
             Console.WriteLine("===");
             Console.WriteLine("Sonic Storybook Engine:");
+            Console.WriteLine("Light Field (.bin)");
+            Helpers.ColourConsole("    Version Flag - storybook_lightfield", true, ConsoleColor.Yellow);
             Console.WriteLine("ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input\r\ndirectory.");
             Helpers.ColourConsole("    Version Flag - storybook", true, ConsoleColor.Yellow);
             Console.WriteLine("Stage Entity Table Object Table (.bin)");

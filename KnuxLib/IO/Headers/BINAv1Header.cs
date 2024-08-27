@@ -80,7 +80,7 @@
 
             // BINA Signature
             string sig = reader.ReadNullPaddedString(0x04);
-            if (sig != Signature)
+            if (sig != Signature && sig != "")
                 throw new Exception($"Invalid signature! Expected {Signature}, got {sig}.");
 
             // TODO: Find out what this is. Maybe additional data length?

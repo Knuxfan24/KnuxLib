@@ -1,6 +1,4 @@
-﻿using KnuxLib.IO.Headers;
-
-namespace KnuxLib.IO
+﻿namespace KnuxLib.IO
 {
     public static class BINA
     {
