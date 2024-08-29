@@ -224,6 +224,7 @@ namespace KnuxTools
                                                 { "spacechannel_caption\t(Space Channel Engine Caption Table)", false },
                                                 { "spacechannel_caption_jpn\t(Space Channel Engine Caption Table (Japanese))", false },
                                                 { "storybook_lightfield\t(Sonic Storybook Engine Light Field)", false },
+                                                { "storybook_motion\t\t(Sonic Storybook Engine Motion Table)", false },
                                                 { "storybook_setitems_sr\t(Sonic Storybook Engine Stage Entity Table Object Table File (Secret Rings))", false },
                                                 { "storybook_setitems_bk\t(Sonic Storybook Engine Stage Entity Table Object Table File (Black Knight))", false }
                                             });
@@ -237,12 +238,14 @@ namespace KnuxTools
                         case "spacechannel_caption": _ = new KnuxLib.Engines.SpaceChannel.CaptionTable(arg, false, true); break;
                         case "spacechannel_caption_jpn": _ = new KnuxLib.Engines.SpaceChannel.CaptionTable(arg, true, true); break;
                         case "storybook_lightfield": _ = new KnuxLib.Engines.SonicStorybook.LightField(arg, true); break;
+                        case "storybook_motion": _ = new KnuxLib.Engines.SonicStorybook.MotionTable(arg, true); break;
                         case "storybook_setitems_sr": _ = new KnuxLib.Engines.SonicStorybook.StageEntityTableItems(arg, KnuxLib.Engines.SonicStorybook.StageEntityTableItems.FormatVersion.SecretRings, true); break;
                         case "storybook_setitems_bk": _ = new KnuxLib.Engines.SonicStorybook.StageEntityTableItems(arg, KnuxLib.Engines.SonicStorybook.StageEntityTableItems.FormatVersion.BlackKnight, true); break;
                         default: Helpers.InvalidFormatVersion("Generic Binary"); return;
                     }
 
                     break;
+                case ".sonicstorybook.motion.json": _ = new KnuxLib.Engines.SonicStorybook.MotionTable(arg, true); break;
                 case ".sonicstorybook.lightfield.json": _ = new KnuxLib.Engines.SonicStorybook.LightField(arg, true); break;
                 case ".sonicstorybook.setitems.json":
                     // Check for a format version.
