@@ -127,7 +127,8 @@ namespace KnuxLib.Engines.SonicStorybook
                 Console.WriteLine($"Compressing {Data[fileIndex].Name}.");
 
                 // Compress this file's data.
-                CompressedData[fileIndex] = new PRS().Compress(Data[fileIndex].Data).ToArray();
+                PRS prsCompressor = new() { ExplicitOrder = AuroraLib.Core.Endian.Little };
+                CompressedData[fileIndex] = prsCompressor.Compress(Data[fileIndex].Data).ToArray();
 
                 // Write this file's name.
                 writer.WriteNullPaddedString(Data[fileIndex].Name, 0x20);
