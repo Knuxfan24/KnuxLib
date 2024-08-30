@@ -113,7 +113,7 @@
             Console.WriteLine("===");
             Console.WriteLine("Sonic World Adventure Wii Engine:");
             Console.WriteLine("ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an\r\ninput directory.");
-            Helpers.ColourConsole("    Version Flag (Importing as .one) - swawii", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag - swawii", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Importing as .onz) - swawii_compressed", true, ConsoleColor.Yellow);
         }
 
@@ -132,6 +132,15 @@
             Console.WriteLine("Twinsanity Engine:");
             Console.WriteLine("Data Header Pair (.bd/.bh) - Extracts to a directory of the same name as the input archive and creates an archive from\r\nan input directory.");
             Helpers.ColourConsole("    Version Flag - twinsanity", true, ConsoleColor.Yellow);
+        }
+
+        public static void Wayforward()
+        {
+            Console.WriteLine("===");
+            Console.WriteLine("Wayforward Engine:");
+            Console.WriteLine("Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates an archive from an\r\ninput directory.");
+            Helpers.ColourConsole("    Version Flag - wayforward", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag - wayforward_bigendian", true, ConsoleColor.Yellow);
         }
     }
 }

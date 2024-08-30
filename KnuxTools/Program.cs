@@ -80,6 +80,7 @@ namespace KnuxTools
                 FormatPrints.SonicWorldAdventureWii();
                 FormatPrints.SpaceChannel();
                 FormatPrints.Twinsanity();
+                FormatPrints.Wayforward();
 
                 Console.WriteLine("===\r\nUsage:");
                 Console.WriteLine("KnuxTools.exe \"path\\to\\supported\\file\" [-version={VERSION}] [-extension={EXTENSION}]\r\n");
@@ -117,6 +118,8 @@ namespace KnuxTools
                                        { "swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)", false },
                                        { "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)", false },
                                        { "twinsanity\t\t\t(Twinsanity Engine Data Header Pair)", false },
+                                       { "wayforward\t\t\t(Wayforward Engine Package File)", false },
+                                       { "wayforward_bigendian\t(Wayforward Engine Package File)", false },
                                    },
                                    "Archive Type");
 
@@ -151,6 +154,10 @@ namespace KnuxTools
 
                 // Twinsanity Engine Data Header Pair.
                 case "twinsanity": _ = new KnuxLib.Engines.Twinsanity.DataHeaderPair(arg, true); break;
+
+                // Wayforward Engine Package.
+                case "wayforward": _ = new KnuxLib.Engines.Wayforward.Package(arg, false, true); break;
+                case "wayforward_bigendian": _ = new KnuxLib.Engines.Wayforward.Package(arg, true, true); break;
             }
         }
     
@@ -373,6 +380,28 @@ namespace KnuxTools
                     break;
 
                 case ".onz": _ = new KnuxLib.Engines.SonicWorldAdventureWii.ONE(arg, true, true); break;
+
+                case ".pak":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "wayforward\t\t\t(Wayforward Engine Package File)", false },
+                                                { "wayforward_bigendian\t(Wayforward Engine Package File)", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "wayforward": _ = new KnuxLib.Engines.Wayforward.Package(arg, false, true); break;
+                        case "wayforward_bigendian": _ = new KnuxLib.Engines.Wayforward.Package(arg, true, true); break;
+                        default: Helpers.InvalidFormatVersion("Wayforward Engine Package File"); return;
+                    }
+
+                    break;
 
                 case ".path":
                     // Check for a format version.

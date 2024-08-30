@@ -356,7 +356,7 @@ namespace KnuxLib.Engines.CapcomMT
         /// <param name="directory">The directory to extract to.</param>
         public void Extract(string directory)
         {
-            // Set up an array to store the version tag in. Default it to capcomv7.
+            // Set up a string to store the version flag in. Default it to capcomv7.
             string versionFlag = "capcomv7";
 
             // Switch based on the read version and compression flag (where appropriate).
