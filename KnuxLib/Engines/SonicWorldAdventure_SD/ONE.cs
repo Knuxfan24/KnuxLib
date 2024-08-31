@@ -1,7 +1,8 @@
 ﻿using AuroraLib.Compression.Algorithms;
 
-namespace KnuxLib.Engines.SonicWorldAdventureWii
+namespace KnuxLib.Engines.SonicWorldAdventure_SD
 {
+    // TODO: Test the saved ONZ files, as the Storybook ONEs were broken for ages before I noticed.
     public class ONE : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -212,9 +213,9 @@ namespace KnuxLib.Engines.SonicWorldAdventureWii
 
             // Write the archive type identifier based on the compression flag.
             if (!wasCompressed)
-                File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", "swawii");
+                File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", "swa_sd");
             else
-                File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", "swawii_compressed");
+                File.WriteAllText($@"{directory}\knuxtools_archivetype.txt", "swa_sd_compressed");
 
             // Finish the order log.
             log.Close();

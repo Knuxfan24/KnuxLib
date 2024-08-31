@@ -115,8 +115,8 @@ namespace KnuxTools
                                        { "nintendo_u8_marathon\t(Nintendo U8 Archive File (Sonic '06))", false },
                                        { "openspace_big\t\t(OpenSpace Engine Big File Archive)", true },
                                        { "storybook\t\t\t(Sonic Storybook Engine ONE File)", false },
-                                       { "swawii\t\t\t(Sonic World Adventure Wii Engine ONE File)", false },
-                                       { "swawii_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)", false },
+                                       { "swa_sd\t\t\t(Sonic World Adventure Wii Engine ONE File)", false },
+                                       { "swa_sd_compressed\t\t(Sonic World Adventure Wii Engine Compressed ONZ File)", false },
                                        { "twinsanity\t\t\t(Twinsanity Engine Data Header Pair)", false },
                                        { "wayforward\t\t\t(Wayforward Engine Package File)", false },
                                        { "wayforward_bigendian\t(Wayforward Engine Package File)", false },
@@ -149,8 +149,8 @@ namespace KnuxTools
                 case "storybook": _ = new KnuxLib.Engines.SonicStorybook.ONE(arg, true); break;
 
                 // Sonic World Adventure Wii ONE Archive.
-                case "swawii": _ = new KnuxLib.Engines.SonicWorldAdventureWii.ONE(arg, false, true); break;
-                case "swawii_compressed": _ = new KnuxLib.Engines.SonicWorldAdventureWii.ONE(arg, true, true); break;
+                case "swa_sd": _ = new KnuxLib.Engines.SonicWorldAdventure_SD.ONE(arg, false, true); break;
+                case "swa_sd_compressed": _ = new KnuxLib.Engines.SonicWorldAdventure_SD.ONE(arg, true, true); break;
 
                 // Twinsanity Engine Data Header Pair.
                 case "twinsanity": _ = new KnuxLib.Engines.Twinsanity.DataHeaderPair(arg, true); break;
@@ -386,7 +386,7 @@ namespace KnuxTools
                                             new()
                                             {
                                                 { "storybook\t\t(Sonic Storybook Engine ONE File)", false },
-                                                { "swawii\t\t(Sonic World Adventure Wii Engine ONE File)", false },
+                                                { "swa_sd\t\t(Sonic World Adventure Wii Engine ONE File)", false },
                                             });
 
                     // If the version is still null or empty, then abort.
@@ -396,13 +396,13 @@ namespace KnuxTools
                     switch (Version.ToLower())
                     {
                         case "storybook": _ = new KnuxLib.Engines.SonicStorybook.ONE(arg, true); break;
-                        case "swawii": _ = new KnuxLib.Engines.SonicWorldAdventureWii.ONE(arg, false, true); break;
+                        case "swa_sd": _ = new KnuxLib.Engines.SonicWorldAdventure_SD.ONE(arg, false, true); break;
                         default: Helpers.InvalidFormatVersion("Generic .one Archive"); return;
                     }
 
                     break;
 
-                case ".onz": _ = new KnuxLib.Engines.SonicWorldAdventureWii.ONE(arg, true, true); break;
+                case ".onz": _ = new KnuxLib.Engines.SonicWorldAdventure_SD.ONE(arg, true, true); break;
 
                 case ".pak":
                     // Check for a format version.
