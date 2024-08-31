@@ -322,7 +322,7 @@ namespace KnuxLib.Engines.Nu2
         /// <param name="version">The system version to read this file as.</param>
         public void Load(string filepath, FormatVersion version = FormatVersion.GameCube)
         {
-            // Set up Marathon's BinaryReader.
+            // Load this file into a BinaryReader.
             ExtendedBinaryReader reader = new(File.OpenRead(filepath));
 
             // If this is a GameCube ai file, then switch the reader's endianness to big endian.
@@ -338,6 +338,9 @@ namespace KnuxLib.Engines.Nu2
             // Loop through and read each group in this crate table.
             for (int groupIndex = 0; groupIndex < Data.Length; groupIndex++)
                 Data[groupIndex] = new(reader);
+
+            // Close our BinaryReader.
+            reader.Close();
         }
 
         /// <summary>
@@ -347,7 +350,7 @@ namespace KnuxLib.Engines.Nu2
         /// <param name="version">The system version to save this file as.</param>
         public void Save(string filepath, FormatVersion version = FormatVersion.GameCube)
         {
-            // Set up Marathon's BinaryWriter.
+            // Create this file through a BinaryWriter.
             ExtendedBinaryWriter writer = new(File.Create(filepath));
 
             // If this is a GameCube ai file, then switch the writer's endianness to big endian.
@@ -364,7 +367,7 @@ namespace KnuxLib.Engines.Nu2
             for (int groupIndex = 0; groupIndex < Data.Length; groupIndex++)
                 Data[groupIndex].Write(writer);
 
-            // Close Marathon's BinaryWriter.
+            // Close our BinaryWriter.
             writer.Close();
         }
     }

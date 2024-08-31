@@ -139,6 +139,21 @@ namespace KnuxLib.IO
             #endif
         }
 
+        public void CheckValue(float expectedValue, int count = 1)
+        {
+            #if DEBUG
+                for (int index = 0; index < count; index++)
+                {
+                    float recievedValue = ReadSingle();
+
+                    if (recievedValue != expectedValue)
+                        throw new Exception($"Expected value of {expectedValue}, got {recievedValue}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x04).ToString("X").PadLeft(16, '0')}");
+                }
+            #else
+                JumpAhead(count * 0x04);
+            #endif
+        }
+
         /// <summary>
         /// Reads the signature at the current position.
         /// </summary>

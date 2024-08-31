@@ -182,7 +182,7 @@
             for (int materialIndex = 0; materialIndex < Data.Length; materialIndex++)
                 Data[materialIndex] = new(reader);
 
-            // Close HedgeLib#'s BINAReader.
+            // Close our BINAReader.
             reader.Close();
         }
 

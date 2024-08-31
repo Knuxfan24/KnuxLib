@@ -255,5 +255,32 @@
         /// </summary>
         /// <param name="value">The value to convert.</param>
         public static int CalculateBAMsValue(float value) => (int)(value * 65536f / 360f);
+
+        /// <summary>
+        /// Reads a length prefixed string from a table, using the structure found in the Wayforward engine.
+        /// </summary>
+        /// <param name="reader">The ExtendedBinaryReader to use.</param>
+        /// <param name="stringTableOffset">The offset to the file's string table.</param>
+        /// <param name="stringIndex">The index of the string we want.</param>
+        public static string ReadWayforwardLengthPrefixedString(ExtendedBinaryReader reader, long stringTableOffset, uint stringIndex)
+        {
+            // Save the reader's position so we can jump back for the rest of whatever is being read.
+            long position = reader.BaseStream.Position;
+
+            // Jump to the offset of the string table, plus the index multiplied by eight to get the offset we want.
+            reader.JumpTo(stringTableOffset + (stringIndex * 0x08));
+
+            // Jump to the value at the offset we calculated.
+            reader.JumpTo(reader.ReadInt64());
+
+            // Read the string, with the length being determined by the value right before it.
+            string value = reader.ReadNullPaddedString(reader.ReadInt32());
+
+            // Jump back for the rest of the data.
+            reader.JumpTo(position);
+
+            // Return our string.
+            return value;
+        }
     }
 }

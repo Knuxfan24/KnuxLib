@@ -467,7 +467,7 @@ namespace KnuxLib.Engines.SonicStorybook
             for (int axisAlignedBoundingBoxTableIndex = 0; axisAlignedBoundingBoxTableIndex < axisAlignedBoundingBoxCount; axisAlignedBoundingBoxTableIndex++)
                 Data.AxisAlignedBoundingBoxes[axisAlignedBoundingBoxTableIndex] = new(reader);
 
-            // Close Marathon's BinaryReader.
+            // Close our BinaryWriter.
             reader.Close();
         }
 

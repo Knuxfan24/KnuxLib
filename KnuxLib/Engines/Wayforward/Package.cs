@@ -105,7 +105,7 @@ namespace KnuxLib.Engines.Wayforward
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
         /// <param name="bigEndian">Whether this file should be saved in big endian.</param>
-        public void Save(string filepath, bool bigEndian)
+        public void Save(string filepath, bool bigEndian = false)
         {
             // Create this file through a BinaryWriter.
             ExtendedBinaryWriter writer = new(File.Create(filepath), bigEndian);
@@ -143,7 +143,7 @@ namespace KnuxLib.Engines.Wayforward
                 writer.Write(Data[dataIndex].Data.Length);
 
                 // Write this file's name, replacing the first sub directory divider with a colon.
-                writer.WriteNullTerminatedString(new Regex(Regex.Escape("\\")).Replace(Data[dataIndex].Name, ":", 1).Replace('/', '\\'));
+                writer.WriteNullTerminatedString(new Regex(Regex.Escape("\\")).Replace(Data[dataIndex].Name, ":", 1));
 
                 // Store our current position to figure out how many bytes we need.
                 paddingCount = writer.BaseStream.Position;

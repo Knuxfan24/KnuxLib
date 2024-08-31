@@ -324,6 +324,29 @@ namespace KnuxTools
 
                 case ".densitypointcloud": case ".hedgehog.densitypointcloud.json": _ = new KnuxLib.Engines.Hedgehog.DensityPointCloud(arg, true); break;
 
+                case ".env":
+                case ".wayforward.environment.json":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "wayforward", false },
+                                                { "wayforward_bigendian", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "wayforward": _ = new KnuxLib.Engines.Wayforward.Environment(arg, false, true); break;
+                        case "wayforward_bigendian": _ = new KnuxLib.Engines.Wayforward.Environment(arg, true, true); break;
+                        default: Helpers.InvalidFormatVersion("Wayforward Engine Environment Table"); return;
+                    }
+
+                    break;
+
                 case ".map.bin": case ".hedgehog.map_2010.json": _ = new KnuxLib.Engines.Hedgehog.Map_2010(arg, true); break;
 
                 case ".mat": _ = new KnuxLib.Engines.StellarStone.MaterialLibrary(arg, true); break;

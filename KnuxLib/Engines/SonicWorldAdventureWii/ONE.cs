@@ -46,7 +46,7 @@ namespace KnuxLib.Engines.SonicWorldAdventureWii
         /// <param name="filepath">The path to the file to load and parse.</param>
         public void Load(string filepath)
         {
-            // Set up Marathon's BinaryReader.
+            // Load this file into a BinaryReader.
             ExtendedBinaryReader reader = new(File.OpenRead(filepath));
 
             // Check if this file is LZ11 compressed.
@@ -105,7 +105,7 @@ namespace KnuxLib.Engines.SonicWorldAdventureWii
                 Data[fileIndex] = node;
             }
 
-            // Close Marathon's BinaryReader.
+            // Close our BinaryWriter.
             reader.Close();
         }
 
@@ -116,7 +116,7 @@ namespace KnuxLib.Engines.SonicWorldAdventureWii
         /// <param name="compress">Whether to compress the resulting file.</param>
         public void Save(string filepath, bool compress = false)
         {
-            // Set up Marathon's BinaryWriter.
+            // Create this file through a BinaryWriter.
             ExtendedBinaryWriter writer = new(File.Create(filepath));
 
             // Write this archive's signature.
@@ -157,7 +157,7 @@ namespace KnuxLib.Engines.SonicWorldAdventureWii
                 writer.FixPadding(0x20);
             }
 
-            // Close Marathon's BinaryWriter.
+            // Close our BinaryReader.
             writer.Close();
 
             // Check if we need to compress the saved file.

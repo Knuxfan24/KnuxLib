@@ -138,6 +138,9 @@
         {
             Console.WriteLine("===");
             Console.WriteLine("Wayforward Engine:");
+            Console.WriteLine("Environment Table (.env)");
+            Helpers.ColourConsole("    Version Flag - wayforward", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag - wayforward_bigendian", true, ConsoleColor.Yellow);
             Console.WriteLine("Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates an archive from an\r\ninput directory.");
             Helpers.ColourConsole("    Version Flag - wayforward", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag - wayforward_bigendian", true, ConsoleColor.Yellow);
