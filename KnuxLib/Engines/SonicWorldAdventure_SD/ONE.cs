@@ -106,7 +106,7 @@ namespace KnuxLib.Engines.SonicWorldAdventure_SD
                 Data[fileIndex] = node;
             }
 
-            // Close our BinaryWriter.
+            // Close our BinaryReader.
             reader.Close();
         }
 

@@ -112,6 +112,9 @@
         {
             Console.WriteLine("===");
             Console.WriteLine("Sonic World Adventure Wii Engine:");
+            Console.WriteLine("Area Points Table (.wap)");
+            Helpers.ColourConsole("    Version Flag (importing) - wii", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (importing) - ps2", true, ConsoleColor.Yellow);
             Console.WriteLine("ONE Archive (.one/.onz) - Extracts to a directory of the same name as the input archive and creates an archive from an\r\ninput directory.");
             Helpers.ColourConsole("    Version Flag - swa_sd", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Importing as .onz) - swa_sd_compressed", true, ConsoleColor.Yellow);

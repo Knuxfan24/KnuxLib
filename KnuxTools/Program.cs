@@ -524,6 +524,29 @@ namespace KnuxTools
 
                 case ".terrain-material": case ".hedgehog.terrain-material.json": _ = new KnuxLib.Engines.Hedgehog.TerrainMaterial(arg, true); break;
 
+                case ".wap": _ = new KnuxLib.Engines.SonicWorldAdventure_SD.AreaPoints(arg, true); break;
+                case ".sonicworldadventure_sd.areapoints.json":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "wii", false },
+                                                { "ps2", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "wii": _ = new KnuxLib.Engines.SonicWorldAdventure_SD.AreaPoints(arg, true, true); break;
+                        case "ps2": _ = new KnuxLib.Engines.SonicWorldAdventure_SD.AreaPoints(arg, true, false); break;
+                        default: Helpers.InvalidFormatVersion("Sonic World Adventure (SD) Area Points Table"); return;
+                    }
+
+                    break;
+
                 case ".wmp":
                 case ".nu2.wumpatable.json":
                     // Check for a format version.

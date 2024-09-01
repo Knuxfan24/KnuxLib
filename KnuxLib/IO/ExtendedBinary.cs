@@ -728,6 +728,9 @@ namespace KnuxLib.IO
             Write(text.PadRight(length, '\0'));
         }
 
+        /// <summary>
+        /// Writes a string to the current position.
+        /// </summary>
         public override void Write(string value) => Write(encoding.GetBytes(value));
 
         public void Write(Matrix4x4 matrix)
