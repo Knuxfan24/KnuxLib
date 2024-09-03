@@ -65,9 +65,7 @@ namespace KnuxTools
                 Console.WriteLine("Each format converts to and from a JSON file unless otherwise specified.");
                 Console.Write("File formats listed in");
                 Helpers.ColourConsole(" red ", false);
-                Console.Write("are considered experimental and may be missing elements or functionality (see the\r\nExperimental Formats document at");
-                Helpers.ColourConsole(" https://github.com/Knuxfan24/KnuxLib/blob/master/Experimental_Formats.md ", false, ConsoleColor.Cyan);
-                Console.WriteLine("for\r\ninformation on the individual issues).");
+                Console.WriteLine("are considered experimental and may be missing elements or functionality.");
 
                 FormatPrints.CapcomMT();
                 FormatPrints.Hedgehog();
