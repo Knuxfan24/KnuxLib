@@ -6,6 +6,8 @@ namespace KnuxLib.Engines.Hedgehog
 {
     // First Commit -> senorDane
     // TODO: Figure out the unknown values.
+    // TODO: Figure out why the output isn't perfect (Some values seem to have padding or double null terminator? Maybe its padding for aligment? Currently
+    // the output file is slightly smaller, and if we an extra null terminator to every string, it becomes slightly larger.).
     public class Staffroll_2013 : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -31,7 +33,7 @@ namespace KnuxLib.Engines.Hedgehog
             public CommandType Type { get; set; } = CommandType.Text;
 
             /// <summary>
-            /// The resource name/text for this element. ASCII for resource, WideChar for text. Pointer
+            /// The resource name/text for this element. ASCII for resource (movie file with extension, or texture name), WideChar for text. Pointer
             /// </summary>
             public string Resource { get; set; } = "";
 
@@ -53,7 +55,7 @@ namespace KnuxLib.Engines.Hedgehog
             /// <summary>
             /// Size of the text element. Usually 0-2. UInt32
             /// </summary>
-            public UInt32 headerSize = 0;
+            public UInt32 HeaderSize = 0;
 
             public override string ToString() => Resource;
         }
@@ -61,7 +63,7 @@ namespace KnuxLib.Engines.Hedgehog
         public class StaffRoll
         {
             public const String Signature = "CREDITSCOMMANDS"; //Saved as a pointer to the string table
-            public const UInt32 HarcodedCount = 720; //Calculated by counting every pointer to a resource
+            public const UInt32 HarcodedCount = 720; //Calculated by counting every pointer to a resource/message
             public UInt32 CommandCount = 715;
             public UInt32 UnkownUint32_1 = 4;
             public UInt32 UnkownUint32_2 = 1;
@@ -133,7 +135,7 @@ namespace KnuxLib.Engines.Hedgehog
                 command.DelayTime = reader.ReadSingle();
                 command.VerticalPosition = reader.ReadSingle();
                 command.TextAlignment = (TextAlignment)reader.ReadUInt32();
-                command.headerSize = reader.ReadUInt32();
+                command.HeaderSize = reader.ReadUInt32();
 
                 Data.CreditCommands[commandIndex] = command;
             }
@@ -147,204 +149,56 @@ namespace KnuxLib.Engines.Hedgehog
         /// </summary>
         /// <param name="filepath">The path to save to.</param>
         public void Save(string filepath)
-        {/*
+        {
             // Set up our BINAWriter and write the BINAV2 header.
             HedgeLib.IO.BINAWriter writer = new(File.Create(filepath), Header);
 
-            // Write an unknown value that is always 0x02, likely a version identifier.
-            writer.Write((ushort)0x02);
+            // Write the signature
+            writer.AddString($"Signature", StaffRoll.Signature);
 
-            // Write the count of sheets in this file.
-            writer.Write((ushort)Data.Length);
+            // Write the (stale?) count, 715
+            writer.Write(Data.CommandCount);
 
-            // Add an offset to this file's sheet table.
-            writer.AddOffset("SheetTableOffset");
+            // Write the first unknown, 4
+            writer.Write(Data.UnkownUint32_1);
 
-            // Write copies of the sheet count.
-            writer.Write(Data.Length);
-            writer.Write(Data.Length);
+            // Write the second unknown, 1
+            writer.Write(Data.UnkownUint32_2);
 
-            // Write an unknown value that is always 0.
-            writer.Write(0);
+            // Add an offset to this file's command list.
+            writer.AddOffset("CreditsCommands");
 
-            // Fill in the sheet table offset.
-            writer.FillInOffset("SheetTableOffset", false);
-
-            // Loop through and add an offset for each sheet in this file.
-            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
-                writer.AddOffset($"Sheet{sheetIndex}DataOffset");
+            // Fill in command list offset.
+            writer.FillInOffset("CreditsCommands", false);
                     
-            // Loop through each sheet in this file.
-            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
+            // Loop through each command in this file.
+            for (int commandIndex = 0; commandIndex < StaffRoll.HarcodedCount; commandIndex++)
             {
-                // Fill in this sheet's offset.
-                writer.FillInOffset($"Sheet{sheetIndex}DataOffset", false);
-
-                // Add a string for this sheet's name.
-                writer.AddString($"Sheet{sheetIndex}Name", Data[sheetIndex].Name);
+                writer.Write((UInt32)Data.CreditCommands[commandIndex].Type);
+                // Add Offset to the resource
+                writer.AddOffset($"Command{commandIndex}Resource");
 
                 // Write the count of cells in this sheet.
-                writer.Write(Data[sheetIndex].Cells.Length);
-
-                // Add an offset for this sheet's cell table.
-                writer.AddOffset($"Sheet{sheetIndex}CellTableOffset");
-
-                // Write copies of the cell count.
-                writer.Write(Data[sheetIndex].Cells.Length);
-                writer.Write(Data[sheetIndex].Cells.Length);
-
-                // Write an unknown value that is always 0.
-                writer.Write(0);
+                writer.Write(Data.CreditCommands[commandIndex].DelayTime);
+                writer.Write(Data.CreditCommands[commandIndex].VerticalPosition);
+                writer.Write((UInt32)Data.CreditCommands[commandIndex].TextAlignment);
+                writer.Write(Data.CreditCommands[commandIndex].HeaderSize);
             }
 
-            // Loop through each sheet in this file.
-            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
+            // Loop through each command in this file.
+            for (int commandIndex = 0; commandIndex < StaffRoll.HarcodedCount; commandIndex++)
             {
-                // Fill in the offset for this sheet's cell table.
-                writer.FillInOffset($"Sheet{sheetIndex}CellTableOffset", false);
-
-                // Loop through and add an offset for each cell in this sheet.
-                for (int cellIndex = 0; cellIndex < Data[sheetIndex].Cells.Length; cellIndex++)
-                    writer.AddOffset($"Sheet{sheetIndex}Cell{cellIndex}Offset");
-
-                // Loop through each cell in this sheet.
-                for (int cellIndex = 0; cellIndex < Data[sheetIndex].Cells.Length; cellIndex++)
+                writer.FillInOffset($"Command{commandIndex}Resource", false);
+                //I do this instead of AddString because the resource/messages appear in order at the end, together.
+                switch (Data.CreditCommands[commandIndex].Type)
                 {
-                    // Fill in the offset for this cell.
-                    writer.FillInOffset($"Sheet{sheetIndex}Cell{cellIndex}Offset", false);
-
-                    // If this cell has a name, then add a string for it, if not, just write a 0.
-                    if (Data[sheetIndex].Cells[cellIndex].Name != null)
-                        writer.AddString($"Sheet{sheetIndex}Cell{cellIndex}Name", Data[sheetIndex].Cells[cellIndex].Name);
-                    else
-                        writer.Write(0);
-
-                    // Add an offset to this cell's message.
-                    writer.AddOffset($"Sheet{sheetIndex}Cell{cellIndex}MessageOffset");
-
-                    // Write data for this cell's remap offset and length.
-                    if (Data[sheetIndex].Cells[cellIndex].Remaps != null)
-                    {
-                        // Add an offset for this cell's remap table.
-                        writer.AddOffset($"Sheet{sheetIndex}Cell{cellIndex}RemapTableOffset");
-
-                        // Write the count of remaps in this cell.
-                        writer.Write(Data[sheetIndex].Cells[cellIndex].Remaps.Length);
-
-                        // Write a copy of this cell's remap count.
-                        writer.Write(Data[sheetIndex].Cells[cellIndex].Remaps.Length);
-                    }
-                    else
-                    {
-                        // If this cell doesn't have any remaps, then fill in this space with 0x0C null values.
-                        writer.WriteNulls(0x0C);
-                    }
-
-                    // Write 0x16 null bytes.
-                    writer.WriteNulls(0x16);
-
-                    // Write the first instance of this cell's message's last character index.
-                    writer.Write((ushort)(Data[sheetIndex].Cells[cellIndex].Message.Length - 1));
-
-                    // Write an unknown value that is always 0x02.
-                    writer.Write(0x02);
-
-                    // Write this cell's first unknown integer value.
-                    writer.Write(Data[sheetIndex].Cells[cellIndex].UnknownUInt32_1);
-
-                    // Write an unknown value that is always 0.
-                    writer.Write((ushort)0);
-
-                    // Write the second instance of this cell's message's last character index.
-                    writer.Write((ushort)(Data[sheetIndex].Cells[cellIndex].Message.Length - 1));
-
-                    // Write an unknown value that is always 0x01.
-                    writer.Write(0x01);
-
-                    // Write this cell's second unknown integer value.
-                    writer.Write(Data[sheetIndex].Cells[cellIndex].UnknownUInt32_2);
-
-                    // Write an unknown value that is always 0.
-                    writer.Write((ushort)0);
-
-                    // Write the third instance of this cell's message's last character index.
-                    writer.Write((ushort)(Data[sheetIndex].Cells[cellIndex].Message.Length - 1));
-
-                    // Write an unknown value that is always 0.
-                    writer.Write(0);
-
-                    // Write an unknown value that is always 0x01.
-                    writer.Write(0x01);
-
-                    // Write an unknown value that is always 0.
-                    writer.Write((ushort)0);
-
-                    // Write the fourth instance of this cell's message's last character index.
-                    writer.Write((ushort)(Data[sheetIndex].Cells[cellIndex].Message.Length - 1));
-
-                    // Write an unknown value that is always 0x03.
-                    writer.Write(0x03);
-
-                    // Write an unknown value that is always 0.
-                    writer.Write(0);
-                }
-            }
-
-            // Loop through each sheet in this file.
-            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
-            {
-                // Loop through each cell in this sheet.
-                for (int cellIndex = 0; cellIndex < Data[sheetIndex].Cells.Length; cellIndex++)
-                {
-                    // Only write any data here if this cell has remap values.
-                    if (Data[sheetIndex].Cells[cellIndex].Remaps != null)
-                    {
-                        // Fill in the offset for this cell's remap table.
-                        writer.FillInOffset($"Sheet{sheetIndex}Cell{cellIndex}RemapTableOffset", false);
-
-                        // Loop through and add an offset for each remap entry in this cell.
-                        for (int remapIndex = 0; remapIndex < Data[sheetIndex].Cells[cellIndex].Remaps.Length; remapIndex++)
-                            writer.AddOffset($"Sheet{sheetIndex}Cell{cellIndex}Remap{remapIndex}Offset");
-
-                        // Loop through each remap entry in this cell.
-                        for (int remapIndex = 0; remapIndex < Data[sheetIndex].Cells[cellIndex].Remaps.Length; remapIndex++)
-                        {
-                            // Fill in the offset for this remap entry.
-                            writer.FillInOffset($"Sheet{sheetIndex}Cell{cellIndex}Remap{remapIndex}Offset", false);
-
-                            // Write this remap entry's character index.
-                            writer.Write(Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].CharacterIndex);
-
-                            // Write this remap entry's unknown short value.
-                            writer.Write(Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].UnknownUShort_1);
-
-                            // Determine and write the type index and data for this remap.
-                            if (Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].RemapData.GetType() == typeof(byte[]))
-                            {
-                                writer.Write(0x04);
-                                writer.Write((byte[])Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].RemapData);
-                            }
-                            if (Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].RemapData.GetType() == typeof(uint))
-                            {
-                                writer.Write(0x05);
-                                writer.Write((uint)Data[sheetIndex].Cells[cellIndex].Remaps[remapIndex].RemapData);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Loop through each sheet in this file.
-            for (int sheetIndex = 0; sheetIndex < Data.Length; sheetIndex++)
-            {
-                // Loop through each cell in this sheet.
-                for (int cellIndex = 0; cellIndex < Data[sheetIndex].Cells.Length; cellIndex++)
-                {
-                    // Fill in this cell's message offset.
-                    writer.FillInOffset($"Sheet{sheetIndex}Cell{cellIndex}MessageOffset", false);
-
-                    // Write the UTF-16 encoded text for this message.
-                    writer.WriteNullTerminatedStringUTF16(Data[sheetIndex].Cells[cellIndex].Message);
+                    case CommandType.Image:
+                    case CommandType.Video:
+                        writer.WriteNullTerminatedString($"{Data.CreditCommands[commandIndex].Resource}");
+                        break;
+                    case CommandType.Text:
+                        writer.WriteNullTerminatedStringUTF16($"{Data.CreditCommands[commandIndex].Resource}");
+                        break;
                 }
             }
 
@@ -352,7 +206,7 @@ namespace KnuxLib.Engines.Hedgehog
             writer.FinishWrite(Header);
 
             // Close HedgeLib#'s BINAWriter.
-            writer.Close();*/
+            writer.Close();
         }
     }
 }

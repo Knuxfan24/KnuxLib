@@ -1178,6 +1178,15 @@ namespace KnuxTools
                     }
                     break;
 
+                case ".hedgehog.staffroll_2013.json":
+                    Console.WriteLine("Converting JSON to Sonic Lost World Staff Roll");
+                    using (KnuxLib.Engines.Hedgehog.Staffroll_2013 staffroll = new())
+                    {
+                        staffroll.Data = staffroll.JsonDeserialise<KnuxLib.Engines.Hedgehog.Staffroll_2013.StaffRoll>(arg);
+                        staffroll.Save($@"{KnuxLib.Helpers.GetExtension(arg, true)}");
+                    }
+                    break;
+
                 case ".arcinfo":
                     Console.WriteLine("Converting Hedgehog Engine Archive Info to JSON.");
                     using (KnuxLib.Engines.Hedgehog.ArchiveInfo archiveInfo = new(arg, true))
