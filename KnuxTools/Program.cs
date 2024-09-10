@@ -132,6 +132,7 @@ namespace KnuxTools
                 ColourConsole("    Version Flag (Sonic Colours) - sonic2010", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Sonic Generations) - blueblur", true, ConsoleColor.Yellow);
                 ColourConsole("    Version Flag (Mario and Sonic at the London 2012 Olympic Games) - william", true, ConsoleColor.Yellow);
+                Console.WriteLine("Staffroll commands (sonic2013) (staffroll)");
                 Console.WriteLine("Message Table (sonic2013) (.xtb2)");
                 Console.WriteLine("Path Spline (.path) (.path2.bin)");
                 ColourConsole("    Version Flag (Sonic Lost World) - sonic2013", true, ConsoleColor.Yellow);
@@ -1143,8 +1144,29 @@ namespace KnuxTools
 
                 #region Hedgehog Engine formats.
                 case "":
-                    Console.WriteLine("Converting Hedgehog Engine Cloud Instance to JSON.");
-                    using (KnuxLib.Engines.Hedgehog.Cloud cloud = new(arg, true))
+                    // Carry out a version check.
+                    version = NoVersionChecker(version,
+                                               "Multiple file formats have no extension. please specifiy the format:",
+                                               new List<string> { "staffroll_2013\t(Sonic Lost World's Staff Roll)",
+                                                                  "cloud\t(Hedgehog Engine Cloud Instance)"},
+                                               new List<bool> { false, false });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(version))
+                        return;
+
+                    // Decide what to do based on the version value.
+                    switch (version.ToLower())
+                    {
+                        case "staffroll_2013": using (KnuxLib.Engines.Hedgehog.Staffroll_2013 staffroll_2010 = new(arg, true)) break;
+                        case "cloud": using (KnuxLib.Engines.Hedgehog.Cloud cloud = new(arg, true)) break;
+
+                        // If a command line argument without a corresponding format has been passed, then inform the user and abort.
+                        default:
+                            Console.WriteLine($"Format identifer '{version}' is not valid for any currently supported Hedgehog Engine 2010 Message Table types.\nPress any key to continue.");
+                            Console.ReadKey();
+                            return;
+                    }
                     break;
 
                 case ".hedgehog.cloud.json":
