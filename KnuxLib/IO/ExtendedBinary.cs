@@ -132,7 +132,7 @@ namespace KnuxLib.IO
                     uint recievedValue = ReadByte();
 
                     if (recievedValue != expectedValue)
-                        throw new Exception($"Expected value of 0x{expectedValue.ToString("X").PadLeft(2, '0')}, got 0x{recievedValue.ToString("X").PadLeft(2, '0')}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x04).ToString("X").PadLeft(16, '0')}");
+                        throw new Exception($"Expected value of 0x{expectedValue.ToString("X").PadLeft(2, '0')}, got 0x{recievedValue.ToString("X").PadLeft(2, '0')}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x01).ToString("X").PadLeft(16, '0')}");
                 }
             #else
                 JumpAhead(count * 0x04);
@@ -148,6 +148,21 @@ namespace KnuxLib.IO
 
                     if (recievedValue != expectedValue)
                         throw new Exception($"Expected value of {expectedValue}, got {recievedValue}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x04).ToString("X").PadLeft(16, '0')}");
+                }
+            #else
+                JumpAhead(count * 0x04);
+            #endif
+        }
+
+        public void CheckValue(short expectedValue, int count = 1)
+        {
+            #if DEBUG
+                for (int index = 0; index < count; index++)
+                {
+                    int recievedValue = ReadInt16();
+
+                    if (recievedValue != expectedValue)
+                        throw new Exception($"Expected value of 0x{expectedValue.ToString("X").PadLeft(4, '0')}, got 0x{recievedValue.ToString("X").PadLeft(4, '0')}.\r\nFile: {(BaseStream as FileStream).Name}\r\nPosition: 0x{(BaseStream.Position - 0x02).ToString("X").PadLeft(16, '0')}");
                 }
             #else
                 JumpAhead(count * 0x04);
@@ -895,6 +910,7 @@ namespace KnuxLib.IO
         //{
         //    Write(value.value);
         //}
+
         /// <summary>
         /// Writes an Int24 to the current position.
         /// </summary>
@@ -1188,10 +1204,19 @@ namespace KnuxLib.IO
             Write(dataBuffer, 0, 16);
         }
 
-
         public virtual unsafe void Write(Quaternion quat)
         {
             Write(new Vector4(quat.X, quat.Y, quat.Z, quat.W));
+        }
+
+        public List<uint> GetOffsets()
+        {
+            List<uint> list = [];
+
+            foreach (KeyValuePair<string, uint> offset in offsets)
+                list.Add(offset.Value);
+
+            return list;
         }
 
         // TODO: Write override methods for all types.

@@ -293,11 +293,10 @@ namespace KnuxLib.Engines.Hedgehog
                 }
 
                 // Skip an unknown value that is always 0.
-                reader.CheckValue(0x00L);
-
-                // If this is a sonic_2013 format path, then jump back four bytes so we're still aligned correctly.
-                if (version == FormatVersion.sonic_2013)
-                    reader.JumpBehind(0x04);
+                if (version != FormatVersion.sonic_2013)
+                    reader.CheckValue(0x00L);
+                else
+                    reader.CheckValue(0x00);
 
                 // Read the offset to this path's k-d tree.
                 long kdTreeOffset = reader.ReadInt64();
