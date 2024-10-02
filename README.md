@@ -48,7 +48,7 @@ Mega Man 11|PC, Xbox ONE, PlayStation 4, Switch
 
 <h3>Formats:</h3>
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Archive](KnuxLib/Engines/CapcomMT/Archive.cs)|`*.arc`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|[❌](## "Compression tends to produce slightly different results, but the files produced appear to be fully compatible.")|An archive format used by various games on the Capcom MT Framework, currently only supports version 7 and 9 archives.
 
@@ -76,7 +76,7 @@ Sonic Frontiers[*](## "Hedgehog Engine 2")|PC, Xbox ONE, PlayStation 4, Switch
 
 <h3>Formats:</h3>
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Archive Info](KnuxLib/Engines/Hedgehog/ArchiveInfo.cs)|`*.arcinfo`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by Sonic Unleashed to determine what archives the game has.
 [Density Point Cloud](KnuxLib/Engines/Hedgehog/DensityPointCloud.cs)|`*.densitypointcloud`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by Sonic Frontiers to determine where to place objects definied in the Density Settings format.
@@ -96,7 +96,7 @@ Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identica
 
 <h3>Formats:</h3>
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [U8 Archive](KnuxLib/Engines/Nintendo/U8.cs)|`*.arc`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|[❌](## "Some values are unknown and seemingly useless, so I don't bother to read and thus accurately write them. Sonic '06's modifications to the format also end up having slightly different compression.")|An archive format used by various games Nintendo games (as well as Sonic The Hedgehog (2006) for whatever reason).
 
@@ -114,7 +114,7 @@ Crash Bandicoot: The Wrath of Cortex|PlayStation 2, Xbox, GameCube
 
 <h3>Formats:</h3>
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [AI Entity Table](KnuxLib/Engines/Nu2/AiEntityTable.cs)|`*.ai`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by Crash Bandicoot: The Wrath of Cortex to place enemy characters.
 [Crate Table](KnuxLib/Engines/Nu2/CrateTable.cs)|`*.crt`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export") [🔧](## "Experimental, this format contains multiple unknown values that appear important")|✔️|A format used by Crash Bandicoot: The Wrath of Cortex to place crates.
@@ -134,7 +134,7 @@ Rayman 2: The Great Escape|Nintendo 64, PC, Dreamcast, PlayStation, PlayStation 
 
 <h3>Formats:</h3>
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Big File Archive](KnuxLib/Engines/OpenSpace/BigFileArchive.cs)|`*.bf` `*.dsc`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|[❌](## "The base game archives have empty folders which I don't replicate.")|An archive format used by Rayman Revolution.
 
@@ -152,7 +152,7 @@ Metroid: Other M|Wii
 
 <h3>Formats:</h3>
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Message Table](KnuxLib/Engines/ProjectM/MessageTable.cs)|`*.dat`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by Metroid: Other M to store plain text messages.
 
@@ -171,7 +171,7 @@ Big Rigs: Over the Road Racing|PC
 > **Note**
 > Likely not this engine's name (if it even had one).
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Material Library](KnuxLib/Engines/StellarStone/MaterialLibrary.cs)|`*.mat`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by the Stellar Stone engine to store material data in a plain text format.
 [Mesh Object](KnuxLib/Engines/StellarStone/MeshObject.cs)|`*.sco`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by the Stellar Stone engine to store model data in a plain text format.
@@ -190,11 +190,12 @@ Sonic and the Black Knight|Wii
 > **Note**
 > Likely not this engine's name (if it even had one).
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Light Field](KnuxLib/Engines/SonicStorybook/LightField.cs)|`*.bin`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by Sonic and the Black Knight to handle lighting on objects.
 [Motion Table](KnuxLib/Engines/SonicStorybook/MotionTable.cs)|`*.bin`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export") [🔧](## "Experimental, this format contains multiple unknown values that appear important")|✔️|A format used by the Storybook Engine to store information for animations.
 [ONE Archive](KnuxLib/Engines/SonicStorybook/ONE.cs)|`*.one`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|[❌](## "Compression tends to produce slightly different results, but the files produced appear to be fully compatible.")|An archive format used by the Storybook Engine.
+[Path Spline](KnuxLib/Engines/SonicStorybook/PathSpline.cs)|`*.pth`|[📜](## "Read") [💾](## "Write") [📤*](## "Export (exports to an OBJ single knotted spline, thus losing the rather important deviation value.)")|✔️|A format used by the Storybook Engine to store splines.
 [Stage Entity Table Object Table](KnuxLib/Engines/SonicStorybook/StageEntityTableItems.cs)|`*.bin`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by the Storybook Engine to determine what objects can appear in what stages.
 
 </details>
@@ -210,7 +211,7 @@ Sonic Unleashed|Wii, PlayStation 2
 > **Note**
 > Likely not this engine's name (if it even had one).
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Area Points Table](KnuxLib/Engines/SonicWorldAdventure_SD/AreaPoints.cs)|`*.wap`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by Sonic Unleashed to determine where to place terrain chunks.
 [ONE Archive](KnuxLib/Engines/SonicWorldAdventure_SD/ONE.cs)|`*.one` `*.onz`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|[❌](## "Compression tends to produce slightly different results, but the files produced appear to be fully compatible.")|An archive format used by Sonic Unleashed.
@@ -228,7 +229,7 @@ Sonic Channel 5 Part 2|Dreamcast, PlayStation 2, PlayStation 3, PC, Xbox 360
 > **Note**
 > Likely not this engine's name (if it even had one).
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Caption Table](KnuxLib/Engines/SpaceChannel/CaptionTable.cs)|`*.bin`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by Space Channel 5 Part 2 to store plain text messages.
 
@@ -245,7 +246,7 @@ Crash Twinsanity|PlayStation 2, Xbox
 > **Note**
 > Likely not this engine's name (if it even had one).
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Data Header Pair](KnuxLib/Engines/Twinsanity/DataHeaderPair.cs)|`*.bd` `*.bh`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|An archive format used by Crash Twinsanity.
 
@@ -264,7 +265,7 @@ Shantae and the Seven Sirens|iOS, Switch, PlayStation 4, PC, Xbox ONE
 > **Note**
 > Likely used in more things, but these are the only ones I've personally experimented with.
 
-Name|Type(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
 [Environment Table](KnuxLib/Engines/Wayforward/Environment.cs)|`*.env`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by the Wayforward Engine to place static meshes into a scene.
 [Package Archive](KnuxLib/Engines/Wayforward/Package.cs)|`*.pak`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|An archive format used by the Wayforward Engine.

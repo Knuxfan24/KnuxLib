@@ -103,6 +103,9 @@
             Helpers.ColourConsole("    Version Flag - storybook_motion", true, ConsoleColor.Yellow);
             Console.WriteLine("ONE Archive (.one) - Extracts to a directory of the same name as the input archive and creates an archive from an input\r\ndirectory.");
             Helpers.ColourConsole("    Version Flag - storybook", true, ConsoleColor.Yellow);
+            Console.WriteLine("Path Spline (.pth)");
+            Helpers.ColourConsole("    Version Flag (Sonic and the Secret Rings) - storybook_pathspline_sr", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Sonic and the Black Knight) - storybook_pathspline_bk", true, ConsoleColor.Yellow);
             Console.WriteLine("Stage Entity Table Object Table (.bin)");
             Helpers.ColourConsole("    Version Flag (Sonic and the Secret Rings) - storybook_setitems_sr", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Sonic and the Black Knight) - storybook_setitems_bk", true, ConsoleColor.Yellow);

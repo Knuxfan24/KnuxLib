@@ -446,6 +446,28 @@ namespace KnuxTools
 
                     break;
 
+                case ".pth":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "storybook_pathspline_sr\t(Sonic Storybook Engine Path Spline File (Secret Rings))", false },
+                                                { "storybook_pathspline_bk\t(Sonic Storybook Engine Path Spline File (Black Knight))", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "storybook_pathspline_sr": _ = new KnuxLib.Engines.SonicStorybook.PathSpline(arg, KnuxLib.Engines.SonicStorybook.PathSpline.FormatVersion.SecretRings, true); break;
+                        case "storybook_pathspline_bk": _ = new KnuxLib.Engines.SonicStorybook.PathSpline(arg, KnuxLib.Engines.SonicStorybook.PathSpline.FormatVersion.BlackKnight, true); break;
+                        default: Helpers.InvalidFormatVersion("Sonic Storybook Engine Path Spline"); return;
+                    }
+
+                    break;
+
                 case ".path2.bin": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true); break;
 
                 case ".pcmodel":
