@@ -150,6 +150,12 @@
             Console.WriteLine("Package Archive (.pak) - Extracts to a directory of the same name as the input archive and creates an archive from an\r\ninput directory.");
             Helpers.ColourConsole("    Version Flag - wayforward", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag - wayforward_bigendian", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("Collision (.clb)");
+            Helpers.ColourConsole("    Version Flag (Ducktales Remastered) - duck", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Ducktales Remastered (Wii U)) - duck_cafe", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Shantae: Half-Genie Hero) - hero", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Shantae: Half-Genie Hero (Wii U)) - hero_cafe", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Shantae and the Seven Sirens) - sevensirens", true, ConsoleColor.Yellow);
         }
     }
 }

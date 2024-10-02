@@ -295,6 +295,34 @@ namespace KnuxTools
 
                     break;
 
+                case ".clb":
+                    // Check for a format version.
+                    Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
+                                            new()
+                                            {
+                                                { "duck\t(Ducktales Remastered)", false },
+                                                { "duck_cafe\t(Ducktales Remastered (Wii U))", true },
+                                                { "hero\t(Shantae: Half-Genie Hero)", false },
+                                                { "hero_cafe\t(Shantae: Half-Genie Hero (Wii U))", false },
+                                                { "sevensirens\t(Shantae and the Seven Sirens)", false }
+                                            });
+
+                    // If the version is still null or empty, then abort.
+                    if (string.IsNullOrEmpty(Version))
+                        return;
+
+                    switch (Version.ToLower())
+                    {
+                        case "duck": _ = new KnuxLib.Engines.Wayforward.Collision(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.duck, false, true); break;
+                        case "duck_cafe": _ = new KnuxLib.Engines.Wayforward.Collision(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.duck, true, true); break;
+                        case "hero": _ = new KnuxLib.Engines.Wayforward.Collision(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.hero, false, true); break;
+                        case "hero_cafe": _ = new KnuxLib.Engines.Wayforward.Collision(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.hero, true, true); break;
+                        case "sevensirens": _ = new KnuxLib.Engines.Wayforward.Collision(arg, KnuxLib.Engines.Wayforward.Collision.FormatVersion.sevensirens, false, true); break;
+                        default: Helpers.InvalidFormatVersion("Wayforward Engine Collision"); return;
+                    }
+
+                    break;
+
                 case ".crt":
                 case ".nu2.cratetable.json":
                     // Check for a format version.

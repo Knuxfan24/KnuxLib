@@ -267,6 +267,7 @@ Shantae and the Seven Sirens|iOS, Switch, PlayStation 4, PC, Xbox ONE
 
 Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
 ----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
+[Collision](KnuxLib/Engines/Wayforward/Collision.cs)|`*.clb`|[📜](## "Read") [📤](## "Export") [🔧](## "Experimental, a few collision flags are unknown and the version in Seven Sirens has a large chunk of data that has yet to be reverse engineered.")|N/A|A format used by the Wayforward Engine to handle stage collision.
 [Environment Table](KnuxLib/Engines/Wayforward/Environment.cs)|`*.env`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by the Wayforward Engine to place static meshes into a scene.
 [Package Archive](KnuxLib/Engines/Wayforward/Package.cs)|`*.pak`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|An archive format used by the Wayforward Engine.
 
