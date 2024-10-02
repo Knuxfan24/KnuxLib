@@ -223,6 +223,9 @@
                 reader.JumpTo(position);
             }
 
+            /// <summary>
+            /// Writes the data for this entity.
+            /// </summary>
             public void Write(ExtendedBinaryWriter writer, int index, List<string> names)
             {
                 // Fill in this entity's offset.
@@ -323,6 +326,7 @@
         /// Loads and parses this format's file.
         /// </summary>
         /// <param name="filepath">The path to the file to load and parse.</param>
+        /// <param name="bigEndian">Whether we need to read this file in big endian or not.</param>
         public void Load(string filepath, bool bigEndian = false)
         {
             // Load this file into a BinaryReader.
@@ -351,7 +355,7 @@
             for (int entityIndex = 0; entityIndex < Data.Length; entityIndex++)
                 Data[entityIndex] = new(reader, entityNameTableOffset);
 
-            // Close our BinaryWriter.
+            // Close our BinaryReader.
             reader.Close();
         }
 
@@ -442,7 +446,7 @@
             // Realign to 0x40 bytes.
             writer.FixPadding(0x40);
 
-            // Close our BinaryReader.
+            // Close our BinaryWriter.
             writer.Close();
         }
     }

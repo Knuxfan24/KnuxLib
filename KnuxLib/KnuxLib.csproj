@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="AssimpNet" Version="4.1.0" />
-    <PackageReference Include="AuroraLib.Compression" Version="1.1.1" />
+    <PackageReference Include="AuroraLib.Compression" Version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 

@@ -1006,7 +1006,7 @@ namespace KnuxLib.Engines.Hedgehog
             StreamWriter obj = new(filepath);
 
             // Write a comment that we can use on the import function (if the user wants to reimport this OBJ for some reason).
-            obj.WriteLine("# KnuxLib PathSpline_WarsRangers OBJ Export");
+            obj.WriteLine("# KnuxLib Hedgehog Engine Path Spline OBJ Export");
 
             // Set up a variable to track vertices.
             int vertexCount = 0;
@@ -1120,7 +1120,7 @@ namespace KnuxLib.Engines.Hedgehog
             string[] importedOBJ = File.ReadAllLines(filepath);
 
             // Set the identifier to "max" if the 3DS Max OBJ Exporter comment (or the KnuxLib one) is present.
-            if (importedOBJ[0].Contains("# 3ds Max Wavefront OBJ Exporter") || importedOBJ[0].Contains("# KnuxLib PathSpline_WarsRangers OBJ Export"))
+            if (importedOBJ[0].Contains("# 3ds Max Wavefront OBJ Exporter") || importedOBJ[0].Contains("# KnuxLib Hedgehog Engine Path Spline OBJ Export"))
                 identifier = "max";
 
             // Set the identifier to "blender4" if the Blender 4.x comment is present. 

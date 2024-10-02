@@ -8,6 +8,11 @@ namespace KnuxLib.IO
     // calls for performance, hence its extreme length.
     public class ExtendedBinaryReader : BinaryReader
     {
+        public override string ToString()
+        {
+            return $"Reader at 0x{stream.Position.ToString("X").PadLeft(16, '0')} in {(stream as FileStream).Name}";
+        }
+
         // Variables/Constants
         public uint Offset = 0;
         public bool IsBigEndian = false;

@@ -12,7 +12,7 @@ A repository for me to push various bits of C# code for random file formats in r
 
 ## Building
 
-To build any of the projects here, simply clone the repository and its submodules (either using a tool such as GitHub Desktop or Git CMD) then open the .sln file in a modern version of Visual Studio (anything supporting .NET 6 C# development).
+To build any of the projects here, simply clone the repository (either using a tool such as GitHub Desktop or Git CMD) then open the .sln file in a modern version of Visual Studio (anything supporting .NET 8 C# development).
 
 For the average end user, they'll want to right click on the KnuxTools project and choose to `Build`, then find the compiled executable in `KnuxTools/bin/Debug/net8.0`. Alternatively, download the KnuxTools artifact from the most recent GitHub Actions compile.
 
