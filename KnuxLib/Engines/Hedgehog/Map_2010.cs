@@ -1,5 +1,6 @@
 ﻿namespace KnuxLib.Engines.Hedgehog
 {
+    // TODO: Check Sonic Colours Ultimate and see if they did anything to this format in that.
     public class Map_2010 : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
