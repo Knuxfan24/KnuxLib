@@ -90,7 +90,7 @@
             public void Read(BINAReader reader, int index)
             {
                 Name = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
-                reader.CheckValue((uint)index);
+                reader.CheckValue(index);
                 reader.CheckValue(0x00);
                 Position = reader.ReadVector3();
             }
