@@ -12,14 +12,14 @@ namespace KnuxLib.Engines.SonicStorybook
             string jsonExtension = ".sonicstorybook.setitems.json";
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<FormatData>(filepath);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.bin", version);
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.bin", version);
             }
 
             // Check if the input file isn't this format's JSON.
@@ -30,7 +30,7 @@ namespace KnuxLib.Engines.SonicStorybook
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 

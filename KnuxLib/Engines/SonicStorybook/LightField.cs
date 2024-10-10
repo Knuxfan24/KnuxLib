@@ -12,14 +12,14 @@ namespace KnuxLib.Engines.SonicStorybook
             string jsonExtension = ".sonicstorybook.lightfield.json";
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<FormatData>(filepath);
 
                 //If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.BIN");
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.BIN");
             }
 
             // Check if the input file isn't this format's JSON.
@@ -30,7 +30,7 @@ namespace KnuxLib.Engines.SonicStorybook
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 
@@ -143,7 +143,7 @@ namespace KnuxLib.Engines.SonicStorybook
             public void Read(BINAReader reader)
             {
                 // Read this light field's name.
-                Name = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
+                Name = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
 
                 // Read this light field's shape type.
                 Shape = (LightFieldShape)reader.ReadByte();

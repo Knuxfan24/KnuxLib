@@ -13,14 +13,14 @@
             string jsonExtension = ".hedgehog.messagetable_2013.json";
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<Sheet[]>(filepath);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.xtb2", bigEndianSave);
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.xtb2", bigEndianSave);
             }
 
             // Check if the input file isn't this format's JSON.
@@ -31,7 +31,7 @@
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 
@@ -87,7 +87,7 @@
                 reader.JumpTo(sheetDataOffset, false);
 
                 // Read this sheet's name.
-                Name = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
+                Name = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
 
                 // Read this sheet's cell count.
                 uint cellCount = reader.ReadUInt32();
@@ -216,10 +216,10 @@
                 reader.JumpTo(dataOffset, false);
 
                 // Read this cell's name.
-                Name = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
+                Name = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
 
                 // Read this cell's message, encoded in UTF-16.
-                Message = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04, false, true);
+                Message = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04, false, true);
 
                 // Read the offset to this cell's remap data.
                 uint remapTableOffset = reader.ReadUInt32();

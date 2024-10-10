@@ -109,6 +109,8 @@
         // Methods
         public void Close(BINAHeader header)
         {
+            BaseStream.Position = BaseStream.Length;
+
             WriteStringTable(header);
             WriteFooter(header);
 

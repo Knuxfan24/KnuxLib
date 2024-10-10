@@ -13,7 +13,7 @@ namespace KnuxLib.Engines.Wayforward
             if (Directory.Exists(filepath))
             {
                 // Import the files in the directory.
-                Data = Helpers.ImportArchive(filepath, false);
+                Data = ArchiveHelpers.ImportArchive(filepath, false);
 
                 // If the extract flag is set, then save this archive.
                 if (extract)
@@ -247,7 +247,7 @@ namespace KnuxLib.Engines.Wayforward
                 versionFlag = "wayforward_bigendian";
 
             // Extract the archive.
-            Helpers.ExtractArchive(Data, directory, versionFlag);
+            ArchiveHelpers.ExtractArchive(Data, directory, versionFlag);
         }
     }
 }

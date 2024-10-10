@@ -17,7 +17,7 @@
 
             // If the export flag is set, then export this format.
             if (export)
-                ExportOBJ($@"{Helpers.GetExtension(filepath, true)}.obj");
+                ExportOBJ($@"{StringHelpers.GetExtension(filepath, true)}.obj");
         }
 
         // Classes for this format.

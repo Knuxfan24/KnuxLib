@@ -12,7 +12,7 @@ namespace KnuxLib.Engines.Nintendo
             if (Directory.Exists(filepath))
             {
                 // Import the files in the directory.
-                Data = Helpers.ImportArchive(filepath);
+                Data = ArchiveHelpers.ImportArchive(filepath);
 
                 // If the extract flag is set, then save this archive.
                 if (extract)
@@ -542,15 +542,15 @@ namespace KnuxLib.Engines.Nintendo
         public void Extract(string directory)
         {
             if (!isSonic06)
-                Helpers.ExtractArchive(Data, directory, "nintendo_u8");
+                ArchiveHelpers.ExtractArchive(Data, directory, "nintendo_u8");
             else
-                Helpers.ExtractArchive(Data, directory, "nintendo_u8_marathon");
+                ArchiveHelpers.ExtractArchive(Data, directory, "nintendo_u8_marathon");
         }
 
         /// <summary>
         /// Imports files from a directory into this format.
         /// </summary>
         /// <param name="directory">The directory to import.</param>
-        public void Import(string directory) => Data = Helpers.ImportArchive(directory);
+        public void Import(string directory) => Data = ArchiveHelpers.ImportArchive(directory);
     }
 }

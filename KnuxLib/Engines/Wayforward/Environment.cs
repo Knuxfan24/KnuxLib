@@ -11,14 +11,14 @@
             string jsonExtension = ".wayforward.environment.json";
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<Entity[]>(filepath);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.env", bigEndian);
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.env", bigEndian);
             }
 
             // Check if the input file isn't this format's JSON.
@@ -29,7 +29,7 @@
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 
@@ -148,7 +148,7 @@
                 reader.CheckValue(0x00);
 
                 // Read the entity's name.
-                EntityName = Helpers.ReadWayforwardLengthPrefixedString(reader, entityNameTableOffset, (uint)reader.ReadUInt64());
+                EntityName = StringHelpers.ReadWayforwardLengthPrefixedString(reader, entityNameTableOffset, (uint)reader.ReadUInt64());
 
                 // Skip two unknown values that are either 0 or 0xFFFFFFFF.
                 // TODO: Does this matter?
@@ -217,7 +217,7 @@
                 reader.CheckValue((byte)0x00);
 
                 // Read the entity's model name.
-                ModelName = Helpers.ReadWayforwardLengthPrefixedString(reader, entityNameTableOffset, (uint)reader.ReadUInt64());
+                ModelName = StringHelpers.ReadWayforwardLengthPrefixedString(reader, entityNameTableOffset, (uint)reader.ReadUInt64());
 
                 // Jump back for the next entity.
                 reader.JumpTo(position);
@@ -248,16 +248,7 @@
                 writer.Write(UnknownUInt32_1);
 
                 // Write an unknown boolean value.
-                if (writer.IsBigEndian)
-                {
-                    writer.WriteNulls(0x03);
-                    writer.Write(UnknownBoolean_1);
-                }
-                else
-                {
-                    writer.Write(UnknownBoolean_1);
-                    writer.FixPadding(0x04);
-                }
+                writer.Write(UnknownBoolean_1, 0x04);
 
                 // Write this entity's colour modifier.
                 writer.Write(ColourModifier);

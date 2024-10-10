@@ -10,14 +10,14 @@
             string jsonExtension = ".hedgehog.archiveinfo.json";
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<ArchiveEntry[]>(filepath);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.arcinfo");
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.arcinfo");
             }
 
             // Check if the input file isn't this format's JSON.
@@ -28,7 +28,7 @@
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 
@@ -75,7 +75,7 @@
             /// </summary>
             public void Read(ExtendedBinaryReader reader, uint archiveByteOffset, int archiveEntryIndex)
             {
-                Archive = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
+                Archive = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
                 long position = reader.BaseStream.Position;
                 reader.JumpTo(archiveByteOffset + archiveEntryIndex, false);
                 UnknownByte_1 = reader.ReadByte();

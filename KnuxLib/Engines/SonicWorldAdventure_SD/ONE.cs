@@ -31,7 +31,7 @@ namespace KnuxLib.Engines.SonicWorldAdventure_SD
 
                 // If the extract flag is set, then extract this archive.
                 if (extract)
-                    Extract(Helpers.GetExtension(filepath, true));
+                    Extract(StringHelpers.GetExtension(filepath, true));
             }
         }
 

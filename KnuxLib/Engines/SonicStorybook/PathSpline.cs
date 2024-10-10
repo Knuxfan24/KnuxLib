@@ -11,14 +11,14 @@ namespace KnuxLib.Engines.SonicStorybook
         public PathSpline(string filepath, FormatVersion version = FormatVersion.SecretRings, bool export = false)
         {
             // Check if the input file is an OBJ.
-            if (Helpers.GetExtension(filepath) == ".obj")
+            if (StringHelpers.GetExtension(filepath) == ".obj")
             {
                 // Import this OBJ.
                 //Data = ImportOBJ(filepath, version);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.PTH", version);
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.PTH", version);
             }
 
             // Check if the input file isn't an OBJ.
@@ -29,7 +29,7 @@ namespace KnuxLib.Engines.SonicStorybook
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    ExportOBJ($@"{Helpers.GetExtension(filepath, true)}.obj");
+                    ExportOBJ($@"{StringHelpers.GetExtension(filepath, true)}.obj");
             }
         }
 
@@ -217,10 +217,10 @@ namespace KnuxLib.Engines.SonicStorybook
             public Vector3 Position { get; set; }
 
             /// <summary>
-            /// An unknown Vector3.
-            /// TODO: What is this? Forward vector using Z-Up?
+            /// This point's forward vector (using a Z-UP schema).
+            /// TODO: Should we really be storing this value rather than just calculating it on the fly?
             /// </summary>
-            public Vector3 UnknownVector3_1 { get; set; }
+            public Vector3 ForwardVector { get; set; }
 
             /// <summary>
             /// The distance between this point and the next.
@@ -247,10 +247,10 @@ namespace KnuxLib.Engines.SonicStorybook
             /// <summary>
             /// Initialises this spline point with the provided data.
             /// </summary>
-            public SplinePointType4(Vector3 position, Vector3 unknownVector3_1, float distance, float deviation, uint surface)
+            public SplinePointType4(Vector3 position, Vector3 forwardVector, float distance, float deviation, uint surface)
             {
                 Position = position;
-                UnknownVector3_1 = unknownVector3_1;
+                ForwardVector = forwardVector;
                 Distance = distance;
                 Deviation = deviation;
                 Surface = surface;
@@ -267,7 +267,7 @@ namespace KnuxLib.Engines.SonicStorybook
             public void Read(ExtendedBinaryReader reader)
             {
                 Position = reader.ReadVector3();
-                UnknownVector3_1 = reader.ReadVector3();
+                ForwardVector = reader.ReadVector3();
                 reader.CheckValue(0x00, 0x03);
                 Distance = reader.ReadSingle();
                 Deviation = reader.ReadSingle();
@@ -280,7 +280,7 @@ namespace KnuxLib.Engines.SonicStorybook
             public void Write(ExtendedBinaryWriter writer)
             {
                 writer.Write(Position);
-                writer.Write(UnknownVector3_1);
+                writer.Write(ForwardVector);
                 writer.WriteNulls(0x0C);
                 writer.Write(Distance);
                 writer.Write(Deviation);

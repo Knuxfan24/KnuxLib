@@ -13,14 +13,14 @@
             string jsonExtension = ".hedgehog.sectorvisiblitycollision_wars.json";
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<SectorVisibilityShape[]>(filepath);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.svcol.bin");
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.svcol.bin");
             }
 
             // Check if the input file isn't this format's JSON.
@@ -31,7 +31,7 @@
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 
@@ -109,7 +109,7 @@
             public void Read(BINAReader reader)
             {
                 // Read this shape's name.
-                Name = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                Name = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
 
                 // Read this shape's unknown integer value.
                 UnknownUInt32_1 = reader.ReadUInt32();

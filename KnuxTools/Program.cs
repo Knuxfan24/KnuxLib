@@ -166,7 +166,7 @@ namespace KnuxTools
         private static void HandleFile(string arg)
         {
             // Determine the full file extension.
-            switch (KnuxLib.Helpers.GetExtension(arg).ToLower())
+            switch (KnuxLib.Helpers.StringHelpers.GetExtension(arg).ToLower())
             {
                 case ".ai":
                 case ".nu2.aientitytable.json":
@@ -668,7 +668,7 @@ namespace KnuxTools
 
                 // If a command line argument without a corresponding format has been passed, then inform the user and abort.
                 default:
-                    Console.WriteLine($"Format extension {KnuxLib.Helpers.GetExtension(arg).ToLower()} is not valid for any currently supported formats.\nPress any key to continue.");
+                    Console.WriteLine($"Format extension {KnuxLib.Helpers.StringHelpers.GetExtension(arg).ToLower()} is not valid for any currently supported formats.\nPress any key to continue.");
                     Console.ReadKey();
                     return;
             }

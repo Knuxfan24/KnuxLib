@@ -14,7 +14,7 @@ namespace KnuxLib.Engines.StellarStone
             Load(filepath);
 
             if (export)
-                ExportOBJ($@"{Helpers.GetExtension(filepath, true)}.obj");
+                ExportOBJ($@"{StringHelpers.GetExtension(filepath, true)}.obj");
         }
 
         // Classes for this format.

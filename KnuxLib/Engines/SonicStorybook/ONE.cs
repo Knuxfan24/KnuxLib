@@ -12,7 +12,7 @@ namespace KnuxLib.Engines.SonicStorybook
             if (Directory.Exists(filepath))
             {
                 // Import the files in the directory.
-                Data = Helpers.ImportArchive(filepath, true);
+                Data = ArchiveHelpers.ImportArchive(filepath, true);
 
                 // If the extract flag is set, then save this archive.
                 if (extract)
@@ -27,7 +27,7 @@ namespace KnuxLib.Engines.SonicStorybook
 
                 // If the extract flag is set, then extract this archive.
                 if (extract)
-                    Helpers.ExtractArchive(Data, Helpers.GetExtension(filepath, true), "storybook");
+                    ArchiveHelpers.ExtractArchive(Data, StringHelpers.GetExtension(filepath, true), "storybook");
             }
         }
 

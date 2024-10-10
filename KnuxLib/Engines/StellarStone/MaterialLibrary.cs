@@ -13,7 +13,7 @@ namespace KnuxLib.Engines.StellarStone
             Load(filepath);
 
             if (export)
-                ExportMTL($@"{Helpers.GetExtension(filepath, true)}.mtl");
+                ExportMTL($@"{StringHelpers.GetExtension(filepath, true)}.mtl");
         }
 
         // Classes for this format.

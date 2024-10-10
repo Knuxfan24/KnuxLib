@@ -14,14 +14,14 @@ namespace KnuxLib.Engines.Nu2
             string jsonExtension = ".nu2.cratetable.json";
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<Group[]>(filepath);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.crt", version);
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.crt", version);
             }
 
             // Check if the input file isn't this format's JSON.
@@ -32,7 +32,7 @@ namespace KnuxLib.Engines.Nu2
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 
@@ -122,7 +122,7 @@ namespace KnuxLib.Engines.Nu2
                 Position = reader.ReadVector3();
                 Index = reader.ReadUInt16();
                 Crates = new Crate[reader.ReadUInt16()];
-                Rotation = Helpers.CalculateBAMsValue(reader.ReadUInt16());
+                Rotation = RotationHelpers.CalculateBAMsValue(reader.ReadUInt16());
                 for (int crateIndex = 0; crateIndex < Crates.Length; crateIndex++)
                     Crates[crateIndex] = new(reader);
             }
@@ -135,7 +135,7 @@ namespace KnuxLib.Engines.Nu2
                 writer.Write(Position);
                 writer.Write(Index);
                 writer.Write((ushort)Crates.Length);
-                writer.Write((ushort)Helpers.CalculateBAMsValue(Rotation));
+                writer.Write((ushort)RotationHelpers.CalculateBAMsValue(Rotation));
                 foreach (Crate crate in Crates)
                     crate.Write(writer);
             }

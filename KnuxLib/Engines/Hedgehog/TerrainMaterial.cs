@@ -10,14 +10,14 @@
             string jsonExtension = ".hedgehog.terrain-material.json";
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<Material[]>(filepath);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.terrain-material");
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.terrain-material");
             }
 
             // Check if the input file isn't this format's JSON.
@@ -28,7 +28,7 @@
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 
@@ -119,17 +119,17 @@
             /// </summary>
             public void Read(BINAReader reader)
             {
-                Type = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                Type = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
                 Index = reader.ReadUInt32();
                 UnknownUInt32_1 = reader.ReadUInt32();
                 UnknownUInt32_2 = reader.ReadUInt32();
                 reader.CheckValue(0x00);
-                DetailDiffuse = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
-                DetailNormal = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
-                DetailHeight = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
-                BaseDiffuse = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                DetailDiffuse = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                DetailNormal = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                DetailHeight = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                BaseDiffuse = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
                 reader.JumpAhead(0x08); // Offset to empty string.
-                BasePRM = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                BasePRM = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
             }
 
             /// <summary>

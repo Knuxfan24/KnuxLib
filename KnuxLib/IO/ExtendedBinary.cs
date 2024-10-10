@@ -753,6 +753,20 @@ namespace KnuxLib.IO
         /// </summary>
         public override void Write(string value) => Write(encoding.GetBytes(value));
 
+        /// <summary>
+        /// Writes a boolean value, padded to the defined length.
+        /// </summary>
+        public void Write(bool value, uint length)
+        {
+            if (IsBigEndian)
+                WriteNulls(length - 1);
+
+            base.Write(value);
+
+            if (!IsBigEndian)
+                WriteNulls(length - 1);
+        }
+
         public void Write(Matrix4x4 matrix)
         {
             Write(matrix.M11);

@@ -22,14 +22,14 @@
             }
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<FormatData>(filepath);
 
                 //If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.terrain-instanceinfo");
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.terrain-instanceinfo");
             }
 
             // Check if the input file isn't this format's JSON.
@@ -40,7 +40,7 @@
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 
@@ -110,13 +110,13 @@
             reader.JumpTo(rootNodeOffset);
 
             // Read this instance's model name.
-            Data.ModelName = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
+            Data.ModelName = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
 
             // Read the offset to this instance's matrix.
             uint matrixOffset = reader.ReadUInt32();
 
             // Read this instance's name.
-            Data.InstanceName = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
+            Data.InstanceName = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
 
             // Jump to this instance's matrix offset.
             reader.JumpTo(matrixOffset, false);

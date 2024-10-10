@@ -13,14 +13,14 @@ namespace KnuxLib.Engines.Hedgehog
         public PathSpline(string filepath, FormatVersion version = FormatVersion.Wars, bool export = false, string exportExtension = ".path", bool bigEndianSave = false)
         {
             // Check if the input file is an OBJ.
-            if (Helpers.GetExtension(filepath) == ".obj")
+            if (StringHelpers.GetExtension(filepath) == ".obj")
             {
                 // Import this OBJ.
                 Data = ImportOBJ(filepath, version);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}{exportExtension}", version, bigEndianSave);
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}{exportExtension}", version, bigEndianSave);
             }
 
             // Check if the input file isn't an OBJ.
@@ -31,7 +31,7 @@ namespace KnuxLib.Engines.Hedgehog
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    ExportOBJ($@"{Helpers.GetExtension(filepath, true)}.obj");
+                    ExportOBJ($@"{StringHelpers.GetExtension(filepath, true)}.obj");
             }
         }
 
@@ -89,6 +89,7 @@ namespace KnuxLib.Engines.Hedgehog
 
             /// <summary>
             /// This spline's distance array.
+            /// TODO: Should we really be storing these values rather than just calculating them on the fly?
             /// </summary>
             public float[] Distance { get; set; } = [];
 
@@ -99,11 +100,13 @@ namespace KnuxLib.Engines.Hedgehog
 
             /// <summary>
             /// This spline's up vector array.
+            /// TODO: Should we really be storing these values rather than just calculating them on the fly?
             /// </summary>
             public Vector3[] UpVector { get; set; } = [];
 
             /// <summary>
             /// This spline's forward vector array.
+            /// TODO: Should we really be storing these values rather than just calculating them on the fly?
             /// </summary>
             public Vector3[] ForwardVector { get; set; } = [];
 
@@ -114,6 +117,7 @@ namespace KnuxLib.Engines.Hedgehog
 
             /// <summary>
             /// This spline's axis aligned bounding box.
+            /// TODO: Should we really be storing this value rather than just calculating it on the fly?
             /// </summary>
             public AABB AxisAlignedBoundingBox { get; set; } = new();
 
@@ -185,9 +189,9 @@ namespace KnuxLib.Engines.Hedgehog
             {
                 // Read this path's name.
                 if (version == FormatVersion.sonic_2013)
-                    Name = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
+                    Name = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
                 else
-                    Name = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                    Name = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
 
                 // Read an unknown ushort value that is always 1 except for a single instance.
                 UnknownUShort_1 = reader.ReadUInt16();
@@ -386,9 +390,9 @@ namespace KnuxLib.Engines.Hedgehog
 
                     // Read this tag's type.
                     if (version == FormatVersion.sonic_2013)
-                        tagType = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
+                        tagType = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
                     else
-                        tagType = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                        tagType = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
 
                     // Skip an unused value that is either 2 (if the tag is "next") or 0 (in every other tag).
                     if (version == FormatVersion.sonic_2013)
@@ -420,9 +424,9 @@ namespace KnuxLib.Engines.Hedgehog
                         case "next":
                             // Read this path's next name.
                             if (version == FormatVersion.sonic_2013)
-                                NextPathName = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
+                                NextPathName = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x04);
                             else
-                                NextPathName = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                                NextPathName = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
                             break;
 
                         case "grind_speed":
@@ -1294,7 +1298,7 @@ namespace KnuxLib.Engines.Hedgehog
 
                 // Loop through each knot and calculate its up vector.
                 for (int knotIndex = 0; knotIndex < path.UpVector.Length - 1; knotIndex++)
-                    path.UpVector[knotIndex] = CalculateDoublePointUpVector(path.DoubleKnots[knotIndex * 2], path.DoubleKnots[knotIndex * 2 + 1], path.DoubleKnots[knotIndex * 2 + 2]);
+                    path.UpVector[knotIndex] = SplineHelpers.CalculateDoublePointUpVector(path.DoubleKnots[knotIndex * 2], path.DoubleKnots[knotIndex * 2 + 1], path.DoubleKnots[knotIndex * 2 + 2]);
 
                 // Set the last up vector to the same as the one before it.
                 path.UpVector[^1] = path.UpVector[^2];
@@ -1313,7 +1317,7 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Loop through each knot to calculate the distance values.
             for (int knotIndex = 1; knotIndex < path.Knots.Length; knotIndex++)
-                path.Distance[knotIndex] = Helpers.CalculateDistance(path.Knots[knotIndex - 1], path.Knots[knotIndex]) + path.Distance[knotIndex - 1];
+                path.Distance[knotIndex] = SplineHelpers.CalculateDistance(path.Knots[knotIndex - 1], path.Knots[knotIndex]) + path.Distance[knotIndex - 1];
 
             // Set up lists to sort the x, y and z values of the coordinates as sorting a Vector3 list doesn't seem possible.
             List<float> x = [];
@@ -1342,7 +1346,7 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Loop through and calculate the forward vectors for each knot (other than the last).
             for (int knotIndex = 0; knotIndex < path.Knots.Length - 1; knotIndex++)
-                path.ForwardVector[knotIndex] = Helpers.CalculateForwardVector(path.Knots[knotIndex], path.Knots[knotIndex + 1]);
+                path.ForwardVector[knotIndex] = SplineHelpers.CalculateForwardVector(path.Knots[knotIndex], path.Knots[knotIndex + 1]);
 
             // Set the last knot's forward vector to the same as the one before it.
             path.ForwardVector[^1] = path.ForwardVector[^2];
@@ -1355,7 +1359,7 @@ namespace KnuxLib.Engines.Hedgehog
 
                 // Loop through and calculate each knot's up vector value based on its forward vector.
                 for (int knotIndex = 0; knotIndex < path.UpVector.Length; knotIndex++)
-                    path.UpVector[knotIndex] = CalculateSinglePointUpVector(path.ForwardVector[knotIndex]);
+                    path.UpVector[knotIndex] = SplineHelpers.CalculateSinglePointUpVector(path.ForwardVector[knotIndex]);
             }
 
             #region Shamelessly copying the MaxScript for this as a potential placeholder.
@@ -1412,31 +1416,6 @@ namespace KnuxLib.Engines.Hedgehog
 
             // Save this path.
             return path;
-        }
-
-        /// <summary>
-        /// Calculates a point's up vector for a single spline.
-        /// </summary>
-        /// <param name="forwardVector">The point's forward vector to calculate the up vector from.</param>
-        /// <returns>The calculated up vector.</returns>
-        private static Vector3 CalculateSinglePointUpVector(Vector3 forwardVector) => Vector3.Cross(Vector3.Cross(forwardVector, new(0, 1, 0)), forwardVector);
-
-        /// <summary>
-        /// Calculates a point's up vector for a double spline.
-        /// </summary>
-        /// <param name="pointA">The position of the first point.</param>
-        /// <param name="pointB">The position of the point opposite the first one.</param>
-        /// <param name="pointC">The position of the point connected to the first one.</param>
-        private static Vector3 CalculateDoublePointUpVector(Vector3 pointA, Vector3 pointB, Vector3 pointC)
-        {
-            // Calculate the forward vector between pointA and pointC.
-            Vector3 forwardVector = Helpers.CalculateForwardVector(pointA, pointC);
-
-            // Calculate the forward vector between pointA and pointB to get the right vector.
-            var rightVector = Helpers.CalculateForwardVector(pointA, pointB);
-
-            // Cross the right vector with the forward vector and return the result.
-            return Vector3.Normalize(Vector3.Cross(rightVector, forwardVector));
         }
     }
 }

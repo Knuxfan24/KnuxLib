@@ -12,7 +12,7 @@
             if (Directory.Exists(filepath))
             {
                 // Import the files in the directory.
-                Data = Helpers.ImportArchive(filepath);
+                Data = ArchiveHelpers.ImportArchive(filepath);
 
                 // If the extract flag is set, then save this archive.
                 if (extract)
@@ -27,7 +27,7 @@
 
                 // If the extract flag is set, then extract this archive.
                 if (extract)
-                    Helpers.ExtractArchive(Data, Helpers.GetExtension(filepath, true), "openspace_big");
+                    ArchiveHelpers.ExtractArchive(Data, StringHelpers.GetExtension(filepath, true), "openspace_big");
             }
         }
 
@@ -202,12 +202,12 @@
         /// Extracts the files in this format to disc.
         /// </summary>
         /// <param name="directory">The directory to extract to.</param>
-        public void Extract(string directory) => Helpers.ExtractArchive(Data, directory, "openspace_big");
+        public void Extract(string directory) => ArchiveHelpers.ExtractArchive(Data, directory, "openspace_big");
 
         /// <summary>
         /// Imports files from a directory into this format.
         /// </summary>
         /// <param name="directory">The directory to import.</param>
-        public void Import(string directory) => Data = Helpers.ImportArchive(directory);
+        public void Import(string directory) => Data = ArchiveHelpers.ImportArchive(directory);
     }
 }

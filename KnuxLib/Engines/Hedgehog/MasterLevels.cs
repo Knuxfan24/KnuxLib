@@ -10,14 +10,14 @@
             string jsonExtension = ".hedgehog.masterlevels.json";
 
             // Check if the input file is this format's JSON.
-            if (Helpers.GetExtension(filepath) == jsonExtension)
+            if (StringHelpers.GetExtension(filepath) == jsonExtension)
             {
                 // Deserialise the input JSON.
                 Data = JsonDeserialise<Level[]>(filepath);
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{Helpers.GetExtension(filepath, true)}.mlevel");
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}.mlevel");
             }
 
             // Check if the input file isn't this format's JSON.
@@ -28,7 +28,7 @@
 
                 // If the export flag is set, then export this format.
                 if (export)
-                    JsonSerialise($@"{Helpers.GetExtension(filepath, true)}{jsonExtension}", Data);
+                    JsonSerialise($@"{StringHelpers.GetExtension(filepath, true)}{jsonExtension}", Data);
             }
         }
 
@@ -97,7 +97,7 @@
                 reader.JumpTo(levelOffset, false);
 
                 // Read this level's name.
-                Name = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                Name = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
 
                 // Read this level's file count.
                 uint fileCount = reader.ReadUInt32();
@@ -142,7 +142,7 @@
                         reader.JumpTo(dependencyOffset, false);
 
                         // Read this dependency.
-                        Dependencies[dependencyIndex] = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                        Dependencies[dependencyIndex] = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
 
                         // Skip an unknown value of 0.
                         reader.CheckValue(0x00L);
@@ -174,7 +174,7 @@
                         reader.JumpTo(fileOffset, false);
 
                         // Read the name of this file.
-                        Files[fileIndex] = Helpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
+                        Files[fileIndex] = StringHelpers.ReadNullTerminatedStringTableEntry(reader, 0x08);
 
                         // Skip an unknown offset that always points to a single null character in the string table.
                         reader.JumpAhead(0x08);

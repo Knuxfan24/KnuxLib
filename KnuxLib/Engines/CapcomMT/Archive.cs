@@ -12,7 +12,7 @@ namespace KnuxLib.Engines.CapcomMT
             if (Directory.Exists(filepath))
             {
                 // Import the files in the directory.
-                Data = Helpers.ImportArchive(filepath);
+                Data = ArchiveHelpers.ImportArchive(filepath);
 
                 // If the extract flag is set, then save this archive.
                 if (extract)
@@ -370,7 +370,7 @@ namespace KnuxLib.Engines.CapcomMT
             }
 
             // Extract the archive.
-            Helpers.ExtractArchive(Data, directory, versionFlag);
+            ArchiveHelpers.ExtractArchive(Data, directory, versionFlag);
         }
     }
 }

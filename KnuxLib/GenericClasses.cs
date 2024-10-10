@@ -1,4 +1,5 @@
-﻿global using KnuxLib.IO.Headers;
+﻿global using KnuxLib.Helpers;
+global using KnuxLib.IO.Headers;
 global using KnuxLib.IO;
 global using Newtonsoft.Json;
 global using System.Numerics;
@@ -174,7 +175,7 @@ namespace KnuxLib
 
             // Set the values for this decomposed matrix.
             Translation = translation;
-            EulerRotation = Helpers.ConvertQuaternionToEuler(rotation);
+            EulerRotation = RotationHelpers.ConvertQuaternionToEuler(rotation);
             Scale = scale;
         }
     }

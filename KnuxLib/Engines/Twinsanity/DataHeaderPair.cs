@@ -11,7 +11,7 @@
             if (Directory.Exists(filepath))
             {
                 // Import the files in the directory.
-                Data = Helpers.ImportArchive(filepath);
+                Data = ArchiveHelpers.ImportArchive(filepath);
 
                 // If the extract flag is set, then save this archive.
                 if (extract)
@@ -26,7 +26,7 @@
 
                 // If the extract flag is set, then extract this archive.
                 if (extract)
-                    Helpers.ExtractArchive(Data, Helpers.GetExtension(filepath, true), "twinsanity");
+                    ArchiveHelpers.ExtractArchive(Data, StringHelpers.GetExtension(filepath, true), "twinsanity");
             }
         }
 
