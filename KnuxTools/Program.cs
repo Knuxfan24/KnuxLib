@@ -385,6 +385,7 @@ namespace KnuxTools
                     Helpers.VersionChecker("This file has multiple variants that can't be auto detected, please specifiy the variant:",
                                             new()
                                             {
+                                                { "sonic2010\t(Sonic Colours)", false },
                                                 { "sonic2013_cafe\t(Sonic Lost World (Wii U))", false },
                                                 { "sonic2013\t(Sonic Lost World)", false },
                                                 { "wars\t(Sonic Forces)", false },
@@ -397,6 +398,7 @@ namespace KnuxTools
 
                     switch (Version.ToLower())
                     {
+                        case "sonic2010": _ = new KnuxLib.Engines.Hedgehog.PathSpline_2010(arg, true); break;
                         case "sonic2013_cafe": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true, ".path2.bin", true); break;
                         case "sonic2013": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true, ".path2.bin"); break;
                         case "wars": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.Wars, true); break;
@@ -495,6 +497,8 @@ namespace KnuxTools
                     }
 
                     break;
+
+                case ".path.bin": _ = new KnuxLib.Engines.Hedgehog.PathSpline_2010(arg, true); break;
 
                 case ".path2.bin": _ = new KnuxLib.Engines.Hedgehog.PathSpline(arg, KnuxLib.Engines.Hedgehog.PathSpline.FormatVersion.sonic_2013, true); break;
 

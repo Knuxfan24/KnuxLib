@@ -28,6 +28,8 @@
             Console.WriteLine("Message Table (sonic2013) (.xtb2)");
             Helpers.ColourConsole("    Version Flag (importing) - wiiu", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (importing) - pc", true, ConsoleColor.Yellow);
+            Console.WriteLine("Path Spline (2010) (.path.bin)");
+            Helpers.ColourConsole("    Version Flag - sonic2010", true, ConsoleColor.Yellow);
             Console.WriteLine("Path Spline (.path) (.path2.bin)");
             Helpers.ColourConsole("    Version Flag (Sonic Lost World (Wii U)) - sonic2013_cafe", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Sonic Lost World) - sonic2013", true, ConsoleColor.Yellow);
