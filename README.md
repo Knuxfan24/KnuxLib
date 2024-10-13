@@ -272,3 +272,19 @@ Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary ide
 [Package Archive](KnuxLib/Engines/Wayforward/Package.cs)|`*.pak`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|An archive format used by the Wayforward Engine.
 
 </details>
+
+<details><summary><h2>Westwood Engine</h2></summary>
+
+<h3>Known games:</h3>
+
+Name|System(s)
+----|---------
+Monopoly (1995)|PC
+> **Note**
+> Potentially used in more things, but this is the only one I've personally experimented with.
+
+Name|Extension(s)|Support|[1:1](## "Whether or not KnuxLib can make a binary identical copy of a source file.")|Description
+----|----|---------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------------|-----------
+[Message Table](KnuxLib/Engines/Westwood/MessageTable.cs)|`*.tre` `*.tru`|[📜](## "Read") [💾](## "Write") [📥](## "Import") [📤](## "Export")|✔️|A format used by the Westwood Engine to store plain text messages.
+
+</details>

@@ -79,6 +79,7 @@ namespace KnuxTools
                 FormatPrints.SpaceChannel();
                 FormatPrints.Twinsanity();
                 FormatPrints.Wayforward();
+                FormatPrints.Westwood();
 
                 Console.WriteLine("===\r\nUsage:");
                 Console.WriteLine("KnuxTools.exe \"path\\to\\supported\\file\" [-version={VERSION}] [-extension={EXTENSION}]\r\n");
@@ -575,6 +576,25 @@ namespace KnuxTools
                 case ".terrain-instanceinfo": case ".hedgehog.instanceinfo.json": _ = new KnuxLib.Engines.Hedgehog.InstanceInfo(arg, true); break;
 
                 case ".terrain-material": case ".hedgehog.terrain-material.json": _ = new KnuxLib.Engines.Hedgehog.TerrainMaterial(arg, true); break;
+
+                case ".tre":
+                case ".tru": 
+                case ".westwood.messagetable.json":
+                    // If this is a JSON, then do an extension check.
+                    if (Path.GetExtension(arg) == ".json")
+                    {
+                        Helpers.ExtensionChecker(new()
+                        {
+                            { ".TRE", "USA" },
+                            { ".TRU", "UK" }
+                        });
+
+                        // If the extension is still null or empty, then abort.
+                        if (string.IsNullOrEmpty(Extension))
+                            return;
+                    }
+                    _ = new KnuxLib.Engines.Westwood.MessageTable(arg, true);
+                    break;
 
                 case ".wap": _ = new KnuxLib.Engines.SonicWorldAdventure_SD.AreaPoints(arg, true); break;
                 case ".sonicworldadventure_sd.areapoints.json":

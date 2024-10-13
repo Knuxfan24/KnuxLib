@@ -159,5 +159,14 @@
             Helpers.ColourConsole("    Version Flag (Shantae: Half-Genie Hero (Wii U)) - hero_cafe", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Shantae and the Seven Sirens) - sevensirens", true, ConsoleColor.Yellow);
         }
+
+        public static void Westwood()
+        {
+            Console.WriteLine("===");
+            Console.WriteLine("Westwood Engine:");
+            Console.WriteLine("Message Table (.tre/.tru)");
+            Helpers.ColourConsole("    Extension Flag (USA) - tre", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Extension Flag (UK) - tru", true, ConsoleColor.Yellow);
+        }
     }
 }
