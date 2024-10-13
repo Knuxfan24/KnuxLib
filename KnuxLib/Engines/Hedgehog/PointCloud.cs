@@ -4,7 +4,7 @@
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public PointCloud() { }
-        public PointCloud(string filepath, bool export = false, string exportExtension = ".pcmodel")
+        public PointCloud(string filepath, bool export = false, string saveExtension = ".pcmodel")
         {
             // Set this format's JSON file extension (usually in the form of engine.format.json).
             string jsonExtension = ".hedgehog.pointcloud.json";
@@ -17,7 +17,7 @@
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{StringHelpers.GetExtension(filepath, true)}{exportExtension}");
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}{saveExtension}");
             }
 
             // Check if the input file isn't this format's JSON.

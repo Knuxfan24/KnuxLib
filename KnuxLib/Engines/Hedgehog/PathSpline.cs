@@ -10,7 +10,7 @@ namespace KnuxLib.Engines.Hedgehog
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public PathSpline() { }
-        public PathSpline(string filepath, FormatVersion version = FormatVersion.Wars, bool export = false, string exportExtension = ".path", bool bigEndianSave = false)
+        public PathSpline(string filepath, FormatVersion version = FormatVersion.Wars, bool export = false, string saveExtension = ".path", bool bigEndianSave = false)
         {
             // Check if the input file is an OBJ.
             if (StringHelpers.GetExtension(filepath) == ".obj")
@@ -20,7 +20,7 @@ namespace KnuxLib.Engines.Hedgehog
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{StringHelpers.GetExtension(filepath, true)}{exportExtension}", version, bigEndianSave);
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}{saveExtension}", version, bigEndianSave);
             }
 
             // Check if the input file isn't an OBJ.
