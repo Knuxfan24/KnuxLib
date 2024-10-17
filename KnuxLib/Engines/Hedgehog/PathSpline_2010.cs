@@ -22,7 +22,7 @@
                     Save($@"{StringHelpers.GetExtension(filepath, true)}.path.bin");
             }
 
-            // Check if the input file isn't this format's JSON.
+            // Check if the input file isn't an OBJ.
             else
             {
                 // Load this file.
@@ -540,6 +540,7 @@
                         obj.WriteLine($"v {Data[pathIndex].Knots[vertexIndex].X} {Data[pathIndex].Knots[vertexIndex].Y} {Data[pathIndex].Knots[vertexIndex].Z}");
                 }
 
+                // Write this path's name.
                 obj.WriteLine($"o {Data[pathIndex].Name}");
                 obj.WriteLine($"g {Data[pathIndex].Name}");
 
