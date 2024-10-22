@@ -6,6 +6,7 @@ namespace KnuxLib.Engines.Hedgehog
     // TODO: Figure out and properly read the k-d tree data.
     // TODO: Check to see if Lost World and Frontiers handle anything other than their tags differently, if so, handle them with the FormatVersion check.
     // TODO: Slightly tidy this up after the porting process.
+    // TODO: Experiment with the pathhs in Sonic X Shadow Generations.
     public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.

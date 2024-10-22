@@ -1,5 +1,6 @@
 ﻿namespace KnuxLib.Engines.Hedgehog
 {
+    // TODO: Experiment with the point cloud files in Sonic X Shadow Generations.
     public class PointCloud : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.

@@ -1,5 +1,6 @@
 ﻿namespace KnuxLib.Engines.Hedgehog
 {
+    // TODO: Check the master levels file in Sonic X Shadow Generations.
     public class MasterLevels : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.

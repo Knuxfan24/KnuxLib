@@ -3,6 +3,7 @@
     // TODO: There is extra data after the Sector Table but before the String Table.
     // What is it? The game seems to work without it?
     // The BINA stuff is correct even with this missing, which would imply no offset or anything points to it.
+    // TODO: Experiment with the svcol files in Sonic X Shadow Generations.
     public class SectorVisibilityCollision_Wars : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
