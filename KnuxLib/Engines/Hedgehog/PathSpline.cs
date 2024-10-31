@@ -6,7 +6,7 @@ namespace KnuxLib.Engines.Hedgehog
     // TODO: Figure out and properly read the k-d tree data.
     // TODO: Check to see if Lost World and Frontiers handle anything other than their tags differently, if so, handle them with the FormatVersion check.
     // TODO: Slightly tidy this up after the porting process.
-    // TODO: Experiment with the pathhs in Sonic X Shadow Generations.
+    // TODO: Potentially combine the spline types? Considering the only difference is SideView and Rail swapping around?
     public class PathSpline : FileBase
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
@@ -53,7 +53,7 @@ namespace KnuxLib.Engines.Hedgehog
         }
 
         [JsonConverter(typeof(StringEnumConverter))]
-        public enum SplineTypeRangers : ulong
+        public enum SplineTypeRangersMiller : ulong
         {
             Default = 0,
             GrindRail = 1,
@@ -410,7 +410,7 @@ namespace KnuxLib.Engines.Hedgehog
                             {
                                 case FormatVersion.sonic_2013: Type = (SplineType2013Wars)reader.ReadUInt32(); break;
                                 case FormatVersion.Wars:       Type = (SplineType2013Wars)reader.ReadUInt64(); break;
-                                case FormatVersion.Rangers:    Type = (SplineTypeRangers)reader.ReadUInt64();  break;
+                                case FormatVersion.Rangers:    Type = (SplineTypeRangersMiller)reader.ReadUInt64(); break;
                             }
                             break;
 
@@ -1401,7 +1401,7 @@ namespace KnuxLib.Engines.Hedgehog
                     if (version == FormatVersion.sonic_2013 || version == FormatVersion.Wars)
                         path.Type = SplineType2013Wars.GrindRail;
                     if (version == FormatVersion.Rangers)
-                        path.Type = SplineTypeRangers.GrindRail;
+                        path.Type = SplineTypeRangersMiller.GrindRail;
 
                     if (pathType == "grind_slow") path.GrindSpeed = GrindSpeed.Slow;
                     if (pathType == "grind_fast") path.GrindSpeed = GrindSpeed.Fast;
@@ -1411,7 +1411,7 @@ namespace KnuxLib.Engines.Hedgehog
                     if (version == FormatVersion.sonic_2013 || version == FormatVersion.Wars)
                         path.Type = SplineType2013Wars.SideView;
                     if (version == FormatVersion.Rangers)
-                        path.Type = SplineTypeRangers.SideView;
+                        path.Type = SplineTypeRangersMiller.SideView;
                     break;
             }
 

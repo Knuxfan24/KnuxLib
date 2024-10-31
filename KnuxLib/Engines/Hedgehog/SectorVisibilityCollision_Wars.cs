@@ -8,7 +8,7 @@
     {
         // Generic VS stuff to allow creating an object that instantly loads a file.
         public SectorVisibilityCollision_Wars() { }
-        public SectorVisibilityCollision_Wars(string filepath, bool export = false)
+        public SectorVisibilityCollision_Wars(string filepath, string saveExtension = ".svcol.bin", bool export = false)
         {
             // Set this format's JSON file extension (usually in the form of engine.format.json).
             string jsonExtension = ".hedgehog.sectorvisiblitycollision_wars.json";
@@ -21,7 +21,7 @@
 
                 // If the export flag is set, then save this format.
                 if (export)
-                    Save($@"{StringHelpers.GetExtension(filepath, true)}.svcol.bin");
+                    Save($@"{StringHelpers.GetExtension(filepath, true)}{saveExtension}");
             }
 
             // Check if the input file isn't this format's JSON.

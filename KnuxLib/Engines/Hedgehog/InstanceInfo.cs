@@ -88,8 +88,9 @@
             // Read the size of this file.
             uint fileSize = reader.ReadUInt32();
 
-            // Skip the root node type, as it's always 0.
-            reader.CheckValue(0x00);
+            // Skip the root node type, as it's always 0 in official files.
+            // HedgehogConverter seems to put a value here.
+            reader.JumpAhead(0x04);
 
             // Read the root node size.
             uint rootNodeSize = reader.ReadUInt32();
@@ -100,8 +101,9 @@
             // Read the offset to the footer.
             uint footerOffset = reader.ReadUInt32();
 
-            // Skip the file end offset, as it's always 0.
-            reader.CheckValue(0x00);
+            // Skip the file end offset, as it's always 0 in official files.
+            // HedgehogConverter seems to put a value here.
+            reader.JumpAhead(0x04);
 
             // Set the reader's offset to the value in rootNodeOffset.
             reader.Offset = rootNodeOffset;

@@ -40,10 +40,11 @@
             Helpers.ColourConsole("    Extension Flag (Terrain Instance) - pcmodel", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Lighting Instance) - pcrt", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Extension Flag (Generic) - pointcloud", true, ConsoleColor.Yellow);
-            Console.WriteLine("Sector Visibility Collision (.svcol.bin)");
+            Console.WriteLine("Sector Visibility Collision (.svcol.bin/.svcol)");
             Helpers.ColourConsole("    Version Flag (Sonic Lost World (Wii U)) - sonic2013_cafe", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Sonic Lost World) - sonic2013", true, ConsoleColor.Yellow);
             Helpers.ColourConsole("    Version Flag (Sonic Forces) - wars", true, ConsoleColor.Yellow);
+            Helpers.ColourConsole("    Version Flag (Sonic X Shadow Generations) - miller", true, ConsoleColor.Yellow);
             Console.WriteLine("Terrain Material (.terrain-material)");
         }
 

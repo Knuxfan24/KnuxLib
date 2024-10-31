@@ -544,10 +544,11 @@ namespace KnuxTools
                     switch (Version.ToLower())
                     {
                         case "sonic2013": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_2013(arg, true); break;
-                        case "wars": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars(arg, true); break;
+                        case "wars": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars(arg, ".svcol.bin", true); break;
                         default: Helpers.InvalidFormatVersion("Hedgehog Engine Sector Visibility Collision"); return;
                     }
                     break;
+                case ".svcol": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars(arg, ".svcol", true); break;
 
                 case ".hedgehog.sectorvisiblitycollision_2013.json":
                     // Check for a format version.
@@ -571,7 +572,23 @@ namespace KnuxTools
 
                     break;
 
-                case ".hedgehog.sectorvisiblitycollision_wars.json": _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars(arg, true); break;
+                // TODO: SxSG Extension.
+                case ".hedgehog.sectorvisiblitycollision_wars.json":
+                    // If this is a JSON, then do an extension check.
+                    if (Path.GetExtension(arg) == ".json")
+                    {
+                        Helpers.ExtensionChecker(new()
+                        {
+                            { ".svcol.bin", "Sonic Forces" },
+                            { ".svcol", "Sonic X Shadow Generations" }
+                        });
+
+                        // If the extension is still null or empty, then abort.
+                        if (string.IsNullOrEmpty(Extension))
+                            return;
+                    }
+                    _ = new KnuxLib.Engines.Hedgehog.SectorVisibilityCollision_Wars(arg, ".svcol.bin", true);
+                    break;
 
                 case ".terrain-instanceinfo": case ".hedgehog.instanceinfo.json": _ = new KnuxLib.Engines.Hedgehog.InstanceInfo(arg, true); break;
 
